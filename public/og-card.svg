@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f5f6f1" />
+  <path d="M0 80h1200M0 160h1200M0 240h1200M0 320h1200M0 400h1200M0 480h1200M0 560h1200M80 0v630M160 0v630M240 0v630M320 0v630M400 0v630M480 0v630M560 0v630M640 0v630M720 0v630M800 0v630M880 0v630M960 0v630M1040 0v630M1120 0v630" stroke="#e7e9e3" stroke-width="1" />
+  <rect x="92" y="78" width="48" height="48" fill="#1d211e" />
+  <text x="116" y="111" fill="#f5f6f1" font-family="sans-serif" font-size="23" font-weight="700" text-anchor="middle">SB</text>
+  <circle cx="149" cy="116" r="5" fill="#dc5038" />
+  <text x="92" y="260" fill="#1d211e" font-family="sans-serif" font-size="76" font-weight="700">Shervin Babaei</text>
+  <text x="96" y="328" fill="#dc5038" font-family="sans-serif" font-size="31">Full-Stack Development Student · BCIT</text>
+  <text x="96" y="397" fill="#6b716b" font-family="sans-serif" font-size="24">I build things to understand how they work.</text>
+  <text x="96" y="552" fill="#6b716b" font-family="monospace" font-size="15">VANCOUVER, BC / PORTFOLIO — 2026</text>
+  <circle cx="1020" cy="450" r="92" fill="#d8efb2" />
+  <circle cx="1020" cy="450" r="61" fill="none" stroke="#1d211e" stroke-width="2" />
+  <path d="m1005 435-17 15 17 15m30-30 17 15-17 15m-9-40-13 50" fill="none" stroke="#1d211e" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" />
+</svg>
