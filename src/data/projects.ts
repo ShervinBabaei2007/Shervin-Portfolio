@@ -16,7 +16,7 @@ export type Project = {
   github?: string
   live?: string
   screenshots?: { src: string; alt: string; caption: string }[]
-  visual: 'skillmatch' | 'thinkboard' | 'rpg' | 'gitscribe' | 'discord'
+  visual: 'skillmatch' | 'thinkboard' | 'rpg' | 'gitscribe' | 'discord' | 'tracker' | 'moodboard' | 'calendar'
   featured?: boolean
 }
 
@@ -122,6 +122,7 @@ export const projects: Project[] = [
     learned: 'Slow model calls need to stay off the event loop, and failures need a response the person using the bot can understand.',
     next: 'I’d add request cancellation and tests for model-server timeouts and malformed responses.',
     stack: ['Python', 'discord.py', 'LM Studio', 'REST API', 'asyncio'],
+    github: 'https://github.com/ShervinBabaei2007/Discord-ai-bridge',
     visual: 'discord',
     featured: true,
   },
@@ -147,5 +148,74 @@ export const projects: Project[] = [
     github: 'https://github.com/ShervinBabaei2007/Mini-RPG-Battle',
     visual: 'rpg',
     featured: true,
+  },
+  {
+    name: 'Job Application Tracker',
+    number: '06',
+    category: 'Systems',
+    subtitle: 'A terminal tool for keeping a job search organized.',
+    summary: 'A Python CLI app for tracking internship, co-op, and entry-level applications, with SQLite storage, status updates, and filtering.',
+    role: 'Personal project',
+    highlight: 'SQLite-backed CRUD workflow',
+    why: 'Job searching at scale gets messy fast, so I wanted one local place to track statuses, dates, links, and notes.',
+    goal: 'Build a simple CLI that stores applications persistently and makes it easy to add, view, update, and filter them.',
+    process: [
+      'Designed a menu-driven CLI for adding applications with company, role, status, date, job link, and notes.',
+      'Stored everything in a local SQLite database using the built-in sqlite3 module so data persists between runs.',
+      'Added status updates (Applied, Interview, Rejected, Offer, Accepted) and filtering by status.',
+    ],
+    outcome: 'A dependency-free tool that keeps a full application history locally and lets me filter by where each application stands.',
+    learned: 'Even a small CLI benefits from a clear data model, and persistent storage changes how you think about program state.',
+    next: 'I’d add editing and deleting, sorting by date, a statistics dashboard, CSV/JSON export, and eventually a Flask web version.',
+    stack: ['Python', 'SQLite', 'CLI design', 'CRUD'],
+    github: 'https://github.com/ShervinBabaei2007/Job-Application-Tracker',
+    visual: 'tracker',
+    featured: false,
+  },
+  {
+    name: 'Jinterest',
+    number: '07',
+    category: 'Full-stack',
+    subtitle: 'A mood board built with vanilla JavaScript.',
+    summary: 'A responsive single-page mood board where users add image cards, resize and reorder them, pop them out into draggable layers, and undo or redo changes.',
+    role: 'Course project',
+    highlight: 'Undo/redo and localStorage persistence',
+    why: 'I wanted to understand DOM manipulation, UI state, and event handling without a framework doing the work for me.',
+    goal: 'Build an interactive mood board with a clean card system whose state survives refreshes and works from the keyboard.',
+    process: [
+      'Built a card system with display and edit modes, where only one card can be edited at a time.',
+      'Used centralized event delegation instead of attaching listeners to every card and button.',
+      'Persisted order, size, image URLs, pop-out state, and positions to localStorage, and added undo/redo plus keyboard shortcuts.',
+    ],
+    outcome: 'A framework-free app that restores the exact previous session on refresh and supports resizing, reordering, drag-and-drop pop-outs, and keyboard-driven editing.',
+    learned: 'Keeping UI and stored state in sync is much easier when events flow through one delegated handler.',
+    next: 'I’d add image uploads, multiple boards, and automated tests for the undo/redo history.',
+    stack: ['HTML5', 'CSS3', 'JavaScript (ES6+)', 'localStorage'],
+    github: 'https://github.com/ShervinBabaei2007/Jinterest',
+    visual: 'moodboard',
+    featured: false,
+  },
+  {
+    name: 'Jicnic',
+    number: '08',
+    category: 'Full-stack',
+    subtitle: 'A live availability voting app for planning a picnic.',
+    summary: 'A real-time scheduling app where a group votes on which days they are available, with live WebSocket updates and weather forecasts for each day.',
+    role: 'Course project',
+    highlight: 'Real-time WebSocket updates',
+    why: 'I wanted to put AJAX, WebSockets, authentication, and a third-party API together in one cohesive full-stack app.',
+    goal: 'Let a group vote yes or no on days, see each other’s changes instantly, and check the forecast, without exposing the weather API key.',
+    process: [
+      'Built a Node/Express backend with session-cookie auth and bcrypt, plus a vanilla JavaScript frontend using the Fetch API.',
+      'Used WebSocket messages only as a trigger for the existing AJAX re-fetch, which kept real-time logic separate from data logic.',
+      'Served the OpenWeatherMap key from a login-protected backend route and cached forecasts in localStorage to respect rate limits.',
+    ],
+    outcome: 'A live voting experience where every connected user sees changes immediately, with forecasts that quietly degrade when logged out.',
+    learned: 'Thinking through request sequencing and failure states mattered more than the happy path, especially around API key security.',
+    next: 'I’d add multiple events, a summary of the best day, and tests for the vote and socket flow.',
+    stack: ['Node.js', 'Express', 'WebSockets', 'OpenWeatherMap API', 'bcrypt', 'JavaScript'],
+    github: 'https://github.com/ShervinBabaei2007/Jicnic',
+    visual: 'calendar',
+    featured: false,
   },
 ]
