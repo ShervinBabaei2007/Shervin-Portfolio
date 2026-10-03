@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import AboutSection from './components/AboutSection'
 import CaseStudyDialog from './components/CaseStudyDialog'
 import ContactSection from './components/ContactSection'
@@ -14,9 +14,23 @@ function App() {
   const [activeSkill, setActiveSkill] = useState<string | null>(null)
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
-  const selectSkill = (skill: string) => {
+  // Selecting a skill filters the project grid in the section ABOVE the skills section.
+  // That changes the page height, so remember where the clicked chip sits on screen
+  // and put it back in the same place once React has re-rendered.
+  const scrollAnchor = useRef<{ el: HTMLElement; top: number } | null>(null)
+
+  const selectSkill = (skill: string, trigger: HTMLElement) => {
+    scrollAnchor.current = { el: trigger, top: trigger.getBoundingClientRect().top }
     setActiveSkill((current) => current === skill ? null : skill)
   }
+
+  useLayoutEffect(() => {
+    const anchor = scrollAnchor.current
+    if (!anchor) return
+    scrollAnchor.current = null
+    const shift = anchor.el.getBoundingClientRect().top - anchor.top
+    if (shift !== 0) window.scrollBy({ top: shift, behavior: 'instant' })
+  }, [activeSkill])
 
   return (
     <div className={darkMode ? 'site-shell theme-dark' : 'site-shell'}>

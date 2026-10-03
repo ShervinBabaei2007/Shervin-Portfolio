@@ -10,7 +10,7 @@ const skillGroups = [
 
 type SkillsSectionProps = {
   activeSkill: string | null
-  onSkillSelect: (skill: string) => void
+  onSkillSelect: (skill: string, trigger: HTMLElement) => void
 }
 
 function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
@@ -33,7 +33,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                   const selected = activeSkill === skill
                   return (
                     <li key={skill}>
-                      <button className="skill-chip" type="button" aria-pressed={selected} aria-label={`Show ${matchCount} project${matchCount === 1 ? '' : 's'} using ${skill}`} onClick={() => onSkillSelect(skill)}>
+                      <button className="skill-chip" type="button" aria-pressed={selected} aria-label={`Show ${matchCount} project${matchCount === 1 ? '' : 's'} using ${skill}`} onClick={(event) => onSkillSelect(skill, event.currentTarget)}>
                         {skill}<span>{matchCount}</span>
                       </button>
                     </li>
