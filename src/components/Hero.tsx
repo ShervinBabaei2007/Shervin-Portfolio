@@ -3,9 +3,9 @@ import { ArrowDown, ArrowDownRight, ArrowUpRight, Braces, FileDown } from 'lucid
 import { projects, type Project } from '../data/projects'
 
 const systemLayers = [
-  { id: 'ui', number: '01', title: 'UI', caption: 'WHAT YOU SEE', detail: 'Turn user tasks into clear React screens, forms, and feedback.', projects: ['SkillMatch', 'GitScribe', 'ThinkBoard'] },
-  { id: 'api', number: '02', title: 'API', caption: 'HOW IT CONNECTS', detail: 'Connect interfaces to routes, authentication, and stored data.', projects: ['SkillMatch', 'ThinkBoard', 'Discord AI Automation Bridge'] },
-  { id: 'core', number: '03', title: 'CORE', caption: 'WHY IT WORKS', detail: 'Understand the rules, asynchronous work, and state behind a feature.', projects: ['Discord AI Automation Bridge', 'Mini RPG Battle'] },
+  { id: 'ui', number: '01', title: 'UI', caption: 'WHAT YOU SEE', detail: 'Turn user tasks into clear React screens, forms, and feedback.', projects: ['SkillMatch', 'GitScribe', 'ThinkBoard', 'Jinterest', 'Jicnic'] },
+  { id: 'api', number: '02', title: 'API', caption: 'HOW IT CONNECTS', detail: 'Connect interfaces to routes, authentication, and stored data.', projects: ['SkillMatch', 'ThinkBoard', 'Discord AI Automation Bridge', 'Jicnic'] },
+  { id: 'core', number: '03', title: 'CORE', caption: 'WHY IT WORKS', detail: 'Understand the rules, asynchronous work, and state behind a feature.', projects: ['Discord AI Automation Bridge', 'Mini RPG Battle', 'Job Application Tracker', 'Jinterest'] },
 ] as const
 
 type HeroProps = {
