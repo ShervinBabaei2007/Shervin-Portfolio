@@ -1,35 +1,23 @@
-import { useState } from 'react'
-import { projects, type Project } from '../data/projects'
+import { ArrowUpRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { flagshipProjects, moreProjects } from '../data/projects'
 import ProjectCard from './ProjectCard'
-
-const filters = ['All work', 'Full-stack', 'AI tools', 'Systems', 'Hackathon'] as const
-type Filter = (typeof filters)[number]
 
 type ProjectsSectionProps = {
   activeSkill: string | null
   onClearSkill: () => void
-  onOpenProject: (project: Project) => void
 }
 
-function ProjectsSection({ activeSkill, onClearSkill, onOpenProject }: ProjectsSectionProps) {
-  const [activeFilter, setActiveFilter] = useState<Filter>('All work')
-  const visibleProjects = activeSkill
-    ? projects.filter((project) => project.stack.includes(activeSkill))
-    : activeFilter === 'All work'
-      ? projects
-      : projects.filter((project) => project.category === activeFilter)
+function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
+  const matches = (stack: string[]) => !activeSkill || stack.includes(activeSkill)
+  const flagships = flagshipProjects.filter((project) => matches(project.stack))
+  const others = moreProjects.filter((project) => matches(project.stack))
 
   return (
     <section className="work-section section-wrap" id="work" aria-labelledby="work-title">
       <div className="section-heading">
         <div><p className="eyebrow"><span className="eyebrow-mark">02</span> SELECTED WORK</p><h2 id="work-title">Built with intent<span>.</span></h2></div>
-        <p className="section-aside">A few things I&apos;ve made,<br />and what I learned building them.</p>
-      </div>
-      <div className="filter-row" role="group" aria-label="Filter projects">
-        {filters.map((filter) => (
-          <button key={filter} className={activeFilter === filter && !activeSkill ? 'filter-button is-active' : 'filter-button'} type="button" aria-pressed={activeFilter === filter && !activeSkill} onClick={() => { setActiveFilter(filter); onClearSkill() }}>{filter}</button>
-        ))}
-        <span className="project-count">{String(visibleProjects.length).padStart(2, '0')} {visibleProjects.length === 1 ? 'PROJECT' : 'PROJECTS'}</span>
+        <p className="section-aside">The projects I&apos;d talk about first, with the code, <br />the trade-offs, and what I&apos;d fix next.</p>
       </div>
       {activeSkill && (
         <p className="active-skill-filter" aria-live="polite">
@@ -37,9 +25,31 @@ function ProjectsSection({ activeSkill, onClearSkill, onOpenProject }: ProjectsS
           <button type="button" onClick={onClearSkill}>Clear skill filter</button>
         </p>
       )}
-      <div className="project-grid" aria-live="polite">
-        {visibleProjects.map((project) => <ProjectCard key={project.name} project={project} onOpen={onOpenProject} />)}
-      </div>
+      {flagships.length > 0 && (
+        <div className="project-grid">
+          {flagships.map((project) => <ProjectCard key={project.slug} project={project} />)}
+        </div>
+      )}
+      {others.length > 0 && (
+        <div className="more-projects">
+          <h3>More projects</h3>
+          <ul>
+            {others.map((project) => (
+              <li key={project.slug}>
+                <Link to={`/work/${project.slug}`}>
+                  <span className="more-projects-name">{project.name}</span>
+                  <span className="more-projects-subtitle">{project.subtitle}</span>
+                  <span className="more-projects-stack">{project.stack.slice(0, 3).join(', ')}</span>
+                  <ArrowUpRight size={16} aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {flagships.length === 0 && others.length === 0 && (
+        <p className="active-skill-filter">No projects use {activeSkill} yet.</p>
+      )}
     </section>
   )
 }

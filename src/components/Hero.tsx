@@ -1,46 +1,74 @@
 import { useState } from 'react'
-import { ArrowDown, ArrowDownRight, ArrowUpRight, Braces, FileText } from 'lucide-react'
-import { projects, type Project } from '../data/projects'
+import { ArrowDownRight, ArrowUpRight, Braces, FileText, Mail } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { findProject, type Project } from '../data/projects'
+import { availabilityLine, site } from '../data/site'
 
 const systemLayers = [
-  { id: 'ui', number: '01', title: 'UI', caption: 'WHAT YOU SEE', detail: 'Turn user tasks into clear React screens, forms, and feedback.', projects: ['SkillMatch', 'GitScribe', 'ThinkBoard', 'Jinterest', 'Jicnic'] },
-  { id: 'api', number: '02', title: 'API', caption: 'HOW IT CONNECTS', detail: 'Connect interfaces to routes, authentication, and stored data.', projects: ['SkillMatch', 'ThinkBoard', 'Discord AI Automation Bridge', 'Jicnic'] },
-  { id: 'core', number: '03', title: 'CORE', caption: 'WHY IT WORKS', detail: 'Understand the rules, asynchronous work, and state behind a feature.', projects: ['Discord AI Automation Bridge', 'Mini RPG Battle', 'Job Application Tracker', 'Jinterest'] },
+  { id: 'ui', number: '01', title: 'UI', caption: 'WHAT YOU SEE', detail: 'Turn user tasks into clear React screens, forms, and feedback.', projects: ['skillmatch', 'gitscribe', 'thinkboard'] },
+  { id: 'api', number: '02', title: 'API', caption: 'HOW IT CONNECTS', detail: 'Connect interfaces to routes, authentication, and stored data.', projects: ['skillmatch', 'thinkboard', 'jicnic'] },
+  { id: 'core', number: '03', title: 'CORE', caption: 'WHY IT WORKS', detail: 'Understand the rules, asynchronous work, and state behind a feature.', projects: ['discord-ai-bridge', 'thinkboard', 'mini-rpg-battle'] },
 ] as const
 
-type HeroProps = {
-  onOpenProject: (project: Project) => void
-  onOpenResume: () => void
-}
+const proof = [
+  { value: 'Top 6 of 36', label: 'teams at Hack the Break 2026', to: '/work/gitscribe' },
+  { value: '114 commits', label: 'most on a 3-person team project', to: '/work/skillmatch' },
+  { value: '88% GPA', label: `BCIT, graduating ${site.graduation}`, to: '/resume' },
+]
 
-function Hero({ onOpenProject, onOpenResume }: HeroProps) {
+function Hero() {
   const [activeLayerId, setActiveLayerId] = useState<(typeof systemLayers)[number]['id']>('ui')
   const activeLayer = systemLayers.find((layer) => layer.id === activeLayerId)!
   const layerProjects = activeLayer.projects
-    .map((name) => projects.find((project) => project.name === name))
+    .map((slug) => findProject(slug))
     .filter((project): project is Project => Boolean(project))
 
   return (
     <section className="hero section-wrap" id="home" aria-labelledby="hero-title">
       <div className="hero-copy">
         <p className="eyebrow"><span className="eyebrow-mark">01</span> VANCOUVER, BC <span className="eyebrow-divider">/</span> BCIT</p>
-        <h1 id="hero-title">I build things<br />to understand<br /><span>how they work.</span></h1>
-        <p className="hero-role">Shervin Babaei <span>·</span> BCIT Full-Stack Web Development</p>
-        <p className="hero-intro">I build full-stack applications and trace how the interface, APIs, and data fit together.</p>
-        <p className="hero-target">Seeking co-op and junior developer roles in Vancouver / Burnaby.</p>
+        <h1 id="hero-title">Full-stack developer who goes <span>down the stack.</span></h1>
+        <p className="hero-intro">
+          I&apos;m {site.name}, a BCIT Full-Stack Web Development student. I build React and Node apps, then follow the
+          request past the API: Redis rate limiting, async calls to a local language model, and Express routes behind JWT auth.
+        </p>
+        <ul className="hero-proof" aria-label="Highlights">
+          {proof.map((item) => (
+            <li key={item.value}>
+              <Link to={item.to}>
+                <b>{item.value}</b>
+                <span>{item.label}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <p className="hero-target">{availabilityLine()}</p>
         <div className="hero-actions">
-          <a className="button button-primary" href="#work">Explore my work <ArrowDownRight size={16} /></a>
-          <a
-            className="button button-secondary"
-            href="/Shervin_Babaei_Resume.pdf"
-            onClick={(event) => {
-              if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
-              event.preventDefault()
-              onOpenResume()
-            }}
-          >
-            View resume <FileText size={16} />
-          </a>
+          <Link className="button button-primary" to="/#work">See my projects <ArrowDownRight size={16} /></Link>
+          <Link className="button button-secondary" to="/resume">View resume <FileText size={16} /></Link>
+          <a className="text-link hero-email" href={`mailto:${site.email}`}><Mail size={16} /> {site.email}</a>
+        </div>
+      </div>
+      <div className="hero-side">
+        <div className="hero-art" role="group" aria-label="Explore projects by application layer">
+          <div className="orbit orbit-one" />
+          <div className="orbit orbit-two" />
+          <div className="orbit orbit-three" />
+          <span className="art-cross art-cross-one">+</span>
+          <span className="art-cross art-cross-two">+</span>
+          <div className="art-center"><Braces size={31} strokeWidth={1.5} /><span>TRACE THE<br />WHOLE SYSTEM</span></div>
+          {systemLayers.map((layer) => (
+            <button
+              key={layer.id}
+              className={`art-node art-node-${layer.id}${activeLayerId === layer.id ? ' is-active' : ''}`}
+              type="button"
+              aria-pressed={activeLayerId === layer.id}
+              aria-label={`Show ${layer.title} layer projects`}
+              onClick={() => setActiveLayerId(layer.id)}
+            >
+              <span>{layer.number}</span><b>{layer.title}</b><small>{layer.caption}</small>
+            </button>
+          ))}
         </div>
         <div className="hero-layer-panel" aria-live="polite">
           <div>
@@ -49,33 +77,11 @@ function Hero({ onOpenProject, onOpenResume }: HeroProps) {
           </div>
           <div className="hero-layer-projects" aria-label={`Projects that demonstrate ${activeLayer.title}`}>
             {layerProjects.map((project) => (
-              <button key={project.name} type="button" onClick={() => onOpenProject(project)}>{project.name} <ArrowUpRight size={14} /></button>
+              <Link key={project.slug} to={`/work/${project.slug}`}>{project.name} <ArrowUpRight size={14} /></Link>
             ))}
           </div>
         </div>
       </div>
-      <div className="hero-art" role="group" aria-label="Explore projects by application layer">
-        <div className="orbit orbit-one" />
-        <div className="orbit orbit-two" />
-        <div className="orbit orbit-three" />
-        <span className="art-cross art-cross-one">+</span>
-        <span className="art-cross art-cross-two">+</span>
-        <div className="art-center"><Braces size={31} strokeWidth={1.5} /><span>TRACE THE<br />WHOLE SYSTEM</span></div>
-        {systemLayers.map((layer) => (
-          <button
-            key={layer.id}
-            className={`art-node art-node-${layer.id}${activeLayerId === layer.id ? ' is-active' : ''}`}
-            type="button"
-            aria-pressed={activeLayerId === layer.id}
-            aria-label={`Show ${layer.title} layer projects`}
-            onClick={() => setActiveLayerId(layer.id)}
-          >
-            <span>{layer.number}</span><b>{layer.title}</b><small>{layer.caption}</small>
-          </button>
-        ))}
-      </div>
-      <a className="scroll-cue" href="#work"><span>SCROLL TO EXPLORE</span><ArrowDown size={14} /></a>
-      <span className="hero-index">PORTFOLIO — 2026</span>
     </section>
   )
 }

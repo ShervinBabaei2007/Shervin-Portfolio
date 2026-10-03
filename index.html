@@ -1,26 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-CA">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f5f6f1" />
-    <meta
-      name="description"
-      content="Shervin Babaei is a BCIT Full-Stack Web Development student seeking co-op and junior developer roles in Vancouver and Burnaby."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Shervin Babaei | Full-Stack Developer" />
-    <meta
-      property="og:description"
-      content="BCIT Full-Stack Web Development student seeking co-op and junior developer roles in Vancouver and Burnaby."
-    />
-    <meta property="og:image" content="/og-card.svg" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f5f6f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a211c" media="(prefers-color-scheme: dark)" />
+    <script>
+      // Apply a pinned theme before first paint so there is no flash. Mirrors src/hooks/useTheme.ts.
+      try {
+        var scheme = localStorage.getItem('color-scheme');
+        if (scheme === 'light' || scheme === 'dark') {
+          document.documentElement.dataset.theme = scheme;
+          document.querySelector('meta[name="color-scheme"]').content = scheme;
+        }
+      } catch (e) {}
+    </script>
     <link rel="icon" href="/favicon.ico" />
-    <title>Shervin Babaei | Full-Stack Developer</title>
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <!--head-->
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><!--app--></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

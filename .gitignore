@@ -5,3 +5,8 @@ dist/
 test-results/
 playwright-report/
 convert-images.mjs
+test-results/
+playwright-report/
+dist-ssr/
+CHANGES.md
+README.md

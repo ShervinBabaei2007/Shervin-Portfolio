@@ -1,16 +1,44 @@
 import { ArrowUpRight, Github } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import type { Project } from '../data/projects'
-import ProjectVisual from './ProjectVisual'
+import CodeBlock from './CodeBlock'
+import TerminalBlock from './TerminalBlock'
 
-type ProjectCardProps = {
-  project: Project
-  onOpen: (project: Project) => void
+function CardMedia({ project }: { project: Project }) {
+  if (project.screenshots?.length) {
+    return (
+      <div className="project-visual project-visual--screenshots" aria-hidden="true">
+        <div className={`project-screenshot-strip project-screenshot-strip--${project.slug}`}>
+          {project.screenshots.slice(0, 3).map((screenshot) => (
+            <figure key={screenshot.src}>
+              <img src={screenshot.src} alt="" loading="lazy" decoding="async" />
+            </figure>
+          ))}
+        </div>
+      </div>
+    )
+  }
+  if (project.snippet) {
+    return (
+      <div className="project-visual project-visual--code" aria-hidden="true">
+        <CodeBlock snippet={project.snippet} maxLines={11} showCaption={false} />
+      </div>
+    )
+  }
+  if (project.terminal) {
+    return (
+      <div className="project-visual project-visual--code" aria-hidden="true">
+        <TerminalBlock title={project.terminal.title} transcript={project.terminal.transcript} maxLines={11} showCaption={false} />
+      </div>
+    )
+  }
+  return null
 }
 
-function ProjectCard({ project, onOpen }: ProjectCardProps) {
+function ProjectCard({ project }: { project: Project }) {
   return (
     <article
-      className={`project-card project-card--${project.visual}`}
+      className="project-card"
       onPointerMove={(event) => {
         if (event.pointerType === 'touch') return
         const bounds = event.currentTarget.getBoundingClientRect()
@@ -18,19 +46,17 @@ function ProjectCard({ project, onOpen }: ProjectCardProps) {
         event.currentTarget.style.setProperty('--pointer-y', `${event.clientY - bounds.top}px`)
       }}
     >
-      <button className="project-card-trigger" type="button" onClick={() => onOpen(project)} aria-label={`Open ${project.name} case study`}>
-        <div className={project.screenshots?.length ? 'project-visual project-visual--screenshots' : 'project-visual'}>
-          <ProjectVisual project={project} />
-          {!project.screenshots?.length && <span className="project-visual-note">Illustrative interface preview</span>}
-        </div>
+      <Link className="project-card-trigger" to={`/work/${project.slug}`} aria-label={`${project.name} case study`}>
+        <CardMedia project={project} />
         <div className="project-copy">
-          <div className="project-kicker"><span>{project.number} / {project.category}</span>{project.featured && <span className="featured-label">FEATURED</span>}</div>
+          <div className="project-kicker"><span>{project.category}</span><span>{project.date}</span></div>
           <h3>{project.name}</h3>
           <p className="project-subtitle">{project.subtitle}</p>
           <p className="project-summary">{project.summary}</p>
+          <p className="project-result"><span>Key result</span>{project.highlight}</p>
           <div className="project-card-footer"><span>{project.role}</span><span>Read case study <ArrowUpRight size={15} /></span></div>
         </div>
-      </button>
+      </Link>
       {(project.live || project.github) && (
         <div className="project-links" aria-label={`${project.name} project links`}>
           {project.live && <a href={project.live} target="_blank" rel="noreferrer">Live project <ArrowUpRight size={15} /></a>}

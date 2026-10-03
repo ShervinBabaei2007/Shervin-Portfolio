@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -7,6 +9,10 @@
     {
       "source": "/projects/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000" }]
+    },
+    {
+      "source": "/og/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
     }
   ]
 }

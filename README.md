@@ -1,6 +1,6 @@
 # Shervin Babaei Portfolio
 
-Personal portfolio built with React, TypeScript, and Vite. It is designed as a single-page experience and can be deployed as a static site on Vercel.
+Personal portfolio built with React, TypeScript, Vite, and React Router. Every route is prerendered to static HTML at build time and deployed to Vercel.
 
 ## Run locally
 
@@ -9,35 +9,31 @@ npm install
 npm run dev
 ```
 
-## Production build
+## Scripts
 
-```sh
-npm run build
-npm run preview
-```
+| Command | What it does |
+| --- | --- |
+| `npm run build` | Type-checks, builds, and prerenders every page into `dist/` (plus `sitemap.xml` and `robots.txt`). |
+| `npm run preview` | Serves the production build locally. |
+| `npm run test:e2e` | Builds, then runs Playwright end-to-end and axe accessibility tests. |
+| `npm run og:images` | Regenerates the 1200×630 PNG share images in `public/og/`. Run after changing project names, subtitles, or highlights. |
+| `npm run resume:pdf` | Prints `/resume` to `public/Shervin_Babaei_Resume.pdf`. Run `npm run build` first. |
+| `npm run screenshots` | Captures 2× screenshots of live projects into `public/projects/` as WebP. |
 
-## Browser tests
+The last four scripts need Chromium once: `npx playwright install chromium`.
 
-Install the Playwright Chromium browser once, then run the responsive-flow and accessibility checks:
+## Where to edit things
 
-```sh
-npx playwright install chromium
-npm run test:e2e
-```
-
-The supplied downloadable resume is stored at `public/Shervin_Babaei_Resume.pdf`.
+- `src/data/site.ts`: your URL, contact links, graduation date, and **availability** (fill in `from`, for example `'January 2027'`).
+- `src/data/projects.ts`: case-study content. `flagship: true` puts a project in the large cards on the home page.
+- `src/data/resume.ts`: the resume page and the PDF. Regenerate the PDF after editing.
 
 ## Deploy to Vercel
 
-1. Push this repository to GitHub.
-2. In Vercel, import the repository and keep the detected Vite framework preset.
-3. Use `npm run build` as the build command and `dist` as the output directory.
-4. Deploy, then add the final production URL to the site metadata if using a custom domain.
+Import the repo, keep the Vite preset, build command `npm run build`, output directory `dist`. `vercel.json` enables clean URLs, so `/work/skillmatch` is served from `work/skillmatch.html`.
 
-## Pre-launch checklist
+### Using a custom domain
 
-- [ ] Confirm the resume metrics match the final project evidence before publishing.
-- [ ] Verify all live demos and repository links, especially team-project attribution.
-- [ ] Check the page on a phone and desktop, using keyboard navigation and a reduced-motion setting.
-- [ ] Confirm the deployed title, meta description, Open Graph preview, and contact links.
-- [ ] Run `npm run build`, deploy, and verify the production Vercel URL.
+1. Add the domain in Vercel (Project → Settings → Domains).
+2. Change `url` in `src/data/site.ts`.
+3. Run `npm run og:images` and `npm run build && npm run resume:pdf`, then commit and deploy.
