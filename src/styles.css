@@ -29,9 +29,9 @@
   color-scheme: light;
 
   /* Typography */
-  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --display: 'Space Grotesk', 'DM Sans', system-ui, sans-serif;
+  --display: 'Space Grotesk Variable', 'Space Grotesk', 'DM Sans Variable', system-ui, sans-serif;
 
   /* Colour */
   --paper: #f5f6f1;
@@ -79,7 +79,7 @@
   color-scheme: dark;
   --paper: #1a211c;
   --ink: #f2f3ed;
-  --muted: #aeb7ad;
+  --muted: #586058;
   --line: #3a443c;
   --surface: #242d27;
   --accent: #ff9278;
@@ -799,7 +799,7 @@ a:focus-visible {
   background-size: 13px 13px;
 }
 
-.theme-dark .project-visual { filter: saturate(.83) brightness(.88); }
+.theme-dark .project-visual { filter: saturate(.85) brightness(.94); }
 
 .project-visual--screenshots {
   display: block;
@@ -988,17 +988,17 @@ a:focus-visible {
 .match-preview { background: #fffefa; transform: rotate(-1deg); }
 .match-top, .scribe-top { display: flex; align-items: center; justify-content: space-between; height: 31px; padding: 0 12px; border-bottom: 1px solid #e6e8e2; font: 10px var(--mono); }
 .match-top > b { font: 700 13px var(--display); }
-.match-top > b span { color: #5a8e54; }
-.match-top > span { color: #71776f; font-size: 10px; }
+.match-top > b span { color: #3f6f3a; }
+.match-top > span { color: #5a6058; font-size: 10px; }
 .match-top i { display: inline-block; width: 4px; height: 4px; margin: 0 5px 1px; border-radius: 50%; background: var(--accent); }
 .match-content { padding: 15px 19px; }
-.match-content > small { color: #6d756a; font: 10px var(--mono); }
+.match-content > small { color: #5a6058; font: 10px var(--mono); }
 .match-content > b { display: block; margin-top: 5px; font: 600 22px/1.02 var(--display); }
 .match-workshop { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 7px; border: 1px solid #e5e8e0; }
 .workshop-icon { display: grid; width: 27px; height: 27px; place-items: center; color: #fff; background: #537b53; }
 .match-workshop > span:nth-child(2) { display: grid; flex: 1; gap: 3px; }
 .match-workshop b { font-size: 11px; }
-.match-workshop small { color: #71776f; font-size: 10px; }
+.match-workshop small { color: #5a6058; font-size: 10px; }
 
 /* Board */
 .board-preview { padding: 13px; background: #f8f8f5; transform: rotate(1deg); }
@@ -1067,7 +1067,7 @@ a:focus-visible {
 /* Picnic */
 .picnic-preview { overflow: hidden; color: #1d211e; background: #ffe4c4; font-family: 'Times New Roman', serif; transform: rotate(-.8deg); }
 .picnic-bar { display: flex; align-items: center; justify-content: space-between; height: 26px; padding: 0 10px; background: #d2691e; }
-.picnic-bar b { font: 700 14px Georgia, serif; }
+.picnic-bar b { color: #000; font: 700 14px Georgia, serif; }
 .picnic-refresh { padding: 1px 6px; background: #fffefa; font: 8px Arial, sans-serif; }
 .picnic-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 8px; padding: 6px; border: 1px solid #d2691e; background: #deb887; }
 .picnic-days { display: contents; }
@@ -1083,13 +1083,13 @@ a:focus-visible {
 .picnic-btn-no svg { color: #ff4d6d; }
 .picnic-voters { display: grid; gap: 2px; margin-top: 6px; }
 .picnic-voter { padding: 1px 4px; font-size: 8px; }
-.picnic-voter--yes { background: #008000; }
-.picnic-voter--no { background: #ff0000; }
+.picnic-voter--yes { color: #fff; background: #0a6b0a; }
+.picnic-voter--no { color: #fff; background: #c40000; }
 
 /* Mood board */
 .mood-preview { position: relative; height: 176px; overflow: hidden; background: #3b5a4f; transform: rotate(1deg); }
 .mood-toolbar { display: flex; align-items: center; justify-content: space-between; height: 22px; padding: 0 8px; background: #19211e; }
-.mood-toolbar b { color: #55695f; font: 700 11px Georgia, serif; }
+.mood-toolbar b { color: #a9bdb2; font: 700 11px Georgia, serif; }
 .mood-tools { display: flex; gap: 3px; }
 .mood-tools i { display: grid; min-width: 16px; height: 13px; place-items: center; padding: 0 4px; color: #e8efe9; border: 1px solid #3a463f; background: #1f2a25; font: normal 7px Arial, sans-serif; }
 .mood-board { display: flex; align-items: flex-start; gap: 5px; padding: 8px; }
@@ -2157,7 +2157,7 @@ html:has(.case-study-dialog[open]) { overflow: hidden; }
 /* Increased contrast */
 @media (prefers-contrast: more) {
   :root {
-    --muted: #4f554f;
+    --muted: #454b45;
     --line: #7f867f;
   }
 
