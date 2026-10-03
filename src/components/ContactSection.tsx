@@ -1,6 +1,10 @@
-import { ArrowUpRight, FileDown, Github, Linkedin } from 'lucide-react'
+import { ArrowUpRight, FileText, Github, Linkedin } from 'lucide-react'
 
-function ContactSection() {
+type ContactSectionProps = {
+  onOpenResume: () => void
+}
+
+function ContactSection({ onOpenResume }: ContactSectionProps) {
   return (
     <section className="contact-section" id="contact" aria-labelledby="contact-title">
       <div className="section-wrap contact-inner">
@@ -8,7 +12,15 @@ function ContactSection() {
         <div className="contact-links" aria-label="Contact and social links">
           <a href="https://www.linkedin.com/in/shervin-babaei/" target="_blank" rel="noreferrer"><span><Linkedin size={17} /> LINKEDIN</span><b>Connect professionally</b><ArrowUpRight size={16} /></a>
           <a href="https://github.com/ShervinBabaei2007" target="_blank" rel="noreferrer"><span><Github size={17} /> GITHUB</span><b>See what I&apos;m building</b><ArrowUpRight size={16} /></a>
-          <a className="resume-row" href="/Shervin_Babaei_Resume.pdf" download="Shervin_Babaei_Resume.pdf"><span><FileDown size={17} /> RESUME</span><b>Download PDF</b><ArrowUpRight size={16} /></a>
+          <a
+            className="resume-row"
+            href="/Shervin_Babaei_Resume.pdf"
+            onClick={(event) => {
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+              event.preventDefault()
+              onOpenResume()
+            }}
+          ><span><FileText size={17} /> RESUME</span><b>View resume</b><ArrowUpRight size={16} /></a>
         </div>
       </div>
     </section>

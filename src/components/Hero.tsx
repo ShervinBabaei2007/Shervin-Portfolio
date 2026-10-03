@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowDown, ArrowDownRight, ArrowUpRight, Braces, FileDown } from 'lucide-react'
+import { ArrowDown, ArrowDownRight, ArrowUpRight, Braces, FileText } from 'lucide-react'
 import { projects, type Project } from '../data/projects'
 
 const systemLayers = [
@@ -10,9 +10,10 @@ const systemLayers = [
 
 type HeroProps = {
   onOpenProject: (project: Project) => void
+  onOpenResume: () => void
 }
 
-function Hero({ onOpenProject }: HeroProps) {
+function Hero({ onOpenProject, onOpenResume }: HeroProps) {
   const [activeLayerId, setActiveLayerId] = useState<(typeof systemLayers)[number]['id']>('ui')
   const activeLayer = systemLayers.find((layer) => layer.id === activeLayerId)!
   const layerProjects = activeLayer.projects
@@ -29,7 +30,17 @@ function Hero({ onOpenProject }: HeroProps) {
         <p className="hero-target">Seeking co-op and junior developer roles in Vancouver / Burnaby.</p>
         <div className="hero-actions">
           <a className="button button-primary" href="#work">Explore my work <ArrowDownRight size={16} /></a>
-          <a className="button button-secondary" href="/Shervin_Babaei_Resume.pdf" download="Shervin_Babaei_Resume.pdf">Download resume <FileDown size={16} /></a>
+          <a
+            className="button button-secondary"
+            href="/Shervin_Babaei_Resume.pdf"
+            onClick={(event) => {
+              if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+              event.preventDefault()
+              onOpenResume()
+            }}
+          >
+            View resume <FileText size={16} />
+          </a>
         </div>
         <div className="hero-layer-panel" aria-live="polite">
           <div>

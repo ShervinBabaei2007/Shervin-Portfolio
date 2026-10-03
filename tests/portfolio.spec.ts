@@ -6,7 +6,7 @@ test('hero identifies the target role and links to the real resume', async ({ pa
 
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await expect(page.getByText('Seeking co-op and junior developer roles in Vancouver / Burnaby.')).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Download resume' })).toHaveAttribute('href', '/Shervin_Babaei_Resume.pdf')
+  await expect(page.getByRole('link', { name: 'View resume' })).toHaveAttribute('href', '/Shervin_Babaei_Resume.pdf')
 })
 
 test('project filters and case studies keep project links independent', async ({ page }) => {
