@@ -47,6 +47,13 @@ export type Project = {
   snippet?: Snippet
   /** A real recorded terminal session, used for command-line projects. */
   terminal?: { title: string; transcript: string }
+  /**
+   * A short silent screen recording of the real app. Record one with
+   * `npm run record`, then add it here. `poster` is shown before it plays.
+   */
+  video?: { src: string; poster: string; caption: string; type?: 'video/mp4' | 'video/webm' }
+  /** An interactive demo rendered on the case-study page. */
+  demo?: 'rate-limiter'
 }
 
 export const projects: Project[] = [
@@ -209,6 +216,7 @@ export const projects: Project[] = [
     ],
     stack: ['React', 'JavaScript', 'Node.js', 'Express', 'MongoDB', 'Redis'],
     github: 'https://github.com/ShervinBabaei2007/MERN-thinkBoard',
+    demo: 'rate-limiter',
     screenshots: [
       { src: '/projects/thinkboard-screen-1.webp', alt: 'ThinkBoard dark notes dashboard with existing notes and a New Note action.', caption: 'Notes dashboard' },
       { src: '/projects/thinkboard-screen-2.webp', alt: 'ThinkBoard create-note form with title and content fields.', caption: 'Create a note' },

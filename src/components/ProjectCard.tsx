@@ -2,6 +2,7 @@ import { ArrowUpRight, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { Project } from '../data/projects'
 import CodeBlock from './CodeBlock'
+import ResponsiveImage from './ResponsiveImage'
 import TerminalBlock from './TerminalBlock'
 
 function CardMedia({ project }: { project: Project }) {
@@ -11,7 +12,7 @@ function CardMedia({ project }: { project: Project }) {
         <div className={`project-screenshot-strip project-screenshot-strip--${project.slug}`}>
           {project.screenshots.slice(0, 3).map((screenshot) => (
             <figure key={screenshot.src}>
-              <img src={screenshot.src} alt="" loading="lazy" decoding="async" />
+              <ResponsiveImage src={screenshot.src} alt="" sizes="(max-width: 620px) 30vw, 200px" />
             </figure>
           ))}
         </div>

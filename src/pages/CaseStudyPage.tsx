@@ -1,7 +1,10 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, Github, Users } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import CodeBlock from '../components/CodeBlock'
+import RateLimiterDemo from '../components/RateLimiterDemo'
+import ResponsiveImage from '../components/ResponsiveImage'
 import TerminalBlock from '../components/TerminalBlock'
+import { notesForProject } from '../data/notes'
 import { findProject, projects } from '../data/projects'
 import NotFoundPage from './NotFoundPage'
 
@@ -13,6 +16,7 @@ function CaseStudyPage() {
   const index = projects.indexOf(project)
   const previous = projects[(index - 1 + projects.length) % projects.length]
   const next = projects[(index + 1) % projects.length]
+  const relatedNotes = notesForProject(project.slug)
 
   return (
     <article className="case-page section-wrap" aria-labelledby="case-study-title">
@@ -49,6 +53,17 @@ function CaseStudyPage() {
         </ol>
       </section>
 
+      {project.video && (
+        <figure className="case-video">
+          <video controls muted playsInline preload="none" poster={project.video.poster} width={1280} height={800}>
+            <source src={project.video.src} type={project.video.type ?? 'video/mp4'} />
+          </video>
+          <figcaption>{project.video.caption}</figcaption>
+        </figure>
+      )}
+
+      {project.demo === 'rate-limiter' && <RateLimiterDemo />}
+
       <div className={project.screenshots ? 'case-study-layout' : 'case-study-layout case-study-layout--text-only'}>
         <div className="case-study-main">
           <div className="case-study-sections">
@@ -67,6 +82,14 @@ function CaseStudyPage() {
             <section className="case-tradeoff"><h2>The trade-off</h2><p>{project.tradeoff}</p></section>
             <section><h2>What I learned</h2><p>{project.learned}</p></section>
             <section><h2>What I&apos;d fix next</h2><p>{project.next}</p></section>
+            {relatedNotes.length > 0 && (
+              <section className="case-notes">
+                <h2>Go deeper</h2>
+                {relatedNotes.map((note) => (
+                  <Link key={note.slug} to={`/notes/${note.slug}`}><b>{note.title}</b><span>{note.minutes} min read</span></Link>
+                ))}
+              </section>
+            )}
           </div>
           <div className="case-study-stack"><h2>Built with</h2><ul className="tag-list">{project.stack.map((t) => <li key={t}>{t}</li>)}</ul></div>
         </div>
@@ -77,7 +100,7 @@ function CaseStudyPage() {
               {project.screenshots.map((shot) => (
                 <figure key={shot.src}>
                   <a href={shot.src} target="_blank" rel="noreferrer" aria-label={`Open full-size screenshot: ${shot.caption}`}>
-                    <img src={shot.src} alt={shot.alt} loading="lazy" decoding="async" />
+                    <ResponsiveImage src={shot.src} alt={shot.alt} sizes="(max-width: 900px) 92vw, 380px" />
                   </a>
                   <figcaption>{shot.caption}</figcaption>
                 </figure>

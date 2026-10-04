@@ -1,14 +1,10 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import SiteFooter from './components/SiteFooter'
 import SiteHeader from './components/SiteHeader'
 import { usePageMeta } from './hooks/usePageMeta'
 import { useTheme } from './hooks/useTheme'
-import BuiltPage from './pages/BuiltPage'
-import CaseStudyPage from './pages/CaseStudyPage'
-import HomePage from './pages/HomePage'
-import NotFoundPage from './pages/NotFoundPage'
-import ResumePage from './pages/ResumePage'
+import { pages } from './routes'
 
 /** Scrolls to the #hash after navigation, or to the top of a new page. */
 function ScrollManager() {
@@ -40,13 +36,13 @@ function App() {
       <ScrollManager />
       <SiteHeader darkMode={scheme === 'dark'} onToggleTheme={toggle} />
       <main id="main" tabIndex={-1}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/work/:slug" element={<CaseStudyPage />} />
-          <Route path="/resume" element={<ResumePage />} />
-          <Route path="/how-its-built" element={<BuiltPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <Suspense fallback={<div className="page-loading" aria-busy="true" />}>
+          <Routes>
+            {Object.values(pages).map(({ path, Component }) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
+          </Routes>
+        </Suspense>
       </main>
       <SiteFooter />
     </div>

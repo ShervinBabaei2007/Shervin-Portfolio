@@ -1,0 +1,46 @@
+{
+  "/projects/skillmatch-dashboard.webp": {
+    "width": 477,
+    "height": 1287
+  },
+  "/projects/skillmatch-registration.webp": {
+    "width": 304,
+    "height": 503
+  },
+  "/projects/skillmatch-workshop-details.webp": {
+    "width": 403,
+    "height": 1169
+  },
+  "/projects/thinkboard-screen-1.webp": {
+    "width": 1000,
+    "height": 524,
+    "small": {
+      "src": "/projects/thinkboard-screen-1-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/thinkboard-screen-2.webp": {
+    "width": 1000,
+    "height": 522,
+    "small": {
+      "src": "/projects/thinkboard-screen-2-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/thinkboard-screen-3.webp": {
+    "width": 1000,
+    "height": 652,
+    "small": {
+      "src": "/projects/thinkboard-screen-3-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/thinkboard-screen-4.webp": {
+    "width": 1000,
+    "height": 275,
+    "small": {
+      "src": "/projects/thinkboard-screen-4-480.webp",
+      "width": 480
+    }
+  }
+}

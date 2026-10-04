@@ -7,6 +7,7 @@ import { fontUrl, importTs, launchBrowser, root } from './lib.mjs'
 
 const { projects } = await importTs('src/data/projects.ts')
 const { site } = await importTs('src/data/site.ts')
+const { notes } = await importTs('src/data/notes.ts')
 const outDir = resolve(root, 'public/og')
 mkdirSync(outDir, { recursive: true })
 
@@ -27,8 +28,8 @@ body { width: 1200px; height: 630px; padding: 72px 84px; display: flex; flex-dir
 .mark b { display: grid; place-items: center; width: 52px; height: 52px; color: #f5f6f1; background: #1d211e; font: 700 24px Display; }
 .mark i { width: 10px; height: 10px; border-radius: 50%; background: #a33727; }
 .kicker { color: #6b716b; font: 22px Mono; }
-h1 { margin-top: auto; max-width: 960px; font: 600 ${title.length > 18 ? 84 : 104}px/1 Display; letter-spacing: -.02em; }
-p { margin-top: 22px; max-width: 900px; color: #4f564f; font-size: 30px; line-height: 1.35; }
+h1 { margin-top: auto; max-width: 960px; font: 600 ${title.length > 40 ? 60 : title.length > 18 ? 84 : 104}px/1.04 Display; letter-spacing: -.02em; }
+p { margin-top: 22px; max-width: 960px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #4f564f; font-size: 30px; line-height: 1.35; }
 .result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #a33727; background: #fffefa; font: 600 26px Body; }
 .foot { display: flex; justify-content: space-between; margin-top: 40px; color: #6b716b; font: 20px Mono; }
 </style></head><body>
@@ -53,6 +54,20 @@ const cards = [
     title: project.name,
     subtitle: project.subtitle,
     result: project.highlight,
+  })),
+  {
+    name: 'notes',
+    kicker: 'ENGINEERING NOTES',
+    title: 'Engineering notes',
+    subtitle: 'Short write-ups on bugs I found in my own projects and what I changed.',
+    result: `${notes.length} notes`,
+  },
+  ...notes.map((note) => ({
+    name: `note-${note.slug}`,
+    kicker: `NOTE / ${note.minutes} MIN READ`,
+    title: note.title,
+    subtitle: note.summary,
+    result: '',
   })),
 ]
 

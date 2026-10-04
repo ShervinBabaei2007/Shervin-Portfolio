@@ -1,0 +1,40 @@
+{
+  "fetchedAt": "2026-10-04T00:04:02.648Z",
+  "repos": [
+    {
+      "name": "Web-adminProject",
+      "url": "https://github.com/ShervinBabaei2007/Web-adminProject",
+      "description": null,
+      "language": "JavaScript",
+      "pushedAt": "2026-10-02T23:45:39Z"
+    },
+    {
+      "name": "shervin-portfolio-webadmin",
+      "url": "https://github.com/ShervinBabaei2007/shervin-portfolio-webadmin",
+      "description": null,
+      "language": "HTML",
+      "pushedAt": "2026-10-01T17:34:57Z"
+    },
+    {
+      "name": "ShervinBabaei2007",
+      "url": "https://github.com/ShervinBabaei2007/ShervinBabaei2007",
+      "description": null,
+      "language": null,
+      "pushedAt": "2026-08-06T23:11:57Z"
+    },
+    {
+      "name": "tic-tac-toe-minimax-ai",
+      "url": "https://github.com/ShervinBabaei2007/tic-tac-toe-minimax-ai",
+      "description": "Tic-Tac-Toe AI that never loses - built with Minimax in Python",
+      "language": "Python",
+      "pushedAt": "2026-06-22T17:17:48Z"
+    },
+    {
+      "name": "Flask_Learning",
+      "url": "https://github.com/ShervinBabaei2007/Flask_Learning",
+      "description": null,
+      "language": "HTML",
+      "pushedAt": "2026-06-20T18:14:03Z"
+    }
+  ]
+}

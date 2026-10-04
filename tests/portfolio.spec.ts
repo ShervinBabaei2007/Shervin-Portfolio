@@ -32,8 +32,11 @@ test('pages are prerendered with content, metadata, and a PNG share image', asyn
 })
 
 test('prerendered pages hydrate without errors', async ({ page }) => {
+  // The live GitHub request is outside this site's control (and rate-limited per IP),
+  // so answer it locally to keep this test about the site's own code.
+  await page.route('https://api.github.com/**', (route) => route.fulfill({ json: [] }))
   const errors = collectErrors(page)
-  for (const path of ['/', '/work/thinkboard', '/resume', '/how-its-built']) {
+  for (const path of ['/', '/work/thinkboard', '/resume', '/how-its-built', '/notes', '/notes/sliding-window-rate-limiting']) {
     await page.goto(path)
     await page.waitForLoadState('networkidle')
   }
@@ -116,7 +119,7 @@ test('theme follows the system and remembers a manual choice', async ({ browser 
 test('layout stays within phone, tablet, and desktop viewports', async ({ page }) => {
   for (const width of [360, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 })
-    for (const path of ['/', '/work/skillmatch', '/resume']) {
+    for (const path of ['/', '/work/skillmatch', '/work/thinkboard', '/resume', '/notes/skillmatch-attend-race-condition']) {
       await page.goto(path)
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
       expect(overflow, `${path} at ${width}px`).toBeLessThanOrEqual(0)
@@ -136,7 +139,7 @@ for (const scheme of ['light', 'dark'] as const) {
   test(`pages pass axe accessibility checks in ${scheme} mode`, async ({ browser }) => {
     const context = await browser.newContext({ colorScheme: scheme })
     const page = await context.newPage()
-    for (const path of ['/', '/work/skillmatch', '/work/mini-rpg-battle', '/resume', '/how-its-built']) {
+    for (const path of ['/', '/work/skillmatch', '/work/thinkboard', '/work/mini-rpg-battle', '/resume', '/how-its-built', '/notes', '/notes/skillmatch-attend-race-condition']) {
       await page.goto(path)
       await page.waitForLoadState('networkidle')
       const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
@@ -145,3 +148,92 @@ for (const scheme of ['light', 'dark'] as const) {
     await context.close()
   })
 }
+
+test('CSS is one cached stylesheet, not inlined into every page', async ({ request }) => {
+  for (const path of ['/', '/work/skillmatch', '/resume']) {
+    const html = await (await request.get(path)).text()
+    expect(html, path).not.toContain('<style>')
+    expect(html, path).toMatch(/<link rel="stylesheet" crossorigin href="\/assets\/index-[\w-]+\.css">/)
+  }
+})
+
+test('each page preloads only its own code chunk', async ({ request }) => {
+  const resume = await (await request.get('/resume')).text()
+  expect(resume).toMatch(/modulepreload[^>]+ResumePage-/)
+  expect(resume).not.toMatch(/modulepreload[^>]+(CaseStudyPage|HomePage)-/)
+  const caseStudy = await (await request.get('/work/thinkboard')).text()
+  expect(caseStudy).toMatch(/modulepreload[^>]+CaseStudyPage-/)
+  expect(caseStudy).not.toMatch(/modulepreload[^>]+(ResumePage|HomePage)-/)
+})
+
+test('fonts: three above-the-fold files preloaded, unused weight not shipped', async ({ request }) => {
+  const html = await (await request.get('/')).text()
+  const preloads = html.match(/rel="preload" as="font"[^>]+/g) ?? []
+  expect(preloads).toHaveLength(3)
+  expect(html).toMatch(/dm-mono-latin-400/)
+  const css = await (await request.get(html.match(/\/assets\/index-[\w-]+\.css/)![0])).text()
+  expect(css).not.toContain('dm-mono-latin-500')
+})
+
+test('large screenshots offer a small copy and reserve their space', async ({ page }) => {
+  await page.goto('/work/thinkboard')
+  const image = page.getByRole('img', { name: /ThinkBoard dark notes dashboard/ })
+  await expect(image).toHaveAttribute('srcset', /thinkboard-screen-1-480\.webp 480w/)
+  await expect(image).toHaveAttribute('width', '1000')
+  await expect(image).toHaveAttribute('height', /\d+/)
+})
+
+test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the other visitor', async ({ page }) => {
+  await page.goto('/work/thinkboard')
+  const demo = page.locator('.limiter-demo')
+  await demo.getByRole('button', { name: 'Burst 15 requests' }).click()
+  await expect(demo.locator('.limiter-log li.is-limited').first()).toBeVisible({ timeout: 5000 })
+  await expect(demo.getByRole('meter').first()).toHaveAttribute('aria-valuenow', '10')
+
+  // Shared key: the other visitor is blocked by your burst.
+  await demo.getByRole('button', { name: 'Other visitor sends 1' }).click()
+  await expect(demo.locator('.limiter-log li').first()).toContainText('Another visitor')
+  await expect(demo.locator('.limiter-log li').first()).toContainText('429')
+
+  // Per-visitor keys: the same burst no longer affects them.
+  await demo.getByLabel(/One key per visitor/).check()
+  await demo.getByRole('button', { name: 'Burst 15 requests' }).click()
+  await expect(demo.locator('.limiter-log li.is-limited').first()).toBeVisible({ timeout: 5000 })
+  await demo.getByRole('button', { name: 'Other visitor sends 1' }).click()
+  await expect(demo.locator('.limiter-log li').first()).toContainText('200 OK')
+})
+
+test('engineering notes: listed on home, own pages, linked from case studies', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('#notes .note-list li')).toHaveCount(3)
+  await page.getByRole('link', { name: /The race condition in SkillMatch/ }).first().click()
+  await expect(page).toHaveURL(/\/notes\/skillmatch-attend-race-condition$/)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('race condition')
+  await expect(page.locator('.note-body code').first()).toBeVisible()
+  await page.getByRole('link', { name: /Case study/ }).click()
+  await expect(page).toHaveURL(/\/work\/skillmatch$/)
+  await expect(page.getByRole('heading', { name: 'Go deeper' })).toBeVisible()
+})
+
+test('GitHub activity shows live recent pushes, and hides itself when nothing is recent', async ({ page }) => {
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({
+      json: [{ name: 'Portfolio', html_url: 'https://github.com/ShervinBabaei2007/Portfolio', description: null, language: 'TypeScript', pushed_at: recent, fork: false }],
+    }),
+  )
+  await page.goto('/')
+  const activity = page.locator('.github-activity')
+  await expect(activity).toContainText('Portfolio')
+  await expect(activity).toContainText('2 days ago')
+  await expect(activity).toContainText('Live from GitHub')
+
+  const stale = await page.context().newPage()
+  await stale.route('https://api.github.com/**', (route) =>
+    route.fulfill({ json: [{ name: 'Old', html_url: 'https://github.com/x/Old', description: null, language: null, pushed_at: '2025-01-01T00:00:00Z', fork: false }] }),
+  )
+  await stale.goto('/')
+  await stale.waitForLoadState('networkidle')
+  if (!(await stale.locator('.github-activity').count())) return // stale snapshot and stale live data: hidden
+  await expect(stale.locator('.github-activity')).not.toContainText('Old')
+})

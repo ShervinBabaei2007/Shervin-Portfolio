@@ -17,6 +17,7 @@ function SiteHeader({ darkMode, onToggleTheme }: SiteHeaderProps) {
       <nav className="main-nav" aria-label="Main navigation">
         <Link to="/#work">Work</Link>
         <Link to="/#about">About</Link>
+        <Link to="/notes">Notes</Link>
         <Link to="/resume">Resume</Link>
         <Link to="/#contact">Contact</Link>
       </nav>

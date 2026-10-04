@@ -20,7 +20,7 @@ const sections = [
   },
   {
     title: 'Performance',
-    body: 'Fonts are self-hosted, subset to Latin, and preloaded. CSS is inlined to avoid a render-blocking request. Screenshots are WebP and lazy-loaded, and long-lived cache headers are set for hashed assets.',
+    body: 'Each page loads only its own JavaScript: pages are split into separate chunks, and the prerendered HTML preloads exactly the chunk it needs, then fetches the rest in the background so navigating is instant. One hashed stylesheet is cached once and reused on every page. Fonts are self-hosted, subset to Latin, and the three used above the fold are preloaded. Screenshots carry their real width and height to avoid layout shift, and phones get a smaller copy through srcset.',
   },
   {
     title: 'Honest content',

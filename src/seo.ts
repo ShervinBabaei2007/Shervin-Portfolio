@@ -1,4 +1,5 @@
 import { findProject, projects } from './data/projects'
+import { findNote, notes } from './data/notes'
 import { site } from './data/site'
 
 export type PageMeta = {
@@ -27,7 +28,14 @@ const person = {
 
 const withContext = (node: Record<string, unknown>) => ({ '@context': 'https://schema.org', ...node })
 
-export const staticRoutes = ['/', '/resume', '/how-its-built', ...projects.map((project) => `/work/${project.slug}`)]
+export const staticRoutes = [
+  '/',
+  '/resume',
+  '/how-its-built',
+  '/notes',
+  ...projects.map((project) => `/work/${project.slug}`),
+  ...notes.map((note) => `/notes/${note.slug}`),
+]
 
 export function getPageMeta(pathname: string): PageMeta {
   const path = pathname.replace(/\/+$/, '') || '/'
@@ -63,6 +71,38 @@ export function getPageMeta(pathname: string): PageMeta {
       image: image('home'),
       type: 'article',
       jsonLd: [withContext(person)],
+    }
+  }
+
+  if (path === '/notes') {
+    return {
+      title: `Engineering notes | ${site.name}`,
+      description: 'Short write-ups on bugs I found in my own projects, how the underlying systems work, and what I changed.',
+      path,
+      image: image('notes'),
+      type: 'website',
+      jsonLd: [withContext(person)],
+    }
+  }
+
+  const note = path.startsWith('/notes/') ? findNote(path.slice('/notes/'.length)) : undefined
+  if (note) {
+    return {
+      title: `${note.title} | ${site.name}`,
+      description: note.summary,
+      path,
+      image: image(`note-${note.slug}`),
+      type: 'article',
+      jsonLd: [
+        withContext({
+          '@type': 'TechArticle',
+          headline: note.title,
+          description: note.summary,
+          datePublished: note.date,
+          url: `${site.url}${path}`,
+          author: { '@id': `${site.url}/#person`, '@type': 'Person', name: site.name },
+        }),
+      ],
     }
   }
 

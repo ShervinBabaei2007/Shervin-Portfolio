@@ -9,4 +9,6 @@ test-results/
 playwright-report/
 dist-ssr/
 CHANGES.md
+CHANGES-2.md
 README.md
+.recording/
