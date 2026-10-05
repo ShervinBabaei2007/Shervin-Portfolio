@@ -2680,7 +2680,7 @@ main:focus { outline: none; }
   border-bottom: 1px solid var(--line);
 }
 
-.limiter-log li b { color: var(--positive); font: 600 .875rem var(--mono); }
+.limiter-log li b { color: var(--positive); font: 400 .875rem var(--mono); } /* DM Mono ships only weight 400 */
 .limiter-log li.is-limited b { color: var(--accent); }
 .limiter-log li > span:last-child { color: var(--muted); text-align: right; }
 .limiter-log .limiter-log-empty { display: block; color: var(--muted); }

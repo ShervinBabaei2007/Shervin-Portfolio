@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { site } from '../data/site'
 
@@ -14,8 +14,14 @@ const setMeta = (selector: string, value: string) => {
  */
 export function usePageMeta() {
   const { pathname } = useLocation()
+  // In dev there is no prerendered HTML, so the first load needs the tags too.
+  const isFirstLoad = useRef(true)
 
   useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false
+      if (document.title) return
+    }
     let cancelled = false
     import('../seo').then(({ getPageMeta }) => {
       if (cancelled) return

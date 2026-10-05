@@ -237,3 +237,51 @@ test('GitHub activity shows live recent pushes, and hides itself when nothing is
   if (!(await stale.locator('.github-activity').count())) return // stale snapshot and stale live data: hidden
   await expect(stale.locator('.github-activity')).not.toContainText('Old')
 })
+
+test('a page whose code fails to load shows a reload prompt, not a blank site', async ({ page }) => {
+  await page.route(/\/assets\/HomePage-[\w-]+\.js$/, (route) => route.abort())
+  await page.goto('/resume')
+  await page.waitForLoadState('networkidle')
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Work' }).click()
+  await expect(page.getByRole('heading', { name: "This page didn't load." })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Reload the page' })).toBeVisible()
+  await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible()
+
+  await page.getByRole('link', { name: 'Resume' }).first().click()
+  await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
+})
+
+test('a slow page keeps the current page on screen, then lands on the linked section', async ({ page }) => {
+  await page.route(/\/assets\/HomePage-[\w-]+\.js$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await route.continue()
+  })
+  await page.goto('/notes')
+  await expect(page.locator('.notes-index')).toBeVisible()
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Contact' }).click()
+  await expect(page.locator('.notes-index')).toBeVisible()
+  await expect(page.locator('.page-loading')).toHaveCount(0)
+
+  await expect(page).toHaveURL(/\/#contact$/, { timeout: 5000 })
+  await expect(page.locator('#contact')).toBeInViewport()
+})
+
+test('if the current page’s code cannot load, the prerendered page stays readable', async ({ page }) => {
+  await page.route(/\/assets\/ResumePage-[\w-]+\.js$/, (route) => route.abort())
+  await page.goto('/resume')
+  await page.waitForLoadState('networkidle')
+  await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible()
+  const nav = page.getByRole('navigation', { name: 'Main navigation' })
+  await expect(nav.getByRole('link', { name: 'Notes' })).toHaveAttribute('href', '/notes')
+})
+
+test('the first load does not download the SEO data chunk', async ({ page }) => {
+  const seoRequests: string[] = []
+  page.on('request', (request) => {
+    if (/\/assets\/seo-[\w-]+\.js$/.test(request.url())) seoRequests.push(request.url())
+  })
+  await page.goto('/resume')
+  await page.waitForLoadState('networkidle')
+  expect(seoRequests).toEqual([])
+})

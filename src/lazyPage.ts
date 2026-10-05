@@ -20,10 +20,17 @@ export function lazyPage<P extends object>(loader: Loader<P>): LazyPage<P> {
   let pending: Promise<{ default: ComponentType<P> }> | null = null
 
   const preload = () => {
-    pending ??= loader().then((module) => {
-      loaded = module.default
-      return module
-    })
+    pending ??= loader().then(
+      (module) => {
+        loaded = module.default
+        return module
+      },
+      (error) => {
+        // Forget the failure so a later preload (or navigation) can try again.
+        pending = null
+        throw error
+      },
+    )
     return pending
   }
 
