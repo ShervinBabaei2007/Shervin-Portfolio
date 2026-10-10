@@ -54,11 +54,17 @@ function ProjectCard({ project }: { project: Project }) {
           <h3>{project.name}</h3>
           <p className="project-subtitle">{project.subtitle}</p>
           <p className="project-summary">{project.summary}</p>
+          {project.signal && (
+            <dl className="project-signal-grid">
+              <div><dt>I OWNED</dt><dd>{project.signal.ownership}</dd></div>
+              <div><dt>EVIDENCE</dt><dd>{project.signal.evidence}</dd></div>
+            </dl>
+          )}
           <blockquote className="project-insight">
-            <span>WHAT CHANGED HOW I THINK</span>
+            <span>THE ENGINEERING TURN</span>
             <p>{project.learned}</p>
           </blockquote>
-          <p className="project-result"><span>Proof it shipped</span>{project.highlight}</p>
+          {!project.signal && <p className="project-result"><span>Proof it shipped</span>{project.highlight}</p>}
           <div className="project-card-footer"><span>{project.role}</span><span>Read case study <ArrowUpRight size={15} /></span></div>
         </div>
       </Link>

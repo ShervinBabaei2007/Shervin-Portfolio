@@ -35,6 +35,14 @@ function CaseStudyPage() {
           <div className="case-team"><dt>TEAM</dt><dd><Users size={15} aria-hidden="true" /> {project.team}</dd></div>
         </dl>
 
+        {project.signal && (
+          <dl className="case-engineering-snapshot" aria-label="Engineering snapshot">
+            <div><dt>OWNERSHIP</dt><dd>{project.signal.ownership}</dd></div>
+            <div><dt>DECISION</dt><dd>{project.signal.decision}</dd></div>
+            <div><dt>EVIDENCE</dt><dd>{project.signal.evidence}</dd></div>
+          </dl>
+        )}
+
         {(project.live || project.github || project.teamRepo) && (
           <div className="case-study-links">
             {project.live && <a href={project.live} target="_blank" rel="noreferrer">Live project <ArrowUpRight size={17} /></a>}

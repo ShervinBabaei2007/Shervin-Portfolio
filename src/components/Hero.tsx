@@ -29,9 +29,13 @@ function Hero() {
         <p className="eyebrow"><span className="eyebrow-mark">01</span> VANCOUVER, BC <span className="eyebrow-divider">/</span> BCIT</p>
         <h1 id="hero-title">Full-stack developer who goes <span>down the stack.</span></h1>
         <p className="hero-intro">
-          I&apos;m {site.name}, a BCIT Full-Stack Web Development student. I build React and Node apps, then follow the
-          request past the API: Redis rate limiting, async calls to a local language model, and Express routes behind JWT auth.
+          I&apos;m {site.name}. I like the moment a bug stops being mysterious. I build React and Node products end to end,
+          then trace the request until I can explain the failure, the trade-off, and the fix in plain English.
         </p>
+        <div className="hero-value" aria-label="What I bring to a team">
+          <span>WHAT I BRING</span>
+          <p><b>Ship the feature.</b> Trace the failure. Leave the system clearer than I found it.</p>
+        </div>
         <ul className="hero-proof" aria-label="Highlights">
           {proof.map((item) => (
             <li key={item.value}>

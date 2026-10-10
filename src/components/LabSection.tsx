@@ -16,11 +16,11 @@ function LabSection() {
       <div className="lab-story">
         <div className="lab-story-mark" aria-hidden="true"><FlaskConical size={22} /></div>
         <div>
-          <span>THE BUG I SHIPPED</span>
+          <span>THE ASSUMPTION THAT FAILED</span>
           <p>I gave every ThinkBoard visitor the same Redis rate-limit key. One busy person could spend everyone else&apos;s request budget.</p>
         </div>
         <div>
-          <span>THE MOMENT IT CLICKED</span>
+          <span>WHAT CHANGED IN MY MODEL</span>
           <p>A rate limiter is only fair if its identity matches the thing you&apos;re trying to protect. The algorithm was fine; my key was wrong.</p>
         </div>
       </div>
@@ -28,7 +28,7 @@ function LabSection() {
       <RateLimiterDemo compact />
 
       <p className="lab-afterword">
-        The interesting part isn&apos;t that I found a bug. It&apos;s that I can now explain exactly why it happened.
+        The interesting part isn&apos;t the mistake. It&apos;s being able to reproduce it, explain the system behind it, and name the better design.
         <Link to="/work/thinkboard"> Read the ThinkBoard case study <ArrowUpRight size={15} /></Link>
       </p>
     </section>

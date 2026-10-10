@@ -3018,3 +3018,113 @@ main:focus { outline: none; }
   .stack-trace-rail,
   .lab-section { display: none !important; }
 }
+
+/* ========================================================================== 
+   21. HIRING SIGNALS — VALUE, OWNERSHIP, DECISION, EVIDENCE
+   ========================================================================== */
+
+/* Plain-English value sits between the distinctive headline and the proof row.
+   The rust accent carries curiosity; the soft green is reserved for evidence. */
+.hero-value {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px 16px;
+  align-items: baseline;
+  max-width: 620px;
+  margin-top: 18px;
+  padding: 13px 15px;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--surface) 82%, var(--paper));
+}
+
+.hero-value > span {
+  color: var(--accent);
+  font: .6875rem var(--mono);
+  letter-spacing: .05em;
+}
+
+.hero-value p {
+  margin: 0;
+  font-size: .9375rem;
+  line-height: 1.55;
+}
+
+.hero-value b { font-weight: 700; }
+
+/* Flagship cards are now scannable as: what Shervin owned + proof someone can inspect. */
+.project-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 0 14px;
+  padding: 1px;
+  background: var(--line);
+}
+
+.project-signal-grid div {
+  min-width: 0;
+  padding: 12px 13px;
+  background: var(--surface);
+}
+
+.project-signal-grid div:last-child {
+  background: color-mix(in srgb, var(--mint) 24%, var(--surface));
+}
+
+.project-signal-grid dt,
+.case-engineering-snapshot dt {
+  color: var(--muted);
+  font: .6875rem var(--mono);
+  letter-spacing: .045em;
+}
+
+.project-signal-grid dd {
+  margin: 6px 0 0;
+  font-size: .8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.project-insight { border-left-color: var(--accent); }
+
+/* Case studies surface engineering judgment before asking a senior reader to scroll. */
+.case-engineering-snapshot {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 18px 0 4px;
+  padding: 1px;
+  background: var(--line);
+}
+
+.case-engineering-snapshot div {
+  min-width: 0;
+  padding: 15px 16px;
+  background: var(--surface);
+}
+
+.case-engineering-snapshot div:nth-child(2) { border-top: 3px solid var(--accent); }
+.case-engineering-snapshot div:last-child { background: color-mix(in srgb, var(--mint) 24%, var(--surface)); }
+
+.case-engineering-snapshot dd {
+  margin: 7px 0 0;
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .case-engineering-snapshot { grid-template-columns: 1fr; }
+  .case-engineering-snapshot div:nth-child(2) { border-top: 0; border-left: 3px solid var(--accent); }
+}
+
+@media (max-width: 620px) {
+  .hero-value { grid-template-columns: 1fr; gap: 5px; }
+  .project-signal-grid { grid-template-columns: 1fr; }
+}
+
+@media print {
+  .hero-value,
+  .project-signal-grid,
+  .case-engineering-snapshot { background: none; }
+}

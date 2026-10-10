@@ -31,7 +31,7 @@ export const resume = {
     { label: 'LinkedIn', href: site.linkedin },
   ] satisfies ResumeLink[],
   summary:
-    'Full-stack developer and BCIT student who follows a request past the API: Redis rate limiting, async calls to a local language model, and Express routes behind JWT auth. Top 6 of 36 teams at Hack the Break 2026.',
+    'Full-stack developer and BCIT student who builds across UI, API, and data layers, then traces failures until I can explain the trade-off and fix. Top 6 of 36 teams at Hack the Break 2026.',
   education: {
     school: 'British Columbia Institute of Technology (BCIT)',
     gpa: 'GPA: 88%',
@@ -60,7 +60,7 @@ export const resume = {
       role: 'Backend & DevOps Lead (3-person team), top committer (114 of ~245 commits)',
       bullets: [
         'Built the attend, review, and host-a-workshop flows end to end, from React screens to JWT-protected Express routes.',
-        'Reduced first-load time by preloading key routes, splitting React and UI libraries into separately cached chunks, and keeping MongoDB Atlas warm with a five-minute keepalive ping.',
+        'Worked on first-load latency by preloading key routes, splitting React and UI libraries into separately cached chunks, and keeping MongoDB Atlas warm with a five-minute keepalive ping.',
         'Added capacity feedback that blocks full workshops, and replaced browser alerts with toast notifications.',
       ],
     },

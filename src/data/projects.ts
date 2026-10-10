@@ -30,6 +30,12 @@ export type Project = {
   /** Team context, for example who else worked on it and how the work was split. */
   team: string
   highlight: string
+  /** Recruiter/senior-engineer scan: what I owned, the decision I made, and evidence someone can inspect. */
+  signal?: {
+    ownership: string
+    decision: string
+    evidence: string
+  }
   why: string
   /** What I personally built. On team projects this is the part interviewers ask about. */
   mine: string[]
@@ -69,13 +75,18 @@ export const projects: Project[] = [
     role: 'Backend & DevOps lead, 3-person team',
     team: 'BCIT team project with Clayton Liang and Ky Thai. I wrote 114 of roughly 245 commits in the team repo.',
     highlight: 'Top committer: 114 of ~245 commits',
+    signal: {
+      ownership: 'Attend, review, and host flows across React, Express, JWT, and MongoDB.',
+      decision: 'Treat workshop capacity as a server invariant, not just a disabled-button concern.',
+      evidence: '114 of ~245 team commits, plus a live app and the exact route source linked below.',
+    },
     why: 'Students wanted a simple way to find focused workshops outside their regular courses, and to run one themselves if they had a skill to share.',
     mine: [
       'Built the attend-and-review flow: completing checkout registers you as an attendee, which then unlocks a star-rating review form.',
       'Wrote the Express routes for attending, reviewing, and hosting a workshop, behind the JWT middleware that protects them.',
       'Built the host-a-workshop flow end to end: form, preview, confirmation, and a POST route that saves to MongoDB, with form state restored when you go back to edit.',
       'Added capacity feedback: the attendance card changes colour at 75% and 90% full, and the Attend button is disabled once a workshop is full.',
-      'Cut first-load time by preloading key routes, splitting React and UI libraries into separately cached chunks, and pinging MongoDB Atlas every five minutes so the first request of the day is not a cold start.',
+      'Worked on first-load latency by preloading key routes, splitting React and UI libraries into separately cached chunks, and pinging MongoDB Atlas every five minutes so the first request of the day is less likely to hit a cold database connection.',
       'Replaced browser alert() errors with toast notifications and wrote a seed script for realistic workshop and user data.',
     ],
     outcome:
@@ -134,6 +145,11 @@ export const projects: Project[] = [
     role: 'UI/UX lead and front-end developer',
     team: 'Hack the Break 2026 team project. I built the sign-in, navigation, and profile screens; teammates built the FastAPI backend and the OpenAI generation pipeline.',
     highlight: 'Top 6 of 36 teams at Hack the Break 2026',
+    signal: {
+      ownership: 'Sign-in, navigation, profile UI, and the Auth0-to-GitHub entry path.',
+      decision: 'Use managed OAuth in a 24-hour sprint and remove an unnecessary provider-selection step.',
+      evidence: 'Working live demo; the team placed in the top 6 of 36.',
+    },
     why: 'Writing a clear commit message is a small task people rush. GitScribe takes the before and after of a change and suggests one.',
     mine: [
       'Built the sign-in card, navigation bar, and profile layout from the team’s Figma designs.',
@@ -193,6 +209,11 @@ export const projects: Project[] = [
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: '50 requests per 60 seconds, then HTTP 429',
+    signal: {
+      ownership: 'React UI, Express CRUD API, MongoDB model, and Redis rate-limit middleware.',
+      decision: 'Use a sliding-window limiter, then question the shared key when fairness broke down.',
+      evidence: 'Interactive reproduction on this site plus the exact middleware source.',
+    },
     why: 'I wanted a small app where I owned every layer, so I could follow a single request from a button click to the database and back.',
     mine: [
       'Built the React interface and Express API for full create, read, update, and delete on notes.',
@@ -262,6 +283,11 @@ const ratelimiter = async (req, res, next) => {
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: 'Local inference moved off the event loop',
+    signal: {
+      ownership: 'Discord command flow, local LM Studio bridge, error handling, and the async fix.',
+      decision: 'Move the blocking request off the event loop before considering a full async-client rewrite.',
+      evidence: 'Source excerpt and an engineering note that explains the failure mode and trade-off.',
+    },
     why: 'I wanted to see what it takes to put a locally hosted language model behind a real chat interface, with no cloud API in between.',
     mine: [
       'Connected discord.py to LM Studio’s OpenAI-compatible endpoint and a local Qwen 3.5 9B model, triggered by the !.ask command.',
