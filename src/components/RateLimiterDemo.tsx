@@ -32,7 +32,7 @@ function estimate(buckets: Buckets, key: string, now: number) {
   return { counts, index, elapsed, current, previous, weighted, total: weighted + current }
 }
 
-function RateLimiterDemo() {
+function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
   const [mode, setMode] = useState<Mode>('shared')
   const [now, setNow] = useState<number | null>(null)
   const [log, setLog] = useState<LogEntry[]>([])
@@ -94,12 +94,11 @@ function RateLimiterDemo() {
   const latest = log[0]
 
   return (
-    <section className="limiter-demo" aria-labelledby="limiter-demo-title">
+    <section className={`limiter-demo${compact ? ' limiter-demo--compact' : ''}`} aria-labelledby="limiter-demo-title">
       <div className="limiter-demo-head">
-        <h2 id="limiter-demo-title">Try the rate limiter</h2>
+        <h2 id="limiter-demo-title">Can you lock out another visitor?</h2>
         <p>
-          The same sliding-window rule ThinkBoard runs in Redis, simulated in your browser and scaled to {LIMIT} requests
-          per {WINDOW_MS / 1000} seconds. Send a burst, then see what happens to the other visitor.
+          This is the same sliding-window rule ThinkBoard runs in Redis, scaled to {LIMIT} requests per {WINDOW_MS / 1000} seconds. Start with the shared key, burst your requests, then ask another visitor to send one.
         </p>
       </div>
 

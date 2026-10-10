@@ -54,7 +54,11 @@ function ProjectCard({ project }: { project: Project }) {
           <h3>{project.name}</h3>
           <p className="project-subtitle">{project.subtitle}</p>
           <p className="project-summary">{project.summary}</p>
-          <p className="project-result"><span>Key result</span>{project.highlight}</p>
+          <blockquote className="project-insight">
+            <span>WHAT CHANGED HOW I THINK</span>
+            <p>{project.learned}</p>
+          </blockquote>
+          <p className="project-result"><span>Proof it shipped</span>{project.highlight}</p>
           <div className="project-card-footer"><span>{project.role}</span><span>Read case study <ArrowUpRight size={15} /></span></div>
         </div>
       </Link>

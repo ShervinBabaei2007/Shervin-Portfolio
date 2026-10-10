@@ -7,7 +7,7 @@ function ContactSection() {
     <section className="contact-section" id="contact" aria-labelledby="contact-title">
       <div className="section-wrap contact-inner">
         <div className="contact-copy">
-          <p className="eyebrow"><span className="eyebrow-mark">06</span> NEXT STEP</p>
+          <p className="eyebrow"><span className="eyebrow-mark">07</span> NEXT STEP</p>
           <h2 id="contact-title">Have a good<br />problem<span>?</span></h2>
           <p>{availabilityLine()} Tell me what you&apos;re building and I&apos;ll reply within two business days.</p>
           <a className="button button-light" href={`mailto:${site.email}`}>Email me <ArrowUpRight size={16} /></a>

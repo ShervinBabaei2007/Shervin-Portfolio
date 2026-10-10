@@ -20,7 +20,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
   return (
     <section className="skills-section section-wrap" id="skills" aria-labelledby="skills-title">
       <div className="section-heading skills-heading">
-        <div><p className="eyebrow"><span className="eyebrow-mark">04</span> TOOLS & CURIOSITIES</p><h2 id="skills-title">What I work with<span>.</span></h2></div>
+        <div><p className="eyebrow"><span className="eyebrow-mark">05</span> TOOLS & CURIOSITIES</p><h2 id="skills-title">What I work with<span>.</span></h2></div>
         <p className="section-aside">Every tool here is used in at least one <br />project you can open and read.</p>
       </div>
       <div className="skills-evidence-grid">

@@ -7,8 +7,8 @@ function NotesSection() {
   return (
     <section className="notes-section section-wrap" id="notes" aria-labelledby="notes-title">
       <div className="section-heading">
-        <div><p className="eyebrow"><span className="eyebrow-mark">05</span> ENGINEERING NOTES</p><h2 id="notes-title">Writing it down<span>.</span></h2></div>
-        <p className="section-aside">Short write-ups on bugs I found in my own <br />code and what I learned fixing them.</p>
+        <div><p className="eyebrow"><span className="eyebrow-mark">06</span> ENGINEERING NOTES</p><h2 id="notes-title">Things I broke<span>.</span></h2></div>
+        <p className="section-aside">Bugs, bad assumptions, and the moments that <br />changed how I build the next thing.</p>
       </div>
       <div className="notes-layout">
         <ul className="note-list">

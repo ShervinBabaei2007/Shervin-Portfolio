@@ -2,9 +2,11 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import AboutSection from '../components/AboutSection'
 import ContactSection from '../components/ContactSection'
 import Hero from '../components/Hero'
+import LabSection from '../components/LabSection'
 import NotesSection from '../components/NotesSection'
 import ProjectsSection from '../components/ProjectsSection'
 import SkillsSection from '../components/SkillsSection'
+import StackTraceRail from '../components/StackTraceRail'
 
 // useLayoutEffect warns during prerendering; the scroll fix only matters in the browser.
 const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -32,8 +34,10 @@ function HomePage() {
 
   return (
     <>
+      <StackTraceRail />
       <Hero />
       <ProjectsSection activeSkill={activeSkill} onClearSkill={() => setActiveSkill(null)} />
+      <LabSection />
       <AboutSection />
       <SkillsSection activeSkill={activeSkill} onSkillSelect={selectSkill} />
       <NotesSection />
