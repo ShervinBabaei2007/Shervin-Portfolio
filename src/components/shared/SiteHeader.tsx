@@ -45,20 +45,31 @@ const socials = [
 
 function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps) {
   return (
-    <header className="site-header">
-      <Link className="wordmark" to="/" aria-label="Shervin Babaei, home">
-        <Avatar className="size-7">
+    <header className="sticky top-0 z-20 grid min-h-[var(--header-height)] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center justify-between border-b bg-background px-[max(var(--gutter),calc((100%-var(--content-max))/2))] py-2 max-[620px]:flex max-[620px]:flex-wrap max-[620px]:gap-y-1 print:hidden">
+      <Link
+        className="col-start-1 inline-flex items-center justify-self-start"
+        to="/"
+        aria-label="Shervin Babaei, home"
+      >
+        <Avatar className="size-[35px]">
           <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">SB</AvatarFallback>
         </Avatar>
       </Link>
-      <nav className="main-nav" aria-label="Main navigation">
+      <nav
+        className="col-start-2 flex flex-wrap justify-center justify-self-center gap-x-[clamp(22px,2.2vw,34px)] max-[620px]:hidden"
+        aria-label="Main navigation"
+      >
         {navLinks.map((link) => (
-          <Link key={link.to} to={link.to}>
+          <Link
+            key={link.to}
+            className="inline-flex min-h-[var(--target)] items-center text-muted-foreground no-underline transition-colors hover:text-primary"
+            to={link.to}
+          >
             {link.label}
           </Link>
         ))}
       </nav>
-      <div className="header-actions">
+      <div className="col-start-3 flex items-center gap-4 justify-self-end max-[620px]:gap-0">
         <CommandPalette />
         <TooltipProvider delayDuration={150}>
           {socials.map(({ label, href, Icon, external }) => (

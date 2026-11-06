@@ -21,7 +21,7 @@
                                          (min-width) 1280 · 1800
    ========================================================================== */
 
-
+@layer legacy {
 /* ==========================================================================
    1. TOKENS
    ========================================================================== */
@@ -179,9 +179,7 @@ a:focus-visible {
 .eyebrow,
 .project-kicker,
 .project-details > div > span,
-.about-footnote span,
-.site-footer > span,
-.site-footer > a:last-child {
+.about-footnote span {
   font-family: var(--mono);
   letter-spacing: 0;
 }
@@ -192,7 +190,6 @@ a:focus-visible {
 .hero-layer-projects a,
 .project-links a,
 .text-link,
-.site-footer > a:last-child,
 .skills-evidence-status a,
 .active-skill-filter button { position: relative; }
 
@@ -200,7 +197,6 @@ a:focus-visible {
 .hero-layer-projects a::after,
 .project-links a::after,
 .text-link::after,
-.site-footer > a:last-child::after,
 .skills-evidence-status a::after,
 .active-skill-filter button::after {
   content: '';
@@ -209,85 +205,7 @@ a:focus-visible {
   inset-inline: min(0px, calc(50% - var(--target) / 2));
 }
 
-
-/* ==========================================================================
-   3. HEADER & NAVIGATION
-   ========================================================================== */
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-header);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  min-height: var(--header-height);
-  margin-inline: auto;
-  padding-block: 8px;
-  padding-inline: max(var(--gutter), calc((100% - var(--content-max)) / 2));
-  background: var(--background);
-  border-bottom: 1px solid var(--border);
-}
-
-.wordmark {
-  grid-column: 1;
-  justify-self: start;
-  display: inline-flex;
-  align-items: center;
-  color: var(--foreground);
-  font: 700 20px/1 var(--display);   /* logo mark: intentionally px */
-  letter-spacing: 0;
-  text-decoration: none;
-}
-
-.wordmark span {
-  display: grid;
-  width: 35px;
-  height: 35px;
-  place-items: center;
-  border: 1px solid var(--foreground);
-}
-
-.wordmark i {
-  width: 6px;
-  height: 6px;
-  margin-left: 3px;
-  background: var(--primary);
-}
-
-.dark .wordmark span { border-color: var(--border); }
-
-.main-nav {
-  grid-column: 2;
-  justify-self: center;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0 clamp(22px, 2.2vw, 34px);
-  margin: 0;
-}
-
-.main-nav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--target);
-  color: var(--muted-foreground);
-  font-size: 1rem;
-  text-decoration: none;
-  transition: color .18s ease, transform .18s ease;
-}
-
-.main-nav a:hover,
 .text-link:hover { color: var(--primary); }
-
-.header-actions {
-  grid-column: 3;
-  justify-self: end;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
 
 
 /* ==========================================================================
@@ -1089,36 +1007,6 @@ a:focus-visible {
 }
 
 
-/* ==========================================================================
-   9. CONTACT & FOOTER
-   ========================================================================== */
-.site-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 72px;
-}
-
-.site-footer .wordmark span {
-  width: 29px;
-  height: 29px;
-  font-size: 16px;
-}
-
-.site-footer > span,
-.site-footer > a:last-child {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--muted-foreground);
-  font-size: .75rem;
-  text-decoration: none;
-}
-
-.footer-dot { color: var(--primary); }
-.site-footer > a:last-child:hover { color: var(--primary); }
-
-
 .case-study-subtitle {
   margin: 8px 0 0;
   color: var(--muted-foreground);
@@ -1309,9 +1197,6 @@ a:focus-visible {
    12. INTERACTION (hover / pointer gated)
    ========================================================================== */
 @media (hover: hover) {
-  .main-nav a:hover,
-  .filter-button:hover,
-  .theme-toggle:hover { transform: translateY(-1px); }
 
   .project-links a svg,
   .text-link svg { transition: transform .18s ease; }
@@ -1355,7 +1240,6 @@ a:focus-visible {
 }
 
 @media (max-width: 900px) {
-  .main-nav { column-gap: 17px; }
 
   .hero {
     display: flex;
@@ -1384,10 +1268,6 @@ a:focus-visible {
   .art-node-ui { top: 7%; left: 20%; }
   .art-node-api { right: -1%; }
   .art-node-core { bottom: 4%; left: 25%; }
-  .art-caption { right: 1%; bottom: 0; }
-
-  .scroll-cue { bottom: 1.5rem; }
-  .hero-index { bottom: 1.5625rem; }
 
   .project-visual { padding-inline: 17px; }
 
@@ -1395,22 +1275,6 @@ a:focus-visible {
 }
 
 @media (max-width: 620px) {
-  /* Header */
-  .site-header {
-    display: flex;
-    flex-wrap: wrap;
-    row-gap: 4px;
-  }
-
-  .wordmark span {
-    width: 31px;
-    height: 31px;
-    font-size: 1.125rem;
-  }
-
-  .main-nav { display: none; }
-
-  .header-actions { gap: 0; }
 
 
   /* Hero */
@@ -1533,13 +1397,6 @@ a:focus-visible {
   .skills-evidence > h3 { font-size: 1.25rem; }
   .skill-chip { font-size: .75rem; }
 
-  /* Footer */
-
-
-  .site-footer { min-height: 63px; }
-  .site-footer > span { display: none; }         /* design decision kept — see review list */
-  .site-footer > a:last-child { margin-left: auto; }
-
 
   .case-study-at-a-glance {
     grid-template-columns: 1fr;
@@ -1567,9 +1424,6 @@ a:focus-visible {
 
 @media (max-width: 360px) {
   .hero h1 { font-size: 2.25rem; }
-
-  .main-nav { column-gap: 8px; }
-  .main-nav a { font-size: .8125rem; }
 
   .project-card-footer { font-size: .8125rem; }
 
@@ -1606,13 +1460,6 @@ a:focus-visible {
   .button { border: 1px solid ButtonText; }
   .art-center { border: 1px solid CanvasText; }
 
-  .wordmark i,
-  .scribe-status i {
-    forced-color-adjust: none;
-    background: CanvasText;
-  }
-
-  .filter-button.is-active,
   .skill-chip[aria-pressed='true'],
   .art-node.is-active {
     forced-color-adjust: none;
@@ -1650,10 +1497,7 @@ a:focus-visible {
   .project-card:focus-within,
   .button:hover,
   .art-node:hover,
-  .art-node.is-active,
-  .filter-button:hover,
-  .theme-toggle:hover,
-  .main-nav a:hover { transform: none; }
+  .art-node.is-active { transform: none; }
 }
 
 /* Print */
@@ -1670,11 +1514,6 @@ a:focus-visible {
   }
 
   .skip-link,
-  .site-header,
-  .theme-toggle,
-  .filter-row,
-  .scroll-cue,
-  .hero-index,
   .hero-layer-panel,
   .case-pager { display: none; }
 
@@ -1872,14 +1711,6 @@ main:focus { outline: none; }
 }
 
 .skills-evidence-secondary .text-link { margin-top: 18px; color: var(--primary); }
-
-.footer-built {
-  color: var(--muted-foreground);
-  font-size: .8125rem;
-  text-underline-offset: 3px;
-}
-
-.footer-built:hover { color: var(--primary); }
 
 /* ==========================================================================
    16. CASE-STUDY PAGES
@@ -2117,13 +1948,13 @@ main:focus { outline: none; }
   .resume-sheet { padding: 22px 18px 26px; }
   .resume-head h1 { font-size: 2rem; }
   .resume-skills div { grid-template-columns: 1fr; }
-  .site-footer .footer-built { display: none; }
 }
 
 /* Resume printing: also used to generate the downloadable PDF */
 @media print {
   @page { size: letter; margin: 0.42in 0.5in; }
-  .site-header, .site-footer, .skip-link, .resume-toolbar { display: none !important; }
+  .skip-link,
+  .resume-toolbar { display: none !important; }
   .print-only { display: inline; }
   .resume-page { max-width: none; padding: 0; }
   .resume-sheet { margin: 0; padding: 0; border: 0; background: none; font-size: 9.5pt; }
@@ -2584,4 +2415,6 @@ main:focus { outline: none; }
 @media print {
 
   .case-engineering-snapshot { background: none; }
+}
+
 }
