@@ -112,6 +112,32 @@ test('the resume prints to one US Letter page and hides the screen-only toolbar'
   await expect(page.getByRole('link', { name: 'Download PDF' })).toBeHidden()
 })
 
+test('the phone menu opens on tap, navigates, and returns focus to its button', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const button = page.getByRole('button', { name: 'Open menu' })
+  await button.click()
+  const nav = page.getByRole('navigation', { name: 'Mobile navigation' })
+  await expect(nav).toBeVisible()
+  await nav.getByRole('link', { name: 'Resume' }).click()
+  await expect(page).toHaveURL(/\/resume$/)
+  await expect(nav).toBeHidden()
+  await button.click()
+  await page.keyboard.press('Escape')
+  await expect(nav).toBeHidden()
+  await expect(button).toBeFocused()
+})
+
+test('toasts still appear even though the toast container loads after idle', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  await page.getByRole('button', { name: 'Search portfolio' }).click()
+  await page.getByRole('option', { name: /Copy email address/i }).click()
+  await expect(page.getByText('Email copied')).toBeVisible()
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')

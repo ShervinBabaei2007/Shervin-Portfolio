@@ -1,3 +1,4 @@
+import { lazy, Suspense, useRef, useState } from 'react'
 import { Github, Linkedin, Mail, Menu, Monitor, Moon, Sun } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -8,15 +9,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
 import CommandPalette from '@/components/shared/CommandPalette'
 import ScrollProgress from '@/components/shared/ScrollProgress'
 import { useActiveSection } from '@/hooks/useActiveSection'
@@ -29,6 +21,8 @@ type SiteHeaderProps = {
   preference: Preference
   onPreferenceChange: (preference: Preference) => void
 }
+
+const MobileNavSheet = lazy(() => import('./MobileNavSheet'))
 
 const navLinks = [
   { to: '/#work', label: 'Work', section: 'work' },
@@ -54,6 +48,9 @@ const socials = [
 
 function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps) {
   const { pathname } = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuEverOpened, setMenuEverOpened] = useState(false)
+  const menuButton = useRef<HTMLButtonElement>(null)
   const activeSection = useActiveSection(Object.keys(sectionOwner), pathname === '/')
   const activeOwner = activeSection ? sectionOwner[activeSection] : null
 
@@ -133,46 +130,31 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="max-[620px]:size-11 min-[621px]:hidden"
-              aria-label="Open menu"
-            >
-              <Menu />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-72">
-            <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
-              <SheetDescription>Jump to a section or get in touch.</SheetDescription>
-            </SheetHeader>
-            <nav className="grid gap-1 px-4" aria-label="Mobile navigation">
-              {navLinks.map((link) => (
-                <SheetClose key={link.to} asChild>
-                  <Link
-                    className="rounded-md px-3 py-3 text-base font-medium hover:bg-accent aria-[current]:bg-accent aria-[current]:text-primary"
-                    to={link.to}
-                    aria-current={currentFor(link)}
-                  >
-                    {link.label}
-                  </Link>
-                </SheetClose>
-              ))}
-            </nav>
-            <div className="mt-auto flex gap-1 p-4">
-              {socials.map(({ label, href, Icon, external }) => (
-                <Button key={label} asChild variant="outline" size="icon">
-                  <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-                    <Icon />
-                  </a>
-                </Button>
-              ))}
-            </div>
-          </SheetContent>
-        </Sheet>
+        <Button
+          ref={menuButton}
+          variant="ghost"
+          size="icon-sm"
+          className="max-[620px]:size-11 min-[621px]:hidden"
+          aria-label="Open menu"
+          aria-haspopup="dialog"
+          onClick={() => {
+            setMenuEverOpened(true)
+            setMenuOpen(true)
+          }}
+        >
+          <Menu />
+        </Button>
+        {menuEverOpened && (
+          <Suspense fallback={null}>
+            <MobileNavSheet
+              open={menuOpen}
+              onOpenChange={setMenuOpen}
+              links={navLinks.map((link) => ({ to: link.to, label: link.label, current: currentFor(link) }))}
+              socials={socials}
+              onClosed={() => menuButton.current?.focus()}
+            />
+          </Suspense>
+        )}
       </div>
       <ScrollProgress />
     </header>

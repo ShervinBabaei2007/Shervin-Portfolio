@@ -5,7 +5,17 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist', 'dist-ssr', 'node_modules', 'src/components/ui/**', 'test-results', 'playwright-report'] },
+  {
+    ignores: [
+      'dist',
+      'dist-ssr',
+      'dist-analyze',
+      'node_modules',
+      'src/components/ui/**',
+      'test-results',
+      'playwright-report',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   jsxA11y.flatConfigs.recommended,

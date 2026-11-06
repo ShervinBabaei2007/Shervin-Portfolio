@@ -1,13 +1,31 @@
-import { Component, Suspense, useEffect, type ReactNode } from 'react'
+import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Toaster } from '@/components/ui/sonner'
 import SiteFooter from '@/components/shared/SiteFooter'
 import SiteHeader from '@/components/shared/SiteHeader'
 import { usePageMeta } from './hooks/usePageMeta'
-import { useTheme } from './hooks/useTheme'
+import { useTheme, type Scheme } from './hooks/useTheme'
 import { pages } from './routes'
 import { Button } from '@/components/ui/button'
+
+const Toaster = lazy(() => import('@/components/ui/sonner').then((module) => ({ default: module.Toaster })))
+
+/**
+ * The toast container is only needed after something happens (a copied email, a sent message), so it loads
+ * once the browser is idle instead of with the first page. It renders nothing on the server, so hydration matches.
+ */
+function LazyToaster({ scheme }: { scheme: Scheme }) {
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 1500))
+    idle(() => setReady(true))
+  }, [])
+  return ready ? (
+    <Suspense fallback={null}>
+      <Toaster theme={scheme} />
+    </Suspense>
+  ) : null
+}
 
 /** Scrolls to the #hash after navigation, or to the top of a new page. */
 function ScrollManager() {
@@ -104,7 +122,7 @@ function App() {
         </PageErrorBoundary>
       </main>
       <SiteFooter />
-      <Toaster theme={scheme} />
+      <LazyToaster scheme={scheme} />
     </div>
   )
 }
