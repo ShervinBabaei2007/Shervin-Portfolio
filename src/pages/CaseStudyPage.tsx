@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import CodeBlock from '@/components/shared/CodeBlock'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
-import ResponsiveImage from '@/components/shared/ResponsiveImage'
+import ScreenshotGallery from '@/components/shared/ScreenshotGallery'
 import TerminalBlock from '@/components/shared/TerminalBlock'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
@@ -245,22 +245,7 @@ function CaseStudyPage() {
             aria-label={`${project.name} screenshots`}
           >
             <h2 className={cn(h2Class, 'mb-3.5 max-[620px]:text-lg')}>Screens</h2>
-            <div className="m-0 grid grid-cols-1 gap-4">
-              {project.screenshots.map((shot) => (
-                <figure key={shot.src} className="m-0 min-w-0 p-0">
-                  <a
-                    className="grid min-h-[180px] place-items-center bg-background max-[620px]:min-h-[220px] [&_img]:block [&_img]:h-[clamp(190px,27svh,270px)] [&_img]:w-full [&_img]:object-contain max-[620px]:[&_img]:h-[280px]"
-                    href={shot.src}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`Open full-size screenshot: ${shot.caption}`}
-                  >
-                    <ResponsiveImage src={shot.src} alt={shot.alt} sizes="(max-width: 900px) 92vw, 380px" />
-                  </a>
-                  <figcaption className="pt-2 text-sm text-muted-foreground">{shot.caption}</figcaption>
-                </figure>
-              ))}
-            </div>
+            <ScreenshotGallery shots={project.screenshots} projectName={project.name} />
           </aside>
         )}
       </div>

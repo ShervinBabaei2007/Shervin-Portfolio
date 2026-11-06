@@ -422,3 +422,58 @@ test('a missing page file reloads at most once instead of looping', async ({ pag
   // The original load plus one reload; a loop would keep growing this.
   expect(requests).toBe(2)
 })
+
+test('clicking a screenshot opens a viewer on the same page with every screenshot to click through', async ({
+  page,
+}) => {
+  let popups = 0
+  page.on('popup', () => (popups += 1))
+  await page.goto('/work/skillmatch')
+  await page.waitForLoadState('networkidle')
+  await page
+    .getByRole('button', { name: /Enlarge screenshot/ })
+    .first()
+    .click()
+
+  const viewer = page.getByRole('dialog')
+  await expect(viewer).toBeVisible()
+  await expect(page).toHaveURL(/\/work\/skillmatch$/)
+  expect(popups).toBe(0)
+  await expect(viewer.getByRole('list', { name: 'All screenshots' }).getByRole('button')).toHaveCount(3)
+  await expect(viewer.getByText('1 of 3', { exact: true })).toBeVisible()
+
+  await viewer.getByRole('button', { name: /Show screenshot 2/ }).click()
+  await expect(viewer.getByText('2 of 3', { exact: true })).toBeVisible()
+  await page.keyboard.press('ArrowRight')
+  await expect(viewer.getByText('3 of 3', { exact: true })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(viewer).toBeHidden()
+})
+
+test('the matching-projects message appears inside the card of the skill you clicked', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const web = page.locator('#skills [data-slot="card"]').filter({ hasText: 'Web & Full-Stack' })
+  const tools = page.locator('#skills [data-slot="card"]').filter({ hasText: 'Tools & Infrastructure' })
+
+  await page.getByRole('button', { name: /using JavaScript$/ }).click()
+  await expect(web).toContainText('matching')
+  await expect(tools).not.toContainText('matching')
+
+  await page.getByRole('button', { name: /using Vercel$/ }).click()
+  await expect(tools).toContainText('matching')
+  await expect(web).not.toContainText('matching')
+})
+
+test('moving quickly between skills never leaves two tooltips open', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  await page.locator('#skills').scrollIntoViewIfNeeded()
+  await page.getByRole('button', { name: /using React$/ }).hover()
+  await page.waitForTimeout(250)
+  await page.getByRole('button', { name: /using TypeScript$/ }).hover()
+  await page.getByRole('button', { name: /using Python$/ }).hover()
+  await page.waitForTimeout(400)
+  await expect(page.getByRole('tooltip')).toHaveCount(1)
+  await expect(page.getByRole('tooltip')).toContainText('Python')
+})
