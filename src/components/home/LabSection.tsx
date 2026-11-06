@@ -8,7 +8,7 @@ function LabSection() {
     <section className="lab-section section-wrap" id="lab" aria-labelledby="lab-title">
       <SectionHeading
         id="lab-title"
-        number="04"
+        number="03"
         eyebrow="THE LAB"
         title="Break the assumption"
         className="lab-heading"

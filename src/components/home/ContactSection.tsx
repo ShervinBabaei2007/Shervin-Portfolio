@@ -18,7 +18,7 @@ function ContactSection() {
         <div>
           <SectionHeading
             id="contact-title"
-            number="09"
+            number="08"
             eyebrow="NEXT STEP"
             title="Have a good problem"
             punctuation="?"

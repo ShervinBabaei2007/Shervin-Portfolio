@@ -8,7 +8,7 @@ function NotesSection() {
     <section className="section-wrap pt-10 pb-[110px] max-[620px]:pb-14" id="notes" aria-labelledby="notes-title">
       <SectionHeading
         id="notes-title"
-        number="08"
+        number="07"
         eyebrow="ENGINEERING NOTES"
         title="What the bugs taught me"
         aside={
