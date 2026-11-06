@@ -239,14 +239,14 @@ test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the othe
 
 test('engineering notes: listed on home, own pages, linked from case studies', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('#notes .note-list li')).toHaveCount(3)
+  await expect(page.locator('#notes li').filter({ has: page.locator('a[href^="/notes/"]') })).toHaveCount(3)
   await page
     .getByRole('link', { name: /The race condition in SkillMatch/ })
     .first()
     .click()
   await expect(page).toHaveURL(/\/notes\/skillmatch-attend-race-condition$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('race condition')
-  await expect(page.locator('.note-body code').first()).toBeVisible()
+  await expect(page.locator('article code').first()).toBeVisible()
   await page.getByRole('link', { name: /Case study/ }).click()
   await expect(page).toHaveURL(/\/work\/skillmatch$/)
   await expect(page.getByRole('heading', { name: 'Go deeper' })).toBeVisible()
@@ -269,7 +269,7 @@ test('GitHub activity shows live recent pushes, and hides itself when nothing is
     }),
   )
   await page.goto('/')
-  const activity = page.locator('.github-activity')
+  const activity = page.locator('[data-github]')
   await expect(activity).toContainText('Portfolio')
   await expect(activity).toContainText('2 days ago')
   await expect(activity).toContainText('Live from GitHub')
@@ -291,8 +291,8 @@ test('GitHub activity shows live recent pushes, and hides itself when nothing is
   )
   await stale.goto('/')
   await stale.waitForLoadState('networkidle')
-  if (!(await stale.locator('.github-activity').count())) return // stale snapshot and stale live data: hidden
-  await expect(stale.locator('.github-activity')).not.toContainText('Old')
+  if (!(await stale.locator('[data-github]').count())) return // stale snapshot and stale live data: hidden
+  await expect(stale.locator('[data-github]')).not.toContainText('Old')
 })
 
 test('a page whose code fails to load shows a reload prompt, not a blank site', async ({ page }) => {
@@ -314,9 +314,9 @@ test('a slow page keeps the current page on screen, then lands on the linked sec
     await route.continue()
   })
   await page.goto('/notes')
-  await expect(page.locator('.notes-index')).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Notes on things I built/ })).toBeVisible()
   await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Contact' }).click()
-  await expect(page.locator('.notes-index')).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Notes on things I built/ })).toBeVisible()
   await expect(page.locator('.page-loading')).toHaveCount(0)
 
   await expect(page).toHaveURL(/\/#contact$/, { timeout: 5000 })

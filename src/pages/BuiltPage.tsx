@@ -1,11 +1,12 @@
 import { ArrowUpRight } from 'lucide-react'
-import { site } from '../data/site'
+import PageIntro from '@/components/shared/PageIntro'
 import { textLinkClass } from '@/lib/utils'
+import { site } from '../data/site'
 
 const sections = [
   {
     title: 'Stack',
-    body: 'React 18 and TypeScript, bundled with Vite, with React Router for the case-study pages. No UI framework: the layout, type scale, and both colour themes are hand-written CSS with custom properties.',
+    body: 'React 19 and TypeScript, bundled with Vite, with React Router for the case-study pages. Tailwind CSS and shadcn/ui provide the components and the light and dark colour tokens. A small hand-written stylesheet covers the few visuals utilities do not express, such as the hero artwork and the pointer glow on project cards.',
   },
   {
     title: 'Every page is real HTML',
@@ -13,7 +14,7 @@ const sections = [
   },
   {
     title: 'Tested like a product',
-    body: 'Playwright drives a real browser through the site on desktop and mobile sizes: the skill filter, case-study pages, the resume, theme persistence, and the absence of horizontal scrolling. Each run also scans pages with axe-core and fails on any accessibility violation.',
+    body: 'Playwright drives a real browser through the site on desktop and mobile sizes: the skill filter, case-study pages, the resume, theme persistence, and the absence of horizontal scrolling. Each run also scans pages with axe-core and fails on any accessibility violation. The same checks, plus ESLint and Prettier, run in CI on every push.',
   },
   {
     title: 'Accessibility',
@@ -21,7 +22,7 @@ const sections = [
   },
   {
     title: 'Performance',
-    body: 'Each page loads only its own JavaScript: pages are split into separate chunks, and the prerendered HTML preloads exactly the chunk it needs, then fetches the rest in the background so navigating is instant. One hashed stylesheet is cached once and reused on every page. Fonts are self-hosted, subset to Latin, and the three used above the fold are preloaded. Screenshots carry their real width and height to avoid layout shift, and phones get a smaller copy through srcset.',
+    body: 'Each page loads only its own JavaScript: pages are split into separate chunks, and the prerendered HTML preloads exactly the chunk it needs, then fetches the rest in the background so navigating is instant. Heavier pieces, such as the search dialog and the quick-look drawer, load the first time you open them. One hashed stylesheet is cached once and reused on every page. Fonts are self-hosted, subset to Latin, and the two used above the fold are preloaded. Screenshots carry their real width and height to avoid layout shift, and phones get a smaller copy through srcset.',
   },
   {
     title: 'Honest content',
@@ -31,17 +32,18 @@ const sections = [
 
 function BuiltPage() {
   return (
-    <article className="simple-page built-page section-wrap" aria-labelledby="built-title">
-      <p className="eyebrow">COLOPHON</p>
-      <h1 id="built-title">How this site is built</h1>
-      <p className="simple-page-lead">
-        A portfolio is a project too, so I built and tested this one the way I would a product.
-      </p>
-      <div className="built-grid">
+    <article className="section-wrap pt-16 pb-[110px]" aria-labelledby="built-title">
+      <PageIntro
+        eyebrow="COLOPHON"
+        id="built-title"
+        title="How this site is built"
+        lead="A portfolio is a project too, so I built and tested this one the way I would a product."
+      />
+      <div className="mb-9 grid grid-cols-2 gap-x-12 border-t max-[900px]:grid-cols-1">
         {sections.map((section) => (
-          <section key={section.title}>
-            <h2>{section.title}</h2>
-            <p>{section.body}</p>
+          <section key={section.title} className="border-b py-6">
+            <h2 className="text-xl font-semibold">{section.title}</h2>
+            <p className="mt-2.5 max-w-[62ch] leading-[1.7] text-muted-foreground">{section.body}</p>
           </section>
         ))}
       </div>

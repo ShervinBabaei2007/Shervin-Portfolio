@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, Github, Users } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
+import BackLink from '@/components/shared/BackLink'
 import CodeBlock from '@/components/shared/CodeBlock'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
 import ResponsiveImage from '@/components/shared/ResponsiveImage'
@@ -38,14 +39,7 @@ function CaseStudyPage() {
       className="section-wrap pt-9 pb-24 max-[620px]:pt-[18px] max-[620px]:pb-16"
       aria-labelledby="case-study-title"
     >
-      <nav aria-label="Breadcrumb">
-        <Link
-          className="inline-flex min-h-11 items-center gap-2 text-[.9375rem] font-semibold text-muted-foreground no-underline hover:text-primary"
-          to="/#work"
-        >
-          <ArrowLeft size={15} /> All projects
-        </Link>
-      </nav>
+      <BackLink to="/#work">All projects</BackLink>
 
       <header className="mt-[18px] max-w-[900px]">
         <p className="eyebrow">

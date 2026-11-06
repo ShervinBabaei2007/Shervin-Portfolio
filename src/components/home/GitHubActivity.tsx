@@ -96,22 +96,26 @@ function GitHubActivity() {
   if (repos.length === 0) return null
 
   return (
-    <div className="github-activity">
-      <div className="github-activity-head">
-        <h3>
+    <div className="border bg-card px-5 py-[18px]" data-github>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <h3 className="flex items-center gap-2 text-lg font-semibold">
           <Github size={18} aria-hidden="true" /> Recently on GitHub
         </h3>
-        <span>{live ? 'Live from GitHub' : 'Updated at last deploy'}</span>
+        <span className="font-mono text-xs text-muted-foreground">
+          {live ? 'Live from GitHub' : 'Updated at last deploy'}
+        </span>
       </div>
-      <ul>
+      <ul className="m-0 mt-3 list-none p-0 [&>li+li]:border-t">
         {repos.map((repo) => (
           <li key={repo.name}>
-            <a href={repo.url} target="_blank" rel="noreferrer">
-              <span className="github-repo-name">
+            <a className="group grid gap-[3px] py-[11px] no-underline" href={repo.url} target="_blank" rel="noreferrer">
+              <span className="inline-flex items-center gap-[5px] font-semibold [overflow-wrap:anywhere] group-hover:text-primary">
                 {repo.name} <ArrowUpRight size={14} aria-hidden="true" />
               </span>
-              {repo.description && <span className="github-repo-description">{repo.description}</span>}
-              <span className="github-repo-meta">
+              {repo.description && (
+                <span className="text-sm leading-[1.45] text-muted-foreground">{repo.description}</span>
+              )}
+              <span className="flex flex-wrap gap-x-3.5 gap-y-1 font-mono text-xs text-muted-foreground">
                 {repo.language && <span>{repo.language}</span>}
                 <span>
                   Pushed{' '}

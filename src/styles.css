@@ -844,19 +844,6 @@ main:focus { outline: none; }
   line-height: 1.5;
 }
 
-.case-breadcrumb a {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  color: var(--muted-foreground);
-  font-size: .9375rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.case-breadcrumb a:hover { color: var(--primary); }
-
 /* ==========================================================================
    17. SIMPLE PAGES (404, how it's built) AND RESUME
    ========================================================================== */
@@ -868,20 +855,7 @@ main:focus { outline: none; }
   font: 600 clamp(2.375rem, 1.8rem + 2vw, 3.5rem)/1.06 var(--display);
 }
 
-.simple-page > p,
-.simple-page-lead { max-width: 60ch; margin: 16px 0 28px; color: var(--muted-foreground); font-size: 1.125rem; line-height: 1.65; }
-
-.built-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 48px;
-  margin-bottom: 36px;
-  border-top: 1px solid var(--border);
-}
-
-.built-grid section { padding: 24px 0; border-bottom: 1px solid var(--border); }
-.built-grid h2 { margin: 0; font: 600 1.25rem var(--display); }
-.built-grid p { max-width: 62ch; margin: 10px 0 0; color: var(--muted-foreground); line-height: 1.7; }
+.simple-page > p { max-width: 60ch; margin: 16px 0 28px; color: var(--muted-foreground); font-size: 1.125rem; line-height: 1.65; }
 
 .resume-page { max-width: 860px; padding: 40px 0 100px; }
 
@@ -943,7 +917,6 @@ main:focus { outline: none; }
   .hero-side { justify-items: stretch; margin-top: 36px; }
   .hero-side .hero-art { justify-self: center; }
   .hero-side .hero-layer-panel { width: 100%; }
-  .built-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 620px) {
@@ -1085,17 +1058,6 @@ main:focus { outline: none; }
 .limiter-log li > span:last-child { color: var(--muted-foreground); text-align: right; }
 .limiter-log .limiter-log-empty { display: block; color: var(--muted-foreground); }
 
-/* Notes on the home page */
-.notes-section { padding-top: 40px; padding-bottom: 110px; }
-
-.notes-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  gap: 36px;
-  align-items: start;
-  margin-top: 30px;
-}
-
 .note-list { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
 
 .note-list a {
@@ -1115,16 +1077,9 @@ main:focus { outline: none; }
 .note-read { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); font-size: .875rem; font-weight: 600; }
 
 .github-activity { padding: 18px 20px; border: 1px solid var(--border); background: var(--card); }
-.github-activity-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
-.github-activity-head h3 { display: flex; align-items: center; gap: 8px; margin: 0; font: 600 1.125rem var(--display); }
-.github-activity-head span { color: var(--muted-foreground); font: .75rem var(--mono); }
 .github-activity ul { margin: 12px 0 0; padding: 0; list-style: none; }
 .github-activity li + li { border-top: 1px solid var(--border); }
 .github-activity a { display: grid; gap: 3px; padding: 11px 0; text-decoration: none; }
-.github-repo-name { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; overflow-wrap: anywhere; }
-.github-activity a:hover .github-repo-name { color: var(--primary); }
-.github-repo-description { color: var(--muted-foreground); font-size: .875rem; line-height: 1.45; }
-.github-repo-meta { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--muted-foreground); font: .75rem var(--mono); }
 
 /* Note pages */
 .note-page { max-width: 760px; padding: 36px 0 100px; }
@@ -1158,20 +1113,12 @@ main:focus { outline: none; }
 
 .note-list--page { margin-top: 8px; }
 
-/* No recent GitHub activity to show: notes take the full width. */
-.notes-layout:not(:has(.github-activity)) { grid-template-columns: minmax(0, 1fr); max-width: 860px; }
-
-@media (max-width: 900px) {
-  .notes-layout { grid-template-columns: minmax(0, 1fr); }
-}
-
 @media (max-width: 620px) {
   .limiter-demo { padding: 20px 16px 22px; }
   .limiter-meters--2 { grid-template-columns: minmax(0, 1fr); }
   .limiter-actions button { flex: 1 1 auto; }
   .limiter-log li { grid-template-columns: 1fr auto; }
   .limiter-log li > span:first-child { grid-column: 1 / -1; color: var(--muted-foreground); font-size: .8125rem; }
-  .notes-section { padding-bottom: 72px; }
   .note-page { padding: 18px 0 64px; }
   .note-body > p, .note-body > ul { font-size: 1rem; }
 }
