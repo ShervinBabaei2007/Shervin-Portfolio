@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { ArrowDownRight, ArrowUpRight, Braces, FileText, Mail } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, Braces, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { Badge } from '@/components/ui/badge'
 import { findProject, type Project } from '@/data/projects'
 import { availabilityLine, site } from '@/data/site'
 import { facts } from '@/data/facts'
 import { Button } from '@/components/ui/button'
-import { cn, textLinkClass } from '@/lib/utils'
 
 const systemLayers = [
   {
@@ -36,13 +34,9 @@ const systemLayers = [
 ] as const
 
 const proof = [
-  { value: facts.hackathon.placement, label: `teams at ${facts.hackathon.name}`, to: '/work/gitscribe' },
-  {
-    value: `${facts.skillmatch.myCommits} commits`,
-    label: `most on a ${facts.skillmatch.teamSize}-person team project`,
-    to: '/work/skillmatch',
-  },
-  { value: `${facts.gpa} GPA`, label: `BCIT, graduating ${site.graduation}`, to: '/resume' },
+  { value: facts.hackathon.placement, label: facts.hackathon.name, to: '/work/gitscribe' },
+  { value: `${facts.skillmatch.myCommits} commits`, label: 'on SkillMatch', to: '/work/skillmatch' },
+  { value: `${facts.gpa} GPA`, label: 'at BCIT', to: '/resume' },
 ]
 
 function Hero() {
@@ -68,13 +62,6 @@ function Hero() {
           I&apos;m {site.name}. I like the moment a bug stops being mysterious. I build React and Node products end to
           end, then trace the request until I can explain the failure, the trade-off, and the fix in plain English.
         </p>
-        <div className="mt-5 flex flex-wrap gap-2" aria-label="Core stack">
-          {['React', 'Node.js', 'TypeScript', 'Python'].map((tag, index) => (
-            <Badge key={tag} variant={index % 2 ? 'secondary' : 'outline'}>
-              {tag}
-            </Badge>
-          ))}
-        </div>
         <div className="mt-7 flex flex-wrap items-center gap-3 max-[900px]:mt-6 max-[900px]:gap-2.5">
           <Button asChild size="lg" className="h-[46px] px-[17px] text-[.8125rem] font-semibold">
             <Link to="/#work">
@@ -86,32 +73,27 @@ function Hero() {
               View resume <FileText />
             </Link>
           </Button>
-          <a
-            className={cn(textLinkClass, 'text-sm text-muted-foreground max-[620px]:basis-full')}
-            href={`mailto:${site.email}`}
-          >
-            <Mail size={16} /> {site.email}
-          </a>
         </div>
         <ul
-          className="mt-7 grid max-w-[600px] list-none grid-cols-3 border-y p-0 max-[620px]:grid-cols-1 max-[620px]:border-b-0"
+          className="mt-8 flex list-none flex-wrap items-baseline gap-x-5 gap-y-1.5 p-0 text-sm text-muted-foreground"
           aria-label="Highlights"
         >
           {proof.map((item) => (
-            <li key={item.value} className="min-[621px]:[&:not(:first-child)]:border-l max-[620px]:border-b">
-              <Link
-                className="group grid h-full gap-1 py-3.5 pr-3.5 no-underline min-[621px]:[li:not(:first-child)_&]:pl-4 max-[620px]:grid-cols-[7.5rem_1fr] max-[620px]:items-baseline max-[620px]:py-[11px] max-[620px]:pr-0"
-                to={item.to}
-              >
-                <b className="text-[1.375rem] leading-[1.1] font-semibold tabular-nums group-hover:text-primary max-[620px]:text-lg">
-                  {item.value}
-                </b>
-                <span className="text-[.8125rem] leading-[1.4] text-muted-foreground">{item.label}</span>
+            <li
+              key={item.value}
+              className="flex items-baseline gap-5 [&:not(:first-child)]:before:text-border [&:not(:first-child)]:before:content-['·']"
+            >
+              <Link className="group no-underline" to={item.to}>
+                <b className="font-semibold text-foreground tabular-nums group-hover:text-primary">{item.value}</b>{' '}
+                {item.label}
               </Link>
             </li>
           ))}
         </ul>
-        <p className="mt-2.5 font-semibold text-foreground">{availabilityLine()}</p>
+        <p className="mt-4 flex max-w-[58ch] items-start gap-2.5 text-sm text-muted-foreground">
+          <span className="mt-[7px] size-2 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+          {availabilityLine()}
+        </p>
       </div>
       <div className="hero-side">
         <div className="hero-art" role="group" aria-label="Explore projects by application layer">
