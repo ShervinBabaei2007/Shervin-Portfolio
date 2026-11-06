@@ -22,7 +22,7 @@ test('hero states role, proof, availability, and links to the resume page', asyn
 
 test('pages are prerendered with content, metadata, and a PNG share image', async ({ request }) => {
   const html = await (await request.get('/work/skillmatch')).text()
-  expect(html).toContain('<h1 id="case-study-title">SkillMatch</h1>')
+  expect(html).toMatch(/<h1[^>]*id="case-study-title"[^>]*>SkillMatch<\/h1>/)
   expect(html).toContain('<title>SkillMatch case study | Shervin Babaei</title>')
   expect(html).toMatch(/<link rel="canonical" href="https:\/\/[^"]+\/work\/skillmatch"/)
   expect(html).toMatch(/<meta property="og:image" content="https:\/\/[^"]+\/og\/skillmatch\.png"/)
@@ -63,7 +63,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
   await expect(page).toHaveURL(/\/work\/skillmatch$/)
   await expect(page).toHaveTitle('SkillMatch case study | Shervin Babaei')
   await expect(page.getByRole('heading', { level: 1, name: 'SkillMatch' })).toBeVisible()
-  await expect(page.locator('.case-study-at-a-glance')).toContainText('114 of roughly 245 commits')
+  await expect(page.getByText('114 of roughly 245 commits').first()).toBeVisible()
   await expect(page.getByRole('link', { name: 'Team repository' })).toHaveAttribute(
     'href',
     'https://github.com/ClaisaZ/IDSP-MarketPlace-FSWD',
