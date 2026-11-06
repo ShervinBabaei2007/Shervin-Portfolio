@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils'
 /** The decorative thumbnail area: a dotted backdrop behind screenshots, code, or a terminal. */
 const visualClass = cn(
   'relative z-[1] grid h-[215px] place-items-center overflow-hidden px-7 py-[19px] max-[620px]:h-[205px] max-[620px]:p-4',
-  'bg-[#e8ecdf] bg-[radial-gradient(rgba(29,33,30,.11)_.8px,transparent_.8px)] bg-[length:13px_13px]',
+  'bg-muted bg-[radial-gradient(color-mix(in_srgb,var(--foreground)_12%,transparent)_.8px,transparent_.8px)] bg-[length:13px_13px]',
 )
 
 function CardMedia({ project }: { project: Project }) {

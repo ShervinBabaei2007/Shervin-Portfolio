@@ -6,48 +6,48 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* shadcn tokens. Dark (zinc-950 + emerald) is the default; :root holds the light variant. */
+/* shadcn tokens. Navy neutrals with a blue-indigo accent; dark is the default and :root holds the light variant. */
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.508 0.118 165.612);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.45 0.015 286.067);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
+  --background: #f6f8fc;
+  --foreground: #0c1a33;
+  --card: #ffffff;
+  --card-foreground: #0c1a33;
+  --popover: #ffffff;
+  --popover-foreground: #0c1a33;
+  --primary: #3f51e0; /* 5.7:1 on the page, 6.1:1 under white button text */
+  --primary-foreground: #ffffff;
+  --secondary: #e9edfd;
+  --secondary-foreground: #0c1a33;
+  --muted: #eef2f9;
+  --muted-foreground: #475569;
+  --accent: #e9edfd;
+  --accent-foreground: #0c1a33;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.596 0.145 163.225);
+  --border: #dce3ef;
+  --input: #dce3ef;
+  --ring: #3f51e0;
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823); /* zinc-950 */
-  --foreground: oklch(0.967 0.001 286.375); /* zinc-100 */
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.967 0.001 286.375);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.967 0.001 286.375);
-  --primary: oklch(0.696 0.17 162.48); /* emerald-500 */
-  --primary-foreground: oklch(0.141 0.005 285.823);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.967 0.001 286.375);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.967 0.001 286.375);
+  --background: #0a1122;
+  --foreground: #e6ecf8;
+  --card: #111a30;
+  --card-foreground: #e6ecf8;
+  --popover: #111a30;
+  --popover-foreground: #e6ecf8;
+  --primary: #8aa4ff; /* 7.9:1 on the page */
+  --primary-foreground: #0a1122;
+  --secondary: #18233f;
+  --secondary-foreground: #e6ecf8;
+  --muted: #18233f;
+  --muted-foreground: #94a3c0;
+  --accent: #18233f;
+  --accent-foreground: #e6ecf8;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(0.274 0.006 286.033); /* zinc-800 */
-  --input: oklch(0.274 0.006 286.033);
-  --ring: oklch(0.696 0.17 162.48);
+  --border: #22304d;
+  --input: #22304d;
+  --ring: #8aa4ff;
 }
 
 @layer base {

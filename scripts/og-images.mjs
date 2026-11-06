@@ -19,19 +19,19 @@ const card = ({ kicker, title, subtitle, result }) => `<!doctype html><html><hea
 @font-face { font-family: Mono; src: url('${fontUrl('@fontsource/dm-mono/files/dm-mono-latin-400-normal.woff2')}'); }
 * { box-sizing: border-box; margin: 0; }
 body { width: 1200px; height: 630px; padding: 72px 84px; display: flex; flex-direction: column;
-  color: #1d211e; font-family: Body, sans-serif;
-  background-color: #f5f6f1;
-  background-image: linear-gradient(rgba(40,55,45,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(40,55,45,.05) 1px, transparent 1px);
+  color: #e6ecf8; font-family: Body, sans-serif;
+  background-color: #0a1122;
+  background-image: linear-gradient(rgba(148,163,192,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,192,.07) 1px, transparent 1px);
   background-size: 38px 38px; }
 .top { display: flex; align-items: center; justify-content: space-between; }
 .mark { display: flex; align-items: center; gap: 10px; }
-.mark b { display: grid; place-items: center; width: 52px; height: 52px; color: #f5f6f1; background: #1d211e; font: 700 24px Display; }
-.mark i { width: 10px; height: 10px; border-radius: 50%; background: #a33727; }
-.kicker { color: #6b716b; font: 22px Mono; }
+.mark b { display: grid; place-items: center; width: 52px; height: 52px; color: #0a1122; background: #8aa4ff; font: 700 24px Display; border-radius: 12px; }
+.mark i { width: 10px; height: 10px; border-radius: 50%; background: #8aa4ff; }
+.kicker { color: #94a3c0; font: 22px Mono; }
 h1 { margin-top: auto; max-width: 960px; font: 600 ${title.length > 40 ? 60 : title.length > 18 ? 84 : 104}px/1.04 Display; letter-spacing: -.02em; }
-p { margin-top: 22px; max-width: 960px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #4f564f; font-size: 30px; line-height: 1.35; }
-.result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #a33727; background: #fffefa; font: 600 26px Body; }
-.foot { display: flex; justify-content: space-between; margin-top: 40px; color: #6b716b; font: 20px Mono; }
+p { margin-top: 22px; max-width: 960px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #94a3c0; font-size: 30px; line-height: 1.35; }
+.result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #8aa4ff; background: #111a30; font: 600 26px Body; }
+.foot { display: flex; justify-content: space-between; margin-top: 40px; color: #94a3c0; font: 20px Mono; }
 </style></head><body>
 <div class="top"><div class="mark"><b>SB</b><i></i></div><span class="kicker">${escape(kicker)}</span></div>
 <h1>${escape(title)}</h1>

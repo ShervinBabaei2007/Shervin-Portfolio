@@ -32,15 +32,15 @@
   --display: var(--font-body);   /* headings use the body face, DM Sans */
 
   /* Colour */
-  --accent-dark: #065f46;
+  --accent-dark: #3340c0;
 
-  --grid-line: rgba(24, 24, 27, .03);
-  --ring-2: #d4d4d8;            /* hero orbit, dashed                 */
-  --ring-3: #e4e4e7;            /* hero orbit, outer                  */
-  --tag-ink: #3f3f46;
-  --tag-line: #e4e4e7;
-  --section-dark: #18181b;      /* About section background           */
-  --on-dark: #f4f4f5;
+  --grid-line: rgba(12, 26, 51, .035);
+  --ring-2: #c9d3e6;            /* hero orbit, dashed                 */
+  --ring-3: #dce3ef;            /* hero orbit, outer                  */
+  --tag-ink: #3b4a66;
+  --tag-line: #dce3ef;
+  --section-dark: #0c1a33;      /* About section background           */
+  --on-dark: #e6ecf8;
   --glow: rgba(255, 255, 255, .2);
   --toggle-hover: rgba(255, 255, 255, .55);
 
@@ -62,15 +62,15 @@
 
 /* Dark values for the tokens above. The shadcn tokens (background, foreground, border, ...) live in tailwind.css. */
 .dark {
-  --accent-dark: #6ee7b7;
+  --accent-dark: #b0c1ff;
 
-  --grid-line: rgba(255, 255, 255, .03);
-  --ring-2: #3f3f46;
-  --ring-3: #27272a;
-  --tag-ink: #d4d4d8;
+  --grid-line: rgba(148, 163, 192, .05);
+  --ring-2: #2a3a5c;
+  --ring-3: #22304d;
+  --tag-ink: #c3cde0;
   --tag-line: var(--border);
-  --section-dark: #0c0c0f;
-  --glow: rgba(255, 255, 255, .12);
+  --section-dark: #070d1b;
+  --glow: rgba(138, 164, 255, .14);
   --toggle-hover: rgba(255, 255, 255, .08);
 }
 
@@ -178,7 +178,8 @@ a:focus-visible {
 /* Mono label family (sizes are set per component) */
 .eyebrow {
   font-family: var(--mono);
-  letter-spacing: 0;
+  font-size: .8125rem;
+  letter-spacing: .08em;
 }
 
 /* Enlarged hit areas (≥44px) without changing layout.
@@ -213,10 +214,6 @@ a:focus-visible {
 }
 
 .section-heading h2 span { color: var(--primary); }
-
-.eyebrow {
-  font-size: 1rem;
-}
 
 .eyebrow-mark { color: var(--primary); }
 .eyebrow-divider { color: var(--muted-foreground); }
@@ -279,7 +276,7 @@ a:focus-visible {
   text-align: left;
   border: 1px solid var(--border);
   background: var(--card);
-  box-shadow: 0 8px 24px rgba(20, 30, 24, .06);
+  box-shadow: 0 8px 24px rgba(12, 26, 51, .06);
   cursor: pointer;
   transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
@@ -303,11 +300,11 @@ a:focus-visible {
 .art-node:hover,
 .art-node.is-active {
   border-color: var(--primary);
-  box-shadow: 0 10px 30px rgba(20, 30, 24, .14);
+  box-shadow: 0 10px 30px rgba(12, 26, 51, .14);
   transform: translateY(-2px);
 }
 
-.art-node.is-active { box-shadow: 0 10px 30px rgba(20, 30, 24, .14), inset 0 -3px 0 var(--primary); }
+.art-node.is-active { box-shadow: 0 10px 30px rgba(12, 26, 51, .14), inset 0 -3px 0 var(--primary); }
 
 .art-node:focus-visible {
   z-index: 3;
@@ -454,7 +451,7 @@ a:focus-visible {
   .project-card:hover,
   .project-card:focus-within {
     border-color: var(--primary);
-    box-shadow: 0 14px 32px rgba(20, 30, 24, .12);
+    box-shadow: 0 14px 32px rgba(12, 26, 51, .12);
     transform: translateY(-4px);
   }
 
@@ -517,9 +514,6 @@ a:focus-visible {
   .section-aside br { display: none; }
 }
 
-@media (max-width: 360px) {
-}
-
 
 /* ==========================================================================
    14. USER-PREFERENCE QUERIES
@@ -528,14 +522,14 @@ a:focus-visible {
 /* Increased contrast */
 @media (prefers-contrast: more) {
   :root {
-    --muted-foreground: #454b45;
-    --border: #7f867f;
+    --muted-foreground: #2f3b52;
+    --border: #6b7a96;
   }
 
   .dark {
-    --muted-foreground: #cbd3ca;
-    --border: #6c776e;
-    --ring-3: #6c776e;
+    --muted-foreground: #cbd5e8;
+    --border: #5a6d92;
+    --ring-3: #5a6d92;
   }
 
 }
@@ -585,7 +579,7 @@ a:focus-visible {
     --muted-foreground: #333;
     --border: #999;
     --card: #fff;
-    --primary: #8c2e21;
+    --primary: #1e3a8a;
     --grid-line: transparent;
   }
 
@@ -634,10 +628,10 @@ main:focus { outline: none; }
   min-width: 0;
   margin: 14px 0 0;
   overflow: hidden;
-  color: #e3ebdf;
-  border: 1px solid #2f3a33;
-  border-radius: 3px;
-  background: #1c2420;
+  color: #e2e8f6;
+  border: 1px solid #22304d;
+  border-radius: 6px;
+  background: #0f1a30;
 }
 
 .code-block-bar,
@@ -648,7 +642,7 @@ main:focus { outline: none; }
   gap: 12px;
   min-height: 36px;
   padding: 0 14px;
-  color: #a9b6a6;
+  color: #9fb0cc;
   border-bottom: 1px solid rgba(255, 255, 255, .1);
   font: .75rem var(--mono);
 }
@@ -660,14 +654,14 @@ main:focus { outline: none; }
   flex: 0 0 auto;
   align-items: center;
   gap: 6px;
-  color: #a7f3d0;
+  color: #a5b8ff;
   text-decoration: none;
 }
 
 .code-block-bar a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .terminal-block-bar { justify-content: flex-start; gap: 6px; }
-.terminal-block-bar span { width: 9px; height: 9px; border-radius: 50%; background: #4a564d; }
+.terminal-block-bar span { width: 9px; height: 9px; border-radius: 50%; background: #3b4a68; }
 .terminal-block-bar b { margin-left: 8px; font-weight: 400; }
 
 .code-block pre,
@@ -685,7 +679,7 @@ main:focus { outline: none; }
 .code-block figcaption,
 .terminal-block figcaption {
   padding: 10px 16px 12px;
-  color: #b9c4b6;
+  color: #9fb0cc;
   border-top: 1px solid rgba(255, 255, 255, .1);
   font-size: .875rem;
   line-height: 1.5;
