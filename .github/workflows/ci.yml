@@ -21,3 +21,5 @@ jobs:
       - run: npx playwright install --with-deps chromium
       # Playwright's webServer runs the full build (snapshot, client, SSR, prerender) before serving.
       - run: npx playwright test --grep-invert @visual
+      # The e2e step above builds into dist/; check the entry chunk stays within its size budget.
+      - run: npm run check:bundle

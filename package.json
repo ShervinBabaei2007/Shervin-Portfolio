@@ -10,6 +10,7 @@
     "test:e2e": "playwright test --grep-invert @visual",
     "test:visual": "playwright test --grep @visual",
     "analyze": "vite build --mode analyze",
+    "check:bundle": "node scripts/check-bundle-size.mjs",
     "og:images": "node scripts/og-images.mjs",
     "resume:pdf": "node scripts/resume-pdf.mjs",
     "favicons": "node scripts/favicons.mjs",
