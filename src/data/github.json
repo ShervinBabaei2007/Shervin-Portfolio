@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-11-06T21:09:43.130Z",
+  "fetchedAt": "2026-11-06T21:32:08.055Z",
   "repos": [
     {
       "name": "Network-Growth-Assistance",
@@ -35,6 +35,13 @@
       "description": null,
       "language": "C++",
       "pushedAt": "2026-08-01T17:40:57Z"
+    },
+    {
+      "name": "tic-tac-toe-minimax-ai",
+      "url": "https://github.com/ShervinBabaei2007/tic-tac-toe-minimax-ai",
+      "description": "Tic-Tac-Toe AI that never loses - built with Minimax in Python",
+      "language": "Python",
+      "pushedAt": "2026-06-22T17:17:48Z"
     }
   ]
 }

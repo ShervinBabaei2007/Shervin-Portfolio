@@ -2,8 +2,10 @@ import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { flagshipProjects, moreProjects } from '@/data/projects'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import GitHubActivity from '@/components/home/GitHubActivity'
 import ProjectCard from '@/components/home/ProjectCard'
 import SectionHeading from '@/components/shared/SectionHeading'
+import { cn, textLinkClass } from '@/lib/utils'
 
 type ProjectsSectionProps = {
   activeSkill: string | null
@@ -56,7 +58,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         >
           <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:gap-6">
             {flagships.map((project) => (
-              <CarouselItem key={project.slug} className="basis-[88%] sm:basis-[70%] md:basis-auto md:pl-0">
+              <CarouselItem key={project.slug} className="basis-[88%] sm:basis-[70%] md:basis-auto md:pl-0 [&>*]:h-full">
                 <ProjectCard project={project} />
               </CarouselItem>
             ))}
@@ -92,6 +94,21 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
             ))}
           </ul>
         </div>
+      )}
+      {!activeSkill && (
+        <div className="mt-14 empty:hidden">
+          <GitHubActivity />
+        </div>
+      )}
+      {!activeSkill && (
+        <p className="mt-10 flex flex-wrap gap-x-8 gap-y-2 text-[.9375rem] text-muted-foreground">
+          <Link className={cn(textLinkClass, 'text-foreground')} to="/lab">
+            Try the rate-limiter lab <ArrowUpRight size={15} />
+          </Link>
+          <Link className={cn(textLinkClass, 'text-foreground')} to="/notes">
+            Read my engineering notes <ArrowUpRight size={15} />
+          </Link>
+        </p>
       )}
       {flagships.length === 0 && others.length === 0 && (
         <p className="mt-3 text-sm text-muted-foreground">No projects use {activeSkill} yet.</p>

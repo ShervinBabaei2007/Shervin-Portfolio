@@ -26,7 +26,7 @@ try {
   if (!response.ok) throw new Error(`GitHub responded ${response.status}`)
   const repos = (await response.json())
     .filter((repo) => !repo.fork && !repo.private)
-    .slice(0, 5)
+    .slice(0, 6)
     .map((repo) => ({
       name: repo.name,
       url: repo.html_url,

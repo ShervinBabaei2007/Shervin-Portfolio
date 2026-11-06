@@ -6,7 +6,7 @@ import { site } from '@/data/site'
 type Repo = { name: string; url: string; description: string | null; language: string | null; pushedAt: string }
 
 const user = site.github.split('/').pop()
-const CACHE_KEY = 'github-activity'
+const CACHE_KEY = 'github-activity-v2'
 const CACHE_MS = 15 * 60 * 1000
 const FRESH_DAYS = 90
 
@@ -70,7 +70,7 @@ function GitHubActivity() {
       .then((data: Array<Repo & { html_url: string; pushed_at: string; fork: boolean }>) => {
         const fresh = data
           .filter((repo) => !repo.fork)
-          .slice(0, 5)
+          .slice(0, 6)
           .map((repo) => ({
             name: repo.name,
             url: repo.html_url,
@@ -105,7 +105,7 @@ function GitHubActivity() {
           {live ? 'Live from GitHub' : 'Updated at last deploy'}
         </span>
       </div>
-      <ul className="m-0 mt-3 list-none p-0 [&>li+li]:border-t">
+      <ul className="m-0 mt-3 grid list-none p-0 md:grid-cols-2 md:gap-x-10 [&>li]:border-t [&>li:first-child]:border-t-0 md:[&>li:nth-child(2)]:border-t-0 max-md:[&>li:nth-child(n+4)]:hidden">
         {repos.map((repo) => (
           <li key={repo.name}>
             <a className="group grid gap-[3px] py-[11px] no-underline" href={repo.url} target="_blank" rel="noreferrer">
