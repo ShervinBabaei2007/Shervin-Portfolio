@@ -6,7 +6,7 @@ type PageIntroProps = { eyebrow: string; id: string; title: ReactNode; lead?: Re
 function PageIntro({ eyebrow, id, title, lead }: PageIntroProps) {
   return (
     <>
-      <p className="eyebrow mt-4 mb-7">{eyebrow}</p>
+      <p className="mt-4 mb-7 eyebrow">{eyebrow}</p>
       <h1 id={id} className="mt-3.5 max-w-[18ch] text-[clamp(2.25rem,1.7rem+2vw,3.25rem)] leading-[1.08] font-semibold">
         {title}
       </h1>

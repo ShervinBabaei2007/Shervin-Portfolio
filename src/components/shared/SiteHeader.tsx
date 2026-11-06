@@ -71,7 +71,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
         <img className="size-[35px] rounded-[8px]" src="/logo.svg" width={35} height={35} alt="" />
       </Link>
       <nav
-        className="col-start-2 flex flex-wrap justify-center justify-self-center gap-x-[clamp(22px,2.2vw,34px)] max-[620px]:hidden"
+        className="col-start-2 flex flex-wrap justify-center gap-x-[clamp(22px,2.2vw,34px)] justify-self-center max-[620px]:hidden"
         aria-label="Main navigation"
       >
         {navLinks.map((link) => (

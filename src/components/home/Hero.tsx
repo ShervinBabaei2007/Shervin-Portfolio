@@ -63,7 +63,7 @@ function Hero() {
 
   return (
     <section
-      className="section-wrap relative grid min-h-[calc(100svh-var(--header-height))] grid-cols-[1.08fr_.92fr] items-center pt-[37px] pb-[5.5625rem] max-[900px]:flex max-[900px]:min-h-0 max-[900px]:flex-col max-[900px]:items-stretch max-[900px]:pt-[58px] max-[900px]:pb-[4.875rem] max-[620px]:pt-9 max-[620px]:pb-10 print:min-h-0 print:py-4"
+      className="relative section-wrap grid min-h-[calc(100svh-var(--header-height))] grid-cols-[1.08fr_.92fr] items-center pt-[37px] pb-[5.5625rem] max-[900px]:flex max-[900px]:min-h-0 max-[900px]:flex-col max-[900px]:items-stretch max-[900px]:pt-[58px] max-[900px]:pb-[4.875rem] max-[620px]:pt-9 max-[620px]:pb-10 print:min-h-0 print:py-4"
       id="home"
       aria-labelledby="hero-title"
     >
@@ -100,7 +100,7 @@ function Hero() {
           <ArrowUpRight size={14} />
         </Link>
       </div>
-      <div className="grid gap-2 self-center justify-items-end max-[900px]:mt-9 max-[900px]:justify-items-stretch max-[620px]:hidden">
+      <div className="grid justify-items-end gap-2 self-center max-[900px]:mt-9 max-[900px]:justify-items-stretch max-[620px]:hidden">
         <div
           className="relative mt-2.5 aspect-square w-full max-w-[400px] animate-reveal-in justify-self-end max-[900px]:mt-[38px] max-[900px]:w-[min(100%,360px)] max-[900px]:self-center max-[900px]:justify-self-center"
           role="group"
@@ -111,7 +111,7 @@ function Hero() {
           <div className={cn(orbit, 'w-[94%] border-(color:--ring-3)')} />
           <span className={cn(cross, 'top-[17%] right-[19%]')}>+</span>
           <span className={cn(cross, 'bottom-[18%] left-[8%]')}>+</span>
-          <div className="absolute top-1/2 left-1/2 flex size-[118px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-[9px] rounded-full bg-[linear-gradient(145deg,var(--primary),var(--accent-dark))] text-primary-foreground shadow-[0_10px_30px_color-mix(in_srgb,var(--primary)_35%,transparent)] max-[900px]:size-[98px] max-[900px]:[&_svg]:w-[25px] forced-colors:border forced-colors:border-[CanvasText]">
+          <div className="absolute top-1/2 left-1/2 flex size-[118px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-[9px] rounded-full bg-[linear-gradient(145deg,var(--primary),var(--accent-dark))] text-primary-foreground shadow-[0_10px_30px_color-mix(in_srgb,var(--primary)_35%,transparent)] max-[900px]:size-[98px] forced-colors:border forced-colors:border-[CanvasText] max-[900px]:[&_svg]:w-[25px]">
             <Braces size={31} strokeWidth={1.5} />
             <span className="text-center font-mono text-[.75rem] leading-[1.5]">
               TRACE THE

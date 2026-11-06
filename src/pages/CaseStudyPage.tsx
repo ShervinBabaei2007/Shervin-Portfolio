@@ -77,7 +77,7 @@ function CaseStudyPage() {
         <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground">{project.subtitle}</p>
 
         <p className="mt-3.5 flex max-w-[70ch] items-baseline gap-2 text-sm leading-normal text-muted-foreground">
-          <Users className="translate-y-0.5 flex-none text-primary" size={15} aria-hidden="true" /> {project.team}
+          <Users className="flex-none translate-y-0.5 text-primary" size={15} aria-hidden="true" /> {project.team}
         </p>
 
         <dl

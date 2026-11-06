@@ -52,7 +52,7 @@ function AboutSection() {
             </Link>
           </div>
         </div>
-        <dl className="mt-14 grid grid-cols-2 gap-x-8 gap-y-7 border-t border-white/15 pt-8 md:grid-cols-4 max-[620px]:mt-10 max-[620px]:grid-cols-1">
+        <dl className="mt-14 grid grid-cols-2 gap-x-8 gap-y-7 border-t border-white/15 pt-8 max-[620px]:mt-10 max-[620px]:grid-cols-1 md:grid-cols-4">
           {quickFacts.map((fact) => (
             <div key={fact.label}>
               <dt className="font-mono text-xs tracking-[.08em] text-[#93a3c4]">{fact.label}</dt>

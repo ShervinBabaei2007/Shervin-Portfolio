@@ -48,8 +48,8 @@ function ScreenshotGallery({ shots, projectName, layout = 'stack' }: ScreenshotG
               className={cn(
                 'grid w-full cursor-zoom-in place-items-center rounded-lg bg-background transition-shadow hover:ring-2 hover:ring-primary/60 [&_img]:block [&_img]:w-full [&_img]:object-contain',
                 layout === 'strip'
-                  ? 'min-h-[150px] [&_img]:h-[clamp(190px,30svh,300px)] max-[620px]:min-h-[140px] max-[620px]:[&_img]:h-[170px]'
-                  : 'min-h-[180px] [&_img]:h-[clamp(190px,27svh,270px)] max-[620px]:min-h-[220px] max-[620px]:[&_img]:h-[280px]',
+                  ? 'min-h-[150px] max-[620px]:min-h-[140px] [&_img]:h-[clamp(190px,30svh,300px)] max-[620px]:[&_img]:h-[170px]'
+                  : 'min-h-[180px] max-[620px]:min-h-[220px] [&_img]:h-[clamp(190px,27svh,270px)] max-[620px]:[&_img]:h-[280px]',
               )}
               onClick={() => openAt(i)}
               aria-label={`Enlarge screenshot: ${item.caption}`}
