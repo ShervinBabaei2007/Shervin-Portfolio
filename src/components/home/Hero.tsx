@@ -69,7 +69,7 @@ function Hero() {
     >
       <div className="z-[1] animate-rise-in pt-[5px]">
         <p className="eyebrow">
-          <span className="eyebrow-mark">01</span> VANCOUVER, BC <span className="eyebrow-divider">/</span> BCIT
+          <span className="text-primary">01</span> VANCOUVER, BC <span className="text-muted-foreground">/</span> BCIT
         </p>
         <h1
           id="hero-title"

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
 
 type SectionHeadingProps = {
   /** Heading id, referenced by the section's aria-labelledby. */
@@ -17,17 +18,26 @@ type SectionHeadingProps = {
 /** The numbered eyebrow, heading and aside that open every home-page section. */
 function SectionHeading({ id, number, eyebrow, title, punctuation = '.', aside, className }: SectionHeadingProps) {
   return (
-    <div className={className ? `section-heading ${className}` : 'section-heading'}>
+    <div
+      className={cn(
+        'flex items-end justify-between gap-[30px] max-[620px]:flex-col max-[620px]:items-start max-[620px]:gap-3',
+        className,
+      )}
+    >
       <div>
         <p className="eyebrow">
-          <span className="eyebrow-mark">{number}</span> {eyebrow}
+          <span className="text-primary">{number}</span> {eyebrow}
         </p>
-        <h2 id={id} className="mt-4 text-[clamp(1.875rem,1.5rem+1.4vw,2.5rem)] leading-[1.15]">
+        <h2 id={id} className="mt-4 text-[clamp(1.875rem,1.5rem+1.4vw,2.5rem)] leading-[1.15] [&_span]:text-primary">
           {title}
           <span>{punctuation}</span>
         </h2>
       </div>
-      {aside && <p className="section-aside">{aside}</p>}
+      {aside && (
+        <p className="mb-1 text-[1rem] leading-[1.65] text-muted-foreground max-[620px]:text-[.9375rem] max-[620px]:[&_br]:hidden">
+          {aside}
+        </p>
+      )}
     </div>
   )
 }

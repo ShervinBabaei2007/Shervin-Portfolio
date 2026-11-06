@@ -70,8 +70,11 @@ function App() {
   usePageMeta()
 
   return (
-    <div className="site-shell">
-      <a className="skip-link" href="#main">
+    <div className="min-h-dvh overflow-clip bg-background bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[length:38px_38px] text-foreground transition-[background-color,color] duration-[250ms] ease-[ease] print:min-h-0 print:bg-none">
+      <a
+        className="fixed top-3 left-3 z-[100] -translate-y-[160%] bg-foreground px-3.5 py-2.5 text-background focus:translate-y-0 print:hidden"
+        href="#main"
+      >
         Skip to content
       </a>
       <ScrollManager />
@@ -81,7 +84,7 @@ function App() {
           <Suspense
             fallback={
               <div
-                className="page-loading section-wrap grid content-start gap-4 pt-12"
+                className="section-wrap grid min-h-[70vh] content-start gap-4 pt-12"
                 aria-busy="true"
                 aria-label="Loading page"
               >

@@ -1,5 +1,4 @@
-/* Layer order: the old hand-written stylesheet (legacy) sits above Tailwind's base but below utilities. */
-@layer theme, base, legacy, components, utilities;
+@layer theme, base, components, utilities;
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
@@ -50,8 +49,77 @@
   --ring: #8aa4ff;
 }
 
+/* Site tokens (type, layout, accents). The colour tokens above follow shadcn; these are this site's own.
+   They stay unlayered and come before the print block so print can override them. */
+:root {
+  --font-body: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --display: var(--font-body);
+  --accent-dark: #3340c0;
+  --grid-line: rgba(12, 26, 51, 0.035);
+  --ring-2: #c9d3e6; /* hero orbit, dashed */
+  --ring-3: #dce3ef; /* hero orbit, outer */
+  --section-dark: #0c1a33; /* About section background */
+  --on-dark: #e6ecf8;
+  --glow: rgba(255, 255, 255, 0.2);
+  --header-height: 78px;
+  --gutter: 40px;
+  --content-max: 1160px;
+  --target: 44px; /* minimum comfortable touch target */
+}
+
+.dark {
+  --accent-dark: #b0c1ff;
+  --grid-line: rgba(148, 163, 192, 0.05);
+  --ring-2: #2a3a5c;
+  --ring-3: #22304d;
+  --section-dark: #070d1b;
+  --glow: rgba(138, 164, 255, 0.14);
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --gutter: 56px;
+    --content-max: 1320px;
+  }
+}
+
+@media (min-width: 1800px) {
+  :root {
+    --gutter: 80px;
+    --content-max: 1480px;
+  }
+}
+
+@media (max-width: 1100px) {
+  :root {
+    --gutter: 32px;
+  }
+}
+
+@media (max-width: 620px) {
+  :root {
+    --gutter: 20px;
+    --header-height: 65px;
+  }
+}
+
+/* Increased contrast. (This block used to sit in a layer that lost to the tokens above, so it never applied.) */
+@media (prefers-contrast: more) {
+  :root {
+    --muted-foreground: #2f3b52;
+    --border: #6b7a96;
+  }
+
+  .dark {
+    --muted-foreground: #cbd5e8;
+    --border: #5a6d92;
+    --ring-3: #5a6d92;
+  }
+}
+
 /* Print always uses plain dark-on-white colours, whichever theme is on screen. These are unlayered like the
-   tokens above, and later in the file, so they win; the same rules inside the legacy layer would lose. */
+   tokens above, and later in the file, so they win over the site tokens above. */
 @media print {
   :root,
   .dark {
@@ -72,6 +140,38 @@
   ::before,
   ::after {
     border-color: var(--border);
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-height) + 16px);
+    scrollbar-gutter: stable;
+    color: var(--foreground);
+    background: var(--background);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    min-width: 320px;
+  }
+  button:focus-visible,
+  a:focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 4px;
+  }
+  ::selection {
+    color: var(--primary-foreground);
+    background: var(--primary);
+  }
+  main:focus {
+    outline: none;
+  }
+  :not(pre) > code {
+    padding: 0.1em 0.35em;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--background);
+    font: 0.875em var(--mono);
+    overflow-wrap: anywhere;
   }
   /* Type: semibold headings with tighter tracking, balanced line breaks, and no orphan words in paragraphs. */
   body {
@@ -177,5 +277,34 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+/* Page content width: the content column with a gutter on each side. */
+@utility section-wrap {
+  width: min(var(--content-max), calc(100% - 2 * var(--gutter)));
+  margin-inline: auto;
+}
+
+/* Mono label family (sizes are set per component). */
+@utility eyebrow {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+}
+
+/* Reduced motion: one consolidated block. !important is deliberate (it must beat every component rule). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

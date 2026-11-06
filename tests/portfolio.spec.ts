@@ -179,7 +179,7 @@ test('layout stays within phone, tablet, and desktop viewports', async ({ page }
       await page.goto(path)
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
       expect(overflow, `${path} at ${width}px`).toBeLessThanOrEqual(0)
-      // .site-shell clips overflow, so also check that no text block is cut off at the edge.
+      // The page shell clips overflow, so also check that no text block is cut off at the edge.
       const clipped = await page.evaluate(() =>
         [...document.querySelectorAll('main p, main h1, main h2, main pre, main li')]
           .filter((el) => !el.closest('pre') && !el.closest('.project-visual') && !el.closest('[data-slot="carousel"]'))
@@ -352,7 +352,7 @@ test('a slow page keeps the current page on screen, then lands on the linked sec
   await expect(page.getByRole('heading', { name: /Notes on things I built/ })).toBeVisible()
   await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Contact' }).click()
   await expect(page.getByRole('heading', { name: /Notes on things I built/ })).toBeVisible()
-  await expect(page.locator('.page-loading')).toHaveCount(0)
+  await expect(page.locator('[aria-label="Loading page"]')).toHaveCount(0)
 
   await expect(page).toHaveURL(/\/#contact$/, { timeout: 5000 })
   await expect(page.locator('#contact')).toBeInViewport()

@@ -6,7 +6,6 @@ import { reloadOnceAfterChunkFailure } from './lib/reloadOnce'
 import { pageForPath, preloadAllPages } from './routes'
 import './fonts.css'
 import './tailwind.css'
-import './styles.css'
 
 const container = document.getElementById('root')!
 const app = (

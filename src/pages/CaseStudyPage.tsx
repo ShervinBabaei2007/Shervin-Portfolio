@@ -66,7 +66,7 @@ function CaseStudyPage() {
 
       <header className="mt-[18px]">
         <p className="eyebrow">
-          {project.category.toUpperCase()} <span className="eyebrow-divider">/</span> {project.date.toUpperCase()}
+          {project.category.toUpperCase()} <span className="text-muted-foreground">/</span> {project.date.toUpperCase()}
         </p>
         <h1
           id="case-study-title"
