@@ -17,13 +17,13 @@ function AboutSection() {
       aria-labelledby="about-title"
     >
       <div className="section-wrap grid grid-cols-[1fr_1.05fr] items-start gap-x-[12%] max-[900px]:gap-x-[7%] max-[620px]:block">
-        <div className="relative min-h-[310px] max-[620px]:min-h-[243px]">
+        <div className="relative min-h-[230px] max-[620px]:min-h-[200px]">
           <p className="eyebrow text-[#a9b6d3]">
             <span className="eyebrow-mark">05</span> A LITTLE ABOUT ME
           </p>
           <h2
             id="about-title"
-            className="mt-[27px] text-[clamp(3.0625rem,2.4rem+1.6vw,4rem)] leading-[1.08] [&_span]:text-primary"
+            className="mt-[27px] text-[clamp(2.25rem,1.8rem+1.6vw,3rem)] leading-[1.1] [&_span]:text-primary"
           >
             Why I keep
             <br />

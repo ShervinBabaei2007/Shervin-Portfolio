@@ -60,7 +60,7 @@ function Hero() {
         </p>
         <h1
           id="hero-title"
-          className="mt-[18px] max-w-[12ch] text-[clamp(2.75rem,1.2rem+4.2vw,4.875rem)] leading-[1.02] max-[620px]:mt-[22px] max-[620px]:leading-[1.01] max-[360px]:text-[2.25rem] [&_span]:text-primary"
+          className="mt-[18px] max-w-[20ch] text-[clamp(2.5rem,1.3rem+4vw,4.25rem)] leading-[1.05] max-[620px]:mt-[22px] max-[360px]:text-[2.25rem] [&_span]:text-primary"
         >
           Full-stack developer who goes <span>down the stack.</span>
         </h1>
@@ -103,7 +103,7 @@ function Hero() {
                 className="group grid h-full gap-1 py-3.5 pr-3.5 no-underline min-[621px]:[li:not(:first-child)_&]:pl-4 max-[620px]:grid-cols-[7.5rem_1fr] max-[620px]:items-baseline max-[620px]:py-[11px] max-[620px]:pr-0"
                 to={item.to}
               >
-                <b className="text-[1.375rem] leading-[1.1] font-semibold group-hover:text-primary max-[620px]:text-lg">
+                <b className="text-[1.375rem] leading-[1.1] font-semibold tabular-nums group-hover:text-primary max-[620px]:text-lg">
                   {item.value}
                 </b>
                 <span className="text-[.8125rem] leading-[1.4] text-muted-foreground">{item.label}</span>

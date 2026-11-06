@@ -84,9 +84,7 @@ function ProjectCard({ project }: { project: Project }) {
             <span>{project.category}</span>
             <span>{project.date}</span>
           </div>
-          <h3 className="mt-[15px] text-[1.6875rem] leading-[1.1] font-semibold max-[620px]:text-2xl">
-            {project.name}
-          </h3>
+          <h3 className="mt-[15px] text-2xl leading-[1.15] font-semibold max-[620px]:text-xl">{project.name}</h3>
           <p className="mt-1.5 font-semibold">{project.subtitle}</p>
           <p className="mt-[11px] leading-[1.65] text-muted-foreground">{project.summary}</p>
           <div className="mt-4 flex flex-wrap gap-1.5" aria-label="Stack">

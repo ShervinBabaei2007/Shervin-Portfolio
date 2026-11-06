@@ -386,11 +386,6 @@ a:focus-visible {
   gap: 30px;
 }
 
-.section-heading h2 {
-  margin-top: 16px;
-  font-size: clamp(2.375rem, 1.95rem + 1.2vw, 3.125rem);
-}
-
 .section-aside {
   margin: 0 0 4px;
   color: var(--muted-foreground);

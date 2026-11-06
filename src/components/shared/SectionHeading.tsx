@@ -22,7 +22,7 @@ function SectionHeading({ id, number, eyebrow, title, punctuation = '.', aside, 
         <p className="eyebrow">
           <span className="eyebrow-mark">{number}</span> {eyebrow}
         </p>
-        <h2 id={id}>
+        <h2 id={id} className="mt-4 text-[clamp(1.875rem,1.5rem+1.4vw,2.5rem)] leading-[1.15]">
           {title}
           <span>{punctuation}</span>
         </h2>

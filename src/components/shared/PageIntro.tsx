@@ -7,7 +7,7 @@ function PageIntro({ eyebrow, id, title, lead }: PageIntroProps) {
   return (
     <>
       <p className="eyebrow mt-4 mb-7">{eyebrow}</p>
-      <h1 id={id} className="mt-3.5 max-w-[18ch] text-[clamp(2.375rem,1.8rem+2vw,3.5rem)] leading-[1.06] font-semibold">
+      <h1 id={id} className="mt-3.5 max-w-[18ch] text-[clamp(2.25rem,1.7rem+2vw,3.25rem)] leading-[1.08] font-semibold">
         {title}
       </h1>
       {lead && <p className="mt-4 mb-7 max-w-[60ch] text-[1.125rem] leading-[1.65] text-muted-foreground">{lead}</p>}

@@ -53,7 +53,7 @@ function CaseStudyPage() {
         </p>
         <h1
           id="case-study-title"
-          className="mt-3.5 text-[clamp(2.5rem,1.8rem+2.4vw,4rem)] leading-[1.04] font-semibold"
+          className="mt-3.5 text-[clamp(2.25rem,1.6rem+2.2vw,3.5rem)] leading-[1.08] font-semibold"
         >
           {project.name}
         </h1>

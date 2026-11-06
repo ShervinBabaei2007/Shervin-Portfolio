@@ -57,6 +57,27 @@
   ::after {
     border-color: var(--border);
   }
+  /* Type: semibold headings with tighter tracking, balanced line breaks, and no orphan words in paragraphs. */
+  body {
+    -webkit-font-smoothing: antialiased;
+    font-optical-sizing: auto;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  h1 {
+    letter-spacing: -0.03em;
+  }
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
   :root {
     color-scheme: light;
   }
