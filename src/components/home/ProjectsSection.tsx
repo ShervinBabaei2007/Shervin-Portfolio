@@ -16,7 +16,11 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
   const others = moreProjects.filter((project) => matches(project.stack))
 
   return (
-    <section className="work-section section-wrap" id="work" aria-labelledby="work-title">
+    <section
+      className="section-wrap pt-[72px] pb-[120px] max-[620px]:pt-[60px] max-[620px]:pb-[78px]"
+      id="work"
+      aria-labelledby="work-title"
+    >
       <SectionHeading
         id="work-title"
         number="02"
@@ -30,9 +34,16 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         }
       />
       {activeSkill && (
-        <p className="active-skill-filter" aria-live="polite">
+        <p
+          className="mt-3 flex flex-wrap items-center gap-[5px] text-sm text-muted-foreground [&_strong]:text-foreground"
+          aria-live="polite"
+        >
           Showing projects that use <strong>{activeSkill}</strong>.
-          <button type="button" onClick={onClearSkill}>
+          <button
+            type="button"
+            className="hit-area ml-2 border-b border-current py-1 font-semibold text-primary"
+            onClick={onClearSkill}
+          >
             Clear skill filter
           </button>
         </p>
@@ -55,16 +66,27 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </Carousel>
       )}
       {others.length > 0 && (
-        <div className="more-projects">
-          <h3>More projects</h3>
-          <ul>
+        <div className="mt-14">
+          <h3 className="mb-1.5 text-[1.375rem] font-semibold">More projects</h3>
+          <ul className="m-0 list-none border-t p-0">
             {others.map((project) => (
               <li key={project.slug}>
-                <Link to={`/work/${project.slug}`}>
-                  <span className="more-projects-name">{project.name}</span>
-                  <span className="more-projects-subtitle">{project.subtitle}</span>
-                  <span className="more-projects-stack">{project.stack.slice(0, 3).join(', ')}</span>
-                  <ArrowUpRight size={16} aria-hidden="true" />
+                <Link
+                  className="grid min-h-16 grid-cols-[minmax(150px,.8fr)_minmax(0,2fr)_minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 border-b px-1 py-3 no-underline transition-colors hover:bg-card hover:text-primary max-[1100px]:grid-cols-[minmax(140px,.8fr)_minmax(0,2fr)_auto] max-[900px]:grid-cols-[1fr_auto] max-[900px]:gap-x-3 max-[900px]:gap-y-0.5"
+                  to={`/work/${project.slug}`}
+                >
+                  <span className="text-[1.0625rem] font-semibold max-[900px]:col-start-1">{project.name}</span>
+                  <span className="text-[.9375rem] text-muted-foreground max-[900px]:col-start-1 max-[900px]:row-start-2 max-[900px]:text-sm">
+                    {project.subtitle}
+                  </span>
+                  <span className="font-mono text-xs text-muted-foreground max-[1100px]:hidden">
+                    {project.stack.slice(0, 3).join(', ')}
+                  </span>
+                  <ArrowUpRight
+                    className="text-primary max-[900px]:col-start-2 max-[900px]:row-[1/span_2]"
+                    size={16}
+                    aria-hidden="true"
+                  />
                 </Link>
               </li>
             ))}
@@ -72,7 +94,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </div>
       )}
       {flagships.length === 0 && others.length === 0 && (
-        <p className="active-skill-filter">No projects use {activeSkill} yet.</p>
+        <p className="mt-3 text-sm text-muted-foreground">No projects use {activeSkill} yet.</p>
       )}
     </section>
   )
