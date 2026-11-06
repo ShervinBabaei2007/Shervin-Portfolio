@@ -22,10 +22,6 @@ export type ResumeProject = {
 export const resume = {
   name: site.name,
   title: 'Full-Stack Developer',
-  location: site.location,
-  email: site.email,
-  /** Printed on the PDF only, so it is not scraped from the public web page. */
-  phone: '(604) 499-5673',
   links: [
     { label: 'Portfolio', href: site.url },
     { label: 'GitHub', href: site.github },

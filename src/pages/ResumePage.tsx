@@ -19,9 +19,6 @@ function ResumePage() {
           <h1 id="resume-title">{resume.name}</h1>
           <p className="resume-role">{resume.title}</p>
           <p className="resume-contact">
-            <span>{resume.location}</span>
-            <span className="print-only">{resume.phone}</span>
-            <a href={`mailto:${resume.email}`}>{resume.email}</a>
             {resume.links.map((link) => (
               <a key={link.href} href={link.href} target="_blank" rel="noreferrer">
                 {link.label}
