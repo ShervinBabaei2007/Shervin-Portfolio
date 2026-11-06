@@ -16,6 +16,10 @@ test('hero states the role, links to the resume, and shows no stats or email', a
   await expect(page.getByRole('link', { name: 'View resume' }).first()).toHaveAttribute('href', '/resume')
   await expect(page.getByRole('list', { name: 'Highlights' })).toHaveCount(0)
   await expect(page.locator('#home')).not.toContainText('shervinb22')
+  await expect(page.locator('#home').getByRole('link', { name: /Top 6 of 36 teams/ })).toHaveAttribute(
+    'href',
+    '/work/gitscribe',
+  )
 })
 
 test('pages are prerendered with content, metadata, and a PNG share image', async ({ request }) => {
@@ -40,6 +44,7 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
     '/resume',
     '/how-its-built',
     '/notes',
+    '/lab',
     '/notes/sliding-window-rate-limiting',
   ]) {
     await page.goto(path)
@@ -76,6 +81,14 @@ test('case study is a shareable page with team context, code, and trade-off', as
   await expect(page).toHaveURL(/\/work\/gitscribe$/)
   await page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: 'Work' }).click()
   await expect(page).toHaveURL(/\/#work$/)
+})
+
+test('the lab is its own page and linked from home', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: /Try the rate-limiter lab/ }).click()
+  await expect(page).toHaveURL(/\/lab$/)
+  await expect(page.getByRole('heading', { level: 1, name: /Break the assumption/ })).toBeVisible()
+  await expect(page.locator('.limiter-demo')).toBeVisible()
 })
 
 test('terminal projects show a recorded session', async ({ page }) => {
@@ -170,6 +183,7 @@ for (const scheme of ['light', 'dark'] as const) {
       '/resume',
       '/how-its-built',
       '/notes',
+      '/lab',
       '/notes/skillmatch-attend-race-condition',
     ]) {
       await page.goto(path)
@@ -235,9 +249,11 @@ test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the othe
   await expect(demo.locator('.limiter-log li').first()).toContainText('200 OK')
 })
 
-test('engineering notes: listed on home, own pages, linked from case studies', async ({ page }) => {
+test('engineering notes: listed on the notes page, own pages, linked from case studies', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('#notes li').filter({ has: page.locator('a[href^="/notes/"]') })).toHaveCount(3)
+  await page.getByRole('link', { name: /Read my engineering notes/ }).click()
+  await expect(page).toHaveURL(/\/notes$/)
+  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/notes/"]') })).toHaveCount(3)
   await page
     .getByRole('link', { name: /The race condition in SkillMatch/ })
     .first()
@@ -448,11 +464,11 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
   await expect(viewer).toBeHidden()
 })
 
-test('the matching-projects message appears inside the card of the skill you clicked', async ({ page }) => {
+test('the matching-projects message appears inside the group of the skill you clicked', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('networkidle')
-  const web = page.locator('#skills [data-slot="card"]').filter({ hasText: 'Web & Full-Stack' })
-  const tools = page.locator('#skills [data-slot="card"]').filter({ hasText: 'Tools & Infrastructure' })
+  const web = page.locator('#skills [data-skill-group]').filter({ hasText: 'Web & Full-Stack' })
+  const tools = page.locator('#skills [data-skill-group]').filter({ hasText: 'Tools & Infrastructure' })
 
   await page.getByRole('button', { name: /using JavaScript$/ }).click()
   await expect(web).toContainText('matching')
