@@ -320,6 +320,30 @@ test.describe('copy buttons', () => {
   })
 })
 
+test('a slow page change shows a progress bar, and a fast one does not', async ({ page }) => {
+  await page.route(/\/assets\/HomePage-[\w-]+\.js$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await route.continue()
+  })
+  await page.goto('/notes')
+  // No waiting for the network to go quiet: the delayed home chunk is already being fetched and would finish first.
+  await expect(page.getByRole('heading', { name: /Notes on things I built/ })).toBeVisible()
+  const nav = page.getByRole('navigation', { name: 'Main navigation' })
+  const bar = page.locator('[data-nav-progress]')
+
+  // /resume's code is not delayed, so this change is quick and must not flash the bar.
+  await nav.getByRole('link', { name: 'Resume' }).click()
+  await expect(page).toHaveURL(/\/resume$/)
+  await expect(bar).toHaveCount(0)
+
+  // The home page's code takes 1.5 s: the bar appears while we wait, and goes once the page is shown.
+  await nav.getByRole('link', { name: 'Contact' }).click()
+  await expect(bar).toBeVisible({ timeout: 1200 })
+  await expect(page.getByRole('status').filter({ hasText: 'Loading page' })).toBeAttached()
+  await expect(page).toHaveURL(/\/#contact$/, { timeout: 5000 })
+  await expect(bar).toHaveCount(0)
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')

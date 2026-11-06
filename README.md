@@ -50,7 +50,7 @@ The last four scripts need Chromium once: `npx playwright install chromium`.
 
 **Pages.** Each route is its own lazy chunk (`src/routes.ts`) and is prerendered by `scripts/prerender.mjs`. To add a page: add it to `src/routes.ts`, give it metadata in `src/seo.ts` (`getPageMeta`) and add its path to `staticRoutes`. To add a project or note, add an entry to `src/data/projects.ts` or `src/data/notes.ts`, then run `npm run og:images`.
 
-**Performance.** The entry chunk has a budget (`scripts/check-bundle-size.mjs`). Heavy, rarely used UI (the command palette, the phone menu, the toast container, the quick-look sheet) loads on demand; follow `CommandPalette.tsx` for the pattern. Run `npm run analyze` before adding a dependency.
+**Performance.** The entry chunk has a budget (`scripts/check-bundle-size.mjs`). Heavy, rarely used UI (the command palette, the phone menu, the toast container, the quick-look sheet) loads on demand; follow `CommandPalette.tsx` for the pattern. Anything that loads on demand should also show that it is loading: use `PendingFlag` as the Suspense fallback to put a spinner on the button that opened it (see `ProjectCard.tsx`), and start the load on hover, focus or touch. Page changes get the top progress bar from `NavigationProgress.tsx` automatically. Run `npm run analyze` before adding a dependency.
 
 ### Checking a refactor
 

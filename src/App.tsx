@@ -1,6 +1,7 @@
 import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Skeleton } from '@/components/ui/skeleton'
+import NavigationProgress from '@/components/shared/NavigationProgress'
 import SiteFooter from '@/components/shared/SiteFooter'
 import SiteHeader from '@/components/shared/SiteHeader'
 import { usePageMeta } from './hooks/usePageMeta'
@@ -96,6 +97,7 @@ function App() {
         Skip to content
       </a>
       <ScrollManager />
+      <NavigationProgress />
       <SiteHeader scheme={scheme} preference={preference} onPreferenceChange={setPreference} />
       <main id="main" tabIndex={-1}>
         <PageErrorBoundary pathname={pathname}>
