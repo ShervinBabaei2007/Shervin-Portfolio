@@ -20,11 +20,10 @@ const storedPreference = (): Preference => {
 
 const resolve = (preference: Preference): Scheme => (preference === 'system' ? systemScheme() : preference)
 
-/** Pins the resolved scheme on <html> (class for Tailwind/shadcn, data-theme for legacy CSS). Mirrors index.html. */
+/** Pins the resolved scheme on <html> (the `dark` class drives Tailwind and shadcn). Mirrors index.html. */
 function applyScheme(scheme: Scheme) {
   const root = document.documentElement
   root.classList.toggle('dark', scheme === 'dark')
-  root.dataset.theme = scheme
   const meta = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]')
   if (meta) meta.content = scheme
 }
