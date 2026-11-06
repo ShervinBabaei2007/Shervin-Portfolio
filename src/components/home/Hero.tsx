@@ -58,10 +58,13 @@ function Hero() {
         <p className="eyebrow">
           <span className="eyebrow-mark">01</span> VANCOUVER, BC <span className="eyebrow-divider">/</span> BCIT
         </p>
-        <h1 id="hero-title">
+        <h1
+          id="hero-title"
+          className="mt-[18px] max-w-[12ch] text-[clamp(2.75rem,1.2rem+4.2vw,4.875rem)] leading-[1.02] max-[620px]:mt-[22px] max-[620px]:leading-[1.01] max-[360px]:text-[2.25rem] [&_span]:text-primary"
+        >
           Full-stack developer who goes <span>down the stack.</span>
         </h1>
-        <p className="hero-intro">
+        <p className="mt-[22px] max-w-[58ch] text-[1.125rem] leading-[1.65] text-muted-foreground max-[620px]:max-w-[390px] max-[620px]:text-base">
           I&apos;m {site.name}. I like the moment a bug stops being mysterious. I build React and Node products end to
           end, then trace the request until I can explain the failure, the trade-off, and the fix in plain English.
         </p>
@@ -90,17 +93,25 @@ function Hero() {
             <Mail size={16} /> {site.email}
           </a>
         </div>
-        <ul className="hero-proof" aria-label="Highlights">
+        <ul
+          className="mt-7 grid max-w-[600px] list-none grid-cols-3 border-y p-0 max-[620px]:grid-cols-1 max-[620px]:border-b-0"
+          aria-label="Highlights"
+        >
           {proof.map((item) => (
-            <li key={item.value}>
-              <Link to={item.to}>
-                <b>{item.value}</b>
-                <span>{item.label}</span>
+            <li key={item.value} className="min-[621px]:[&:not(:first-child)]:border-l max-[620px]:border-b">
+              <Link
+                className="group grid h-full gap-1 py-3.5 pr-3.5 no-underline min-[621px]:[li:not(:first-child)_&]:pl-4 max-[620px]:grid-cols-[7.5rem_1fr] max-[620px]:items-baseline max-[620px]:py-[11px] max-[620px]:pr-0"
+                to={item.to}
+              >
+                <b className="text-[1.375rem] leading-[1.1] font-semibold group-hover:text-primary max-[620px]:text-lg">
+                  {item.value}
+                </b>
+                <span className="text-[.8125rem] leading-[1.4] text-muted-foreground">{item.label}</span>
               </Link>
             </li>
           ))}
         </ul>
-        <p className="hero-target">{availabilityLine()}</p>
+        <p className="mt-2.5 font-semibold text-foreground">{availabilityLine()}</p>
       </div>
       <div className="hero-side">
         <div className="hero-art" role="group" aria-label="Explore projects by application layer">

@@ -212,9 +212,6 @@ a:focus-visible {
   animation: rise-in .7s both;
 }
 
-.hero h1 { font-size: clamp(2.75rem, 1.2rem + 4.2vw, 4.875rem); }
-
-.hero h1 span,
 .section-heading h2 span { color: var(--primary); }
 
 .eyebrow {
@@ -223,16 +220,6 @@ a:focus-visible {
 
 .eyebrow-mark { color: var(--primary); }
 .eyebrow-divider { color: var(--muted-foreground); }
-
-
-.hero-intro { font-size: 1rem; }
-
-.hero-target {
-  margin: 10px 0 0;
-  color: var(--muted-foreground);
-  font-size: 1rem;
-  font-weight: 600;
-}
 
 .hero-art {
   position: relative;
@@ -517,14 +504,6 @@ a:focus-visible {
 
 
   /* Hero */
-  .hero h1 {
-    margin-top: 22px;
-    line-height: 1.01;
-  }
-
-
-  .hero-intro { max-width: 390px; }
-
   .hero-layer-panel { margin-top: 17px; }
   .hero-layer-projects { gap: 5px 12px; }
 
@@ -539,7 +518,6 @@ a:focus-visible {
 }
 
 @media (max-width: 360px) {
-  .hero h1 { font-size: 2.25rem; }
 }
 
 
@@ -638,35 +616,7 @@ a:focus-visible {
    ========================================================================== */
 main:focus { outline: none; }
 
-.hero h1 { max-width: 12ch; margin: 18px 0 0; line-height: 1.02; }
-.hero-intro { max-width: 58ch; margin: 22px 0 0; color: var(--muted-foreground); font-size: 1.125rem; line-height: 1.65; }
-.hero-target { color: var(--foreground); }
 .hero-layer-projects a { text-decoration: none; }
-
-.hero-proof {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  max-width: 600px;
-  margin: 28px 0 0;
-  padding: 0;
-  list-style: none;
-  border-block: 1px solid var(--border);
-}
-
-.hero-proof li + li { border-left: 1px solid var(--border); }
-
-.hero-proof a {
-  display: grid;
-  gap: 4px;
-  height: 100%;
-  padding: 14px 14px 14px 0;
-  text-decoration: none;
-}
-
-.hero-proof li + li a { padding-left: 16px; }
-.hero-proof b { font: 600 1.375rem/1.1 var(--display); }
-.hero-proof span { color: var(--muted-foreground); font-size: .8125rem; line-height: 1.4; }
-.hero-proof a:hover b { color: var(--primary); }
 
 .hero-side {
   display: grid;
@@ -818,13 +768,6 @@ main:focus { outline: none; }
 
 @media (max-width: 620px) {
   .hero-side { display: none; }
-  .hero-intro { font-size: 1rem; }
-  .hero-proof { grid-template-columns: 1fr; border-bottom: 0; }
-  .hero-proof li { border-bottom: 1px solid var(--border); }
-  .hero-proof li + li { border-left: 0; }
-  .hero-proof a,
-  .hero-proof li + li a { grid-template-columns: 7.5rem 1fr; align-items: baseline; padding: 11px 0; }
-  .hero-proof b { font-size: 1.125rem; }
   .code-block pre, .terminal-block pre { font-size: .75rem; }
   .resume-sheet { padding: 22px 18px 26px; }
   .resume-head h1 { font-size: 2rem; }

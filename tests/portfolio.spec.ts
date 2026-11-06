@@ -16,7 +16,7 @@ test('hero states role, proof, availability, and links to the resume page', asyn
   const proof = page.getByRole('list', { name: 'Highlights' })
   await expect(proof).toContainText('Top 6 of 36')
   await expect(proof).toContainText('114 commits')
-  await expect(page.locator('.hero-target')).toContainText(/Open to|Available from/)
+  await expect(page.locator('#home').getByText(/Open to|Available from/)).toBeVisible()
   await expect(page.getByRole('link', { name: 'View resume' }).first()).toHaveAttribute('href', '/resume')
 })
 
