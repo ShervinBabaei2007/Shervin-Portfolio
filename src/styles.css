@@ -177,11 +177,8 @@ a:focus-visible {
 
 /* Mono label family (sizes are set per component) */
 .eyebrow,
-.hero-index,
-.scroll-cue,
 .project-kicker,
 .project-details > div > span,
-.skill-number,
 .about-footnote span,
 .site-footer > span,
 .site-footer > a:last-child {
@@ -191,7 +188,6 @@ a:focus-visible {
 
 /* Enlarged hit areas (≥44px) without changing layout.
    The pseudo-element extends the clickable area only. */
-.theme-toggle,
 .skill-chip,
 .hero-layer-projects a,
 .project-links a,
@@ -200,7 +196,6 @@ a:focus-visible {
 .skills-evidence-status a,
 .active-skill-filter button { position: relative; }
 
-.theme-toggle::after,
 .skill-chip::after,
 .hero-layer-projects a::after,
 .project-links a::after,
@@ -294,31 +289,6 @@ a:focus-visible {
   gap: 16px;
 }
 
-.scribe-status i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--primary);
-  box-shadow: 0 0 0 3px rgba(57, 122, 53, .16);
-}
-
-.theme-toggle {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  background: transparent;
-  cursor: pointer;
-  transition: background .2s ease, border-color .2s ease, transform .18s ease;
-}
-
-.theme-toggle:hover {
-  border-color: var(--foreground);
-  background: var(--toggle-hover);
-}
-
 
 /* ==========================================================================
    4. HERO
@@ -352,11 +322,6 @@ a:focus-visible {
 .eyebrow-mark { color: var(--primary); }
 .eyebrow-divider { color: var(--muted-foreground); }
 
-.hero-role {
-  margin: 24px 0 0;
-  font-size: 1.125rem;
-  font-weight: 600;
-}
 
 .hero-intro { font-size: 1rem; }
 
@@ -405,12 +370,6 @@ a:focus-visible {
 
 .button-secondary:hover { border-color: var(--primary); }
 
-.button-light {
-  color: #1d211e;                                /* always sits on #fffefa */
-  background: #fffefa;
-}
-
-.button-light:hover { background: #e7f1d8; }
 
 .text-link {
   display: inline-flex;
@@ -528,38 +487,6 @@ a:focus-visible {
 .art-cross-one { top: 17%; right: 19%; }
 .art-cross-two { bottom: 18%; left: 8%; }
 
-.art-caption {
-  position: absolute;
-  right: 0;
-  bottom: 1%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--muted-foreground);
-  font: .75rem var(--mono);
-}
-
-.scroll-cue {
-  position: absolute;
-  bottom: 2.0625rem;
-  left: 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--muted-foreground);
-  font-size: 1rem;
-  text-decoration: none;
-}
-
-.scroll-cue svg { color: var(--primary); }
-
-.hero-index {
-  position: absolute;
-  right: 0;
-  bottom: 2.125rem;
-  color: var(--muted-foreground);
-  font-size: 1rem;
-}
 
 .hero-layer-panel {
   display: grid;
@@ -642,38 +569,6 @@ a:focus-visible {
   line-height: 1.65;
 }
 
-.filter-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 37px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border);
-}
-
-.filter-button {
-  min-height: 40px;
-  padding: 0 13px;
-  color: var(--muted-foreground);
-  border: 1px solid transparent;
-  background: transparent;
-  font-size: .9375rem;
-  cursor: pointer;
-  transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease;
-}
-
-.filter-button:hover {
-  color: var(--foreground);
-  border-color: var(--border);
-}
-
-.filter-button.is-active {
-  color: var(--background);
-  border-color: var(--foreground);
-  background: var(--foreground);
-}
-
-.filter-button:focus-visible { outline-offset: -3px; }
 
 .project-count {
   margin-left: auto;
@@ -812,7 +707,6 @@ a:focus-visible {
   font-size: 1rem;
 }
 
-.featured-label { color: var(--primary); }
 
 .project-copy h3 {
   margin: 15px 0 0;
@@ -1018,37 +912,6 @@ a:focus-visible {
 
 .skills-heading { margin-bottom: 40px; }
 
-/* Legacy 3-column grid, scoped so it cannot leak into
-   .skills-evidence (removes the :nth-child(n) specificity hack). */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.skills-grid .skill-group {
-  min-height: 218px;
-  padding: 19px 20px 21px 0;
-}
-
-.skills-grid .skill-group + .skill-group {
-  padding-left: 22px;
-  border-left: 1px solid var(--border);
-}
-
-.skills-grid .skill-group:nth-child(4),
-.skills-grid .skill-group:nth-child(5) { border-top: 1px solid var(--border); }
-
-.skills-grid .skill-group:nth-child(4) {
-  padding-left: 0;
-  border-left: 0;
-}
-
-.skill-number {
-  color: var(--primary);
-  font-size: 1rem;
-}
 
 .skill-group h3 {
   margin: 20px 0 3px;
@@ -1083,18 +946,6 @@ a:focus-visible {
   font-size: .75rem;
 }
 
-.learning-tag {
-  color: var(--primary);
-  font: .75rem var(--mono);
-}
-
-.skills-note {
-  margin: 12px 0 0;
-  color: var(--muted-foreground);
-  font-size: .8125rem;
-}
-
-.skills-note span { color: var(--primary); }
 
 .skills-evidence-grid {
   display: grid;
@@ -1137,7 +988,6 @@ a:focus-visible {
   font: 600 .9375rem var(--display);
 }
 
-.skills-evidence .skill-group .skill-number { display: none; }
 .skills-evidence .skill-group ul { margin-top: 9px; }
 
 .skills-evidence .skill-group ul li {
@@ -1268,25 +1118,6 @@ a:focus-visible {
 .footer-dot { color: var(--primary); }
 .site-footer > a:last-child:hover { color: var(--primary); }
 
-
-/* ==========================================================================
-   10. CASE-STUDY PAGE (shared pieces)
-   ========================================================================== */
-.case-study-content { padding: 34px 40px 38px; }
-
-.case-study-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-}
-
-.case-study-header .eyebrow { flex-wrap: wrap; }
-
-.case-study-content > h2 {
-  margin: 17px 0 0;
-  font: 600 2.75rem/1.1 var(--display);
-}
 
 .case-study-subtitle {
   margin: 8px 0 0;
@@ -1581,10 +1412,6 @@ a:focus-visible {
 
   .header-actions { gap: 0; }
 
-  .theme-toggle {
-    width: 32px;
-    height: 32px;
-  }
 
   /* Hero */
   .hero h1 {
@@ -1592,11 +1419,6 @@ a:focus-visible {
     line-height: 1.01;
   }
 
-  .hero-role {
-    max-width: 290px;
-    font-size: 1rem;
-    line-height: 1.65;
-  }
 
   .hero-intro { max-width: 390px; }
 
@@ -1629,19 +1451,6 @@ a:focus-visible {
   .section-aside { font-size: .9375rem; }
   .section-aside br { display: none; }
 
-  .filter-row {
-    flex-wrap: nowrap;
-    gap: 3px;
-    margin-top: 23px;
-    overflow-x: auto;
-  }
-
-  .filter-button {
-    flex: 0 0 auto;
-    min-height: 42px;
-    padding-inline: 9px;
-    font-size: .875rem;
-  }
 
   .project-count {
     position: absolute;
@@ -1707,28 +1516,6 @@ a:focus-visible {
 
   .skills-heading { margin-bottom: 26px; }
 
-  .skills-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-  .skills-grid .skill-group {
-    min-height: 190px;
-    padding: 16px 10px 18px 0;
-  }
-
-  .skills-grid .skill-group + .skill-group { padding-left: 13px; }
-
-  .skills-grid .skill-group:nth-child(3),
-  .skills-grid .skill-group:nth-child(5) {
-    padding-left: 0;
-    border-top: 1px solid var(--border);
-    border-left: 0;
-  }
-
-  .skills-grid .skill-group:nth-child(4) {
-    padding-left: 13px;
-    border-left: 1px solid var(--border);
-  }
-
-  .skills-grid .skill-group:nth-child(5) { grid-column: 1 / -1; }
 
   .skill-group h3 { font-size: 1.0625rem; }
 
@@ -1753,9 +1540,6 @@ a:focus-visible {
   .site-footer > span { display: none; }         /* design decision kept — see review list */
   .site-footer > a:last-child { margin-left: auto; }
 
-  /* Dialog */
-  .case-study-content { padding: 23px 20px 26px; }
-  .case-study-content > h2 { font-size: 2.125rem; }
 
   .case-study-at-a-glance {
     grid-template-columns: 1fr;
