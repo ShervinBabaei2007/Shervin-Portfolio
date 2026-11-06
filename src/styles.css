@@ -176,8 +176,7 @@ a:focus-visible {
 }
 
 /* Mono label family (sizes are set per component) */
-.eyebrow,
-.about-footnote span {
+.eyebrow {
   font-family: var(--mono);
   letter-spacing: 0;
 }
@@ -216,8 +215,7 @@ a:focus-visible {
 .hero h1 { font-size: clamp(2.75rem, 1.2rem + 4.2vw, 4.875rem); }
 
 .hero h1 span,
-.section-heading h2 span,
-.about-heading h2 span { color: var(--primary); }
+.section-heading h2 span { color: var(--primary); }
 
 .eyebrow {
   font-size: 1rem;
@@ -448,92 +446,6 @@ a:focus-visible {
 
 
 /* ==========================================================================
-   7. ABOUT
-   ========================================================================== */
-.about-section {
-  /* This section is dark in BOTH themes, so it always uses the
-     dark-theme accent/focus (light-theme --primary was ≈2.2:1 here). */
-  --primary: #34d399;
-  --ring: #34d399;
-
-  padding: 98px 0 77px;
-  color: var(--on-dark);
-  background-color: var(--section-dark);
-  background-image:
-    linear-gradient(rgba(255, 255, 255, .025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
-  background-size: 38px 38px;
-}
-
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.05fr;
-  column-gap: 12%;
-  align-items: start;
-}
-
-.about-heading {
-  position: relative;
-  min-height: 310px;
-}
-
-.about-heading .eyebrow { color: #bac3b8; }
-
-.about-heading h2 {
-  margin-top: 27px;
-  line-height: 1.08;
-  font-size: clamp(3.0625rem, 2.4rem + 1.6vw, 4rem);
-}
-
-.about-stamp {
-  position: absolute;
-  bottom: 5px;
-  left: 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #d9e6cf;
-}
-
-.about-stamp span {
-  font: .875rem/1.55 var(--mono);
-}
-
-.about-copy { padding-top: 44px; }
-
-.about-lead {
-  margin: 0 0 18px;
-  font: 500 1.3125rem/1.4 var(--display);
-}
-
-.about-copy > p:not(.about-lead) {
-  color: #c0c8bf;
-  font-size: 1rem;
-  line-height: 1.85;
-}
-
-.about-footnote {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 9px 18px;
-  align-self: end;
-  margin-top: 39px;
-  padding-top: 17px;
-  border-top: 1px solid rgba(255, 255, 255, .16);
-}
-
-.about-footnote span {
-  color: #a9b5a8;
-  font-size: .875rem;
-}
-
-.about-footnote b {
-  font-size: .875rem;
-  font-weight: 500;
-}
-
-
-/* ==========================================================================
    11. KEYFRAMES
    ========================================================================== */
 @keyframes rise-in {
@@ -599,8 +511,6 @@ a:focus-visible {
   .art-node-ui { top: 7%; left: 20%; }
   .art-node-api { right: -1%; }
   .art-node-core { bottom: 4%; left: 25%; }
-
-  .about-grid { column-gap: 7%; }
 }
 
 @media (max-width: 620px) {
@@ -626,15 +536,6 @@ a:focus-visible {
 
   .section-aside { font-size: .9375rem; }
   .section-aside br { display: none; }
-
-  /* About */
-  .about-section { padding: 69px 0 53px; }
-  .about-grid { display: block; }
-  .about-heading { min-height: 243px; }
-  .about-stamp { bottom: 0; }
-  .about-copy { padding-top: 29px; }
-  .about-lead { font-size: 1.1875rem; }
-  .about-footnote { margin-top: 28px; }
 }
 
 @media (max-width: 360px) {
@@ -730,10 +631,6 @@ a:focus-visible {
   }
 
   .project-card::before { display: none; }
-
-  .about-section { background: none; }
-
-  .about-section * { color: #000 !important; }
 }
 
 /* ==========================================================================

@@ -5,20 +5,33 @@ import { cn, textLinkClass } from '@/lib/utils'
 
 function AboutSection() {
   return (
-    <section className="about-section" id="about" aria-labelledby="about-title">
-      <div className="section-wrap about-grid">
-        <div className="about-heading">
-          <p className="eyebrow">
+    <section
+      // Dark in both themes, so it pins the dark-theme accent (the light one is too dim on this background).
+      className={cn(
+        'bg-[var(--section-dark)] py-[98px] pb-[77px] text-[var(--on-dark)] max-[620px]:pt-[69px] max-[620px]:pb-[53px]',
+        '[--primary:#34d399] [--ring:#34d399]',
+        'bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[length:38px_38px]',
+        'print:bg-none print:[&_*]:!text-black',
+      )}
+      id="about"
+      aria-labelledby="about-title"
+    >
+      <div className="section-wrap grid grid-cols-[1fr_1.05fr] items-start gap-x-[12%] max-[900px]:gap-x-[7%] max-[620px]:block">
+        <div className="relative min-h-[310px] max-[620px]:min-h-[243px]">
+          <p className="eyebrow text-[#bac3b8]">
             <span className="eyebrow-mark">05</span> A LITTLE ABOUT ME
           </p>
-          <h2 id="about-title">
+          <h2
+            id="about-title"
+            className="mt-[27px] text-[clamp(3.0625rem,2.4rem+1.6vw,4rem)] leading-[1.08] [&_span]:text-primary"
+          >
             Why I keep
             <br />
             digging<span>.</span>
           </h2>
-          <div className="about-stamp">
+          <div className="absolute bottom-[5px] left-0 flex items-center gap-3 text-[#d9e6cf] max-[620px]:bottom-0">
             <Code2 size={22} />
-            <span>
+            <span className="font-mono text-sm leading-[1.55]">
               BUILD
               <br />
               UNDERSTAND
@@ -27,8 +40,8 @@ function AboutSection() {
             </span>
           </div>
         </div>
-        <div className="about-copy">
-          <p className="about-lead">
+        <div className="pt-11 max-[620px]:pt-[29px] [&>p:not(:first-child)]:text-base [&>p:not(:first-child)]:leading-[1.85] [&>p:not(:first-child)]:text-[#c0c8bf] [&>p+p]:mt-4">
+          <p className="mb-[18px] text-[1.3125rem] leading-[1.4] font-medium max-[620px]:text-[1.1875rem]">
             I keep following the request because “it works” has never been a satisfying ending for me.
           </p>
           <p>
@@ -47,7 +60,7 @@ function AboutSection() {
             Read my resume <ArrowRight size={15} />
           </Link>
         </div>
-        <div className="about-footnote">
+        <div className="mt-[39px] grid grid-cols-[auto_1fr] gap-x-[18px] gap-y-[9px] self-end border-t border-white/15 pt-[17px] max-[620px]:mt-7 [&_b]:text-sm [&_b]:font-medium [&_span]:font-mono [&_span]:text-sm [&_span]:text-[#a9b5a8]">
           <span>BASED IN</span>
           <b>Vancouver / Burnaby</b>
           <span>FOCUSED ON</span>
