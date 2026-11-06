@@ -10,7 +10,7 @@ function NoteCard({ note, project }: { note: Note; project?: string }) {
         className="grid gap-1.5 rounded-xl border bg-card px-5 py-[18px] no-underline transition-colors hover:border-primary"
         to={`/notes/${note.slug}`}
       >
-        <span className="font-mono text-xs text-muted-foreground">
+        <span className="font-mono text-label text-muted-foreground">
           <time dateTime={note.date}>{formatDate(note.date)}</time> · {note.minutes} min read
           {project ? ` · ${project}` : ''}
         </span>

@@ -8,7 +8,7 @@ import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
 const footerLink = 'grid gap-1.5 rounded-xl border bg-card px-[18px] py-4 no-underline hover:border-primary'
-const footerLabel = 'inline-flex items-center gap-1.5 text-[.8125rem] text-muted-foreground'
+const footerLabel = 'inline-flex items-center gap-1.5 text-meta text-muted-foreground'
 
 function NotePage() {
   const { slug } = useParams()
@@ -36,7 +36,7 @@ function NotePage() {
           {note.title}
         </h1>
         <p className="mt-4 text-[1.1875rem] leading-[1.6] text-muted-foreground">{note.summary}</p>
-        <p className="mt-3.5 font-mono text-[.8125rem] text-muted-foreground">
+        <p className="mt-3.5 font-mono text-meta text-muted-foreground">
           {site.name} · <time dateTime={note.date}>{formatDate(note.date)}</time> · {note.minutes} min read
         </p>
       </header>

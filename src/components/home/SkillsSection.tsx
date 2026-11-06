@@ -70,14 +70,14 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                             >
                               <div className="flex items-center justify-between gap-4">
                                 <p className="text-[.9375rem] font-semibold">{name}</p>
-                                <span className="rounded-full border border-background/40 px-2 py-0.5 text-[.6875rem] font-medium tracking-wide text-background uppercase">
+                                <span className="rounded-full border border-background/40 px-2 py-0.5 text-label font-medium tracking-wide text-background uppercase">
                                   {usageLevel(name)}
                                 </span>
                               </div>
                               <p className="mt-1.5 leading-snug text-background/80">{note}</p>
                               {used.length > 0 && (
                                 <div className="mt-3 border-t border-background/20 pt-3">
-                                  <p className="flex justify-between text-xs font-medium">
+                                  <p className="flex justify-between text-meta font-medium">
                                     <span>Used in</span>
                                     <span>
                                       {used.length} of {projects.length} projects
@@ -88,7 +88,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                                     value={(used.length / projects.length) * 100}
                                     aria-label={`${name} is used in ${used.length} of ${projects.length} projects`}
                                   />
-                                  <p className="mt-2.5 text-xs leading-snug text-background/80">
+                                  <p className="mt-2.5 text-meta leading-snug text-background/80">
                                     {used.map((project) => project.name).join(' · ')}
                                   </p>
                                 </div>

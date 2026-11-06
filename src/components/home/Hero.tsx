@@ -35,8 +35,8 @@ const systemLayers = [
 ] as const
 
 /*
- * Sizes use arbitrary values (text-[.75rem]) rather than text-xs so no line-height is added, and
- * leading-[normal] where the old stylesheet's font: shorthand reset it.
+ * Small text uses the size tokens in tailwind.css (text-label, text-meta, text-control), which add no line-height,
+ * plus leading-[normal] where the old stylesheet's font: shorthand reset it.
  * The three layer nodes sit on the orbit at fixed percentages; the phone/tablet set is the max-[900px] group.
  */
 const orbit = 'absolute top-1/2 left-1/2 aspect-square -translate-x-1/2 -translate-y-1/2 rounded-full border'
@@ -52,7 +52,7 @@ const nodePosition = {
   core: 'bottom-[6%] left-[28%] max-[900px]:bottom-[4%] max-[900px]:left-[25%]',
 } as const
 const cross = 'absolute font-mono text-[22px] leading-[normal] text-primary'
-const monoLabel = 'font-mono text-[.75rem] leading-[normal]'
+const monoLabel = 'font-mono text-label leading-[normal]'
 
 function Hero() {
   const [activeLayerId, setActiveLayerId] = useState<(typeof systemLayers)[number]['id']>('ui')
@@ -81,19 +81,19 @@ function Hero() {
           I&apos;m {site.name}. I follow the request from the interface through the API until everything makes sense.
         </p>
         <div className="mt-7 flex flex-wrap items-center gap-3 max-[900px]:mt-6 max-[900px]:gap-2.5">
-          <Button asChild size="lg" className="h-[46px] px-[17px] text-[.8125rem] font-semibold">
+          <Button asChild size="lg" className="h-[46px] px-[17px] text-control font-semibold">
             <Link to="/#work">
               See my projects <ArrowDownRight />
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="h-[46px] px-[17px] text-[.8125rem] font-semibold">
+          <Button asChild variant="outline" size="lg" className="h-[46px] px-[17px] text-control font-semibold">
             <Link to="/resume">
               View resume <FileText />
             </Link>
           </Button>
         </div>
         <Link
-          className="mt-5 inline-flex min-h-11 items-center gap-2 font-mono text-[.8125rem] text-muted-foreground no-underline transition-colors hover:text-primary"
+          className="mt-5 inline-flex min-h-11 items-center gap-2 font-mono text-control text-muted-foreground no-underline transition-colors hover:text-primary"
           to="/work/gitscribe"
         >
           <span className="text-primary">&#9670;</span> {facts.hackathon.placement} teams, {facts.hackathon.name}
@@ -113,7 +113,7 @@ function Hero() {
           <span className={cn(cross, 'bottom-[18%] left-[8%]')}>+</span>
           <div className="absolute top-1/2 left-1/2 flex size-[118px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-[9px] rounded-full bg-[linear-gradient(145deg,var(--primary),var(--accent-dark))] text-primary-foreground shadow-[0_10px_30px_color-mix(in_srgb,var(--primary)_35%,transparent)] max-[900px]:size-[98px] forced-colors:border forced-colors:border-[CanvasText] max-[900px]:[&_svg]:w-[25px]">
             <Braces size={31} strokeWidth={1.5} />
-            <span className="text-center font-mono text-[.75rem] leading-[1.5]">
+            <span className="text-center font-mono text-label leading-[1.5]">
               TRACE THE
               <br />
               WHOLE SYSTEM
@@ -150,7 +150,7 @@ function Hero() {
           >
             {layerProjects.map((project) => (
               <Link
-                className="hit-area inline-flex cursor-pointer items-center gap-1 border-0 border-b bg-transparent py-1 text-[.75rem] text-foreground no-underline hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                className="hit-area inline-flex cursor-pointer items-center gap-1 border-0 border-b bg-transparent py-1 text-meta text-foreground no-underline hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                 key={project.slug}
                 to={`/work/${project.slug}`}
               >

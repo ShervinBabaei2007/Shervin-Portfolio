@@ -17,7 +17,7 @@ import NotFoundPage from './NotFoundPage'
 const h2Class = 'text-xl font-semibold'
 const bodyClass =
   'mt-2.5 max-w-[70ch] text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
-const factDt = 'font-mono text-xs text-muted-foreground'
+const factDt = 'font-mono text-label text-muted-foreground'
 const factDd = 'mt-[5px] text-sm leading-normal font-semibold'
 const pagerLink =
   'grid gap-1.5 rounded-xl border bg-card px-5 py-[18px] no-underline hover:border-primary [&:hover_b]:text-primary'
@@ -97,21 +97,21 @@ function CaseStudyPage() {
 
         <div className="mt-5 flex flex-wrap items-center gap-3">
           {project.live && (
-            <Button asChild size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+            <Button asChild size="lg" className="h-11 px-[17px] text-control font-semibold">
               <a href={project.live} target="_blank" rel="noreferrer">
                 Live project <ArrowUpRight />
               </a>
             </Button>
           )}
           {project.github && (
-            <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+            <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-control font-semibold">
               <a href={project.github} target="_blank" rel="noreferrer">
                 {project.teamRepo ? 'My fork' : 'Source code'} <Github />
               </a>
             </Button>
           )}
           {project.teamRepo && (
-            <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+            <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-control font-semibold">
               <a href={project.teamRepo} target="_blank" rel="noreferrer">
                 Team repository <Github />
               </a>
@@ -121,7 +121,7 @@ function CaseStudyPage() {
             type="button"
             variant="outline"
             size="lg"
-            className="h-11 px-[17px] text-[.8125rem] font-semibold"
+            className="h-11 px-[17px] text-control font-semibold"
             onClick={() => void copy(`${site.url}/work/${project.slug}`)}
           >
             {copied ? <Check /> : <Link2 />}
@@ -136,7 +136,7 @@ function CaseStudyPage() {
           {sections.map(([id, label]) => (
             <a
               key={id}
-              className="inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs text-muted-foreground no-underline transition-colors hover:border-primary hover:text-primary max-[620px]:min-h-11"
+              className="inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-label text-muted-foreground no-underline transition-colors hover:border-primary hover:text-primary max-[620px]:min-h-11"
               href={`#${id}`}
             >
               {label}
@@ -185,7 +185,7 @@ function CaseStudyPage() {
               )}
             >
               <b className="text-base font-semibold">{node.label}</b>
-              <span className="text-[.8125rem] leading-[1.45] text-muted-foreground">{node.detail}</span>
+              <span className="text-meta leading-[1.45] text-muted-foreground">{node.detail}</span>
             </li>
           ))}
         </ol>
@@ -252,7 +252,7 @@ function CaseStudyPage() {
                     to={`/notes/${note.slug}`}
                   >
                     <b className="text-[1.0625rem] font-semibold">{note.title}</b>
-                    <span className="font-mono text-xs text-muted-foreground">{note.minutes} min read</span>
+                    <span className="font-mono text-label text-muted-foreground">{note.minutes} min read</span>
                   </Link>
                 ))}
               </section>
@@ -263,7 +263,7 @@ function CaseStudyPage() {
             <ul className="mt-[15px] flex list-none flex-wrap gap-1.5 p-0">
               {project.stack.map((t) => (
                 <li key={t}>
-                  <Badge variant="outline" className="rounded-none font-mono">
+                  <Badge variant="outline" className="rounded-none font-mono font-normal">
                     {t}
                   </Badge>
                 </li>

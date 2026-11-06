@@ -12,7 +12,7 @@ function NotFoundPage() {
         title="This page doesn't exist."
         lead="The link may be old, or the address may have a typo."
       />
-      <Button asChild size="lg" className="h-[46px] px-[17px] text-[.8125rem] font-semibold">
+      <Button asChild size="lg" className="h-[46px] px-[17px] text-control font-semibold">
         <Link to="/">
           <ArrowLeft /> Go to the home page
         </Link>

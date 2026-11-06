@@ -90,7 +90,7 @@ function ScreenshotGallery({ shots, projectName, layout = 'stack' }: ScreenshotG
               <div className="flex items-center justify-between gap-3 border-t px-4 py-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{shot.caption}</p>
-                  <p className="text-xs text-muted-foreground tabular-nums">
+                  <p className="text-label text-muted-foreground tabular-nums">
                     {index + 1} of {shots.length}
                   </p>
                 </div>

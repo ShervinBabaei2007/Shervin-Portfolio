@@ -61,7 +61,7 @@ const loadSheet = () => import('./CaseStudySheet')
 const CaseStudySheet = lazy(loadSheet)
 
 const cardLink =
-  'hit-area inline-flex items-center gap-[7px] text-sm font-semibold whitespace-nowrap no-underline hover:text-primary max-[360px]:text-xs'
+  'hit-area inline-flex items-center gap-[7px] text-control font-semibold whitespace-nowrap no-underline hover:text-primary'
 
 const card =
   "relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[12px] border bg-card animate-card-reveal transition-[transform,box-shadow,border-color] duration-200 ease-in-out has-[:focus-visible]:border-primary before:pointer-events-none before:absolute before:inset-0 before:z-[2] before:rounded-[inherit] before:opacity-0 before:transition-opacity before:duration-200 before:content-[''] before:bg-[radial-gradient(360px_circle_at_var(--pointer-x,50%)_var(--pointer-y,50%),var(--glow),transparent_68%)] pointer-fine:hover:border-primary pointer-fine:focus-within:border-primary pointer-fine:hover:shadow-[0_14px_32px_rgba(12,26,51,.12)] pointer-fine:focus-within:shadow-[0_14px_32px_rgba(12,26,51,.12)] motion-safe:pointer-fine:hover:-translate-y-1 motion-safe:pointer-fine:focus-within:-translate-y-1 pointer-fine:hover:before:opacity-100 motion-reduce:before:hidden forced-colors:before:hidden print:before:hidden print:animate-none print:break-inside-avoid print:shadow-none"
@@ -107,7 +107,7 @@ function ProjectCard({ project }: { project: Project }) {
               </Badge>
             ))}
           </div>
-          <div className="mt-auto flex items-center justify-between gap-4 border-t pt-3.5 text-sm text-muted-foreground max-[620px]:flex-col max-[620px]:items-start max-[360px]:text-[.8125rem]">
+          <div className="mt-auto flex items-center justify-between gap-4 border-t pt-3.5 text-sm text-muted-foreground max-[620px]:flex-col max-[620px]:items-start">
             <span>{project.role}</span>
             <span className="inline-flex items-center gap-[7px] font-semibold text-primary">
               Read case study <ArrowUpRight size={15} />

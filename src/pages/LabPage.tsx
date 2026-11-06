@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import PageIntro from '@/components/shared/PageIntro'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
 
-const storyLabel = 'font-mono text-[.75rem] leading-[normal] tracking-[.04em] text-primary'
+const storyLabel = 'font-mono text-label leading-[normal] tracking-[.04em] text-primary'
 const storyBody = 'mt-[7px] max-w-[44ch] leading-[1.62]'
 
 function LabPage() {

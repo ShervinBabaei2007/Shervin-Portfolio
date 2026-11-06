@@ -19,9 +19,9 @@ const sectionHeading =
 const bodyBase = 'mt-1.5 leading-[1.6] print:mt-px print:leading-[1.26]'
 const bodyText = `${bodyBase} print:text-[9.5pt]`
 const mutedText = `${bodyBase} text-[.9375rem] text-muted-foreground print:text-[9.5pt]`
-const stackText = `${bodyBase} font-mono text-[.8125rem] print:text-[9.5pt]`
+const stackText = `${bodyBase} font-mono text-meta print:text-[9.5pt]`
 const rowSplit = 'flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1'
-const rowDate = 'font-mono text-[.8125rem] leading-[normal] text-muted-foreground print:text-[8.5pt]'
+const rowDate = 'font-mono text-meta leading-[normal] text-muted-foreground print:text-[8.5pt]'
 
 function ResumePage() {
   return (
@@ -31,7 +31,7 @@ function ResumePage() {
     >
       <div className="flex items-center justify-between gap-3.5 print:hidden">
         <p className="eyebrow">RESUME</p>
-        <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+        <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-control font-semibold">
           <a href="/Shervin_Babaei_Resume.pdf" download="Shervin_Babaei_Resume.pdf">
             Download PDF <FileDown />
           </a>

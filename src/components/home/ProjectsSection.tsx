@@ -86,7 +86,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
                   <span className="text-[.9375rem] text-muted-foreground max-[900px]:col-start-1 max-[900px]:row-start-2 max-[900px]:text-sm">
                     {project.subtitle}
                   </span>
-                  <span className="font-mono text-xs text-muted-foreground max-[1100px]:hidden">
+                  <span className="font-mono text-label text-muted-foreground max-[1100px]:hidden">
                     {project.stack.slice(0, 3).join(', ')}
                   </span>
                   <ArrowUpRight

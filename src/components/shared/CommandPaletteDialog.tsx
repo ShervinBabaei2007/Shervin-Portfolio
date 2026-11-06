@@ -54,7 +54,7 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
               onSelect={() => run(() => navigate(`/work/${project.slug}`))}
             >
               <FileText /> {project.name}
-              <span className="ml-auto text-xs text-muted-foreground">{project.category}</span>
+              <span className="ml-auto text-label text-muted-foreground">{project.category}</span>
             </CommandItem>
           ))}
         </CommandGroup>

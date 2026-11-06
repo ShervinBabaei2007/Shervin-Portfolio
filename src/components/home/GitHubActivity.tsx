@@ -101,7 +101,7 @@ function GitHubActivity() {
         <h3 className="flex items-center gap-2 text-lg font-semibold">
           <Github size={18} aria-hidden="true" /> Recently on GitHub
         </h3>
-        <span className="font-mono text-xs text-muted-foreground">
+        <span className="font-mono text-label text-muted-foreground">
           {live ? 'Live from GitHub' : 'Updated at last deploy'}
         </span>
       </div>
@@ -115,7 +115,7 @@ function GitHubActivity() {
               {repo.description && (
                 <span className="text-sm leading-[1.45] text-muted-foreground">{repo.description}</span>
               )}
-              <span className="flex flex-wrap gap-x-3.5 gap-y-1 font-mono text-xs text-muted-foreground">
+              <span className="flex flex-wrap gap-x-3.5 gap-y-1 font-mono text-label text-muted-foreground">
                 {repo.language && <span>{repo.language}</span>}
                 <span>
                   Pushed{' '}

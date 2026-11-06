@@ -24,7 +24,7 @@ type Buckets = Map<string, Map<number, number>>
 
 const modeLabel = 'inline-flex min-h-11 cursor-pointer items-center gap-2 font-semibold'
 const modeInput = 'size-[18px] accent-primary'
-const actionClass = 'h-[46px] border px-[17px] text-[.8125rem] font-semibold'
+const actionClass = 'h-[46px] border px-[17px] text-control font-semibold'
 const meterTrack = 'mt-2 h-3 overflow-hidden rounded-full border bg-background'
 const meterFill = 'block h-full transition-[width] duration-200 ease-linear'
 
@@ -129,9 +129,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
       </div>
 
       <fieldset className="mt-5 flex flex-wrap gap-x-6 gap-y-2 border-0 p-0">
-        <legend className="mb-2 p-0 font-mono text-[.75rem] leading-[normal] text-muted-foreground">
-          Rate-limit key
-        </legend>
+        <legend className="mb-2 p-0 font-mono text-label leading-[normal] text-muted-foreground">Rate-limit key</legend>
         <label className={modeLabel}>
           <input
             className={modeInput}
@@ -200,7 +198,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
             <div key={meter.key}>
               <div className="flex justify-between gap-3 text-[.9375rem]">
                 <b>{meter.title}</b>
-                <span className="font-mono text-[.8125rem] leading-[normal] whitespace-nowrap text-muted-foreground">
+                <span className="font-mono text-meta leading-[normal] whitespace-nowrap text-muted-foreground">
                   {used} / {LIMIT} used
                 </span>
               </div>
@@ -214,7 +212,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
               >
                 <span className={cn(meterFill, 'bg-primary')} style={{ width: `${(used / LIMIT) * 100}%` }} />
               </div>
-              <p className="mt-2 font-mono text-[.75rem] leading-[1.5] [overflow-wrap:anywhere] text-muted-foreground">
+              <p className="mt-2 font-mono text-label leading-[1.5] [overflow-wrap:anywhere] text-muted-foreground">
                 {state
                   ? `floor((1 − ${state.elapsed.toFixed(2)}) × ${state.previous} previous) + ${state.current} current = ${state.total}`
                   : 'Waiting for the first request'}
@@ -222,10 +220,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
             </div>
           )
         })}
-        <div
-          className="col-span-full font-mono text-[.75rem] leading-[normal] text-muted-foreground"
-          aria-hidden="true"
-        >
+        <div className="col-span-full font-mono text-label leading-[normal] text-muted-foreground" aria-hidden="true">
           <span>Current window</span>
           <div className={cn(meterTrack, 'h-1.5')}>
             <span
@@ -253,9 +248,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
             className="grid grid-cols-[minmax(120px,.8fr)_1.4fr_.8fr] gap-3 border-b px-0.5 py-2 max-[620px]:grid-cols-[1fr_auto]"
             data-limited={entry.status === 429 ? '' : undefined}
           >
-            <span className="max-[620px]:col-span-full max-[620px]:text-[.8125rem] max-[620px]:text-muted-foreground">
-              {label[entry.client]}
-            </span>
+            <span className="max-[620px]:col-span-full max-[620px]:text-muted-foreground">{label[entry.client]}</span>
             {/* DM Mono ships only weight 400. */}
             <b className="font-mono text-[.875rem] leading-[normal] font-normal text-primary">
               {entry.status === 200 ? '200 OK' : '429 Too Many Requests'}

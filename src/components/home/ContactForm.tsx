@@ -202,7 +202,7 @@ function ContactForm() {
           />
           <div className="flex items-start justify-between gap-3">
             {errors.message ? <FieldError id="contact-message-error">{errors.message}</FieldError> : <span />}
-            <FieldDescription className="shrink-0 font-mono text-xs" aria-live="off">
+            <FieldDescription className="shrink-0 font-mono text-label" aria-live="off">
               {values.message.length} / {MESSAGE_MAX}
             </FieldDescription>
           </div>
