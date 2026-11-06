@@ -1,5 +1,7 @@
 import { Github } from 'lucide-react'
+import { blockBar, blockCaption, blockFrame, blockPre } from '@/components/shared/blockStyles'
 import type { Snippet } from '@/data/projects'
+import { cn } from '@/lib/utils'
 
 type CodeBlockProps = {
   snippet: Snippet
@@ -8,31 +10,47 @@ type CodeBlockProps = {
   showCaption?: boolean
   /** Show the "View on GitHub" link. Defaults to showCaption. */
   showLink?: boolean
+  /** Extra classes for the outer figure (spacing and width come from the parent). */
+  className?: string
+  /** Extra classes for the <pre>. */
+  preClassName?: string
 }
 
 /** A real excerpt from the project's repository, with a link to the full file. */
-function CodeBlock({ snippet, maxLines, showCaption = true, showLink = showCaption }: CodeBlockProps) {
+function CodeBlock({
+  snippet,
+  maxLines,
+  showCaption = true,
+  showLink = showCaption,
+  className,
+  preClassName,
+}: CodeBlockProps) {
   const lines = snippet.code.split('\n')
   const visible = maxLines ? lines.slice(0, maxLines) : lines
   const truncated = maxLines !== undefined && lines.length > maxLines
 
   return (
-    <figure className="code-block">
-      <div className="code-block-bar">
-        <span className="code-block-file">{snippet.file}</span>
+    <figure className={cn(blockFrame, className)} data-code-block>
+      <div className={blockBar}>
+        <span className="truncate">{snippet.file}</span>
         {showLink && snippet.href && (
-          <a href={snippet.href} target="_blank" rel="noreferrer">
+          <a
+            className="inline-flex flex-none items-center gap-1.5 text-[#a5b8ff] no-underline hover:underline hover:underline-offset-[3px]"
+            href={snippet.href}
+            target="_blank"
+            rel="noreferrer"
+          >
             View on GitHub <Github size={14} />
           </a>
         )}
       </div>
-      <pre tabIndex={maxLines ? -1 : 0} aria-label={`Code from ${snippet.file}`}>
+      <pre className={cn(blockPre, preClassName)} tabIndex={maxLines ? -1 : 0} aria-label={`Code from ${snippet.file}`}>
         <code>
           {visible.join('\n')}
           {truncated ? '\n…' : ''}
         </code>
       </pre>
-      {showCaption && <figcaption>{snippet.caption}</figcaption>}
+      {showCaption && <figcaption className={blockCaption}>{snippet.caption}</figcaption>}
     </figure>
   )
 }

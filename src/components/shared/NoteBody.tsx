@@ -4,7 +4,7 @@ import RichText from '@/components/shared/RichText'
 
 function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
   return (
-    <div className="mt-2.5 [&_.code-block]:mt-5">
+    <div className="mt-2.5">
       {blocks.map((block, index) => {
         switch (block.type) {
           case 'h2':
@@ -36,6 +36,7 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
             return (
               <CodeBlock
                 key={index}
+                className="mt-5"
                 snippet={{
                   file: block.file,
                   href: '',

@@ -29,23 +29,24 @@ function CardMedia({ project }: { project: Project }) {
       </div>
     )
   }
-  const codeLike =
-    '[&_.code-block]:m-0 [&_.code-block]:w-full [&_.terminal-block]:m-0 [&_.terminal-block]:w-full [&_pre]:overflow-hidden [&_pre]:text-xs [&_pre]:leading-[1.55]'
+  // The card shows a short preview: no outer margin, full width, a smaller font and no scrolling.
+  const preview = { className: 'm-0 w-full', preClassName: 'overflow-hidden text-[.75rem] leading-[1.55]' }
   if (project.snippet) {
     return (
-      <div className={cn(visualClass, codeLike)} aria-hidden="true">
-        <CodeBlock snippet={project.snippet} maxLines={11} showCaption={false} />
+      <div className={visualClass} aria-hidden="true">
+        <CodeBlock snippet={project.snippet} maxLines={11} showCaption={false} {...preview} />
       </div>
     )
   }
   if (project.terminal) {
     return (
-      <div className={cn(visualClass, codeLike)} aria-hidden="true">
+      <div className={visualClass} aria-hidden="true">
         <TerminalBlock
           title={project.terminal.title}
           transcript={project.terminal.transcript}
           maxLines={11}
           showCaption={false}
+          {...preview}
         />
       </div>
     )

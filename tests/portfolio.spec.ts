@@ -73,7 +73,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
   )
   await expect(page.getByRole('heading', { name: 'How a request flows' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'The trade-off' })).toBeVisible()
-  await expect(page.locator('.code-block')).toContainText("router.post('/:id/attend'")
+  await expect(page.locator('[data-code-block]')).toContainText("router.post('/:id/attend'")
   const screenshot = page.getByRole('img', { name: /SkillMatch dashboard/ })
   await expect.poll(() => screenshot.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
 
@@ -114,7 +114,7 @@ test('the resume prints to one US Letter page and hides the screen-only toolbar'
 
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
-  await expect(page.locator('.terminal-block')).toContainText('Victory! Survived 10 rounds.')
+  await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')
 })
 
 test('unknown routes show a 404 page', async ({ page }) => {

@@ -7,7 +7,18 @@ import { expect, test } from '@playwright/test'
  * should pass. Update them on purpose only after reviewing a diff you intended.
  */
 
-const pages = ['/', '/work/skillmatch', '/work/mini-rpg-battle', '/resume', '/notes', '/lab', '/how-its-built']
+const pages = [
+  '/',
+  '/work/skillmatch',
+  '/work/mini-rpg-battle',
+  '/work/thinkboard',
+  '/work/discord-ai-bridge',
+  '/notes/skillmatch-attend-race-condition',
+  '/resume',
+  '/notes',
+  '/lab',
+  '/how-its-built',
+]
 const widths = [390, 768, 1440]
 
 for (const scheme of ['dark', 'light'] as const) {
