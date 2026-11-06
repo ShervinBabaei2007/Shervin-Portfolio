@@ -2,6 +2,7 @@ import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath } from 'node:url'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 /**
  * Preloads the three font files used above the fold so text renders in the
@@ -25,11 +26,21 @@ function preloadFonts(): Plugin {
   }
 }
 
-export default defineConfig({
-  plugins: [react(), tailwindcss(), preloadFonts()],
-  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
-  build: {
-    // The manifest maps each page's source file to its chunk, for modulepreload links.
-    manifest: true,
-  },
+// `npm run analyze` builds into dist-analyze/ and writes a size treemap to dist-analyze/stats.html.
+export default defineConfig(({ mode }) => {
+  const analyze = mode === 'analyze'
+  return {
+    plugins: [
+      react(),
+      tailwindcss(),
+      preloadFonts(),
+      ...(analyze ? [visualizer({ filename: 'dist-analyze/stats.html', gzipSize: true, template: 'treemap' })] : []),
+    ],
+    resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+    build: {
+      ...(analyze ? { outDir: 'dist-analyze' } : {}),
+      // The manifest maps each page's source file to its chunk, for modulepreload links.
+      manifest: true,
+    },
+  }
 })

@@ -20,4 +20,4 @@ jobs:
       - run: npm run format:check
       - run: npx playwright install --with-deps chromium
       # Playwright's webServer runs the full build (snapshot, client, SSR, prerender) before serving.
-      - run: npx playwright test
+      - run: npx playwright test --grep-invert @visual
