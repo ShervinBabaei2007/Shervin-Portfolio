@@ -28,8 +28,8 @@ export const site = {
   availability: {
     from: '' as string,
     term: '' as string,
-    roles: 'co-op, internship and junior developer roles',
-    area: 'Metro Vancouver, on-site or hybrid',
+    roles: 'co-op, internship and software roles',
+    area: 'Vancouver, on-site or hybrid',
   },
 }
 

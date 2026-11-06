@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const quickFacts = [
-  { label: 'BASED IN', value: 'Vancouver / Burnaby' },
+  { label: 'BASED IN', value: 'Vancouver' },
   { label: 'FOCUSED ON', value: 'Full-stack + systems curiosity' },
   { label: 'STUDYING', value: `${site.school}, ${site.program.replace('Diploma in ', '')}` },
   { label: 'OPEN TO', value: site.availability.roles },
