@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Braces, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { findProject, type Project } from '@/data/projects'
-import { availabilityLine, site } from '@/data/site'
-import { facts } from '@/data/facts'
+import { site } from '@/data/site'
 import { Button } from '@/components/ui/button'
 
 const systemLayers = [
@@ -32,12 +31,6 @@ const systemLayers = [
     projects: ['discord-ai-bridge', 'thinkboard', 'mini-rpg-battle'],
   },
 ] as const
-
-const proof = [
-  { value: facts.hackathon.placement, label: facts.hackathon.name, to: '/work/gitscribe' },
-  { value: `${facts.skillmatch.myCommits} commits`, label: 'on SkillMatch', to: '/work/skillmatch' },
-  { value: `${facts.gpa} GPA`, label: 'at BCIT', to: '/resume' },
-]
 
 function Hero() {
   const [activeLayerId, setActiveLayerId] = useState<(typeof systemLayers)[number]['id']>('ui')
@@ -74,26 +67,6 @@ function Hero() {
             </Link>
           </Button>
         </div>
-        <ul
-          className="mt-8 flex list-none flex-wrap items-baseline gap-x-5 gap-y-1.5 p-0 text-sm text-muted-foreground"
-          aria-label="Highlights"
-        >
-          {proof.map((item) => (
-            <li
-              key={item.value}
-              className="flex items-baseline gap-5 [&:not(:first-child)]:before:text-border [&:not(:first-child)]:before:content-['·']"
-            >
-              <Link className="group no-underline" to={item.to}>
-                <b className="font-semibold text-foreground tabular-nums group-hover:text-primary">{item.value}</b>{' '}
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 flex max-w-[58ch] items-start gap-2.5 text-sm text-muted-foreground">
-          <span className="mt-[7px] size-2 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-          {availabilityLine()}
-        </p>
       </div>
       <div className="hero-side">
         <div className="hero-art" role="group" aria-label="Explore projects by application layer">
