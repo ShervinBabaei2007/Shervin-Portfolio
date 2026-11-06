@@ -52,8 +52,7 @@ function Hero() {
           Full-stack developer who goes <span>down the stack.</span>
         </h1>
         <p className="mt-[22px] max-w-[58ch] text-[1.125rem] leading-[1.65] text-muted-foreground max-[620px]:max-w-[390px] max-[620px]:text-base">
-          I&apos;m {site.name}. I like the moment a bug stops being mysterious. I build React and Node products end to
-          end, then trace the request until I can explain the failure, the trade-off, and the fix in plain English.
+          I&apos;m {site.name}. I follow the request from the interface through the API until everything makes sense.
         </p>
         <div className="mt-7 flex flex-wrap items-center gap-3 max-[900px]:mt-6 max-[900px]:gap-2.5">
           <Button asChild size="lg" className="h-[46px] px-[17px] text-[.8125rem] font-semibold">
