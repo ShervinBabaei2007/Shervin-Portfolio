@@ -4,6 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Badge } from '@/components/ui/badge'
 import { journey } from '@/data/journey'
 import SectionHeading from '@/components/shared/SectionHeading'
+import { textLinkClass } from '@/lib/utils'
 
 function JourneySection() {
   return (
@@ -26,7 +27,7 @@ function JourneySection() {
                   </Badge>
                 ))}
               </div>
-              <Link className="text-link" to={item.link.to}>
+              <Link className={textLinkClass} to={item.link.to}>
                 {item.link.label} <ArrowUpRight size={14} />
               </Link>
             </AccordionContent>

@@ -189,14 +189,12 @@ a:focus-visible {
 .skill-chip,
 .hero-layer-projects a,
 .project-links a,
-.text-link,
 .skills-evidence-status a,
 .active-skill-filter button { position: relative; }
 
 .skill-chip::after,
 .hero-layer-projects a::after,
 .project-links a::after,
-.text-link::after,
 .skills-evidence-status a::after,
 .active-skill-filter button::after {
   content: '';
@@ -204,8 +202,6 @@ a:focus-visible {
   inset-block: min(0px, calc(50% - var(--target) / 2));
   inset-inline: min(0px, calc(50% - var(--target) / 2));
 }
-
-.text-link:hover { color: var(--primary); }
 
 
 /* ==========================================================================
@@ -248,54 +244,6 @@ a:focus-visible {
   color: var(--muted-foreground);
   font-size: 1rem;
   font-weight: 600;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  margin-top: 28px;
-}
-
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 13px;
-  min-height: 46px;
-  padding: 0 17px;
-  font-size: .8125rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform .18s ease, background .18s ease, border-color .18s ease;
-}
-
-.button:hover { transform: translateY(-2px); }
-
-.button-primary {
-  color: var(--primary-foreground);
-  background: var(--primary);
-}
-
-.button-primary:hover { background: var(--accent-dark); }
-
-.button-secondary {
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  background: var(--card);
-}
-
-.button-secondary:hover { border-color: var(--primary); }
-
-
-.text-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: color .18s ease;
 }
 
 .hero-art {
@@ -792,13 +740,6 @@ a:focus-visible {
   line-height: 1.85;
 }
 
-.about-link {
-  margin-top: 13px;
-  color: #e5f0dc;
-}
-
-.about-link:hover { color: #d9efb5; }
-
 .about-footnote {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -1198,11 +1139,9 @@ a:focus-visible {
    ========================================================================== */
 @media (hover: hover) {
 
-  .project-links a svg,
-  .text-link svg { transition: transform .18s ease; }
+  .project-links a svg { transition: transform .18s ease; }
 
-  .project-links a:hover svg,
-  .text-link:hover svg { transform: translate(2px, -2px); }
+  .project-links a:hover svg { transform: translate(2px, -2px); }
 
 }
 
@@ -1285,17 +1224,6 @@ a:focus-visible {
 
 
   .hero-intro { max-width: 390px; }
-
-  .hero-actions {
-    gap: 10px;
-    margin-top: 24px;
-  }
-
-  .button {
-    min-height: 44px;
-    padding-inline: 13px;
-    font-size: .75rem;
-  }
 
   .hero-layer-panel { margin-top: 17px; }
   .hero-layer-projects { gap: 5px 12px; }
@@ -1457,7 +1385,6 @@ a:focus-visible {
 
 /* Windows High Contrast / forced colours */
 @media (forced-colors: active) {
-  .button { border: 1px solid ButtonText; }
   .art-center { border: 1px solid CanvasText; }
 
   .skill-chip[aria-pressed='true'],
@@ -1495,7 +1422,6 @@ a:focus-visible {
 
   .project-card:hover,
   .project-card:focus-within,
-  .button:hover,
   .art-node:hover,
   .art-node.is-active { transform: none; }
 }
@@ -1574,9 +1500,6 @@ main:focus { outline: none; }
 .hero-proof b { font: 600 1.375rem/1.1 var(--display); }
 .hero-proof span { color: var(--muted-foreground); font-size: .8125rem; line-height: 1.4; }
 .hero-proof a:hover b { color: var(--primary); }
-
-.hero-email { color: var(--muted-foreground); font-size: .875rem; }
-.hero-email:hover { color: var(--primary); }
 
 .hero-side {
   display: grid;
@@ -1709,8 +1632,6 @@ main:focus { outline: none; }
   font-weight: 600;
   cursor: pointer;
 }
-
-.skills-evidence-secondary .text-link { margin-top: 18px; color: var(--primary); }
 
 /* ==========================================================================
    16. CASE-STUDY PAGES
@@ -1846,12 +1767,10 @@ main:focus { outline: none; }
 .built-grid section { padding: 24px 0; border-bottom: 1px solid var(--border); }
 .built-grid h2 { margin: 0; font: 600 1.25rem var(--display); }
 .built-grid p { max-width: 62ch; margin: 10px 0 0; color: var(--muted-foreground); line-height: 1.7; }
-.built-page .text-link { color: var(--primary); }
 
 .resume-page { max-width: 860px; padding: 40px 0 100px; }
 
 .resume-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
-.resume-download { min-height: 44px; }
 
 .resume-sheet {
   margin-top: 18px;
@@ -1932,7 +1851,6 @@ main:focus { outline: none; }
   .hero-proof a,
   .hero-proof li + li a { grid-template-columns: 7.5rem 1fr; align-items: baseline; padding: 11px 0; }
   .hero-proof b { font-size: 1.125rem; }
-  .hero-email { flex-basis: 100%; }
   .more-projects a { grid-template-columns: 1fr auto; gap: 2px 12px; }
   .more-projects-name { grid-column: 1; }
   .more-projects-subtitle { grid-column: 1; grid-row: 2; font-size: .875rem; }
@@ -2021,10 +1939,7 @@ main:focus { outline: none; }
 .limiter-mode input { width: 18px; height: 18px; accent-color: var(--primary); }
 
 .limiter-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
-.limiter-actions .button { cursor: pointer; border-width: 1px; border-style: solid; }
-.limiter-actions .button-primary { border-color: var(--primary); }
-.limiter-reset { min-height: 44px; padding: 0 8px; color: var(--muted-foreground); border: 0; background: none; cursor: pointer; }
-.limiter-reset:hover { color: var(--primary); }
+.limiter-actions button { cursor: pointer; border-width: 1px; border-style: solid; }
 
 .limiter-meters {
   display: grid;
@@ -2183,7 +2098,7 @@ main:focus { outline: none; }
 @media (max-width: 620px) {
   .limiter-demo { padding: 20px 16px 22px; }
   .limiter-meters--2 { grid-template-columns: minmax(0, 1fr); }
-  .limiter-actions .button { flex: 1 1 auto; }
+  .limiter-actions button { flex: 1 1 auto; }
   .limiter-log li { grid-template-columns: 1fr auto; }
   .limiter-log li > span:first-child { grid-column: 1 / -1; color: var(--muted-foreground); font-size: .8125rem; }
   .notes-section { padding-bottom: 72px; }
@@ -2356,8 +2271,7 @@ main:focus { outline: none; }
   .lab-story-mark { margin-bottom: 14px; }
   .lab-story > div:not(.lab-story-mark) + div { grid-column: auto; }
   .limiter-demo--compact { padding: 20px 16px 22px; }
-  .limiter-demo--compact .limiter-actions .button { flex: 1 1 100%; }
-  .limiter-demo--compact .limiter-reset { flex: 1 1 100%; }
+  .limiter-demo--compact .limiter-actions button { flex: 1 1 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

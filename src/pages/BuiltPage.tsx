@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react'
 import { site } from '../data/site'
+import { textLinkClass } from '@/lib/utils'
 
 const sections = [
   {
@@ -44,7 +45,7 @@ function BuiltPage() {
           </section>
         ))}
       </div>
-      <a className="text-link" href={`${site.github}`} target="_blank" rel="noreferrer">
+      <a className={textLinkClass} href={`${site.github}`} target="_blank" rel="noreferrer">
         See my GitHub <ArrowUpRight size={15} />
       </a>
     </article>

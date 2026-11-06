@@ -7,6 +7,7 @@ import SiteHeader from '@/components/shared/SiteHeader'
 import { usePageMeta } from './hooks/usePageMeta'
 import { useTheme } from './hooks/useTheme'
 import { pages } from './routes'
+import { Button } from '@/components/ui/button'
 
 /** Scrolls to the #hash after navigation, or to the top of a new page. */
 function ScrollManager() {
@@ -48,9 +49,9 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
       <section className="simple-page section-wrap" aria-labelledby="page-error-title">
         <h1 id="page-error-title">This page didn&apos;t load.</h1>
         <p>The connection may have dropped, or the site was updated while this tab was open.</p>
-        <button className="button button-primary" type="button" onClick={() => window.location.reload()}>
+        <Button type="button" onClick={() => window.location.reload()}>
           Reload the page
-        </button>
+        </Button>
       </section>
     )
   }

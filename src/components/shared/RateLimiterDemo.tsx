@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Button } from '@/components/ui/button'
 
 /*
  * A browser-only simulation of the limiter ThinkBoard uses:
@@ -122,18 +123,41 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
       </fieldset>
 
       <div className="limiter-actions">
-        <button type="button" className="button button-primary" onClick={() => send('you')}>
+        <Button
+          type="button"
+          size="lg"
+          className="h-[46px] px-[17px] text-[.8125rem] font-semibold"
+          onClick={() => send('you')}
+        >
           Send 1 request
-        </button>
-        <button type="button" className="button button-secondary" onClick={() => burst(15)}>
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="h-[46px] px-[17px] text-[.8125rem] font-semibold"
+          onClick={() => burst(15)}
+        >
           Burst 15 requests
-        </button>
-        <button type="button" className="button button-secondary" onClick={() => send('other')}>
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="lg"
+          className="h-[46px] px-[17px] text-[.8125rem] font-semibold"
+          onClick={() => send('other')}
+        >
           Other visitor sends 1
-        </button>
-        <button type="button" className="text-link limiter-reset" onClick={() => reset()}>
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          className="h-11 px-2 text-muted-foreground hover:text-primary"
+          onClick={() => reset()}
+        >
           Reset
-        </button>
+        </Button>
       </div>
 
       <div className={`limiter-meters limiter-meters--${meters.length}`}>

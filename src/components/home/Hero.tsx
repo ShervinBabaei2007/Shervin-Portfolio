@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { findProject, type Project } from '@/data/projects'
 import { availabilityLine, site } from '@/data/site'
 import { facts } from '@/data/facts'
+import { Button } from '@/components/ui/button'
+import { cn, textLinkClass } from '@/lib/utils'
 
 const systemLayers = [
   {
@@ -70,14 +72,21 @@ function Hero() {
             </Badge>
           ))}
         </div>
-        <div className="hero-actions">
-          <Link className="button button-primary" to="/#work">
-            See my projects <ArrowDownRight size={16} />
-          </Link>
-          <Link className="button button-secondary" to="/resume">
-            View resume <FileText size={16} />
-          </Link>
-          <a className="text-link hero-email" href={`mailto:${site.email}`}>
+        <div className="mt-7 flex flex-wrap items-center gap-3 max-[900px]:mt-6 max-[900px]:gap-2.5">
+          <Button asChild size="lg" className="h-[46px] px-[17px] text-[.8125rem] font-semibold">
+            <Link to="/#work">
+              See my projects <ArrowDownRight />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="h-[46px] px-[17px] text-[.8125rem] font-semibold">
+            <Link to="/resume">
+              View resume <FileText />
+            </Link>
+          </Button>
+          <a
+            className={cn(textLinkClass, 'text-sm text-muted-foreground max-[620px]:basis-full')}
+            href={`mailto:${site.email}`}
+          >
             <Mail size={16} /> {site.email}
           </a>
         </div>

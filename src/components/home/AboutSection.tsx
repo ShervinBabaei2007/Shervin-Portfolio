@@ -1,6 +1,7 @@
 import { facts } from '@/data/facts'
 import { ArrowRight, Code2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { cn, textLinkClass } from '@/lib/utils'
 
 function AboutSection() {
   return (
@@ -42,7 +43,7 @@ function AboutSection() {
             looking for an internship, co-op, or junior role where I can contribute, learn from a team, and keep
             building that understanding.
           </p>
-          <Link className="text-link about-link" to="/resume">
+          <Link className={cn(textLinkClass, 'mt-[13px] text-[#e5f0dc] hover:text-[#d9efb5]')} to="/resume">
             Read my resume <ArrowRight size={15} />
           </Link>
         </div>

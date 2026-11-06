@@ -5,6 +5,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { projectsUsing, siteStack, skillTabs, usageLevel } from '@/data/skills'
 import SectionHeading from '@/components/shared/SectionHeading'
+import { cn, textLinkClass } from '@/lib/utils'
 
 type SkillsSectionProps = {
   activeSkill: string | null
@@ -102,7 +103,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
               </ul>
             </div>
           ))}
-          <Link className="text-link" to="/how-its-built">
+          <Link className={cn(textLinkClass, 'mt-[18px] text-primary')} to="/how-its-built">
             How this site is built <ArrowUpRight size={15} />
           </Link>
         </div>

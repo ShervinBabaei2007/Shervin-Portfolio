@@ -1,18 +1,17 @@
 import { ArrowUpRight, FileDown } from 'lucide-react'
 import { resume } from '../data/resume'
+import { Button } from '@/components/ui/button'
 
 function ResumePage() {
   return (
     <article className="resume-page section-wrap" aria-labelledby="resume-title">
       <div className="resume-toolbar">
         <p className="eyebrow">RESUME</p>
-        <a
-          className="button button-secondary resume-download"
-          href="/Shervin_Babaei_Resume.pdf"
-          download="Shervin_Babaei_Resume.pdf"
-        >
-          Download PDF <FileDown size={16} />
-        </a>
+        <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+          <a href="/Shervin_Babaei_Resume.pdf" download="Shervin_Babaei_Resume.pdf">
+            Download PDF <FileDown />
+          </a>
+        </Button>
       </div>
 
       <div className="resume-sheet">
