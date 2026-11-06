@@ -196,6 +196,8 @@ a:focus-visible {
   grid-template-columns: 1.08fr .92fr;
   align-items: center;
   min-height: 670px;
+  min-height: calc(100vh - var(--header-height));
+  min-height: calc(100svh - var(--header-height));  /* header + hero = one viewport */
   padding-top: 37px;
   padding-bottom: 5.5625rem;                     /* rem: room for cue/index when text scales */
 }
