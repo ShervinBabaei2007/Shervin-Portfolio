@@ -1,9 +1,11 @@
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, SearchX } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { flagshipProjects, moreProjects } from '@/data/projects'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import GitHubActivity from '@/components/home/GitHubActivity'
 import ProjectCard from '@/components/home/ProjectCard'
+import { Button } from '@/components/ui/button'
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import SectionHeading from '@/components/shared/SectionHeading'
 import { cn, textLinkClass } from '@/lib/utils'
 
@@ -114,7 +116,20 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </p>
       )}
       {flagships.length === 0 && others.length === 0 && (
-        <p className="mt-3 text-sm text-muted-foreground">No projects use {activeSkill} yet.</p>
+        <Empty className="mt-8 border">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <SearchX />
+            </EmptyMedia>
+            <EmptyTitle>No projects use {activeSkill} yet</EmptyTitle>
+            <EmptyDescription>Clear the filter to see everything I&apos;ve built.</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button type="button" variant="outline" onClick={onClearSkill}>
+              Clear skill filter
+            </Button>
+          </EmptyContent>
+        </Empty>
       )}
     </section>
   )

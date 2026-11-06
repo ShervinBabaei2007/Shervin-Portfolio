@@ -42,7 +42,10 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
     >
       <CommandInput placeholder="Search projects, pages, actions..." />
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandEmpty>
+          <p className="font-medium text-foreground">Nothing matches that.</p>
+          <p className="mt-1 text-muted-foreground">Try a project name, a skill, or &quot;resume&quot;.</p>
+        </CommandEmpty>
         <CommandGroup heading="Projects">
           {projects.map((project) => (
             <CommandItem
