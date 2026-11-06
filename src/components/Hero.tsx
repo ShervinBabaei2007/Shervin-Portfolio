@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Braces, FileText, Mail } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { Badge } from '@/components/ui/badge'
+import CommandPalette from './CommandPalette'
 import { findProject, type Project } from '../data/projects'
 import { availabilityLine, site } from '../data/site'
 
@@ -36,6 +38,12 @@ function Hero() {
           <span>WHAT I BRING</span>
           <p><b>Ship the feature.</b> Trace the failure. Leave the system clearer than I found it.</p>
         </div>
+        <div className="flex flex-wrap gap-2" aria-label="Core stack">
+          {['React', 'Node.js', 'TypeScript', 'Python'].map((tag, index) => (
+            <Badge key={tag} variant={index % 2 ? 'secondary' : 'outline'}>{tag}</Badge>
+          ))}
+        </div>
+        <div className="mt-4"><CommandPalette /></div>
         <ul className="hero-proof" aria-label="Highlights">
           {proof.map((item) => (
             <li key={item.value}>
