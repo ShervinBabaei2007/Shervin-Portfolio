@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Portfolio stylesheet — audited, consolidated, remediated
+   Portfolio stylesheet - audited, consolidated, remediated
    --------------------------------------------------------------------------
    CONTENTS
      1. Tokens (light / dark / contrast)
@@ -539,7 +539,7 @@ a:focus-visible {
   .project-card::before { display: none; }
 }
 
-/* Reduced motion — single consolidated block.
+/* Reduced motion - single consolidated block.
    !important is deliberate here (standard pattern: must beat every component rule). */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

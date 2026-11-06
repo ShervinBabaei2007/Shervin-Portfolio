@@ -14,7 +14,7 @@ function NotesSection() {
         aside={
           <>
             Real failure modes, trade-offs, and fixes I can <br />
-            trace back to code—not polished hindsight.
+            trace back to code-not polished hindsight.
           </>
         }
       />
