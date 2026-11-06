@@ -10,6 +10,8 @@ export type SkillCategory = 'Frontend' | 'Backend' | 'Data' | 'Systems' | 'Tooli
 export type SkillTab = {
   id: 'web' | 'systems' | 'tools'
   label: string
+  /** One plain-English line shown under the group title. */
+  summary: string
   skills: { name: string; category: SkillCategory; note: string }[]
 }
 
@@ -17,6 +19,7 @@ export const skillTabs: SkillTab[] = [
   {
     id: 'web',
     label: 'Web & Full-Stack',
+    summary: 'Interfaces, the APIs behind them, and the data they store.',
     skills: [
       { name: 'React', category: 'Frontend', note: 'Component UIs, forms and routing.' },
       { name: 'TypeScript', category: 'Frontend', note: 'Typed React apps and API code.' },
@@ -31,6 +34,7 @@ export const skillTabs: SkillTab[] = [
   {
     id: 'systems',
     label: 'Systems & Low-Level',
+    summary: 'Concurrency, realtime connections, and storage under the UI.',
     skills: [
       { name: 'Python', category: 'Systems', note: 'CLI tools, bots and tested OOP code.' },
       { name: 'asyncio', category: 'Systems', note: 'Concurrency and non-blocking I/O.' },
@@ -42,6 +46,7 @@ export const skillTabs: SkillTab[] = [
   {
     id: 'tools',
     label: 'Tools & Infrastructure',
+    summary: 'Shipping, sign-in, design, and testing.',
     skills: [
       { name: 'Vercel', category: 'Tooling', note: 'Deploying frontends and backends.' },
       { name: 'Auth0', category: 'Tooling', note: 'GitHub OAuth sign-in.' },

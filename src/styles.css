@@ -186,16 +186,12 @@ a:focus-visible {
 
 /* Enlarged hit areas (≥44px) without changing layout.
    The pseudo-element extends the clickable area only. */
-.skill-chip,
 .hero-layer-projects a,
 .project-links a,
-.skills-evidence-status a,
 .active-skill-filter button { position: relative; }
 
-.skill-chip::after,
 .hero-layer-projects a::after,
 .project-links a::after,
-.skills-evidence-status a::after,
 .active-skill-filter button::after {
   content: '';
   position: absolute;
@@ -760,165 +756,6 @@ a:focus-visible {
   font-weight: 500;
 }
 
-
-/* ==========================================================================
-   8. SKILLS
-   ========================================================================== */
-.skills-section {
-  padding-top: 103px;
-  padding-bottom: 111px;
-}
-
-.skills-heading { margin-bottom: 40px; }
-
-
-.skill-group h3 {
-  margin: 20px 0 3px;
-  font: 600 1.1875rem var(--display);
-}
-
-.skill-group > p {
-  margin: 0;
-  color: var(--muted-foreground);
-  font-size: .8125rem;
-}
-
-.skill-group-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 18px 0 0; padding: 0; list-style: none; }
-.skill-group-list li { display: flex; }
-
-.skill-group ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin: 18px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.skill-group li {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  color: var(--tag-ink);
-  border: 1px solid var(--border);
-  font-size: .75rem;
-}
-
-
-.skills-evidence-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 36px;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.skills-evidence {
-  min-width: 0;
-  padding: 20px 0 25px;
-}
-
-.skills-evidence + .skills-evidence {
-  padding-left: 30px;
-  border-left: 1px solid var(--border);
-}
-
-.skills-evidence > h3 {
-  margin: 0 0 12px;
-  font: 600 1.375rem var(--display);
-}
-
-.skills-evidence > p {
-  margin: 0 0 12px;
-  color: var(--muted-foreground);
-  font-size: .875rem;
-  line-height: 1.6;
-}
-
-.skills-evidence .skill-group {
-  min-height: 0;
-  padding: 14px 0;
-  border-top: 1px solid var(--border);
-}
-
-.skills-evidence .skill-group h4 {
-  margin: 0;
-  font: 600 .9375rem var(--display);
-}
-
-.skills-evidence .skill-group ul { margin-top: 9px; }
-
-.skills-evidence .skill-group ul li {
-  padding: 0;
-  border: 0;
-}
-
-.skill-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 36px;
-  padding: 5px 9px;
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  background: var(--card);
-  font-size: .8125rem;
-  cursor: pointer;
-  transition: border-color .16s ease, color .16s ease, background .16s ease;
-}
-
-.skill-chip span {
-  display: grid;
-  min-width: 20px;
-  height: 20px;
-  place-items: center;
-  color: var(--muted-foreground);
-  border-radius: 50%;
-  background: var(--background);
-  font: .75rem var(--mono);
-}
-
-.skill-chip:hover,
-.skill-chip[aria-pressed='true'] {
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-.skill-chip[aria-pressed='true'] { box-shadow: inset 0 0 0 1px currentColor; }
-
-.skill-chip[aria-pressed='true'] span {
-  color: var(--card);
-  background: var(--primary);
-}
-
-.skill-chip:focus-visible {
-  outline: 3px solid var(--ring);
-  outline-offset: 2px;
-}
-
-.skills-evidence-status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin: 15px 0 0;
-  color: var(--muted-foreground);
-  font-size: .875rem;
-}
-
-.skills-evidence-status a {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: var(--primary);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.skills-evidence-status a:hover { text-decoration-thickness: 2px; }
-
 .active-skill-filter {
   display: flex;
   flex-wrap: wrap;
@@ -1300,31 +1137,6 @@ a:focus-visible {
   .about-lead { font-size: 1.1875rem; }
   .about-footnote { margin-top: 28px; }
 
-  /* Skills */
-  .skills-section {
-    padding-top: 73px;
-    padding-bottom: 79px;
-  }
-
-  .skills-heading { margin-bottom: 26px; }
-
-
-  .skill-group h3 { font-size: 1.0625rem; }
-
-  .skills-evidence-grid {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
-  .skills-evidence + .skills-evidence {
-    padding-left: 0;
-    border-top: 1px solid var(--border);
-    border-left: 0;
-  }
-
-  .skills-evidence > h3 { font-size: 1.25rem; }
-  .skill-chip { font-size: .75rem; }
-
 
   .case-study-at-a-glance {
     grid-template-columns: 1fr;
@@ -1387,18 +1199,11 @@ a:focus-visible {
 @media (forced-colors: active) {
   .art-center { border: 1px solid CanvasText; }
 
-  .skill-chip[aria-pressed='true'],
   .art-node.is-active {
     forced-color-adjust: none;
     color: HighlightText;
     border-color: Highlight;
     background: Highlight;
-  }
-
-  .skill-chip[aria-pressed='true'] span {
-    forced-color-adjust: none;
-    color: Highlight;
-    background: HighlightText;
   }
 
   .project-card::before { display: none; }

@@ -94,9 +94,7 @@ test('skill chips filter projects and can be cleared', async ({ page }) => {
   await page.goto('/')
   // Wait for hydration, otherwise the click can land before React attaches its handlers.
   await page.waitForLoadState('networkidle')
-  await page.getByRole('tab', { name: 'Systems & Low-Level' }).click()
-  const chip = page.locator('.skill-chip', { hasText: 'Redis' })
-  await chip.click()
+  await page.getByRole('button', { name: /using Redis$/ }).click()
   await expect(page.getByText('Showing projects that use')).toBeVisible()
   await expect(page.locator('[data-slot="carousel"] .project-card')).toHaveCount(1)
   await expect(page.locator('.more-projects')).toHaveCount(0)
@@ -106,9 +104,11 @@ test('skill chips filter projects and can be cleared', async ({ page }) => {
 
 test('every listed skill is backed by at least one project', async ({ page }) => {
   await page.goto('/')
-  const counts = await page.locator('.skill-chip span').allTextContents()
-  expect(counts.length).toBeGreaterThan(0)
-  for (const count of counts) expect(Number(count)).toBeGreaterThan(0)
+  const labels = await page
+    .locator('#skills button[aria-pressed]')
+    .evaluateAll((buttons) => buttons.map((button) => button.getAttribute('aria-label') ?? ''))
+  expect(labels.length).toBeGreaterThan(0)
+  for (const label of labels) expect(Number(label.match(/Show (\d+) project/)?.[1])).toBeGreaterThan(0)
 })
 
 test('theme is dark by default and remembers a manual choice', async ({ browser }) => {
