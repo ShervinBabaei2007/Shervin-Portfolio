@@ -21,7 +21,7 @@ const snapshotDd = 'mt-[7px] text-sm leading-normal font-semibold'
 const projectLink =
   'inline-flex min-h-11 items-center gap-2 text-[.9375rem] font-semibold text-primary no-underline underline-offset-4 hover:underline'
 const pagerLink =
-  'grid gap-1.5 border bg-card px-5 py-[18px] no-underline hover:border-primary [&:hover_b]:text-primary'
+  'grid gap-1.5 rounded-xl border bg-card px-5 py-[18px] no-underline hover:border-primary [&:hover_b]:text-primary'
 const pagerLabel = 'flex items-center gap-1.5 text-sm text-muted-foreground'
 
 function CaseStudyPage() {
@@ -59,7 +59,7 @@ function CaseStudyPage() {
         </h1>
         <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground">{project.subtitle}</p>
 
-        <dl className="mt-[26px] mb-2 grid grid-cols-[minmax(140px,.65fr)_minmax(0,1.35fr)] gap-x-6 gap-y-3.5 border-l-[3px] border-primary bg-background px-[18px] py-4 max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5">
+        <dl className="mt-[26px] mb-2 grid grid-cols-[minmax(140px,.65fr)_minmax(0,1.35fr)] gap-x-6 gap-y-3.5 rounded-r-lg border-l-[3px] border-primary bg-background px-[18px] py-4 max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5">
           <div className="min-w-0">
             <dt className={factDt}>MY ROLE</dt>
             <dd className={factDd}>{project.role}</dd>
@@ -78,7 +78,7 @@ function CaseStudyPage() {
 
         {project.signal && (
           <dl
-            className="mt-[18px] mb-1 grid grid-cols-3 gap-px bg-border p-px max-[900px]:grid-cols-1 print:bg-transparent"
+            className="mt-[18px] mb-1 grid grid-cols-3 gap-px overflow-hidden rounded-lg bg-border p-px max-[900px]:grid-cols-1 print:bg-transparent"
             aria-label="Engineering snapshot"
           >
             <div className="min-w-0 bg-card px-4 py-[15px]">
@@ -126,7 +126,7 @@ function CaseStudyPage() {
             <li
               key={node.label}
               className={cn(
-                'relative grid gap-1 border bg-card px-4 py-3.5',
+                'relative grid gap-1 rounded-lg border bg-card px-4 py-3.5',
                 'after:absolute after:top-1/2 after:-right-[22px] after:-translate-y-1/2 after:font-mono after:text-lg after:text-primary',
                 'not-last:after:content-["→"] max-[1100px]:nth-2:after:content-none',
                 'max-[620px]:after:top-auto max-[620px]:after:right-auto max-[620px]:after:-bottom-6 max-[620px]:after:left-[18px] max-[620px]:after:translate-y-0 max-[620px]:after:rotate-90 max-[620px]:nth-2:not-last:after:content-["→"]',
@@ -142,7 +142,7 @@ function CaseStudyPage() {
       {project.video && (
         <figure className="mt-8">
           <video
-            className="block h-auto w-full border bg-[#0f1a30]"
+            className="block h-auto w-full rounded-xl border bg-[#0f1a30]"
             controls
             muted
             playsInline
@@ -198,7 +198,7 @@ function CaseStudyPage() {
               <h2 className={h2Class}>Outcome</h2>
               <p className={bodyClass}>{project.outcome}</p>
             </section>
-            <section className="mt-1 !border-b-0 border-l-[3px] border-l-primary bg-card px-5">
+            <section className="mt-1 rounded-r-lg !border-b-0 border-l-[3px] border-l-primary bg-card px-5">
               <h2 className={h2Class}>The trade-off</h2>
               <p className={bodyClass}>{project.tradeoff}</p>
             </section>
@@ -216,7 +216,7 @@ function CaseStudyPage() {
                 {relatedNotes.map((note) => (
                   <Link
                     key={note.slug}
-                    className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border bg-card px-4 py-3.5 no-underline hover:border-primary"
+                    className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 rounded-lg border bg-card px-4 py-3.5 no-underline hover:border-primary"
                     to={`/notes/${note.slug}`}
                   >
                     <b className="text-[1.0625rem] font-semibold">{note.title}</b>

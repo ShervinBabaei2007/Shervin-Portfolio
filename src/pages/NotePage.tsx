@@ -7,7 +7,7 @@ import { findProject } from '../data/projects'
 import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
-const footerLink = 'grid gap-1.5 border bg-card px-[18px] py-4 no-underline hover:border-primary'
+const footerLink = 'grid gap-1.5 rounded-xl border bg-card px-[18px] py-4 no-underline hover:border-primary'
 const footerLabel = 'inline-flex items-center gap-1.5 text-[.8125rem] text-muted-foreground'
 
 function NotePage() {

@@ -7,7 +7,7 @@ function NoteCard({ note, project }: { note: Note; project?: string }) {
   return (
     <li>
       <Link
-        className="grid gap-1.5 border bg-card px-5 py-[18px] no-underline transition-colors hover:border-primary"
+        className="grid gap-1.5 rounded-xl border bg-card px-5 py-[18px] no-underline transition-colors hover:border-primary"
         to={`/notes/${note.slug}`}
       >
         <span className="font-mono text-xs text-muted-foreground">

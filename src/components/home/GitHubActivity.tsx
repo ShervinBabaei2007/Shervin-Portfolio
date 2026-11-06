@@ -96,7 +96,7 @@ function GitHubActivity() {
   if (repos.length === 0) return null
 
   return (
-    <div className="border bg-card px-5 py-[18px]" data-github>
+    <div className="rounded-xl border bg-card px-5 py-[18px]" data-github>
       <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h3 className="flex items-center gap-2 text-lg font-semibold">
           <Github size={18} aria-hidden="true" /> Recently on GitHub
