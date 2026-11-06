@@ -17,13 +17,25 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
   return (
     <section className="work-section section-wrap" id="work" aria-labelledby="work-title">
       <div className="section-heading">
-        <div><p className="eyebrow"><span className="eyebrow-mark">02</span> SELECTED WORK</p><h2 id="work-title">Built, broken, understood<span>.</span></h2></div>
-        <p className="section-aside">The useful part isn&apos;t just what shipped. It&apos;s the <br />assumption each project forced me to rethink.</p>
+        <div>
+          <p className="eyebrow">
+            <span className="eyebrow-mark">02</span> SELECTED WORK
+          </p>
+          <h2 id="work-title">
+            Built, broken, understood<span>.</span>
+          </h2>
+        </div>
+        <p className="section-aside">
+          The useful part isn&apos;t just what shipped. It&apos;s the <br />
+          assumption each project forced me to rethink.
+        </p>
       </div>
       {activeSkill && (
         <p className="active-skill-filter" aria-live="polite">
           Showing projects that use <strong>{activeSkill}</strong>.
-          <button type="button" onClick={onClearSkill}>Clear skill filter</button>
+          <button type="button" onClick={onClearSkill}>
+            Clear skill filter
+          </button>
         </p>
       )}
       {flagships.length > 0 && (

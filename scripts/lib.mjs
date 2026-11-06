@@ -12,7 +12,14 @@ export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 export async function importTs(relativePath) {
   const dir = mkdtempSync(join(tmpdir(), 'portfolio-'))
   const outfile = join(dir, 'module.mjs')
-  await build({ entryPoints: [resolve(root, relativePath)], bundle: true, format: 'esm', platform: 'node', outfile, logLevel: 'silent' })
+  await build({
+    entryPoints: [resolve(root, relativePath)],
+    bundle: true,
+    format: 'esm',
+    platform: 'node',
+    outfile,
+    logLevel: 'silent',
+  })
   const module = await import(pathToFileURL(outfile).href)
   rmSync(dir, { recursive: true, force: true })
   return module

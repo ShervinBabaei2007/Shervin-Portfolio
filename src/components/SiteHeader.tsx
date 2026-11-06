@@ -43,7 +43,9 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
         <Link to="/#contact">Contact</Link>
       </nav>
       <div className="header-actions">
-        <span className="availability"><i /> {from ? `AVAILABLE ${from.toUpperCase()}` : 'OPEN TO CO-OP + JUNIOR ROLES'}</span>
+        <span className="availability">
+          <i /> {from ? `AVAILABLE ${from.toUpperCase()}` : 'OPEN TO CO-OP + JUNIOR ROLES'}
+        </span>
         <TooltipProvider delayDuration={150}>
           {socials.map(({ label, href, Icon, external }) => (
             <Tooltip key={label}>
@@ -65,10 +67,19 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuRadioGroup value={preference} onValueChange={(value) => onPreferenceChange(value as Preference)}>
-              <DropdownMenuRadioItem value="light"><Sun /> Light</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark"><Moon /> Dark</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="system"><Monitor /> System</DropdownMenuRadioItem>
+            <DropdownMenuRadioGroup
+              value={preference}
+              onValueChange={(value) => onPreferenceChange(value as Preference)}
+            >
+              <DropdownMenuRadioItem value="light">
+                <Sun /> Light
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark">
+                <Moon /> Dark
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="system">
+                <Monitor /> System
+              </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>

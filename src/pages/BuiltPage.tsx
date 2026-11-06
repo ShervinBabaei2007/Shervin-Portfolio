@@ -33,7 +33,9 @@ function BuiltPage() {
     <article className="simple-page built-page section-wrap" aria-labelledby="built-title">
       <p className="eyebrow">COLOPHON</p>
       <h1 id="built-title">How this site is built</h1>
-      <p className="simple-page-lead">A portfolio is a project too, so I built and tested this one the way I would a product.</p>
+      <p className="simple-page-lead">
+        A portfolio is a project too, so I built and tested this one the way I would a product.
+      </p>
       <div className="built-grid">
         {sections.map((section) => (
           <section key={section.title}>
@@ -42,7 +44,9 @@ function BuiltPage() {
           </section>
         ))}
       </div>
-      <a className="text-link" href={`${site.github}`} target="_blank" rel="noreferrer">See my GitHub <ArrowUpRight size={15} /></a>
+      <a className="text-link" href={`${site.github}`} target="_blank" rel="noreferrer">
+        See my GitHub <ArrowUpRight size={15} />
+      </a>
     </article>
   )
 }

@@ -7,9 +7,30 @@ import { findProject, type Project } from '../data/projects'
 import { availabilityLine, site } from '../data/site'
 
 const systemLayers = [
-  { id: 'ui', number: '01', title: 'UI', caption: 'WHAT YOU SEE', detail: 'Turn user tasks into clear React screens, forms, and feedback.', projects: ['skillmatch', 'gitscribe', 'thinkboard'] },
-  { id: 'api', number: '02', title: 'API', caption: 'HOW IT CONNECTS', detail: 'Connect interfaces to routes, authentication, and stored data.', projects: ['skillmatch', 'thinkboard', 'jicnic'] },
-  { id: 'core', number: '03', title: 'CORE', caption: 'WHY IT WORKS', detail: 'Understand the rules, asynchronous work, and state behind a feature.', projects: ['discord-ai-bridge', 'thinkboard', 'mini-rpg-battle'] },
+  {
+    id: 'ui',
+    number: '01',
+    title: 'UI',
+    caption: 'WHAT YOU SEE',
+    detail: 'Turn user tasks into clear React screens, forms, and feedback.',
+    projects: ['skillmatch', 'gitscribe', 'thinkboard'],
+  },
+  {
+    id: 'api',
+    number: '02',
+    title: 'API',
+    caption: 'HOW IT CONNECTS',
+    detail: 'Connect interfaces to routes, authentication, and stored data.',
+    projects: ['skillmatch', 'thinkboard', 'jicnic'],
+  },
+  {
+    id: 'core',
+    number: '03',
+    title: 'CORE',
+    caption: 'WHY IT WORKS',
+    detail: 'Understand the rules, asynchronous work, and state behind a feature.',
+    projects: ['discord-ai-bridge', 'thinkboard', 'mini-rpg-battle'],
+  },
 ] as const
 
 const proof = [
@@ -28,22 +49,32 @@ function Hero() {
   return (
     <section className="hero section-wrap" id="home" aria-labelledby="hero-title">
       <div className="hero-copy">
-        <p className="eyebrow"><span className="eyebrow-mark">01</span> VANCOUVER, BC <span className="eyebrow-divider">/</span> BCIT</p>
-        <h1 id="hero-title">Full-stack developer who goes <span>down the stack.</span></h1>
+        <p className="eyebrow">
+          <span className="eyebrow-mark">01</span> VANCOUVER, BC <span className="eyebrow-divider">/</span> BCIT
+        </p>
+        <h1 id="hero-title">
+          Full-stack developer who goes <span>down the stack.</span>
+        </h1>
         <p className="hero-intro">
-          I&apos;m {site.name}. I like the moment a bug stops being mysterious. I build React and Node products end to end,
-          then trace the request until I can explain the failure, the trade-off, and the fix in plain English.
+          I&apos;m {site.name}. I like the moment a bug stops being mysterious. I build React and Node products end to
+          end, then trace the request until I can explain the failure, the trade-off, and the fix in plain English.
         </p>
         <div className="hero-value" aria-label="What I bring to a team">
           <span>WHAT I BRING</span>
-          <p><b>Ship the feature.</b> Trace the failure. Leave the system clearer than I found it.</p>
+          <p>
+            <b>Ship the feature.</b> Trace the failure. Leave the system clearer than I found it.
+          </p>
         </div>
         <div className="flex flex-wrap gap-2" aria-label="Core stack">
           {['React', 'Node.js', 'TypeScript', 'Python'].map((tag, index) => (
-            <Badge key={tag} variant={index % 2 ? 'secondary' : 'outline'}>{tag}</Badge>
+            <Badge key={tag} variant={index % 2 ? 'secondary' : 'outline'}>
+              {tag}
+            </Badge>
           ))}
         </div>
-        <div className="mt-4"><CommandPalette /></div>
+        <div className="mt-4">
+          <CommandPalette />
+        </div>
         <ul className="hero-proof" aria-label="Highlights">
           {proof.map((item) => (
             <li key={item.value}>
@@ -56,9 +87,15 @@ function Hero() {
         </ul>
         <p className="hero-target">{availabilityLine()}</p>
         <div className="hero-actions">
-          <Link className="button button-primary" to="/#work">See my projects <ArrowDownRight size={16} /></Link>
-          <Link className="button button-secondary" to="/resume">View resume <FileText size={16} /></Link>
-          <a className="text-link hero-email" href={`mailto:${site.email}`}><Mail size={16} /> {site.email}</a>
+          <Link className="button button-primary" to="/#work">
+            See my projects <ArrowDownRight size={16} />
+          </Link>
+          <Link className="button button-secondary" to="/resume">
+            View resume <FileText size={16} />
+          </Link>
+          <a className="text-link hero-email" href={`mailto:${site.email}`}>
+            <Mail size={16} /> {site.email}
+          </a>
         </div>
       </div>
       <div className="hero-side">
@@ -68,7 +105,14 @@ function Hero() {
           <div className="orbit orbit-three" />
           <span className="art-cross art-cross-one">+</span>
           <span className="art-cross art-cross-two">+</span>
-          <div className="art-center"><Braces size={31} strokeWidth={1.5} /><span>TRACE THE<br />WHOLE SYSTEM</span></div>
+          <div className="art-center">
+            <Braces size={31} strokeWidth={1.5} />
+            <span>
+              TRACE THE
+              <br />
+              WHOLE SYSTEM
+            </span>
+          </div>
           {systemLayers.map((layer) => (
             <button
               key={layer.id}
@@ -78,18 +122,24 @@ function Hero() {
               aria-label={`Show ${layer.title} layer projects`}
               onClick={() => setActiveLayerId(layer.id)}
             >
-              <span>{layer.number}</span><b>{layer.title}</b><small>{layer.caption}</small>
+              <span>{layer.number}</span>
+              <b>{layer.title}</b>
+              <small>{layer.caption}</small>
             </button>
           ))}
         </div>
         <div className="hero-layer-panel" aria-live="polite">
           <div>
-            <span className="hero-layer-label">{activeLayer.title} / {activeLayer.caption}</span>
+            <span className="hero-layer-label">
+              {activeLayer.title} / {activeLayer.caption}
+            </span>
             <p>{activeLayer.detail}</p>
           </div>
           <div className="hero-layer-projects" aria-label={`Projects that demonstrate ${activeLayer.title}`}>
             {layerProjects.map((project) => (
-              <Link key={project.slug} to={`/work/${project.slug}`}>{project.name} <ArrowUpRight size={14} /></Link>
+              <Link key={project.slug} to={`/work/${project.slug}`}>
+                {project.name} <ArrowUpRight size={14} />
+              </Link>
             ))}
           </div>
         </div>

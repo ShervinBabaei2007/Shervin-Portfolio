@@ -51,7 +51,10 @@ for (const url of staticRoutes) {
 write('404.html', await page('/404'))
 
 const urls = staticRoutes.map((url) => `  <url><loc>${site.url}${url === '/' ? '/' : url}</loc></url>`).join('\n')
-write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`)
+write(
+  'sitemap.xml',
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+)
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`)
 
 rmSync(resolve(root, 'dist-ssr'), { recursive: true, force: true })

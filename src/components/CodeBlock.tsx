@@ -27,7 +27,10 @@ function CodeBlock({ snippet, maxLines, showCaption = true, showLink = showCapti
         )}
       </div>
       <pre tabIndex={maxLines ? -1 : 0} aria-label={`Code from ${snippet.file}`}>
-        <code>{visible.join('\n')}{truncated ? '\n…' : ''}</code>
+        <code>
+          {visible.join('\n')}
+          {truncated ? '\n…' : ''}
+        </code>
       </pre>
       {showCaption && <figcaption>{snippet.caption}</figcaption>}
     </figure>

@@ -36,7 +36,14 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
   // so answer it locally to keep this test about the site's own code.
   await page.route('https://api.github.com/**', (route) => route.fulfill({ json: [] }))
   const errors = collectErrors(page)
-  for (const path of ['/', '/work/thinkboard', '/resume', '/how-its-built', '/notes', '/notes/sliding-window-rate-limiting']) {
+  for (const path of [
+    '/',
+    '/work/thinkboard',
+    '/resume',
+    '/how-its-built',
+    '/notes',
+    '/notes/sliding-window-rate-limiting',
+  ]) {
     await page.goto(path)
     await page.waitForLoadState('networkidle')
   }
@@ -57,7 +64,10 @@ test('case study is a shareable page with team context, code, and trade-off', as
   await expect(page).toHaveTitle('SkillMatch case study | Shervin Babaei')
   await expect(page.getByRole('heading', { level: 1, name: 'SkillMatch' })).toBeVisible()
   await expect(page.locator('.case-study-at-a-glance')).toContainText('114 of roughly 245 commits')
-  await expect(page.getByRole('link', { name: 'Team repository' })).toHaveAttribute('href', 'https://github.com/ClaisaZ/IDSP-MarketPlace-FSWD')
+  await expect(page.getByRole('link', { name: 'Team repository' })).toHaveAttribute(
+    'href',
+    'https://github.com/ClaisaZ/IDSP-MarketPlace-FSWD',
+  )
   await expect(page.getByRole('heading', { name: 'How a request flows' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'The trade-off' })).toBeVisible()
   await expect(page.locator('.code-block')).toContainText("router.post('/:id/attend'")
@@ -124,7 +134,13 @@ test('theme is dark by default and remembers a manual choice', async ({ browser 
 test('layout stays within phone, tablet, and desktop viewports', async ({ page }) => {
   for (const width of [360, 390, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 })
-    for (const path of ['/', '/work/skillmatch', '/work/thinkboard', '/resume', '/notes/skillmatch-attend-race-condition']) {
+    for (const path of [
+      '/',
+      '/work/skillmatch',
+      '/work/thinkboard',
+      '/resume',
+      '/notes/skillmatch-attend-race-condition',
+    ]) {
       await page.goto(path)
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
       expect(overflow, `${path} at ${width}px`).toBeLessThanOrEqual(0)
@@ -145,7 +161,16 @@ for (const scheme of ['light', 'dark'] as const) {
     const context = await browser.newContext({ colorScheme: scheme })
     await context.addInitScript((value) => localStorage.setItem('color-scheme', value), scheme)
     const page = await context.newPage()
-    for (const path of ['/', '/work/skillmatch', '/work/thinkboard', '/work/mini-rpg-battle', '/resume', '/how-its-built', '/notes', '/notes/skillmatch-attend-race-condition']) {
+    for (const path of [
+      '/',
+      '/work/skillmatch',
+      '/work/thinkboard',
+      '/work/mini-rpg-battle',
+      '/resume',
+      '/how-its-built',
+      '/notes',
+      '/notes/skillmatch-attend-race-condition',
+    ]) {
       await page.goto(path)
       await page.waitForLoadState('networkidle')
       const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
@@ -212,7 +237,10 @@ test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the othe
 test('engineering notes: listed on home, own pages, linked from case studies', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('#notes .note-list li')).toHaveCount(3)
-  await page.getByRole('link', { name: /The race condition in SkillMatch/ }).first().click()
+  await page
+    .getByRole('link', { name: /The race condition in SkillMatch/ })
+    .first()
+    .click()
   await expect(page).toHaveURL(/\/notes\/skillmatch-attend-race-condition$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('race condition')
   await expect(page.locator('.note-body code').first()).toBeVisible()
@@ -225,7 +253,16 @@ test('GitHub activity shows live recent pushes, and hides itself when nothing is
   const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
   await page.route('https://api.github.com/**', (route) =>
     route.fulfill({
-      json: [{ name: 'Portfolio', html_url: 'https://github.com/ShervinBabaei2007/Portfolio', description: null, language: 'TypeScript', pushed_at: recent, fork: false }],
+      json: [
+        {
+          name: 'Portfolio',
+          html_url: 'https://github.com/ShervinBabaei2007/Portfolio',
+          description: null,
+          language: 'TypeScript',
+          pushed_at: recent,
+          fork: false,
+        },
+      ],
     }),
   )
   await page.goto('/')
@@ -236,7 +273,18 @@ test('GitHub activity shows live recent pushes, and hides itself when nothing is
 
   const stale = await page.context().newPage()
   await stale.route('https://api.github.com/**', (route) =>
-    route.fulfill({ json: [{ name: 'Old', html_url: 'https://github.com/x/Old', description: null, language: null, pushed_at: '2025-01-01T00:00:00Z', fork: false }] }),
+    route.fulfill({
+      json: [
+        {
+          name: 'Old',
+          html_url: 'https://github.com/x/Old',
+          description: null,
+          language: null,
+          pushed_at: '2025-01-01T00:00:00Z',
+          fork: false,
+        },
+      ],
+    }),
   )
   await stale.goto('/')
   await stale.waitForLoadState('networkidle')

@@ -70,12 +70,20 @@ function App() {
       <SiteHeader scheme={scheme} preference={preference} onPreferenceChange={setPreference} />
       <main id="main" tabIndex={-1}>
         <PageErrorBoundary pathname={pathname}>
-          <Suspense fallback={<div className="page-loading section-wrap grid content-start gap-4 pt-12" aria-busy="true" aria-label="Loading page">
-              <Skeleton className="h-10 w-2/3" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-              <Skeleton className="h-64 w-full" />
-            </div>}>
+          <Suspense
+            fallback={
+              <div
+                className="page-loading section-wrap grid content-start gap-4 pt-12"
+                aria-busy="true"
+                aria-label="Loading page"
+              >
+                <Skeleton className="h-10 w-2/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-64 w-full" />
+              </div>
+            }
+          >
             <Routes>
               {Object.values(pages).map(({ path, Component }) => (
                 <Route key={path} path={path} element={<Component />} />

@@ -30,7 +30,12 @@ function CardMedia({ project }: { project: Project }) {
   if (project.terminal) {
     return (
       <div className="project-visual project-visual--code" aria-hidden="true">
-        <TerminalBlock title={project.terminal.title} transcript={project.terminal.transcript} maxLines={11} showCaption={false} />
+        <TerminalBlock
+          title={project.terminal.title}
+          transcript={project.terminal.transcript}
+          maxLines={11}
+          showCaption={false}
+        />
       </div>
     )
   }
@@ -51,31 +56,58 @@ function ProjectCard({ project }: { project: Project }) {
       <Link className="project-card-trigger" to={`/work/${project.slug}`} aria-label={`${project.name} case study`}>
         <CardMedia project={project} />
         <div className="project-copy">
-          <div className="project-kicker"><span>{project.category}</span><span>{project.date}</span></div>
+          <div className="project-kicker">
+            <span>{project.category}</span>
+            <span>{project.date}</span>
+          </div>
           <h3>{project.name}</h3>
           <p className="project-subtitle">{project.subtitle}</p>
           <p className="project-summary">{project.summary}</p>
           {project.signal && (
             <dl className="project-signal-grid">
-              <div><dt>I OWNED</dt><dd>{project.signal.ownership}</dd></div>
-              <div><dt>EVIDENCE</dt><dd>{project.signal.evidence}</dd></div>
+              <div>
+                <dt>I OWNED</dt>
+                <dd>{project.signal.ownership}</dd>
+              </div>
+              <div>
+                <dt>EVIDENCE</dt>
+                <dd>{project.signal.evidence}</dd>
+              </div>
             </dl>
           )}
           <blockquote className="project-insight">
             <span>THE ENGINEERING TURN</span>
             <p>{project.learned}</p>
           </blockquote>
-          {!project.signal && <p className="project-result"><span>Proof it shipped</span>{project.highlight}</p>}
-          <div className="project-card-footer"><span>{project.role}</span><span>Read case study <ArrowUpRight size={15} /></span></div>
+          {!project.signal && (
+            <p className="project-result">
+              <span>Proof it shipped</span>
+              {project.highlight}
+            </p>
+          )}
+          <div className="project-card-footer">
+            <span>{project.role}</span>
+            <span>
+              Read case study <ArrowUpRight size={15} />
+            </span>
+          </div>
         </div>
       </Link>
-      {(
+      {
         <div className="project-links" aria-label={`${project.name} project links`}>
           <CaseStudySheet project={project} />
-          {project.live && <a href={project.live} target="_blank" rel="noreferrer">Live project <ArrowUpRight size={15} /></a>}
-          {project.github && <a href={project.github} target="_blank" rel="noreferrer">Source code <Github size={15} /></a>}
+          {project.live && (
+            <a href={project.live} target="_blank" rel="noreferrer">
+              Live project <ArrowUpRight size={15} />
+            </a>
+          )}
+          {project.github && (
+            <a href={project.github} target="_blank" rel="noreferrer">
+              Source code <Github size={15} />
+            </a>
+          )}
         </div>
-      )}
+      }
     </article>
   )
 }

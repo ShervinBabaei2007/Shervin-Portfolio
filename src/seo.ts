@@ -77,7 +77,8 @@ export function getPageMeta(pathname: string): PageMeta {
   if (path === '/notes') {
     return {
       title: `Engineering notes | ${site.name}`,
-      description: 'Short write-ups on bugs I found in my own projects, how the underlying systems work, and what I changed.',
+      description:
+        'Short write-ups on bugs I found in my own projects, how the underlying systems work, and what I changed.',
       path,
       image: image('notes'),
       type: 'website',
@@ -166,7 +167,9 @@ export function renderHeadTags(meta: PageMeta): string {
     `<meta name="twitter:title" content="${escapeAttr(meta.title)}" />`,
     `<meta name="twitter:description" content="${escapeAttr(meta.description)}" />`,
     `<meta name="twitter:image" content="${meta.image}" />`,
-    ...meta.jsonLd.map((node) => `<script type="application/ld+json">${JSON.stringify(node).replace(/</g, '\\u003c')}</script>`),
+    ...meta.jsonLd.map(
+      (node) => `<script type="application/ld+json">${JSON.stringify(node).replace(/</g, '\\u003c')}</script>`,
+    ),
   ]
   return tags.join('\n    ')
 }

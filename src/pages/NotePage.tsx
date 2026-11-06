@@ -17,7 +17,9 @@ function NotePage() {
   return (
     <article className="note-page section-wrap" aria-labelledby="note-title">
       <nav className="case-breadcrumb" aria-label="Breadcrumb">
-        <Link to="/notes"><ArrowLeft size={15} /> All notes</Link>
+        <Link to="/notes">
+          <ArrowLeft size={15} /> All notes
+        </Link>
       </nav>
       <header className="note-header">
         <p className="eyebrow">ENGINEERING NOTE</p>
@@ -31,12 +33,16 @@ function NotePage() {
       <footer className="note-footer">
         {project && (
           <Link className="note-footer-link" to={`/work/${project.slug}`}>
-            <span>Case study</span><b>{project.name}</b>
+            <span>Case study</span>
+            <b>{project.name}</b>
           </Link>
         )}
         {next.slug !== note.slug && (
           <Link className="note-footer-link" to={`/notes/${next.slug}`}>
-            <span>Next note <ArrowRight size={14} /></span><b>{next.title}</b>
+            <span>
+              Next note <ArrowRight size={14} />
+            </span>
+            <b>{next.title}</b>
           </Link>
         )}
       </footer>

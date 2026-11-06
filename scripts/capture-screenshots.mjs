@@ -25,7 +25,10 @@ for (const shot of shots) {
   await page.goto(shot.url, { waitUntil: 'networkidle', timeout: 60_000 })
   await page.waitForTimeout(1500) // let fonts, images and entrance animations settle
   const png = await page.screenshot()
-  await sharp(png).resize({ width: 1600, withoutEnlargement: true }).webp({ quality: 82 }).toFile(resolve(outDir, `${shot.name}.webp`))
+  await sharp(png)
+    .resize({ width: 1600, withoutEnlargement: true })
+    .webp({ quality: 82 })
+    .toFile(resolve(outDir, `${shot.name}.webp`))
   console.log(`public/projects/${shot.name}.webp`)
 }
 await browser.close()

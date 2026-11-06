@@ -48,17 +48,36 @@ function CommandPalette() {
 
   return (
     <>
-      <Button type="button" variant="outline" className="justify-between gap-6 text-muted-foreground" onClick={() => setOpen(true)}>
-        <span className="inline-flex items-center gap-2"><Search /> Search portfolio...</span>
-        <span className="inline-flex items-center gap-1" aria-hidden="true"><Kbd>Ctrl</Kbd><Kbd>K</Kbd></span>
+      <Button
+        type="button"
+        variant="outline"
+        className="justify-between gap-6 text-muted-foreground"
+        onClick={() => setOpen(true)}
+      >
+        <span className="inline-flex items-center gap-2">
+          <Search /> Search portfolio...
+        </span>
+        <span className="inline-flex items-center gap-1" aria-hidden="true">
+          <Kbd>Ctrl</Kbd>
+          <Kbd>K</Kbd>
+        </span>
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen} title="Search portfolio" description="Jump to a project, page, or contact action.">
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Search portfolio"
+        description="Jump to a project, page, or contact action."
+      >
         <CommandInput placeholder="Search projects, pages, actions..." />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Projects">
             {projects.map((project) => (
-              <CommandItem key={project.slug} value={`${project.name} ${project.category} ${project.subtitle}`} onSelect={() => run(() => navigate(`/work/${project.slug}`))}>
+              <CommandItem
+                key={project.slug}
+                value={`${project.name} ${project.category} ${project.subtitle}`}
+                onSelect={() => run(() => navigate(`/work/${project.slug}`))}
+              >
                 <FileText /> {project.name}
                 <span className="ml-auto text-xs text-muted-foreground">{project.category}</span>
               </CommandItem>
@@ -66,15 +85,33 @@ function CommandPalette() {
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Pages">
-            <CommandItem onSelect={() => run(() => navigate('/'))}><Home /> Home</CommandItem>
-            <CommandItem onSelect={() => run(() => navigate('/notes'))}><NotebookPen /> Notes</CommandItem>
-            <CommandItem onSelect={() => run(() => navigate('/resume'))}><FileText /> Resume</CommandItem>
+            <CommandItem onSelect={() => run(() => navigate('/'))}>
+              <Home /> Home
+            </CommandItem>
+            <CommandItem onSelect={() => run(() => navigate('/notes'))}>
+              <NotebookPen /> Notes
+            </CommandItem>
+            <CommandItem onSelect={() => run(() => navigate('/resume'))}>
+              <FileText /> Resume
+            </CommandItem>
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Actions">
-            <CommandItem onSelect={() => run(() => window.open('/Shervin_Babaei_Resume.pdf', '_blank'))}><Download /> Download resume (PDF)</CommandItem>
-            <CommandItem onSelect={() => run(() => void copyEmail())}><Copy /> Copy email address</CommandItem>
-            <CommandItem onSelect={() => run(() => { window.location.href = `mailto:${site.email}` })}><Mail /> Send an email</CommandItem>
+            <CommandItem onSelect={() => run(() => window.open('/Shervin_Babaei_Resume.pdf', '_blank'))}>
+              <Download /> Download resume (PDF)
+            </CommandItem>
+            <CommandItem onSelect={() => run(() => void copyEmail())}>
+              <Copy /> Copy email address
+            </CommandItem>
+            <CommandItem
+              onSelect={() =>
+                run(() => {
+                  window.location.href = `mailto:${site.email}`
+                })
+              }
+            >
+              <Mail /> Send an email
+            </CommandItem>
           </CommandGroup>
         </CommandList>
       </CommandDialog>

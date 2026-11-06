@@ -12,9 +12,18 @@ function TerminalBlock({ title, transcript, maxLines, showCaption = true }: Term
 
   return (
     <figure className="terminal-block">
-      <div className="terminal-block-bar"><span /><span /><span /><b>{title}</b></div>
-      <pre tabIndex={showCaption ? 0 : -1} aria-label={`Terminal session: ${title}`}><code>{visible.join('\n')}</code></pre>
-      {showCaption && <figcaption>Recorded from the real program. Input typed at each prompt is shown after it.</figcaption>}
+      <div className="terminal-block-bar">
+        <span />
+        <span />
+        <span />
+        <b>{title}</b>
+      </div>
+      <pre tabIndex={showCaption ? 0 : -1} aria-label={`Terminal session: ${title}`}>
+        <code>{visible.join('\n')}</code>
+      </pre>
+      {showCaption && (
+        <figcaption>Recorded from the real program. Input typed at each prompt is shown after it.</figcaption>
+      )}
     </figure>
   )
 }

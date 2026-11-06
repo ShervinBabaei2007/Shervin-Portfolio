@@ -23,7 +23,12 @@ const snapshotRepos = snapshot.repos as Repo[]
 const snapshotIsFresh = snapshot.fetchedAt !== null && isFresh(snapshotRepos, new Date(snapshot.fetchedAt).getTime())
 
 const absolute = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'America/Vancouver' })
+  new Date(iso).toLocaleDateString('en-CA', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'America/Vancouver',
+  })
 
 function relative(iso: string, now: number) {
   const days = Math.floor((now - new Date(iso).getTime()) / 86_400_000)
@@ -66,7 +71,13 @@ function GitHubActivity() {
         const fresh = data
           .filter((repo) => !repo.fork)
           .slice(0, 5)
-          .map((repo) => ({ name: repo.name, url: repo.html_url, description: repo.description, language: repo.language, pushedAt: repo.pushed_at }))
+          .map((repo) => ({
+            name: repo.name,
+            url: repo.html_url,
+            description: repo.description,
+            language: repo.language,
+            pushedAt: repo.pushed_at,
+          }))
         try {
           sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), repos: fresh }))
         } catch {
@@ -87,19 +98,26 @@ function GitHubActivity() {
   return (
     <div className="github-activity">
       <div className="github-activity-head">
-        <h3><Github size={18} aria-hidden="true" /> Recently on GitHub</h3>
+        <h3>
+          <Github size={18} aria-hidden="true" /> Recently on GitHub
+        </h3>
         <span>{live ? 'Live from GitHub' : 'Updated at last deploy'}</span>
       </div>
       <ul>
         {repos.map((repo) => (
           <li key={repo.name}>
             <a href={repo.url} target="_blank" rel="noreferrer">
-              <span className="github-repo-name">{repo.name} <ArrowUpRight size={14} aria-hidden="true" /></span>
+              <span className="github-repo-name">
+                {repo.name} <ArrowUpRight size={14} aria-hidden="true" />
+              </span>
               {repo.description && <span className="github-repo-description">{repo.description}</span>}
               <span className="github-repo-meta">
                 {repo.language && <span>{repo.language}</span>}
                 <span>
-                  Pushed <time dateTime={repo.pushedAt}>{now === null ? absolute(repo.pushedAt) : relative(repo.pushedAt, now)}</time>
+                  Pushed{' '}
+                  <time dateTime={repo.pushedAt}>
+                    {now === null ? absolute(repo.pushedAt) : relative(repo.pushedAt, now)}
+                  </time>
                 </span>
               </span>
             </a>

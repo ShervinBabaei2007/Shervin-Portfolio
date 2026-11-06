@@ -39,7 +39,10 @@ function StackTraceRail() {
           <li key={stop.id} className={activeId === stop.id ? 'is-active' : undefined}>
             <a href={`#${stop.id}`} aria-current={activeId === stop.id ? 'location' : undefined}>
               <span className="stack-trace-node">{String(index + 1).padStart(2, '0')}</span>
-              <span className="stack-trace-copy"><b>{stop.label}</b><small>{stop.detail}</small></span>
+              <span className="stack-trace-copy">
+                <b>{stop.label}</b>
+                <small>{stop.detail}</small>
+              </span>
             </a>
           </li>
         ))}

@@ -98,7 +98,9 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
       <div className="limiter-demo-head">
         <h2 id="limiter-demo-title">Can you lock out another visitor?</h2>
         <p>
-          This is the same sliding-window rule ThinkBoard runs in Redis, scaled to {LIMIT} requests per {WINDOW_MS / 1000} seconds. Start with the shared key, burst your requests, then ask another visitor to send one.
+          This is the same sliding-window rule ThinkBoard runs in Redis, scaled to {LIMIT} requests per{' '}
+          {WINDOW_MS / 1000} seconds. Start with the shared key, burst your requests, then ask another visitor to send
+          one.
         </p>
       </div>
 
@@ -109,16 +111,29 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
           One shared key <span>(ThinkBoard today)</span>
         </label>
         <label>
-          <input type="radio" name="limiter-mode" checked={mode === 'per-client'} onChange={() => reset('per-client')} />
+          <input
+            type="radio"
+            name="limiter-mode"
+            checked={mode === 'per-client'}
+            onChange={() => reset('per-client')}
+          />
           One key per visitor <span>(the fix)</span>
         </label>
       </fieldset>
 
       <div className="limiter-actions">
-        <button type="button" className="button button-primary" onClick={() => send('you')}>Send 1 request</button>
-        <button type="button" className="button button-secondary" onClick={() => burst(15)}>Burst 15 requests</button>
-        <button type="button" className="button button-secondary" onClick={() => send('other')}>Other visitor sends 1</button>
-        <button type="button" className="text-link limiter-reset" onClick={() => reset()}>Reset</button>
+        <button type="button" className="button button-primary" onClick={() => send('you')}>
+          Send 1 request
+        </button>
+        <button type="button" className="button button-secondary" onClick={() => burst(15)}>
+          Burst 15 requests
+        </button>
+        <button type="button" className="button button-secondary" onClick={() => send('other')}>
+          Other visitor sends 1
+        </button>
+        <button type="button" className="text-link limiter-reset" onClick={() => reset()}>
+          Reset
+        </button>
       </div>
 
       <div className={`limiter-meters limiter-meters--${meters.length}`}>
@@ -129,7 +144,9 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
             <div className="limiter-meter" key={meter.key}>
               <div className="limiter-meter-title">
                 <b>{meter.title}</b>
-                <span>{used} / {LIMIT} used</span>
+                <span>
+                  {used} / {LIMIT} used
+                </span>
               </div>
               <div
                 className={`limiter-bar${used >= LIMIT ? ' is-full' : ''}`}
@@ -151,7 +168,9 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
         })}
         <div className="limiter-window" aria-hidden="true">
           <span>Current window</span>
-          <div className="limiter-window-bar"><span style={{ width: `${now === null ? 0 : ((now % WINDOW_MS) / WINDOW_MS) * 100}%` }} /></div>
+          <div className="limiter-window-bar">
+            <span style={{ width: `${now === null ? 0 : ((now % WINDOW_MS) / WINDOW_MS) * 100}%` }} />
+          </div>
         </div>
       </div>
 

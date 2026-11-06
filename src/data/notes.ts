@@ -228,4 +228,9 @@ export const findNote = (slug: string | undefined) => notes.find((note) => note.
 export const notesForProject = (slug: string) => notes.filter((note) => note.project === slug)
 
 export const formatDate = (iso: string) =>
-  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })
+  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  })

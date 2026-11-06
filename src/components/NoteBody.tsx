@@ -10,14 +10,32 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
           case 'h2':
             return <h2 key={index}>{block.text}</h2>
           case 'p':
-            return <p key={index}><RichText text={block.text} /></p>
+            return (
+              <p key={index}>
+                <RichText text={block.text} />
+              </p>
+            )
           case 'list':
-            return <ul key={index}>{block.items.map((item) => <li key={item}><RichText text={item} /></li>)}</ul>
+            return (
+              <ul key={index}>
+                {block.items.map((item) => (
+                  <li key={item}>
+                    <RichText text={item} />
+                  </li>
+                ))}
+              </ul>
+            )
           case 'code':
             return (
               <CodeBlock
                 key={index}
-                snippet={{ file: block.file, href: '', language: block.language, code: block.code, caption: block.caption ?? '' }}
+                snippet={{
+                  file: block.file,
+                  href: '',
+                  language: block.language,
+                  code: block.code,
+                  caption: block.caption ?? '',
+                }}
                 showLink={false}
                 showCaption={Boolean(block.caption)}
               />

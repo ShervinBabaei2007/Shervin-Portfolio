@@ -86,13 +86,32 @@ await browser.close()
 const webm = resolve(outDir, `${name}-demo.webm`)
 renameSync(await video.path(), webm)
 rmSync(tempDir, { recursive: true, force: true })
-await sharp(poster).resize({ width: 1280 }).webp({ quality: 80 }).toFile(resolve(outDir, `${name}-demo-poster.webp`))
+await sharp(poster)
+  .resize({ width: 1280 })
+  .webp({ quality: 80 })
+  .toFile(resolve(outDir, `${name}-demo-poster.webp`))
 console.log(`public/projects/${name}-demo.webm`)
 
 // MP4 (H.264) plays everywhere, including older iPhones. Needs ffmpeg on your PATH.
 try {
   const mp4 = resolve(outDir, `${name}-demo.mp4`)
-  execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', webm, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '28', '-movflags', '+faststart', '-an', mp4])
+  execFileSync('ffmpeg', [
+    '-y',
+    '-loglevel',
+    'error',
+    '-i',
+    webm,
+    '-c:v',
+    'libx264',
+    '-pix_fmt',
+    'yuv420p',
+    '-crf',
+    '28',
+    '-movflags',
+    '+faststart',
+    '-an',
+    mp4,
+  ])
   console.log(`public/projects/${name}-demo.mp4`)
 } catch {
   console.warn('ffmpeg not found: only the .webm was written. Install ffmpeg for an .mp4 that plays on every browser.')

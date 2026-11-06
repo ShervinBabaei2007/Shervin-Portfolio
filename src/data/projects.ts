@@ -95,8 +95,7 @@ export const projects: Project[] = [
       'Workshop capacity is checked in the interface, not enforced by the API. That was quick to build and gives instant feedback, but the attend route only checks that you are not already attending, so two people taking the last seat at the same moment would both get in. The API should be the source of truth for anything a user could race.',
     learned:
       'Reading my own route back months later, the gaps are on the server, not the screen. A disabled button is a hint; the rule has to live in the API.',
-    next:
-      'Make the attend route atomic with a single conditional update (only add the user if the attendee count is still below the seat count), and fix the owner check, which compares an ObjectId to a string and so never matches. Then add integration tests for both.',
+    next: 'Make the attend route atomic with a single conditional update (only add the user if the attendee count is still below the seat count), and fix the owner check, which compares an ObjectId to a string and so never matches. Then add integration tests for both.',
     architecture: [
       { label: 'React + Vite', detail: 'TypeScript SPA, lazy routes' },
       { label: 'Express API', detail: 'Vercel service at /_/backend' },
@@ -108,9 +107,21 @@ export const projects: Project[] = [
     teamRepo: 'https://github.com/ClaisaZ/IDSP-MarketPlace-FSWD',
     live: 'https://skillmatch-web.vercel.app/',
     screenshots: [
-      { src: '/projects/skillmatch-dashboard.webp', alt: 'SkillMatch dashboard with featured workshops, search, and recommended categories.', caption: 'Workshop dashboard' },
-      { src: '/projects/skillmatch-workshop-details.webp', alt: 'Workshop detail page showing schedule, location, attendee list, and reviews.', caption: 'Workshop details' },
-      { src: '/projects/skillmatch-registration.webp', alt: 'SkillMatch workshop registration form with attendee fields and a Register button.', caption: 'Registration flow' },
+      {
+        src: '/projects/skillmatch-dashboard.webp',
+        alt: 'SkillMatch dashboard with featured workshops, search, and recommended categories.',
+        caption: 'Workshop dashboard',
+      },
+      {
+        src: '/projects/skillmatch-workshop-details.webp',
+        alt: 'Workshop detail page showing schedule, location, attendee list, and reviews.',
+        caption: 'Workshop details',
+      },
+      {
+        src: '/projects/skillmatch-registration.webp',
+        alt: 'SkillMatch workshop registration form with attendee fields and a Register button.',
+        caption: 'Registration flow',
+      },
     ],
     snippet: {
       file: 'backend/routes/workshopRoutes.js',
@@ -162,8 +173,7 @@ export const projects: Project[] = [
       'We used Auth0’s GitHub connection instead of writing our own OAuth flow. Auth0 handled tokens, refresh, and session storage, which we could not have built safely in 24 hours. The cost is a third-party dependency and less control over the redirect and the look of the sign-in step.',
     learned:
       'In a 24-hour build, the useful contribution is often removing friction at the edges, like the first screen someone sees, so the core feature gets used.',
-    next:
-      'Replace the hotlinked GitHub logo with a local SVG, move the inline styles into the component stylesheet, and add a loading state while the suggestion is generated.',
+    next: 'Replace the hotlinked GitHub logo with a local SVG, move the inline styles into the component stylesheet, and add a loading state while the suggestion is generated.',
     architecture: [
       { label: 'React + Chakra UI', detail: 'TypeScript front end' },
       { label: 'Auth0', detail: 'GitHub connection' },
@@ -225,10 +235,8 @@ export const projects: Project[] = [
       'A working notes app where every action gives clear feedback, and the API protects itself (and the Upstash free tier) from bursts of requests.',
     tradeoff:
       'The limiter uses one fixed key, so all visitors share a single 50-request budget. That kept the code to a few lines and protects the free-tier quota, but one busy client can lock everyone out. Keying by IP address or user would isolate them, at the cost of more Redis keys.',
-    learned:
-      'A rate limiter is only as fair as its key. Choosing what to count matters as much as the limit itself.',
-    next:
-      'Key the limiter by IP, and return 400 with the field name when Mongoose validation fails. Right now a missing title falls through to a generic 500.',
+    learned: 'A rate limiter is only as fair as its key. Choosing what to count matters as much as the limit itself.',
+    next: 'Key the limiter by IP, and return 400 with the field name when Mongoose validation fails. Right now a missing title falls through to a generic 500.',
     architecture: [
       { label: 'React + Tailwind', detail: 'Axios client, toasts' },
       { label: 'Rate limiter', detail: 'Upstash Redis, sliding window' },
@@ -239,16 +247,33 @@ export const projects: Project[] = [
     github: 'https://github.com/ShervinBabaei2007/MERN-thinkBoard',
     demo: 'rate-limiter',
     screenshots: [
-      { src: '/projects/thinkboard-screen-1.webp', alt: 'ThinkBoard dark notes dashboard with existing notes and a New Note action.', caption: 'Notes dashboard' },
-      { src: '/projects/thinkboard-screen-2.webp', alt: 'ThinkBoard create-note form with title and content fields.', caption: 'Create a note' },
-      { src: '/projects/thinkboard-screen-3.webp', alt: 'ThinkBoard form showing an all-fields-required validation message.', caption: 'Validation feedback' },
-      { src: '/projects/thinkboard-screen-4.webp', alt: 'ThinkBoard notes dashboard showing a successful note-created notification.', caption: 'Successful save' },
+      {
+        src: '/projects/thinkboard-screen-1.webp',
+        alt: 'ThinkBoard dark notes dashboard with existing notes and a New Note action.',
+        caption: 'Notes dashboard',
+      },
+      {
+        src: '/projects/thinkboard-screen-2.webp',
+        alt: 'ThinkBoard create-note form with title and content fields.',
+        caption: 'Create a note',
+      },
+      {
+        src: '/projects/thinkboard-screen-3.webp',
+        alt: 'ThinkBoard form showing an all-fields-required validation message.',
+        caption: 'Validation feedback',
+      },
+      {
+        src: '/projects/thinkboard-screen-4.webp',
+        alt: 'ThinkBoard notes dashboard showing a successful note-created notification.',
+        caption: 'Successful save',
+      },
     ],
     snippet: {
       file: 'backend/src/middleware/rateLimiter.js',
       href: 'https://github.com/ShervinBabaei2007/MERN-thinkBoard/blob/main/backend/src/middleware/rateLimiter.js',
       language: 'js',
-      caption: 'Every request passes through this before reaching a route. The fixed key is the trade-off described below.',
+      caption:
+        'Every request passes through this before reaching a route. The fixed key is the trade-off described below.',
       code: `// config/upstash.js: 50 requests per 60 seconds, sliding window
 const rateLimit = new Ratelimit({
   redis: Redis.fromEnv(),
@@ -300,8 +325,7 @@ const ratelimiter = async (req, res, next) => {
       'I kept the requests library and wrapped it in asyncio.to_thread() instead of switching to an async HTTP client like aiohttp. It fixed the blocking with one line and code I already understood. The cost is a thread per request and no way to cancel one once it starts.',
     learned:
       'Async code only stays async if every slow call respects it. One blocking request can freeze the whole bot.',
-    next:
-      'Add a timeout to the model request (today a hung model server holds a thread forever), and split replies longer than Discord’s 2,000-character message limit.',
+    next: 'Add a timeout to the model request (today a hung model server holds a thread forever), and split replies longer than Discord’s 2,000-character message limit.',
     architecture: [
       { label: 'Discord', detail: '!.ask command' },
       { label: 'discord.py', detail: 'Event loop stays free' },
@@ -337,7 +361,8 @@ except requests.exceptions.HTTPError as e:
     flagship: false,
     date: '2026',
     subtitle: 'A terminal RPG with combat, loot, bosses, and save files.',
-    summary: 'A turn-based Python RPG with progression, weighted loot, boss encounters, and JSON save and load, covered by pytest.',
+    summary:
+      'A turn-based Python RPG with progression, weighted loot, boss encounters, and JSON save and load, covered by pytest.',
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: 'JSON save and load, 3 passing pytest tests',
@@ -347,8 +372,10 @@ except requests.exceptions.HTTPError as e:
       'Built turn-based combat, boss encounters with a pity counter, weighted loot, and player progression.',
       'Added JSON save and load for player state, with pytest tests.',
     ],
-    outcome: 'A playable game whose progress survives between sessions. The session on this page was recorded from the real program.',
-    tradeoff: 'Saves are plain JSON rather than pickle. JSON is readable and safe to load, but every field has to be mapped by hand in both directions.',
+    outcome:
+      'A playable game whose progress survives between sessions. The session on this page was recorded from the real program.',
+    tradeoff:
+      'Saves are plain JSON rather than pickle. JSON is readable and safe to load, but every field has to be mapped by hand in both directions.',
     learned: 'Keeping game rules separate from printing made the rules testable without running the game.',
     next: 'The save menu prints “saved successfully” before the file is written, so a failed write still reports success. I’d move the message after the write and add a test for a failed save.',
     architecture: [
@@ -402,7 +429,8 @@ $ cat playerSave.json
     flagship: false,
     date: '2026',
     subtitle: 'A command-line tool for keeping a job search organized.',
-    summary: 'A Python CLI for tracking co-op and junior applications, stored in SQLite, with status updates and filtering.',
+    summary:
+      'A Python CLI for tracking co-op and junior applications, stored in SQLite, with status updates and filtering.',
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: 'SQLite-backed, no dependencies',
@@ -412,9 +440,12 @@ $ cat playerSave.json
       'Stored everything in SQLite with Python’s built-in sqlite3 module, so data persists between runs.',
       'Added status updates (Applied, Interview, Rejected, Offer, Accepted) with validation, and filtering by status.',
     ],
-    outcome: 'A dependency-free tool that keeps a full application history on your own machine. The session on this page was recorded from the real program.',
-    tradeoff: 'A terminal interface instead of a web one. It was fast to build and keeps data on my machine, but it is harder to use on a phone.',
-    learned: 'Even a small CLI benefits from a clear data model, and persistent storage changes how you think about program state.',
+    outcome:
+      'A dependency-free tool that keeps a full application history on your own machine. The session on this page was recorded from the real program.',
+    tradeoff:
+      'A terminal interface instead of a web one. It was fast to build and keeps data on my machine, but it is harder to use on a phone.',
+    learned:
+      'Even a small CLI benefits from a clear data model, and persistent storage changes how you think about program state.',
     next: 'Add editing and deleting, sorting by date, CSV export, and eventually a small Flask front end.',
     architecture: [
       { label: 'Menu loop', detail: 'input() prompts' },
@@ -452,7 +483,8 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
     flagship: false,
     date: '2026',
     subtitle: 'A mood board built with vanilla JavaScript.',
-    summary: 'A single-page mood board with resizable, reorderable image cards, draggable pop-outs, undo and redo, and localStorage persistence.',
+    summary:
+      'A single-page mood board with resizable, reorderable image cards, draggable pop-outs, undo and redo, and localStorage persistence.',
     role: 'Course project',
     team: 'BCIT course assignment, built on my own.',
     highlight: 'Undo/redo and session restore, no framework',
@@ -463,7 +495,8 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
       'Saved order, size, image URLs, pop-out state, and positions to localStorage, with undo, redo, and keyboard shortcuts.',
     ],
     outcome: 'A framework-free app that restores your exact previous board on refresh.',
-    tradeoff: 'Snapshots of the whole board for undo instead of recording individual changes. Simple and reliable, but memory grows with every step.',
+    tradeoff:
+      'Snapshots of the whole board for undo instead of recording individual changes. Simple and reliable, but memory grows with every step.',
     learned: 'Keeping UI and stored state in sync is much easier when every event flows through one handler.',
     next: 'Add image uploads, multiple boards, and automated tests for the undo and redo history.',
     architecture: [
@@ -482,7 +515,8 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
     flagship: false,
     date: '2026',
     subtitle: 'Live availability voting for planning a picnic.',
-    summary: 'A group votes on which days they are free, sees everyone’s votes update live over WebSockets, and checks the forecast for each day.',
+    summary:
+      'A group votes on which days they are free, sees everyone’s votes update live over WebSockets, and checks the forecast for each day.',
     role: 'Course project',
     team: 'BCIT course assignment, built on my own.',
     highlight: 'Live WebSocket updates, API key kept server-side',
@@ -493,8 +527,10 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
       'Served the OpenWeatherMap key from a sign-in-protected route and cached forecasts to respect rate limits.',
     ],
     outcome: 'Every connected person sees vote changes immediately, and forecasts quietly disappear when signed out.',
-    tradeoff: 'WebSocket messages carry no data, only “something changed”. That costs an extra request per update but means there is only one code path for loading votes.',
-    learned: 'Request order and failure states mattered more than the happy path, especially around keeping the API key private.',
+    tradeoff:
+      'WebSocket messages carry no data, only “something changed”. That costs an extra request per update but means there is only one code path for loading votes.',
+    learned:
+      'Request order and failure states mattered more than the happy path, especially around keeping the API key private.',
     next: 'Add multiple events, a “best day” summary, and tests for the vote and socket flow.',
     architecture: [
       { label: 'Browser', detail: 'fetch + WebSocket' },

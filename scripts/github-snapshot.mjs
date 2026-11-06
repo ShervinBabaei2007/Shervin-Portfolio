@@ -27,7 +27,13 @@ try {
   const repos = (await response.json())
     .filter((repo) => !repo.fork && !repo.private)
     .slice(0, 5)
-    .map((repo) => ({ name: repo.name, url: repo.html_url, description: repo.description, language: repo.language, pushedAt: repo.pushed_at }))
+    .map((repo) => ({
+      name: repo.name,
+      url: repo.html_url,
+      description: repo.description,
+      language: repo.language,
+      pushedAt: repo.pushed_at,
+    }))
   writeFileSync(target, `${JSON.stringify({ fetchedAt: new Date().toISOString(), repos }, null, 2)}\n`)
   console.log(`github snapshot: ${repos.length} repositories`)
 } catch (error) {

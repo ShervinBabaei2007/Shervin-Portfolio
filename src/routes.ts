@@ -9,12 +9,36 @@ import { lazyPage } from './lazyPage'
  */
 export const pages = {
   home: { path: '/', source: 'src/pages/HomePage.tsx', Component: lazyPage(() => import('./pages/HomePage')) },
-  caseStudy: { path: '/work/:slug', source: 'src/pages/CaseStudyPage.tsx', Component: lazyPage(() => import('./pages/CaseStudyPage')) },
-  notes: { path: '/notes', source: 'src/pages/NotesIndexPage.tsx', Component: lazyPage(() => import('./pages/NotesIndexPage')) },
-  note: { path: '/notes/:slug', source: 'src/pages/NotePage.tsx', Component: lazyPage(() => import('./pages/NotePage')) },
-  resume: { path: '/resume', source: 'src/pages/ResumePage.tsx', Component: lazyPage(() => import('./pages/ResumePage')) },
-  built: { path: '/how-its-built', source: 'src/pages/BuiltPage.tsx', Component: lazyPage(() => import('./pages/BuiltPage')) },
-  notFound: { path: '*', source: 'src/pages/NotFoundPage.tsx', Component: lazyPage(() => import('./pages/NotFoundPage')) },
+  caseStudy: {
+    path: '/work/:slug',
+    source: 'src/pages/CaseStudyPage.tsx',
+    Component: lazyPage(() => import('./pages/CaseStudyPage')),
+  },
+  notes: {
+    path: '/notes',
+    source: 'src/pages/NotesIndexPage.tsx',
+    Component: lazyPage(() => import('./pages/NotesIndexPage')),
+  },
+  note: {
+    path: '/notes/:slug',
+    source: 'src/pages/NotePage.tsx',
+    Component: lazyPage(() => import('./pages/NotePage')),
+  },
+  resume: {
+    path: '/resume',
+    source: 'src/pages/ResumePage.tsx',
+    Component: lazyPage(() => import('./pages/ResumePage')),
+  },
+  built: {
+    path: '/how-its-built',
+    source: 'src/pages/BuiltPage.tsx',
+    Component: lazyPage(() => import('./pages/BuiltPage')),
+  },
+  notFound: {
+    path: '*',
+    source: 'src/pages/NotFoundPage.tsx',
+    Component: lazyPage(() => import('./pages/NotFoundPage')),
+  },
 } as const
 
 export type PageKey = keyof typeof pages

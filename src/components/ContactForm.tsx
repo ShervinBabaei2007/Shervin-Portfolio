@@ -35,7 +35,9 @@ function ContactForm() {
       form.reset()
       setTopic('')
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Something went wrong.', { description: `You can also email ${site.email}.` })
+      toast.error(error instanceof Error ? error.message : 'Something went wrong.', {
+        description: `You can also email ${site.email}.`,
+      })
     } finally {
       setSending(false)
     }
@@ -44,15 +46,40 @@ function ContactForm() {
   return (
     <form className="grid gap-3 text-left" onSubmit={onSubmit}>
       <Input name="name" placeholder="Your name" aria-label="Your name" required maxLength={100} autoComplete="name" />
-      <Input name="email" type="email" placeholder="you@company.com" aria-label="Your email" required maxLength={200} autoComplete="email" />
+      <Input
+        name="email"
+        type="email"
+        placeholder="you@company.com"
+        aria-label="Your email"
+        required
+        maxLength={200}
+        autoComplete="email"
+      />
       <Select value={topic} onValueChange={setTopic}>
-        <SelectTrigger className="w-full" aria-label="Topic"><SelectValue placeholder="What is this about?" /></SelectTrigger>
-        <SelectContent>{topics.map((item) => <SelectItem key={item} value={item}>{item}</SelectItem>)}</SelectContent>
+        <SelectTrigger className="w-full" aria-label="Topic">
+          <SelectValue placeholder="What is this about?" />
+        </SelectTrigger>
+        <SelectContent>
+          {topics.map((item) => (
+            <SelectItem key={item} value={item}>
+              {item}
+            </SelectItem>
+          ))}
+        </SelectContent>
       </Select>
-      <Textarea name="message" placeholder="Tell me what you're building" aria-label="Message" required maxLength={5000} rows={5} />
+      <Textarea
+        name="message"
+        placeholder="Tell me what you're building"
+        aria-label="Message"
+        required
+        maxLength={5000}
+        rows={5}
+      />
       {/* Honeypot for bots; hidden from people and assistive tech. */}
       <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
-      <Button type="submit" disabled={sending}>{sending ? 'Sending...' : 'Send message'}</Button>
+      <Button type="submit" disabled={sending}>
+        {sending ? 'Sending...' : 'Send message'}
+      </Button>
     </form>
   )
 }
