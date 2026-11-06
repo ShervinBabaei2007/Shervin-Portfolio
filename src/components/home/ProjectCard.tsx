@@ -65,7 +65,7 @@ function ProjectCard({ project }: { project: Project }) {
   return (
     <article
       // `project-card` keeps the pointer-follow glow and hover lift in styles.css.
-      className="project-card"
+      className="project-card flex h-full flex-col"
       onPointerMove={(event) => {
         if (event.pointerType === 'touch') return
         const bounds = event.currentTarget.getBoundingClientRect()
@@ -74,27 +74,30 @@ function ProjectCard({ project }: { project: Project }) {
       }}
     >
       <Link
-        className="block w-full text-left no-underline focus-visible:-outline-offset-3"
+        className="flex w-full flex-1 flex-col text-left no-underline focus-visible:-outline-offset-3"
         to={`/work/${project.slug}`}
         aria-label={`${project.name} case study`}
       >
         <CardMedia project={project} />
-        <div className="relative z-[1] px-[22px] pt-5 pb-[22px] max-[620px]:p-5">
+        <div className="relative z-[1] flex flex-1 flex-col px-[22px] pt-5 pb-[22px] max-[620px]:p-5">
           <div className="flex justify-between font-mono text-muted-foreground">
             <span>{project.category}</span>
             <span>{project.date}</span>
           </div>
+          <p className="mt-[15px] border-l-[3px] border-primary bg-muted px-3 py-2 text-sm font-semibold">
+            {project.highlight}
+          </p>
           <h3 className="mt-[15px] text-2xl leading-[1.15] font-semibold max-[620px]:text-xl">{project.name}</h3>
           <p className="mt-1.5 font-semibold">{project.subtitle}</p>
           <p className="mt-[11px] leading-[1.65] text-muted-foreground">{project.summary}</p>
-          <div className="mt-4 flex flex-wrap gap-1.5" aria-label="Stack">
+          <div className="mt-4 mb-[18px] flex flex-wrap gap-1.5" aria-label="Stack">
             {project.stack.slice(0, 5).map((item) => (
               <Badge key={item} variant="secondary">
                 {item}
               </Badge>
             ))}
           </div>
-          <div className="mt-[18px] flex items-center justify-between gap-4 border-t pt-3.5 text-sm text-muted-foreground max-[620px]:flex-col max-[620px]:items-start max-[360px]:text-[.8125rem]">
+          <div className="mt-auto flex items-center justify-between gap-4 border-t pt-3.5 text-sm text-muted-foreground max-[620px]:flex-col max-[620px]:items-start max-[360px]:text-[.8125rem]">
             <span>{project.role}</span>
             <span className="inline-flex items-center gap-[7px] font-semibold text-primary">
               Read case study <ArrowUpRight size={15} />

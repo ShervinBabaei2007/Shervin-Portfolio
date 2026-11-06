@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Braces, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { findProject, type Project } from '@/data/projects'
+import { facts } from '@/data/facts'
 import { site } from '@/data/site'
 import { Button } from '@/components/ui/button'
 
@@ -66,6 +67,13 @@ function Hero() {
             </Link>
           </Button>
         </div>
+        <Link
+          className="mt-5 inline-flex min-h-11 items-center gap-2 font-mono text-[.8125rem] text-muted-foreground no-underline transition-colors hover:text-primary"
+          to="/work/gitscribe"
+        >
+          <span className="text-primary">&#9670;</span> {facts.hackathon.placement} teams, {facts.hackathon.name}
+          <ArrowUpRight size={14} />
+        </Link>
       </div>
       <div className="hero-side">
         <div className="hero-art" role="group" aria-label="Explore projects by application layer">
