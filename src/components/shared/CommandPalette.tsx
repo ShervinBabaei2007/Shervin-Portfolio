@@ -5,12 +5,15 @@ import { Kbd } from '@/components/ui/kbd'
 
 const CommandPaletteDialog = lazy(() => import('./CommandPaletteDialog'))
 
-/** Opens from anywhere with Ctrl/⌘ + K, or from the trigger button in the hero. The dialog loads on first open. */
+/** Opens from anywhere with Ctrl/⌘ + K, or from the header trigger. The dialog loads on first open. */
 function CommandPalette() {
   const [open, setOpen] = useState(false)
   const [everOpened, setEverOpened] = useState(false)
+  // Server render and first paint say Ctrl; Mac and iOS get ⌘ after mount.
+  const [isMac, setIsMac] = useState(false)
 
   useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad/i.test(navigator.platform))
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
@@ -31,15 +34,16 @@ function CommandPalette() {
     <>
       <Button
         type="button"
-        variant="outline"
-        className="justify-between gap-6 text-muted-foreground"
+        variant="ghost"
+        size="sm"
+        className="gap-2 text-muted-foreground"
         onClick={openPalette}
+        aria-label="Search portfolio"
       >
-        <span className="inline-flex items-center gap-2">
-          <Search /> Search portfolio...
-        </span>
-        <span className="inline-flex items-center gap-1" aria-hidden="true">
-          <Kbd>Ctrl</Kbd>
+        <Search />
+        <span className="hidden lg:inline">Search</span>
+        <span className="hidden items-center gap-1 lg:inline-flex" aria-hidden="true">
+          <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
           <Kbd>K</Kbd>
         </span>
       </Button>
