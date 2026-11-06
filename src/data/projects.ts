@@ -4,7 +4,7 @@
  * point to in a repo, a commit, or a live demo during an interview.
  */
 
-import { commitsLine, facts, hackathonLine } from './facts'
+import { commitsLine, facts, hackathonLine, mergedPrsLine } from './facts'
 
 export type Screenshot = { src: string; alt: string; caption: string }
 
@@ -75,12 +75,12 @@ export const projects: Project[] = [
     summary:
       'A MERN marketplace for short skill workshops. I built the attend, review, and host-a-workshop flows and was the most active committer on a three-person team.',
     role: 'Backend & DevOps lead, 3-person team',
-    team: `BCIT team project with Clayton Liang and Ky Thai. I wrote ${commitsLine.replace('~', 'roughly ')} in the team repo.`,
-    highlight: `Top committer: ${commitsLine}`,
+    team: `BCIT team project with Clayton Liang and Ky Thai. I wrote ${commitsLine} and merged ${mergedPrsLine.replace(' merged PRs', '')} pull requests in the team repo.`,
+    highlight: `${mergedPrsLine}, ${commitsLine}`,
     signal: {
       ownership: 'Attend, review, and host flows across React, Express, JWT, and MongoDB.',
       decision: 'Treat workshop capacity as a server invariant, not just a disabled-button concern.',
-      evidence: `${facts.skillmatch.myCommits} of ${facts.skillmatch.teamCommits} team commits, plus a live app and the exact route source linked below.`,
+      evidence: `${mergedPrsLine} and ${commitsLine} in the team repo, plus a live app and the exact route source linked below.`,
     },
     why: 'Students wanted a simple way to find focused workshops outside their regular courses, and to run one themselves if they had a skill to share.',
     mine: [

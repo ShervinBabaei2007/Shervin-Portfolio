@@ -66,7 +66,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
   await expect(page).toHaveURL(/\/work\/skillmatch$/)
   await expect(page).toHaveTitle('SkillMatch case study | Shervin Babaei')
   await expect(page.getByRole('heading', { level: 1, name: 'SkillMatch' })).toBeVisible()
-  await expect(page.getByText('114 of roughly 245 commits').first()).toBeVisible()
+  await expect(page.getByText('105 of 199 commits').first()).toBeVisible()
   await expect(page.getByRole('link', { name: 'Team repository' })).toHaveAttribute(
     'href',
     'https://github.com/ClaisaZ/IDSP-MarketPlace-FSWD',
