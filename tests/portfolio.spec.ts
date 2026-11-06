@@ -92,6 +92,8 @@ test('unknown routes show a 404 page', async ({ page }) => {
 
 test('skill chips filter projects and can be cleared', async ({ page }) => {
   await page.goto('/')
+  // Wait for hydration, otherwise the click can land before React attaches its handlers.
+  await page.waitForLoadState('networkidle')
   await page.getByRole('tab', { name: 'Systems & Low-Level' }).click()
   const chip = page.locator('.skill-chip', { hasText: 'Redis' })
   await chip.click()
