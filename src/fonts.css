@@ -9,15 +9,6 @@
 }
 
 @font-face {
-  font-family: 'Space Grotesk Variable';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 300 700;
-  src: url('../node_modules/@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2')
-    format('woff2-variations');
-}
-
-@font-face {
   font-family: 'DM Mono';
   font-style: normal;
   font-display: swap;

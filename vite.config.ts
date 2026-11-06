@@ -17,7 +17,7 @@ function preloadFonts(): Plugin {
       const htmlFile = Object.values(bundle).find((file) => file.type === 'asset' && file.fileName === 'index.html')
       if (!htmlFile || htmlFile.type !== 'asset') return
       const preloads = Object.keys(bundle)
-        .filter((name) => /(dm-sans-latin-wght|space-grotesk-latin-wght|dm-mono-latin-400)-normal.*\.woff2$/.test(name))
+        .filter((name) => /(dm-sans-latin-wght|dm-mono-latin-400)-normal.*\.woff2$/.test(name))
         .map((name) => `<link rel="preload" as="font" type="font/woff2" crossorigin href="/${name}">`)
         .join('\n    ')
       htmlFile.source = String(htmlFile.source).replace('</head>', `    ${preloads}\n  </head>`)

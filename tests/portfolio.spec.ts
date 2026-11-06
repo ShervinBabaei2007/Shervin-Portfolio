@@ -195,10 +195,10 @@ test('each page preloads only its own code chunk', async ({ request }) => {
   expect(caseStudy).not.toMatch(/modulepreload[^>]+(ResumePage|HomePage)-/)
 })
 
-test('fonts: three above-the-fold files preloaded, unused weight not shipped', async ({ request }) => {
+test('fonts: two above-the-fold files preloaded, unused weight not shipped', async ({ request }) => {
   const html = await (await request.get('/')).text()
   const preloads = html.match(/rel="preload" as="font"[^>]+/g) ?? []
-  expect(preloads).toHaveLength(3)
+  expect(preloads).toHaveLength(2)
   expect(html).toMatch(/dm-mono-latin-400/)
   const css = await (await request.get(html.match(/\/assets\/index-[\w-]+\.css/)![0])).text()
   expect(css).not.toContain('dm-mono-latin-500')

@@ -14,7 +14,7 @@ mkdirSync(outDir, { recursive: true })
 const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;')
 
 const card = ({ kicker, title, subtitle, result }) => `<!doctype html><html><head><style>
-@font-face { font-family: Display; src: url('${fontUrl('@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2')}'); font-weight: 300 700; }
+@font-face { font-family: Display; src: url('${fontUrl('@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2')}'); font-weight: 100 1000; }
 @font-face { font-family: Body; src: url('${fontUrl('@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2')}'); font-weight: 100 1000; }
 @font-face { font-family: Mono; src: url('${fontUrl('@fontsource/dm-mono/files/dm-mono-latin-400-normal.woff2')}'); }
 * { box-sizing: border-box; margin: 0; }
