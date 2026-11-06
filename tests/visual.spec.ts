@@ -24,6 +24,8 @@ for (const scheme of ['dark', 'light'] as const) {
         await context.addInitScript((value) => localStorage.setItem('color-scheme', value), scheme)
         const page = await context.newPage()
         // The panel's contents change every build and every day, so keep the data fixed and mask the box.
+        // The rate-limiter demo draws a bar from the clock, so pin it.
+        await page.clock.setFixedTime(new Date('2026-06-01T12:00:00Z'))
         await page.route('https://api.github.com/**', (route) => route.fulfill({ json: [] }))
         await page.goto(path)
         await page.waitForLoadState('networkidle')

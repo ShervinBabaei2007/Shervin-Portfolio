@@ -88,7 +88,7 @@ test('the lab is its own page and linked from home', async ({ page }) => {
   await page.getByRole('link', { name: /Try the rate-limiter lab/ }).click()
   await expect(page).toHaveURL(/\/lab$/)
   await expect(page.getByRole('heading', { level: 1, name: /Break the assumption/ })).toBeVisible()
-  await expect(page.locator('.limiter-demo')).toBeVisible()
+  await expect(page.locator('[data-limiter-demo]')).toBeVisible()
 })
 
 test('case study opens with actions and jump links to its sections', async ({ page }) => {
@@ -242,22 +242,22 @@ test('large screenshots offer a small copy and reserve their space', async ({ pa
 
 test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the other visitor', async ({ page }) => {
   await page.goto('/work/thinkboard')
-  const demo = page.locator('.limiter-demo')
+  const demo = page.locator('[data-limiter-demo]')
   await demo.getByRole('button', { name: 'Burst 15 requests' }).click()
-  await expect(demo.locator('.limiter-log li.is-limited').first()).toBeVisible({ timeout: 5000 })
+  await expect(demo.locator('[data-limiter-log] li[data-limited]').first()).toBeVisible({ timeout: 5000 })
   await expect(demo.getByRole('meter').first()).toHaveAttribute('aria-valuenow', '10')
 
   // Shared key: the other visitor is blocked by your burst.
   await demo.getByRole('button', { name: 'Other visitor sends 1' }).click()
-  await expect(demo.locator('.limiter-log li').first()).toContainText('Another visitor')
-  await expect(demo.locator('.limiter-log li').first()).toContainText('429')
+  await expect(demo.locator('[data-limiter-log] li').first()).toContainText('Another visitor')
+  await expect(demo.locator('[data-limiter-log] li').first()).toContainText('429')
 
   // Per-visitor keys: the same burst no longer affects them.
   await demo.getByLabel(/One key per visitor/).check()
   await demo.getByRole('button', { name: 'Burst 15 requests' }).click()
-  await expect(demo.locator('.limiter-log li.is-limited').first()).toBeVisible({ timeout: 5000 })
+  await expect(demo.locator('[data-limiter-log] li[data-limited]').first()).toBeVisible({ timeout: 5000 })
   await demo.getByRole('button', { name: 'Other visitor sends 1' }).click()
-  await expect(demo.locator('.limiter-log li').first()).toContainText('200 OK')
+  await expect(demo.locator('[data-limiter-log] li').first()).toContainText('200 OK')
 })
 
 test('engineering notes: listed on the notes page, own pages, linked from case studies', async ({ page }) => {
