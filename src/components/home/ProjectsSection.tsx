@@ -38,16 +38,20 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </p>
       )}
       {flagships.length > 0 && (
-        <Carousel opts={{ align: 'start' }} aria-label="Featured projects" className="mx-auto w-full px-0 sm:px-12">
-          <CarouselContent>
+        <Carousel
+          opts={{ align: 'start', breakpoints: { '(min-width: 768px)': { active: false } } }}
+          aria-label="Featured projects"
+          className="mt-10 w-full"
+        >
+          <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:gap-6">
             {flagships.map((project) => (
-              <CarouselItem key={project.slug} className="lg:basis-1/2">
+              <CarouselItem key={project.slug} className="basis-[88%] sm:basis-[70%] md:basis-auto md:pl-0">
                 <ProjectCard project={project} />
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="hidden sm:inline-flex" />
-          <CarouselNext className="hidden sm:inline-flex" />
+          <CarouselPrevious className="hidden sm:inline-flex md:hidden" />
+          <CarouselNext className="hidden sm:inline-flex md:hidden" />
         </Carousel>
       )}
       {others.length > 0 && (

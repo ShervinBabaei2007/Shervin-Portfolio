@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from 'react'
 import { ArrowUpRight, Github } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import type { Project } from '@/data/projects'
@@ -69,28 +70,13 @@ function ProjectCard({ project }: { project: Project }) {
           <h3>{project.name}</h3>
           <p className="project-subtitle">{project.subtitle}</p>
           <p className="project-summary">{project.summary}</p>
-          {project.signal && (
-            <dl className="project-signal-grid">
-              <div>
-                <dt>I OWNED</dt>
-                <dd>{project.signal.ownership}</dd>
-              </div>
-              <div>
-                <dt>EVIDENCE</dt>
-                <dd>{project.signal.evidence}</dd>
-              </div>
-            </dl>
-          )}
-          <blockquote className="project-insight">
-            <span>THE ENGINEERING TURN</span>
-            <p>{project.learned}</p>
-          </blockquote>
-          {!project.signal && (
-            <p className="project-result">
-              <span>Proof it shipped</span>
-              {project.highlight}
-            </p>
-          )}
+          <div className="mt-4 flex flex-wrap gap-1.5" aria-label="Stack">
+            {project.stack.slice(0, 5).map((item) => (
+              <Badge key={item} variant="secondary">
+                {item}
+              </Badge>
+            ))}
+          </div>
           <div className="project-card-footer">
             <span>{project.role}</span>
             <span>

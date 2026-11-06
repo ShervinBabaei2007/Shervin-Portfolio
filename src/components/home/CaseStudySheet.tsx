@@ -28,6 +28,16 @@ function CaseStudySheet({ project, open, onOpenChange }: Props) {
                 </Badge>
               ))}
             </div>
+            {project.signal && (
+              <section className="grid gap-3 text-sm">
+                <p>
+                  <b>I owned.</b> <span className="text-muted-foreground">{project.signal.ownership}</span>
+                </p>
+                <p>
+                  <b>Evidence.</b> <span className="text-muted-foreground">{project.signal.evidence}</span>
+                </p>
+              </section>
+            )}
             <section>
               <h3 className="mb-2 text-sm font-semibold">System architecture</h3>
               <ol className="space-y-2 text-sm">

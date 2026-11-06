@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Braces, FileText, Mail } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
-import CommandPalette from '@/components/shared/CommandPalette'
 import { findProject, type Project } from '@/data/projects'
 import { availabilityLine, site } from '@/data/site'
 import { facts } from '@/data/facts'
@@ -64,21 +63,23 @@ function Hero() {
           I&apos;m {site.name}. I like the moment a bug stops being mysterious. I build React and Node products end to
           end, then trace the request until I can explain the failure, the trade-off, and the fix in plain English.
         </p>
-        <div className="hero-value" aria-label="What I bring to a team">
-          <span>WHAT I BRING</span>
-          <p>
-            <b>Ship the feature.</b> Trace the failure. Leave the system clearer than I found it.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2" aria-label="Core stack">
+        <div className="mt-5 flex flex-wrap gap-2" aria-label="Core stack">
           {['React', 'Node.js', 'TypeScript', 'Python'].map((tag, index) => (
             <Badge key={tag} variant={index % 2 ? 'secondary' : 'outline'}>
               {tag}
             </Badge>
           ))}
         </div>
-        <div className="mt-4">
-          <CommandPalette />
+        <div className="hero-actions">
+          <Link className="button button-primary" to="/#work">
+            See my projects <ArrowDownRight size={16} />
+          </Link>
+          <Link className="button button-secondary" to="/resume">
+            View resume <FileText size={16} />
+          </Link>
+          <a className="text-link hero-email" href={`mailto:${site.email}`}>
+            <Mail size={16} /> {site.email}
+          </a>
         </div>
         <ul className="hero-proof" aria-label="Highlights">
           {proof.map((item) => (
@@ -91,17 +92,6 @@ function Hero() {
           ))}
         </ul>
         <p className="hero-target">{availabilityLine()}</p>
-        <div className="hero-actions">
-          <Link className="button button-primary" to="/#work">
-            See my projects <ArrowDownRight size={16} />
-          </Link>
-          <Link className="button button-secondary" to="/resume">
-            View resume <FileText size={16} />
-          </Link>
-          <a className="text-link hero-email" href={`mailto:${site.email}`}>
-            <Mail size={16} /> {site.email}
-          </a>
-        </div>
       </div>
       <div className="hero-side">
         <div className="hero-art" role="group" aria-label="Explore projects by application layer">
