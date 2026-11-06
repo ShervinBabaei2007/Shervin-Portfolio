@@ -1,7 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import AboutSection from '../components/AboutSection'
+import CapabilitiesTable from '../components/CapabilitiesTable'
+import CodeShowcase from '../components/CodeShowcase'
 import ContactSection from '../components/ContactSection'
 import Hero from '../components/Hero'
+import JourneySection from '../components/JourneySection'
 import LabSection from '../components/LabSection'
 import NotesSection from '../components/NotesSection'
 import ProjectsSection from '../components/ProjectsSection'
@@ -37,9 +40,12 @@ function HomePage() {
       <StackTraceRail />
       <Hero />
       <ProjectsSection activeSkill={activeSkill} onClearSkill={() => setActiveSkill(null)} />
+      <CodeShowcase />
       <LabSection />
       <AboutSection />
+      <JourneySection />
       <SkillsSection activeSkill={activeSkill} onSkillSelect={selectSkill} />
+      <CapabilitiesTable />
       <NotesSection />
       <ContactSection />
     </>
