@@ -4,6 +4,8 @@
  * point to in a repo, a commit, or a live demo during an interview.
  */
 
+import { commitsLine, facts, hackathonLine } from './facts'
+
 export type Screenshot = { src: string; alt: string; caption: string }
 
 export type Snippet = {
@@ -73,12 +75,12 @@ export const projects: Project[] = [
     summary:
       'A MERN marketplace for short skill workshops. I built the attend, review, and host-a-workshop flows and was the most active committer on a three-person team.',
     role: 'Backend & DevOps lead, 3-person team',
-    team: 'BCIT team project with Clayton Liang and Ky Thai. I wrote 114 of roughly 245 commits in the team repo.',
-    highlight: 'Top committer: 114 of ~245 commits',
+    team: `BCIT team project with Clayton Liang and Ky Thai. I wrote ${commitsLine.replace('~', 'roughly ')} in the team repo.`,
+    highlight: `Top committer: ${commitsLine}`,
     signal: {
       ownership: 'Attend, review, and host flows across React, Express, JWT, and MongoDB.',
       decision: 'Treat workshop capacity as a server invariant, not just a disabled-button concern.',
-      evidence: '114 of ~245 team commits, plus a live app and the exact route source linked below.',
+      evidence: `${facts.skillmatch.myCommits} of ${facts.skillmatch.teamCommits} team commits, plus a live app and the exact route source linked below.`,
     },
     why: 'Students wanted a simple way to find focused workshops outside their regular courses, and to run one themselves if they had a skill to share.',
     mine: [
@@ -151,15 +153,14 @@ export const projects: Project[] = [
     flagship: true,
     date: 'March 2026',
     subtitle: 'AI commit-message suggestions, built in 24 hours.',
-    summary:
-      'Compare two versions of your code and get a suggested commit message. Built at Hack the Break 2026, where the team placed in the top 6 of 36.',
+    summary: `Compare two versions of your code and get a suggested commit message. Built at ${facts.hackathon.name}, where the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
     role: 'UI/UX lead and front-end developer',
     team: 'Hack the Break 2026 team project. I built the sign-in, navigation, and profile screens; teammates built the FastAPI backend and the OpenAI generation pipeline.',
-    highlight: 'Top 6 of 36 teams at Hack the Break 2026',
+    highlight: hackathonLine,
     signal: {
       ownership: 'Sign-in, navigation, profile UI, and the Auth0-to-GitHub entry path.',
       decision: 'Use managed OAuth in a 24-hour sprint and remove an unnecessary provider-selection step.',
-      evidence: 'Working live demo; the team placed in the top 6 of 36.',
+      evidence: `Working live demo; the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
     },
     why: 'Writing a clear commit message is a small task people rush. GitScribe takes the before and after of a change and suggests one.',
     mine: [

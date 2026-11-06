@@ -1,3 +1,4 @@
+import { facts } from '../data/facts'
 import { ArrowRight, Code2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -30,9 +31,9 @@ function AboutSection() {
             I keep following the request because “it works” has never been a satisfying ending for me.
           </p>
           <p>
-            I&apos;m studying for a Diploma in Full-Stack Web Development at BCIT, with an 88% GPA and an expected
-            graduation in May 2027. My coursework includes object-oriented programming, databases, Agile development,
-            UX/UI, and web application development.
+            I&apos;m studying for a Diploma in Full-Stack Web Development at BCIT, with an {facts.gpa} GPA and an
+            expected graduation in May 2027. My coursework includes object-oriented programming, databases, Agile
+            development, UX/UI, and web application development.
           </p>
           <p>
             I like understanding how an application works from the interface through the API and data layer. I want to

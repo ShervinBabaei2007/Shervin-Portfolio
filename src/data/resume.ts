@@ -1,4 +1,5 @@
 import { site } from './site'
+import { commitsLine, facts } from './facts'
 
 export type ResumeLink = { label: string; href: string }
 
@@ -30,11 +31,10 @@ export const resume = {
     { label: 'GitHub', href: site.github },
     { label: 'LinkedIn', href: site.linkedin },
   ] satisfies ResumeLink[],
-  summary:
-    'Full-stack developer and BCIT student who builds across UI, API, and data layers, then traces failures until I can explain the trade-off and fix. Top 6 of 36 teams at Hack the Break 2026.',
+  summary: `Full-stack developer and BCIT student who builds across UI, API, and data layers, then traces failures until I can explain the trade-off and fix. ${facts.hackathon.placement} teams at ${facts.hackathon.name}.`,
   education: {
     school: 'British Columbia Institute of Technology (BCIT)',
-    gpa: 'GPA: 88%',
+    gpa: `GPA: ${facts.gpa}`,
     date: `Expected ${site.graduation}`,
     program: site.program,
     coursework: 'OOP, Database Systems, Agile Development, UX/UI Design, Web Application Development',
@@ -57,7 +57,7 @@ export const resume = {
       ],
       date: 'Spring 2026',
       stack: 'React, TypeScript, Express, MongoDB, JWT, Vercel',
-      role: 'Backend & DevOps Lead (3-person team), top committer (114 of ~245 commits)',
+      role: `Backend & DevOps Lead (${facts.skillmatch.teamSize}-person team), top committer (${commitsLine})`,
       bullets: [
         'Built the attend, review, and host-a-workshop flows end to end, from React screens to JWT-protected Express routes.',
         'Worked on first-load latency by preloading key routes, splitting React and UI libraries into separately cached chunks, and keeping MongoDB Atlas warm with a five-minute keepalive ping.',
@@ -66,7 +66,7 @@ export const resume = {
     },
     {
       name: 'GitScribe',
-      detail: 'Hack the Break 2026, Top 6 of 36 Teams',
+      detail: `${facts.hackathon.name}, ${facts.hackathon.placement} Teams`,
       links: [
         { label: 'Live Demo', href: 'https://git-scribe-aybm.vercel.app/' },
         { label: 'Repo', href: 'https://github.com/adriencyr/GitScribe' },

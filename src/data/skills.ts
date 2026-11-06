@@ -58,3 +58,17 @@ export function usageLevel(skill: string): 'Core' | 'Used' | 'Exploring' {
   const count = projectsUsing(skill).length
   return count >= 3 ? 'Core' : count >= 1 ? 'Used' : 'Exploring'
 }
+
+/** What this site itself is built and checked with (shown beside the project skills). */
+export const siteStack = [
+  { title: 'Build', items: ['React 19', 'TypeScript', 'Vite', 'React Router', 'Tailwind CSS', 'shadcn/ui'] },
+  {
+    title: 'Quality',
+    items: [
+      'Playwright end-to-end tests',
+      'axe-core accessibility checks',
+      'ESLint and Prettier in CI',
+      'Prerendered HTML',
+    ],
+  },
+] as const

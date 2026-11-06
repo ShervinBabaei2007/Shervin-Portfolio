@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { projectsUsing, skillTabs, usageLevel } from '../data/skills'
+import { projectsUsing, siteStack, skillTabs, usageLevel } from '../data/skills'
 
 type SkillsSectionProps = {
   activeSkill: string | null
@@ -92,23 +92,16 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
         <div className="skills-evidence skills-evidence-secondary">
           <h3>Used to build this site</h3>
           <p>This portfolio is a project too. It is tested like one.</p>
-          <div className="skill-group">
-            <h4>Build</h4>
-            <ul>
-              <li>React 19</li>
-              <li>TypeScript</li>
-              <li>Vite</li>
-              <li>React Router</li>
-            </ul>
-          </div>
-          <div className="skill-group">
-            <h4>Quality</h4>
-            <ul>
-              <li>Playwright end-to-end tests</li>
-              <li>axe-core accessibility checks</li>
-              <li>Prerendered HTML</li>
-            </ul>
-          </div>
+          {siteStack.map((group) => (
+            <div className="skill-group" key={group.title}>
+              <h4>{group.title}</h4>
+              <ul>
+                {group.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
           <Link className="text-link" to="/how-its-built">
             How this site is built <ArrowUpRight size={15} />
           </Link>

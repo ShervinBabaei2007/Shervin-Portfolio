@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import CommandPalette from './CommandPalette'
 import { findProject, type Project } from '../data/projects'
 import { availabilityLine, site } from '../data/site'
+import { facts } from '../data/facts'
 
 const systemLayers = [
   {
@@ -34,9 +35,13 @@ const systemLayers = [
 ] as const
 
 const proof = [
-  { value: 'Top 6 of 36', label: 'teams at Hack the Break 2026', to: '/work/gitscribe' },
-  { value: '114 commits', label: 'most on a 3-person team project', to: '/work/skillmatch' },
-  { value: '88% GPA', label: `BCIT, graduating ${site.graduation}`, to: '/resume' },
+  { value: facts.hackathon.placement, label: `teams at ${facts.hackathon.name}`, to: '/work/gitscribe' },
+  {
+    value: `${facts.skillmatch.myCommits} commits`,
+    label: `most on a ${facts.skillmatch.teamSize}-person team project`,
+    to: '/work/skillmatch',
+  },
+  { value: `${facts.gpa} GPA`, label: `BCIT, graduating ${site.graduation}`, to: '/resume' },
 ]
 
 function Hero() {
