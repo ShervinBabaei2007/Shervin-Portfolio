@@ -1,24 +1,24 @@
 import { ArrowUpRight, FlaskConical } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
+import SectionHeading from '@/components/shared/SectionHeading'
 
 function LabSection() {
   return (
     <section className="lab-section section-wrap" id="lab" aria-labelledby="lab-title">
-      <div className="section-heading lab-heading">
-        <div>
-          <p className="eyebrow">
-            <span className="eyebrow-mark">03</span> THE LAB
-          </p>
-          <h2 id="lab-title">
-            Break the assumption<span>.</span>
-          </h2>
-        </div>
-        <p className="section-aside">
-          I learn fastest when a system disagrees with me. <br />
-          So here&apos;s one mistake you can reproduce yourself.
-        </p>
-      </div>
+      <SectionHeading
+        id="lab-title"
+        number="03"
+        eyebrow="THE LAB"
+        title="Break the assumption"
+        className="lab-heading"
+        aside={
+          <>
+            I learn fastest when a system disagrees with me. <br />
+            So here&apos;s one mistake you can reproduce yourself.
+          </>
+        }
+      />
 
       <div className="lab-story">
         <div className="lab-story-mark" aria-hidden="true">

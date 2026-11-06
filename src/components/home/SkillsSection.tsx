@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { projectsUsing, siteStack, skillTabs, usageLevel } from '@/data/skills'
+import SectionHeading from '@/components/shared/SectionHeading'
 
 type SkillsSectionProps = {
   activeSkill: string | null
@@ -15,20 +16,19 @@ const countFor = (skill: string) => projectsUsing(skill).length
 function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
   return (
     <section className="skills-section section-wrap" id="skills" aria-labelledby="skills-title">
-      <div className="section-heading skills-heading">
-        <div>
-          <p className="eyebrow">
-            <span className="eyebrow-mark">05</span> TOOLS & CURIOSITIES
-          </p>
-          <h2 id="skills-title">
-            What I work with<span>.</span>
-          </h2>
-        </div>
-        <p className="section-aside">
-          Every tool here is used in at least one <br />
-          project you can open and read.
-        </p>
-      </div>
+      <SectionHeading
+        id="skills-title"
+        number="05"
+        eyebrow="TOOLS & CURIOSITIES"
+        title="What I work with"
+        className="skills-heading"
+        aside={
+          <>
+            Every tool here is used in at least one <br />
+            project you can open and read.
+          </>
+        }
+      />
       <div className="skills-evidence-grid">
         <div className="skills-evidence">
           <h3>Used in these projects</h3>

@@ -3,20 +3,12 @@ import { Link } from 'react-router-dom'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
 import { journey } from '@/data/journey'
+import SectionHeading from '@/components/shared/SectionHeading'
 
 function JourneySection() {
   return (
     <section className="section-wrap" id="journey" aria-labelledby="journey-title">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">
-            <span className="eyebrow-mark">04</span> JOURNEY
-          </p>
-          <h2 id="journey-title">
-            How I got here<span>.</span>
-          </h2>
-        </div>
-      </div>
+      <SectionHeading id="journey-title" number="04" eyebrow="JOURNEY" title="How I got here" />
       <Accordion type="single" collapsible defaultValue="bcit">
         {journey.map((item) => (
           <AccordionItem key={item.id} value={item.id}>

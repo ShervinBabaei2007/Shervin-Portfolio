@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { projects } from '@/data/projects'
+import SectionHeading from '@/components/shared/SectionHeading'
 
 const languageLabel = { js: 'JavaScript', ts: 'TypeScript', tsx: 'React (TSX)', python: 'Python' } as const
 
@@ -37,21 +38,19 @@ function CodeShowcase() {
 
   return (
     <section className="section-wrap" id="code" aria-labelledby="code-title">
-      <div className="section-heading">
-        <div>
-          <p className="eyebrow">
-            <span className="eyebrow-mark">03</span> CODE
-          </p>
-          <h2 id="code-title">
-            Real code, real repos<span>.</span>
-          </h2>
-        </div>
-        <p className="section-aside">
-          Each excerpt is copied from a project
-          <br />
-          you can open on GitHub.
-        </p>
-      </div>
+      <SectionHeading
+        id="code-title"
+        number="03"
+        eyebrow="CODE"
+        title="Real code, real repos"
+        aside={
+          <>
+            Each excerpt is copied from a project
+            <br />
+            you can open on GitHub.
+          </>
+        }
+      />
       <Card>
         <CardHeader>
           <ToggleGroup
