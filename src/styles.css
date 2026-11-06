@@ -735,8 +735,6 @@ main:focus { outline: none; }
 .resume-project ul { margin: 10px 0 0; padding-left: 20px; list-style: disc; }
 .resume-project li { margin: 6px 0; line-height: 1.6; }
 
-.print-only { display: none; }
-
 @media (max-width: 900px) {
   .hero-side { justify-items: stretch; margin-top: 36px; }
   .hero-side .hero-art { justify-self: center; }
@@ -762,7 +760,6 @@ main:focus { outline: none; }
   @page { size: letter; margin: 0.42in 0.5in; }
   .skip-link,
   .resume-toolbar { display: none !important; }
-  .print-only { display: inline; }
   .resume-page { max-width: none; padding: 0; }
   .resume-sheet { margin: 0; padding: 0; border: 0; background: none; font-size: 9.5pt; }
   .resume-sheet p, .resume-sheet li, .resume-sheet dd, .resume-sheet dt, .resume-muted { font-size: 9.5pt; }
@@ -856,7 +853,6 @@ main:focus { outline: none; }
 .limiter-bar.is-full span { background: var(--primary); }
 .limiter-window-bar { height: 6px; }
 .limiter-window-bar span { background: var(--muted-foreground); }
-.limiter-meters--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .limiter-window { grid-column: 1 / -1; color: var(--muted-foreground); font: .75rem var(--mono); }
 .limiter-math { margin: 8px 0 0; color: var(--muted-foreground); font: .75rem/1.5 var(--mono); overflow-wrap: anywhere; }
 
@@ -883,69 +879,11 @@ main:focus { outline: none; }
 .limiter-log li > span:last-child { color: var(--muted-foreground); text-align: right; }
 .limiter-log .limiter-log-empty { display: block; color: var(--muted-foreground); }
 
-.note-list { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
-
-.note-list a {
-  display: grid;
-  gap: 6px;
-  padding: 18px 20px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  text-decoration: none;
-  transition: border-color .18s ease;
-}
-
-.note-list a:hover { border-color: var(--primary); }
-.note-meta { color: var(--muted-foreground); font: .75rem var(--mono); }
-.note-list b { font: 600 1.25rem/1.25 var(--display); }
-.note-summary { color: var(--muted-foreground); line-height: 1.6; }
-.note-read { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); font-size: .875rem; font-weight: 600; }
-
-.github-activity { padding: 18px 20px; border: 1px solid var(--border); background: var(--card); }
-.github-activity ul { margin: 12px 0 0; padding: 0; list-style: none; }
-.github-activity li + li { border-top: 1px solid var(--border); }
-.github-activity a { display: grid; gap: 3px; padding: 11px 0; text-decoration: none; }
-
-/* Note pages */
-.note-page { max-width: 760px; padding: 36px 0 100px; }
-.note-header { margin-top: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-.note-header h1 { margin: 14px 0 0; font: 600 clamp(2rem, 1.5rem + 1.8vw, 3rem)/1.1 var(--display); }
-.note-standfirst { margin: 16px 0 0; color: var(--muted-foreground); font-size: 1.1875rem; line-height: 1.6; }
-.note-byline { margin: 14px 0 0; color: var(--muted-foreground); font: .8125rem var(--mono); }
-
-.note-body { margin-top: 10px; }
-.note-body > p,
-.note-body > ul { max-width: 68ch; font-size: 1.0625rem; line-height: 1.75; }
-.note-body > p { margin: 18px 0 0; }
-.note-body > ul { margin: 14px 0 0; padding-left: 22px; }
-.note-body > ul li + li { margin-top: 8px; }
-.note-body > h2 { margin: 38px 0 0; font: 600 1.375rem var(--display); }
-.note-body .code-block { margin: 20px 0 0; }
-
-.note-footer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 14px;
-  margin-top: 48px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-}
-
-.note-footer-link { display: grid; gap: 6px; padding: 16px 18px; border: 1px solid var(--border); background: var(--card); text-decoration: none; }
-.note-footer-link span { display: inline-flex; align-items: center; gap: 6px; color: var(--muted-foreground); font-size: .8125rem; }
-.note-footer-link b { font: 600 1.0625rem/1.3 var(--display); }
-.note-footer-link:hover { border-color: var(--primary); }
-
-.note-list--page { margin-top: 8px; }
-
 @media (max-width: 620px) {
   .limiter-demo { padding: 20px 16px 22px; }
-  .limiter-meters--2 { grid-template-columns: minmax(0, 1fr); }
   .limiter-actions button { flex: 1 1 auto; }
   .limiter-log li { grid-template-columns: 1fr auto; }
   .limiter-log li > span:first-child { grid-column: 1 / -1; color: var(--muted-foreground); font-size: .8125rem; }
-  .note-page { padding: 18px 0 64px; }
-  .note-body > p, .note-body > ul { font-size: 1rem; }
 }
 
 /* The lab acts like a live notebook page. */
@@ -953,8 +891,6 @@ main:focus { outline: none; }
   padding-top: 64px;
   padding-bottom: 110px;
 }
-
-.lab-heading h2 span { color: var(--primary); }
 
 .lab-story {
   display: grid;
