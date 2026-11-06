@@ -1,5 +1,7 @@
 import { Component, Suspense, useEffect, type ReactNode } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Toaster } from '@/components/ui/sonner'
 import SiteFooter from './components/SiteFooter'
 import SiteHeader from './components/SiteHeader'
 import { usePageMeta } from './hooks/usePageMeta'
@@ -56,7 +58,7 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
 
 function App() {
   const { pathname } = useLocation()
-  const { scheme, toggle } = useTheme()
+  const { scheme, preference, setPreference } = useTheme()
   usePageMeta()
 
   return (
@@ -65,10 +67,15 @@ function App() {
         Skip to content
       </a>
       <ScrollManager />
-      <SiteHeader darkMode={scheme === 'dark'} onToggleTheme={toggle} />
+      <SiteHeader scheme={scheme} preference={preference} onPreferenceChange={setPreference} />
       <main id="main" tabIndex={-1}>
         <PageErrorBoundary pathname={pathname}>
-          <Suspense fallback={<div className="page-loading" aria-busy="true" />}>
+          <Suspense fallback={<div className="page-loading section-wrap grid content-start gap-4 pt-12" aria-busy="true" aria-label="Loading page">
+              <Skeleton className="h-10 w-2/3" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-64 w-full" />
+            </div>}>
             <Routes>
               {Object.values(pages).map(({ path, Component }) => (
                 <Route key={path} path={path} element={<Component />} />
@@ -78,6 +85,7 @@ function App() {
         </PageErrorBoundary>
       </main>
       <SiteFooter />
+      <Toaster theme={scheme} />
     </div>
   )
 }

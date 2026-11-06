@@ -1,62 +1,72 @@
 import { useCallback, useEffect, useState } from 'react'
 
-type Scheme = 'light' | 'dark'
+export type Scheme = 'light' | 'dark'
+export type Preference = Scheme | 'system'
 const STORAGE_KEY = 'color-scheme'
 const query = '(prefers-color-scheme: dark)'
 
 const systemScheme = (): Scheme =>
   typeof window !== 'undefined' && window.matchMedia(query).matches ? 'dark' : 'light'
 
-const storedScheme = (): Scheme | null => {
+/** Dark is the default; only an explicit light or system choice changes that. */
+const storedPreference = (): Preference => {
   try {
     const value = localStorage.getItem(STORAGE_KEY)
-    return value === 'light' || value === 'dark' ? value : null
+    return value === 'light' || value === 'system' ? value : 'dark'
   } catch {
-    return null
+    return 'dark'
   }
 }
 
-/** Applies a pinned scheme, or clears it to follow the system. Mirrors the inline script in index.html. */
-function applyScheme(pinned: Scheme | null) {
+const resolve = (preference: Preference): Scheme => (preference === 'system' ? systemScheme() : preference)
+
+/** Pins the resolved scheme on <html> (class for Tailwind/shadcn, data-theme for legacy CSS). Mirrors index.html. */
+function applyScheme(scheme: Scheme) {
   const root = document.documentElement
-  if (pinned) root.dataset.theme = pinned
-  else delete root.dataset.theme
+  root.classList.toggle('dark', scheme === 'dark')
+  root.dataset.theme = scheme
   const meta = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]')
-  if (meta) meta.content = pinned ?? 'light dark'
-  try {
-    if (pinned) localStorage.setItem(STORAGE_KEY, pinned)
-    else localStorage.removeItem(STORAGE_KEY)
-  } catch {
-    /* storage unavailable: the choice lasts for this visit only */
-  }
+  if (meta) meta.content = scheme
 }
 
 /**
- * Follows the operating system by default and remembers a manual choice.
- * The first render is always 'light' so the server-rendered HTML and the
+ * Dark by default, with Light / Dark / System choices remembered in localStorage.
+ * The first render is always 'dark' so the server-rendered HTML and the
  * hydrated app match; the real value is read right after mount.
  */
 export function useTheme() {
-  const [scheme, setScheme] = useState<Scheme>('light')
+  const [preference, setPreferenceState] = useState<Preference>('dark')
+  const [scheme, setScheme] = useState<Scheme>('dark')
 
   useEffect(() => {
-    setScheme(storedScheme() ?? systemScheme())
+    const initial = storedPreference()
+    setPreferenceState(initial)
+    setScheme(resolve(initial))
+    applyScheme(resolve(initial))
     const media = window.matchMedia(query)
     const onChange = () => {
-      if (!storedScheme()) setScheme(systemScheme())
+      if (storedPreference() === 'system') {
+        setScheme(systemScheme())
+        applyScheme(systemScheme())
+      }
     }
     media.addEventListener('change', onChange)
     return () => media.removeEventListener('change', onChange)
   }, [])
 
-  const toggle = useCallback(() => {
-    setScheme((current) => {
-      const next: Scheme = current === 'dark' ? 'light' : 'dark'
-      // Choosing what the system already prefers means "follow the system" again.
-      applyScheme(next === systemScheme() ? null : next)
-      return next
-    })
+  const setPreference = useCallback((next: Preference) => {
+    const resolved = resolve(next)
+    setPreferenceState(next)
+    setScheme(resolved)
+    applyScheme(resolved)
+    try {
+      localStorage.setItem(STORAGE_KEY, next)
+    } catch {
+      /* storage unavailable: the choice lasts for this visit only */
+    }
   }, [])
 
-  return { scheme, toggle }
+  const toggle = useCallback(() => setPreference(scheme === 'dark' ? 'light' : 'dark'), [scheme, setPreference])
+
+  return { scheme, preference, setPreference, toggle }
 }
