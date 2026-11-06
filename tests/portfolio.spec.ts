@@ -53,7 +53,7 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
 test('home shows four flagships and a compact list for the rest', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('[data-slot="carousel"] .project-card')).toHaveCount(4)
-  await expect(page.locator('.more-projects li')).toHaveCount(4)
+  await expect(page.locator('#work ul li').filter({ has: page.locator('a[href^="/work/"]') })).toHaveCount(4)
   await expect(page.getByText('Illustrative interface preview')).toHaveCount(0)
 })
 
@@ -97,7 +97,7 @@ test('skill chips filter projects and can be cleared', async ({ page }) => {
   await page.getByRole('button', { name: /using Redis$/ }).click()
   await expect(page.getByText('Showing projects that use')).toBeVisible()
   await expect(page.locator('[data-slot="carousel"] .project-card')).toHaveCount(1)
-  await expect(page.locator('.more-projects')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'More projects' })).toHaveCount(0)
   await page.getByRole('button', { name: 'Clear skill filter' }).click()
   await expect(page.locator('[data-slot="carousel"] .project-card')).toHaveCount(4)
 })
