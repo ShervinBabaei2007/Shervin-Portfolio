@@ -10,14 +10,12 @@ const collectErrors = (page: Page) => {
   return errors
 }
 
-test('hero states role, proof, availability, and links to the resume page', async ({ page }) => {
+test('hero states the role, links to the resume, and shows no stats or email', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Full-stack developer')
-  const proof = page.getByRole('list', { name: 'Highlights' })
-  await expect(proof).toContainText('Top 6 of 36')
-  await expect(proof).toContainText('114 commits')
-  await expect(page.locator('#home').getByText(/Open to|Available from/)).toBeVisible()
   await expect(page.getByRole('link', { name: 'View resume' }).first()).toHaveAttribute('href', '/resume')
+  await expect(page.getByRole('list', { name: 'Highlights' })).toHaveCount(0)
+  await expect(page.locator('#home')).not.toContainText('shervinb22')
 })
 
 test('pages are prerendered with content, metadata, and a PNG share image', async ({ request }) => {
@@ -476,4 +474,30 @@ test('moving quickly between skills never leaves two tooltips open', async ({ pa
   await page.waitForTimeout(400)
   await expect(page.getByRole('tooltip')).toHaveCount(1)
   await expect(page.getByRole('tooltip')).toContainText('Python')
+})
+
+test('the old left-hand trace rail is gone', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('navigation', { name: /trace/i })).toHaveCount(0)
+})
+
+test('the header marks the section you are reading and shows scroll progress', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const nav = page.getByRole('navigation', { name: 'Main navigation' })
+  const progress = page.locator('header [data-slot="progress"]')
+
+  await expect(nav.locator('[aria-current]')).toHaveCount(0)
+  await expect(progress).toHaveAttribute('data-progress', '0')
+
+  await page.evaluate(() => document.getElementById('about')!.scrollIntoView())
+  await expect(nav.getByRole('link', { name: 'About' })).toHaveAttribute('aria-current', 'location')
+  expect(Number(await progress.getAttribute('data-progress'))).toBeGreaterThan(0)
+
+  await page.evaluate(() => document.getElementById('contact')!.scrollIntoView())
+  await expect(nav.getByRole('link', { name: 'Contact' })).toHaveAttribute('aria-current', 'location')
+  await expect(nav.getByRole('link', { name: 'About' })).not.toHaveAttribute('aria-current', /.*/)
+
+  await page.goto('/resume')
+  await expect(nav.getByRole('link', { name: 'Resume' })).toHaveAttribute('aria-current', 'page')
 })

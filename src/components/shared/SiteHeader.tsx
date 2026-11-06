@@ -1,5 +1,5 @@
 import { Github, Linkedin, Mail, Menu, Monitor, Moon, Sun } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,6 +19,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import CommandPalette from '@/components/shared/CommandPalette'
+import ScrollProgress from '@/components/shared/ScrollProgress'
+import { useActiveSection } from '@/hooks/useActiveSection'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { Preference, Scheme } from '@/hooks/useTheme'
 import { site } from '@/data/site'
@@ -30,12 +32,23 @@ type SiteHeaderProps = {
 }
 
 const navLinks = [
-  { to: '/#work', label: 'Work' },
-  { to: '/#about', label: 'About' },
-  { to: '/notes', label: 'Notes' },
-  { to: '/resume', label: 'Resume' },
-  { to: '/#contact', label: 'Contact' },
-]
+  { to: '/#work', label: 'Work', section: 'work' },
+  { to: '/#about', label: 'About', section: 'about' },
+  { to: '/notes', label: 'Notes', section: 'notes', page: '/notes' },
+  { to: '/resume', label: 'Resume', page: '/resume' },
+  { to: '/#contact', label: 'Contact', section: 'contact' },
+] as const
+
+/** Every home-page section, and which nav item it belongs to while you are reading it. */
+const sectionOwner: Record<string, string> = {
+  work: 'work',
+  lab: 'work',
+  about: 'about',
+  journey: 'about',
+  skills: 'about',
+  notes: 'notes',
+  contact: 'contact',
+}
 
 const socials = [
   { label: 'GitHub', href: site.github, Icon: Github, external: true },
@@ -44,6 +57,17 @@ const socials = [
 ]
 
 function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps) {
+  const { pathname } = useLocation()
+  const activeSection = useActiveSection(Object.keys(sectionOwner), pathname === '/')
+  const activeOwner = activeSection ? sectionOwner[activeSection] : null
+
+  /** `location` while its section is in view on the home page, `page` while you are on its own page. */
+  const currentFor = (link: (typeof navLinks)[number]) => {
+    if ('page' in link && pathname.startsWith(link.page)) return 'page' as const
+    if (pathname === '/' && 'section' in link && link.section === activeOwner) return 'location' as const
+    return undefined
+  }
+
   return (
     <header className="sticky top-0 z-20 grid min-h-[var(--header-height)] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center justify-between border-b bg-background px-[max(var(--gutter),calc((100%-var(--content-max))/2))] py-2 max-[620px]:flex max-[620px]:flex-wrap max-[620px]:gap-y-1 print:hidden">
       <Link
@@ -62,8 +86,9 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
         {navLinks.map((link) => (
           <Link
             key={link.to}
-            className="inline-flex min-h-[var(--target)] items-center text-muted-foreground no-underline transition-colors hover:text-primary"
+            className="relative inline-flex min-h-[var(--target)] items-center text-muted-foreground no-underline transition-colors after:absolute after:inset-x-0 after:bottom-1.5 after:h-0.5 after:rounded-full after:bg-primary after:opacity-0 after:transition-opacity hover:text-primary aria-[current]:text-foreground aria-[current]:after:opacity-100"
             to={link.to}
+            aria-current={currentFor(link)}
           >
             {link.label}
           </Link>
@@ -133,7 +158,11 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
             <nav className="grid gap-1 px-4" aria-label="Mobile navigation">
               {navLinks.map((link) => (
                 <SheetClose key={link.to} asChild>
-                  <Link className="rounded-md px-3 py-3 text-base font-medium hover:bg-accent" to={link.to}>
+                  <Link
+                    className="rounded-md px-3 py-3 text-base font-medium hover:bg-accent aria-[current]:bg-accent aria-[current]:text-primary"
+                    to={link.to}
+                    aria-current={currentFor(link)}
+                  >
                     {link.label}
                   </Link>
                 </SheetClose>
@@ -151,6 +180,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
           </SheetContent>
         </Sheet>
       </div>
+      <ScrollProgress />
     </header>
   )
 }

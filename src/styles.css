@@ -946,101 +946,6 @@ main:focus { outline: none; }
   .note-body > p, .note-body > ul { font-size: 1rem; }
 }
 
-/* ========================================================================== 
-   20. SIGNATURE STORY SYSTEM — TRACE RAIL, LAB, PROJECT INSIGHTS
-   ========================================================================== */
-
-/* A persistent desktop trace turns the hero's "down the stack" idea into a
-   site-wide navigation language. It intentionally disappears before it can
-   compete with content on narrower viewports. */
-.stack-trace-rail {
-  position: fixed;
-  z-index: 12;
-  top: 50%;
-  left: max(12px, calc((100vw - var(--content-max)) / 2 - 118px));
-  width: 96px;
-  transform: translateY(-44%);
-}
-
-.stack-trace-title {
-  display: block;
-  margin: 0 0 10px 33px;
-  color: var(--muted-foreground);
-  font: .6875rem var(--mono);
-  letter-spacing: .12em;
-}
-
-.stack-trace-rail ol {
-  position: relative;
-  display: grid;
-  gap: 2px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.stack-trace-rail ol::before {
-  content: '';
-  position: absolute;
-  top: 18px;
-  bottom: 18px;
-  left: 17px;
-  width: 1px;
-  background: var(--border);
-}
-
-.stack-trace-rail a {
-  position: relative;
-  display: grid;
-  grid-template-columns: 35px minmax(0, 1fr);
-  align-items: center;
-  min-height: 43px;
-  color: var(--muted-foreground);
-  text-decoration: none;
-}
-
-.stack-trace-node {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  width: 35px;
-  height: 24px;
-  font: .6875rem var(--mono);
-  transition: color .18s ease;
-}
-
-.stack-trace-node::before {
-  content: '';
-  position: absolute;
-  left: 13px;
-  width: 8px;
-  height: 8px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: var(--background);
-  transition: background .18s ease, border-color .18s ease, transform .18s ease;
-}
-
-.stack-trace-node { color: transparent; }
-.stack-trace-rail li:hover .stack-trace-node,
-.stack-trace-rail li.is-active .stack-trace-node { color: var(--primary); }
-.stack-trace-rail li:hover .stack-trace-node::before,
-.stack-trace-rail li.is-active .stack-trace-node::before {
-  border-color: var(--primary);
-  background: var(--primary);
-  transform: scale(1.25);
-}
-
-.stack-trace-copy { display: grid; gap: 1px; }
-.stack-trace-copy b { font: 600 .6875rem var(--mono); letter-spacing: .04em; }
-.stack-trace-copy small { font-size: .6875rem; line-height: 1.15; opacity: 0; transform: translateX(-4px); transition: opacity .18s ease, transform .18s ease; }
-.stack-trace-rail li:hover .stack-trace-copy small,
-.stack-trace-rail li.is-active .stack-trace-copy small { opacity: 1; transform: none; }
-.stack-trace-rail li.is-active a { color: var(--foreground); }
-.stack-trace-rail li.is-active .stack-trace-copy b { color: var(--primary); }
-.stack-trace-rail a:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
-
 /* The lab acts like a live notebook page embedded in the portfolio. */
 .lab-section {
   padding-top: 108px;
@@ -1095,11 +1000,6 @@ main:focus { outline: none; }
 }
 .lab-afterword a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-/* The rail sits in the page gutter, so it needs about 130px of free space on each side of the content. */
-@media (max-width: 1579px) {
-  .stack-trace-rail { display: none; }
-}
-
 @media (max-width: 900px) {
   .lab-story { grid-template-columns: 44px minmax(0, 1fr); gap: 20px; }
   .lab-story > div:not(.lab-story-mark) + div { grid-column: 2; margin-top: 18px; padding: 18px 0 0; border-top: 1px solid var(--border); border-left: 0; }
@@ -1114,13 +1014,7 @@ main:focus { outline: none; }
   .limiter-demo--compact .limiter-actions button { flex: 1 1 100%; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .stack-trace-node::before,
-  .stack-trace-copy small { transition: none; }
-}
-
 @media print {
-  .stack-trace-rail,
   .lab-section { display: none !important; }
 }
 

@@ -7,7 +7,6 @@ import LabSection from '@/components/home/LabSection'
 import NotesSection from '@/components/home/NotesSection'
 import ProjectsSection from '@/components/home/ProjectsSection'
 import SkillsSection from '@/components/home/SkillsSection'
-import StackTraceRail from '@/components/home/StackTraceRail'
 
 // useLayoutEffect warns during prerendering; the scroll fix only matters in the browser.
 const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -35,7 +34,6 @@ function HomePage() {
 
   return (
     <>
-      <StackTraceRail />
       <Hero />
       <ProjectsSection activeSkill={activeSkill} onClearSkill={() => setActiveSkill(null)} />
       <LabSection />
