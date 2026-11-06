@@ -6,6 +6,7 @@ import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
 import ScreenshotGallery from '@/components/shared/ScreenshotGallery'
 import TerminalBlock from '@/components/shared/TerminalBlock'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { notesForProject } from '../data/notes'
 import { findProject, projects } from '../data/projects'
@@ -16,10 +17,6 @@ const bodyClass =
   'mt-2.5 max-w-[70ch] text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
 const factDt = 'font-mono text-xs text-muted-foreground'
 const factDd = 'mt-[5px] text-sm leading-normal font-semibold'
-const snapshotDt = 'font-mono text-xs tracking-[.045em] text-muted-foreground'
-const snapshotDd = 'mt-[7px] text-sm leading-normal font-semibold'
-const projectLink =
-  'inline-flex min-h-11 items-center gap-2 text-[.9375rem] font-semibold text-primary no-underline underline-offset-4 hover:underline'
 const pagerLink =
   'grid gap-1.5 rounded-xl border bg-card px-5 py-[18px] no-underline hover:border-primary [&:hover_b]:text-primary'
 const pagerLabel = 'flex items-center gap-1.5 text-sm text-muted-foreground'
@@ -33,6 +30,26 @@ function CaseStudyPage() {
   const previous = projects[(index - 1 + projects.length) % projects.length]
   const next = projects[(index + 1) % projects.length]
   const relatedNotes = notesForProject(project.slug)
+  const glance: [string, string][] = [
+    ['MY ROLE', project.role],
+    ['KEY RESULT', project.highlight],
+    ...(project.signal
+      ? ([
+          ['DECISION', project.signal.decision],
+          ['EVIDENCE', project.signal.evidence],
+        ] as [string, string][])
+      : []),
+  ]
+  const sections: [string, string][] = [
+    ['why', 'Why'],
+    ['built', 'What I built'],
+    ...(project.snippet ? ([['code', 'The code']] as [string, string][]) : []),
+    ...(project.terminal ? ([['run', 'See it run']] as [string, string][]) : []),
+    ['outcome', 'Outcome'],
+    ['tradeoff', 'The trade-off'],
+    ['learned', 'What I learned'],
+    ['next', 'Fix next'],
+  ]
 
   return (
     <article
@@ -47,7 +64,7 @@ function CaseStudyPage() {
         current={project.name}
       />
 
-      <header className="mt-[18px] max-w-[900px]">
+      <header className="mt-[18px]">
         <p className="eyebrow">
           {project.category.toUpperCase()} <span className="eyebrow-divider">/</span> {project.date.toUpperCase()}
         </p>
@@ -59,63 +76,84 @@ function CaseStudyPage() {
         </h1>
         <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground">{project.subtitle}</p>
 
-        <dl className="mt-[26px] mb-2 grid grid-cols-[minmax(140px,.65fr)_minmax(0,1.35fr)] gap-x-6 gap-y-3.5 rounded-r-lg border-l-[3px] border-primary bg-background px-[18px] py-4 max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5">
-          <div className="min-w-0">
-            <dt className={factDt}>MY ROLE</dt>
-            <dd className={factDd}>{project.role}</dd>
-          </div>
-          <div className="min-w-0">
-            <dt className={factDt}>KEY RESULT</dt>
-            <dd className={factDd}>{project.highlight}</dd>
-          </div>
-          <div className="col-span-full min-w-0">
-            <dt className={factDt}>TEAM</dt>
-            <dd className="mt-[5px] flex items-baseline gap-2 text-sm leading-normal">
-              <Users className="translate-y-0.5 flex-none text-primary" size={15} aria-hidden="true" /> {project.team}
-            </dd>
-          </div>
+        <p className="mt-3.5 flex max-w-[70ch] items-baseline gap-2 text-sm leading-normal text-muted-foreground">
+          <Users className="translate-y-0.5 flex-none text-primary" size={15} aria-hidden="true" /> {project.team}
+        </p>
+
+        <dl
+          className="mt-[22px] grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-8 gap-y-4 rounded-r-lg border-l-[3px] border-primary bg-card px-5 py-[18px] max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5"
+          aria-label="At a glance"
+        >
+          {glance.map(([label, value]) => (
+            <div key={label} className="min-w-0">
+              <dt className={factDt}>{label}</dt>
+              <dd className={factDd}>{value}</dd>
+            </div>
+          ))}
         </dl>
 
-        {project.signal && (
-          <dl
-            className="mt-[18px] mb-1 grid grid-cols-3 gap-px overflow-hidden rounded-lg bg-border p-px max-[900px]:grid-cols-1 print:bg-transparent"
-            aria-label="Engineering snapshot"
-          >
-            <div className="min-w-0 bg-card px-4 py-[15px]">
-              <dt className={snapshotDt}>OWNERSHIP</dt>
-              <dd className={snapshotDd}>{project.signal.ownership}</dd>
-            </div>
-            <div className="min-w-0 border-t-[3px] border-primary bg-card px-4 py-[15px] max-[900px]:border-t-0 max-[900px]:border-l-[3px]">
-              <dt className={snapshotDt}>DECISION</dt>
-              <dd className={snapshotDd}>{project.signal.decision}</dd>
-            </div>
-            <div className="min-w-0 bg-[color-mix(in_srgb,var(--primary)_14%,var(--card))] px-4 py-[15px]">
-              <dt className={snapshotDt}>EVIDENCE</dt>
-              <dd className={snapshotDd}>{project.signal.evidence}</dd>
-            </div>
-          </dl>
-        )}
-
         {(project.live || project.github || project.teamRepo) && (
-          <div className="mt-[19px] flex flex-wrap gap-x-[22px] gap-y-3">
+          <div className="mt-5 flex flex-wrap items-center gap-3">
             {project.live && (
-              <a className={projectLink} href={project.live} target="_blank" rel="noreferrer">
-                Live project <ArrowUpRight size={17} />
-              </a>
+              <Button asChild size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+                <a href={project.live} target="_blank" rel="noreferrer">
+                  Live project <ArrowUpRight />
+                </a>
+              </Button>
             )}
             {project.github && (
-              <a className={projectLink} href={project.github} target="_blank" rel="noreferrer">
-                {project.teamRepo ? 'My fork' : 'Source code'} <Github size={17} />
-              </a>
+              <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+                <a href={project.github} target="_blank" rel="noreferrer">
+                  {project.teamRepo ? 'My fork' : 'Source code'} <Github />
+                </a>
+              </Button>
             )}
             {project.teamRepo && (
-              <a className={projectLink} href={project.teamRepo} target="_blank" rel="noreferrer">
-                Team repository <Github size={17} />
-              </a>
+              <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+                <a href={project.teamRepo} target="_blank" rel="noreferrer">
+                  Team repository <Github />
+                </a>
+              </Button>
             )}
           </div>
         )}
+
+        <nav className="mt-6 flex flex-wrap gap-x-1 gap-y-1" aria-label="On this page">
+          {sections.map(([id, label]) => (
+            <a
+              key={id}
+              className="inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-xs text-muted-foreground no-underline transition-colors hover:border-primary hover:text-primary max-[620px]:min-h-11"
+              href={`#${id}`}
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
       </header>
+
+      {project.video && (
+        <figure className="mt-8">
+          <video
+            className="block h-auto w-full rounded-xl border bg-[#0f1a30]"
+            controls
+            muted
+            playsInline
+            preload="none"
+            poster={project.video.poster}
+            width={1280}
+            height={800}
+          >
+            <source src={project.video.src} type={project.video.type ?? 'video/mp4'} />
+          </video>
+          <figcaption className="mt-2 text-sm text-muted-foreground">{project.video.caption}</figcaption>
+        </figure>
+      )}
+
+      {project.screenshots && (
+        <section className="mt-8" aria-label={`${project.name} screenshots`}>
+          <ScreenshotGallery shots={project.screenshots} projectName={project.name} layout="strip" />
+        </section>
+      )}
 
       <section className="mt-9 border-t pt-[22px] pb-1.5" aria-labelledby="architecture-title">
         <h2 id="architecture-title" className={h2Class}>
@@ -139,39 +177,16 @@ function CaseStudyPage() {
         </ol>
       </section>
 
-      {project.video && (
-        <figure className="mt-8">
-          <video
-            className="block h-auto w-full rounded-xl border bg-[#0f1a30]"
-            controls
-            muted
-            playsInline
-            preload="none"
-            poster={project.video.poster}
-            width={1280}
-            height={800}
-          >
-            <source src={project.video.src} type={project.video.type ?? 'video/mp4'} />
-          </video>
-          <figcaption className="mt-2 text-sm text-muted-foreground">{project.video.caption}</figcaption>
-        </figure>
-      )}
-
       {project.demo === 'rate-limiter' && <RateLimiterDemo />}
 
-      <div
-        className={cn(
-          'mt-[18px] grid items-start gap-9 max-[620px]:mt-5 max-[620px]:grid-cols-1 max-[620px]:gap-[25px]',
-          project.screenshots ? 'grid-cols-[minmax(0,1fr)_minmax(300px,.62fr)]' : 'grid-cols-[minmax(0,1fr)]',
-        )}
-      >
+      <div className="mt-[18px] grid grid-cols-[minmax(0,1fr)] items-start max-[620px]:mt-5">
         <div className="min-w-0">
           <div className="grid grid-cols-[minmax(0,1fr)] [&>section]:border-b [&>section]:py-[26px]">
-            <section>
+            <section id="why">
               <h2 className={h2Class}>Why</h2>
               <p className={bodyClass}>{project.why}</p>
             </section>
-            <section>
+            <section id="built">
               <h2 className={h2Class}>What I built</h2>
               <ol className="mt-2.5 grid list-none gap-3 p-0">
                 {project.mine.map((step, i) => (
@@ -183,30 +198,33 @@ function CaseStudyPage() {
               </ol>
             </section>
             {project.snippet && (
-              <section>
+              <section id="code">
                 <h2 className={h2Class}>The code</h2>
                 <CodeBlock snippet={project.snippet} />
               </section>
             )}
             {project.terminal && (
-              <section>
+              <section id="run">
                 <h2 className={h2Class}>See it run</h2>
                 <TerminalBlock title={project.terminal.title} transcript={project.terminal.transcript} />
               </section>
             )}
-            <section>
+            <section id="outcome">
               <h2 className={h2Class}>Outcome</h2>
               <p className={bodyClass}>{project.outcome}</p>
             </section>
-            <section className="mt-1 rounded-r-lg !border-b-0 border-l-[3px] border-l-primary bg-card px-5">
+            <section
+              id="tradeoff"
+              className="mt-1 rounded-r-lg !border-b-0 border-l-[3px] border-l-primary bg-card px-5"
+            >
               <h2 className={h2Class}>The trade-off</h2>
               <p className={bodyClass}>{project.tradeoff}</p>
             </section>
-            <section>
+            <section id="learned">
               <h2 className={h2Class}>What I learned</h2>
               <p className={bodyClass}>{project.learned}</p>
             </section>
-            <section>
+            <section id="next">
               <h2 className={h2Class}>What I&apos;d fix next</h2>
               <p className={bodyClass}>{project.next}</p>
             </section>
@@ -239,15 +257,6 @@ function CaseStudyPage() {
             </ul>
           </div>
         </div>
-        {project.screenshots && (
-          <aside
-            className="sticky top-[calc(var(--header-height)+20px)] min-w-0 self-start border-l pl-6 max-[900px]:static max-[620px]:border-t max-[620px]:border-l-0 max-[620px]:pt-[22px] max-[620px]:pl-0"
-            aria-label={`${project.name} screenshots`}
-          >
-            <h2 className={cn(h2Class, 'mb-3.5 max-[620px]:text-lg')}>Screens</h2>
-            <ScreenshotGallery shots={project.screenshots} projectName={project.name} />
-          </aside>
-        )}
       </div>
 
       <nav className="mt-14 grid grid-cols-2 gap-4 max-[620px]:grid-cols-1" aria-label="More case studies">

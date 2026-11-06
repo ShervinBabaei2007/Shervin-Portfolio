@@ -91,6 +91,17 @@ test('the lab is its own page and linked from home', async ({ page }) => {
   await expect(page.locator('.limiter-demo')).toBeVisible()
 })
 
+test('case study opens with actions and jump links to its sections', async ({ page }) => {
+  await page.goto('/work/skillmatch')
+  const live = page.getByRole('link', { name: 'Live project' })
+  await expect(live).toHaveAttribute('href', 'https://skillmatch-web.vercel.app/')
+  await expect(live).toHaveAttribute('data-slot', 'button')
+  await page.waitForLoadState('networkidle')
+  await page.getByRole('navigation', { name: 'On this page' }).getByRole('link', { name: 'The trade-off' }).click()
+  await expect(page).toHaveURL(/#tradeoff$/)
+  await expect(page.locator('#tradeoff')).toBeInViewport()
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('.terminal-block')).toContainText('Victory! Survived 10 rounds.')

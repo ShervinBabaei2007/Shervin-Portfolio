@@ -6,14 +6,14 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import type { Screenshot } from '@/data/projects'
 import { cn } from '@/lib/utils'
 
-type ScreenshotGalleryProps = { shots: Screenshot[]; projectName: string }
+type ScreenshotGalleryProps = { shots: Screenshot[]; projectName: string; layout?: 'stack' | 'strip' }
 
 /**
  * The screenshots as thumbnails; clicking one opens a viewer on this page (nothing navigates away).
  * The viewer shows the picture large with every other screenshot in a side column to click through,
  * and also responds to the arrow keys.
  */
-function ScreenshotGallery({ shots, projectName }: ScreenshotGalleryProps) {
+function ScreenshotGallery({ shots, projectName, layout = 'stack' }: ScreenshotGalleryProps) {
   const [open, setOpen] = useState(false)
   const [index, setIndex] = useState(0)
   const shot = shots[index]
@@ -40,17 +40,26 @@ function ScreenshotGallery({ shots, projectName }: ScreenshotGalleryProps) {
 
   return (
     <>
-      <div className="m-0 grid grid-cols-1 gap-4">
+      <div className={cn('m-0 grid gap-4', layout === 'strip' ? 'grid-cols-3 max-[620px]:gap-2' : 'grid-cols-1')}>
         {shots.map((item, i) => (
           <figure key={item.src} className="m-0 min-w-0 p-0">
             <button
               type="button"
-              className="grid min-h-[180px] w-full cursor-zoom-in place-items-center rounded-lg bg-background transition-shadow hover:ring-2 hover:ring-primary/60 max-[620px]:min-h-[220px] [&_img]:block [&_img]:h-[clamp(190px,27svh,270px)] [&_img]:w-full [&_img]:object-contain max-[620px]:[&_img]:h-[280px]"
+              className={cn(
+                'grid w-full cursor-zoom-in place-items-center rounded-lg bg-background transition-shadow hover:ring-2 hover:ring-primary/60 [&_img]:block [&_img]:w-full [&_img]:object-contain',
+                layout === 'strip'
+                  ? 'min-h-[150px] [&_img]:h-[clamp(190px,30svh,300px)] max-[620px]:min-h-[140px] max-[620px]:[&_img]:h-[170px]'
+                  : 'min-h-[180px] [&_img]:h-[clamp(190px,27svh,270px)] max-[620px]:min-h-[220px] max-[620px]:[&_img]:h-[280px]',
+              )}
               onClick={() => openAt(i)}
               aria-label={`Enlarge screenshot: ${item.caption}`}
               aria-haspopup="dialog"
             >
-              <ResponsiveImage src={item.src} alt={item.alt} sizes="(max-width: 900px) 92vw, 380px" />
+              <ResponsiveImage
+                src={item.src}
+                alt={item.alt}
+                sizes={layout === 'strip' ? '(max-width: 900px) 30vw, 380px' : '(max-width: 900px) 92vw, 380px'}
+              />
             </button>
             <figcaption className="pt-2 text-sm text-muted-foreground">{item.caption}</figcaption>
           </figure>

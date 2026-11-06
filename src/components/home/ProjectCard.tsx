@@ -109,6 +109,13 @@ function ProjectCard({ project }: { project: Project }) {
         className="relative z-[1] flex min-h-[54px] flex-wrap items-center gap-x-5 gap-y-2 border-t px-[22px] py-2.5 max-[620px]:gap-[18px] max-[620px]:px-5 max-[360px]:gap-3.5"
         aria-label={`${project.name} project links`}
       >
+        {project.live && (
+          <Button asChild size="sm" className="max-[620px]:h-11">
+            <a href={project.live} target="_blank" rel="noreferrer">
+              Live project <ArrowUpRight size={15} />
+            </a>
+          </Button>
+        )}
         <Button
           type="button"
           variant="outline"
@@ -125,11 +132,6 @@ function ProjectCard({ project }: { project: Project }) {
           <Suspense fallback={null}>
             <CaseStudySheet project={project} open={sheetOpen} onOpenChange={setSheetOpen} />
           </Suspense>
-        )}
-        {project.live && (
-          <a className={cardLink} href={project.live} target="_blank" rel="noreferrer">
-            Live project <ArrowUpRight size={15} />
-          </a>
         )}
         {project.github && (
           <a className={cardLink} href={project.github} target="_blank" rel="noreferrer">

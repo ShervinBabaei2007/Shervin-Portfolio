@@ -80,7 +80,7 @@ export const projects: Project[] = [
     signal: {
       ownership: 'Attend, review, and host flows across React, Express, JWT, and MongoDB.',
       decision: 'Treat workshop capacity as a server invariant, not just a disabled-button concern.',
-      evidence: `${mergedPrsLine} and ${commitsLine} in the team repo, plus a live app and the exact route source linked below.`,
+      evidence: 'A live app, the team repository history, and the exact route source shown below.',
     },
     why: 'Students wanted a simple way to find focused workshops outside their regular courses, and to run one themselves if they had a skill to share.',
     mine: [
