@@ -372,3 +372,22 @@ test('screenshots are served as AVIF to browsers that support it', async ({ page
   expect(avif.status()).toBe(200)
   expect(avif.headers()['content-type']).toContain('image/avif')
 })
+
+test('printing the resume uses dark text on white, even when the dark theme is on screen', async ({ browser }) => {
+  const context = await browser.newContext()
+  await context.addInitScript(() => localStorage.setItem('color-scheme', 'dark'))
+  const page = await context.newPage()
+  await page.goto('/resume')
+  await page.waitForLoadState('networkidle')
+  await page.emulateMedia({ media: 'print' })
+  // The page fades colours over 250ms when the theme changes, so wait for it to settle.
+  await expect
+    .poll(() =>
+      page.evaluate(() => ({
+        heading: getComputedStyle(document.querySelector('h1')!).color,
+        page: getComputedStyle(document.documentElement).backgroundColor,
+      })),
+    )
+    .toEqual({ heading: 'rgb(0, 0, 0)', page: 'rgb(255, 255, 255)' })
+  await context.close()
+})

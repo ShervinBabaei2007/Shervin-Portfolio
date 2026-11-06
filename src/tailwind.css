@@ -50,6 +50,22 @@
   --ring: #8aa4ff;
 }
 
+/* Print always uses plain dark-on-white colours, whichever theme is on screen. These are unlayered like the
+   tokens above, and later in the file, so they win; the same rules inside the legacy layer would lose. */
+@media print {
+  :root,
+  .dark {
+    --background: #fff;
+    --foreground: #000;
+    --card: #fff;
+    --card-foreground: #000;
+    --muted-foreground: #333;
+    --border: #999;
+    --primary: #1e3a8a;
+    --grid-line: transparent;
+  }
+}
+
 @layer base {
   /* Tailwind v4 defaults borders to currentColor; use the theme border colour like shadcn does. */
   *,

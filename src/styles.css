@@ -563,17 +563,6 @@ a:focus-visible {
 
 /* Print */
 @media print {
-  :root,
-  .dark {
-    --background: #fff;
-    --foreground: #000;
-    --muted-foreground: #333;
-    --border: #999;
-    --card: #fff;
-    --primary: #1e3a8a;
-    --grid-line: transparent;
-  }
-
   .skip-link,
   .hero-layer-panel { display: none; }
 
