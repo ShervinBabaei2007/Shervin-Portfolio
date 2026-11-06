@@ -390,35 +390,6 @@ a:focus-visible {
   line-height: 1.65;
 }
 
-.project-card {
-  position: relative;
-  isolation: isolate;
-  min-width: 0;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--card);
-  animation: card-reveal .38s both;
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-}
-
-.project-card:nth-child(2) { animation-delay: .04s; }
-.project-card:nth-child(3) { animation-delay: .08s; }
-.project-card:nth-child(4) { animation-delay: .12s; }
-
-.project-card::before {
-  content: '';
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(360px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), var(--glow), transparent 68%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s ease;
-}
-
-.project-card:has(:focus-visible) { border-color: var(--primary); }
 
 
 /* ==========================================================================
@@ -434,21 +405,6 @@ a:focus-visible {
   to { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes card-reveal {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-card:hover,
-  .project-card:focus-within {
-    border-color: var(--primary);
-    box-shadow: 0 14px 32px rgba(12, 26, 51, .12);
-    transform: translateY(-4px);
-  }
-
-  .project-card:hover::before { opacity: 1; }
-}
 
 
 /* ==========================================================================
@@ -537,8 +493,6 @@ a:focus-visible {
     border-color: Highlight;
     background: Highlight;
   }
-
-  .project-card::before { display: none; }
 }
 
 /* Reduced motion - single consolidated block.
@@ -555,10 +509,6 @@ a:focus-visible {
     transition-duration: .01ms !important;
   }
 
-  .project-card::before { display: none; }
-
-  .project-card:hover,
-  .project-card:focus-within,
   .art-node:hover,
   .art-node.is-active { transform: none; }
 }
@@ -577,14 +527,6 @@ a:focus-visible {
     min-height: 0;
     padding-block: 1rem;
   }
-
-  .project-card {
-    box-shadow: none;
-    break-inside: avoid;
-    animation: none;
-  }
-
-  .project-card::before { display: none; }
 }
 
 /* ==========================================================================

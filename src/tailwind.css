@@ -103,6 +103,7 @@
 }
 
 @theme inline {
+  --animate-card-reveal: card-reveal 0.38s both;
   --font-sans: var(--font-body);
   --font-mono: var(--mono);
   --radius-sm: calc(var(--radius) - 4px);
@@ -144,4 +145,13 @@
 @page {
   size: letter;
   margin: 0.42in 0.5in;
+}
+
+@keyframes card-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
