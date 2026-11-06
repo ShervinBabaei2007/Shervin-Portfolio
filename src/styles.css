@@ -92,8 +92,8 @@
   --on-ink: #09090b;
   --on-accent: #09090b;
   --grid-line: rgba(255, 255, 255, .03);
-  --ring-2: #3f3f46;            /* ⚠ AUDIT: was bright #cbd1c8 on dark */
-  --ring-3: #27272a;            /* ⚠ AUDIT: was bright #dfe2dd on dark */
+  --ring-2: #3f3f46;
+  --ring-3: #27272a;
   --tag-ink: #d4d4d8;
   --tag-line: var(--line);
   --section-dark: #0c0c0f;
@@ -173,7 +173,7 @@ a:focus-visible {
 
 .skip-link {
   position: fixed;
-  z-index: var(--z-skip);          /* ⚠ AUDIT C1: was 20, tied with header */
+  z-index: var(--z-skip);
   top: 12px;
   left: 12px;
   padding: 10px 14px;
@@ -220,7 +220,7 @@ a:focus-visible {
 }
 
 /* Enlarged hit areas (≥44px) without changing layout.
-   ⚠ AUDIT M11: pseudo-element extends the clickable area only. */
+   The pseudo-element extends the clickable area only. */
 .theme-toggle,
 .skill-chip,
 .hero-layer-projects a,
@@ -257,9 +257,8 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  min-height: var(--header-height);              /* ⚠ AUDIT H6: was height */
+  min-height: var(--header-height);
   margin-inline: auto;
-  /* ⚠ AUDIT M16: aligns with .section-wrap, no 100vw scrollbar error */
   padding-block: 8px;
   padding-inline: max(var(--gutter), calc((100% - var(--content-max)) / 2));
   background: var(--paper);
@@ -302,7 +301,7 @@ a:focus-visible {
   grid-column: 2;
   justify-self: center;
   display: flex;
-  flex-wrap: wrap;                               /* ⚠ AUDIT H6 */
+  flex-wrap: wrap;
   justify-content: center;
   gap: 0 clamp(22px, 2.2vw, 34px);
   margin: 0;
@@ -311,7 +310,7 @@ a:focus-visible {
 .main-nav a {
   display: inline-flex;
   align-items: center;
-  min-height: var(--target);                     /* ⚠ AUDIT M11 */
+  min-height: var(--target);
   color: var(--muted-text);
   font-size: 1rem;
   text-decoration: none;
@@ -383,7 +382,6 @@ a:focus-visible {
   animation: rise-in .7s both;
 }
 
-/* ⚠ AUDIT M15: stepped sizes (36/44/50/55/72/78) replaced with one fluid scale */
 .hero h1 { font-size: clamp(2.75rem, 1.2rem + 4.2vw, 4.875rem); }
 
 .hero h1 span,
@@ -395,7 +393,7 @@ a:focus-visible {
 }
 
 .eyebrow-mark { color: var(--accent-color); }
-.eyebrow-divider { color: var(--muted-text); }     /* ⚠ AUDIT M5: was #a6aaa3 (≈2.2:1) */
+.eyebrow-divider { color: var(--muted-text); }
 
 .hero-role {
   margin: 24px 0 0;
@@ -507,7 +505,7 @@ a:focus-visible {
 }
 
 .art-center span {
-  font: .75rem/1.5 var(--mono);                  /* ⚠ AUDIT H4: 11px → 12px */
+  font: .75rem/1.5 var(--mono);
   text-align: center;
 }
 
@@ -517,7 +515,7 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 100px;                              /* ⚠ AUDIT H6: was fixed width/height */
+  min-width: 100px;
   min-height: 92px;
   padding: 12px;
   color: var(--ink);
@@ -542,7 +540,7 @@ a:focus-visible {
 .art-node small {
   margin-top: 3px;
   color: var(--muted-text);
-  font: .75rem var(--mono);                      /* ⚠ AUDIT H4: 10px → 12px */
+  font: .75rem var(--mono);
 }
 
 .art-node:hover,
@@ -552,7 +550,6 @@ a:focus-visible {
   transform: translateY(-2px);
 }
 
-/* ⚠ AUDIT M9: active state no longer relies on colour alone */
 .art-node.is-active { box-shadow: 0 10px 30px rgba(20, 30, 24, .14), inset 0 -3px 0 var(--accent-color); }
 
 .art-node:focus-visible {
@@ -676,7 +673,6 @@ a:focus-visible {
   gap: 30px;
 }
 
-/* ⚠ AUDIT M15: 35/38/43/47/50 → fluid */
 .section-heading h2 {
   margin-top: 16px;
   font-size: clamp(2.375rem, 1.95rem + 1.2vw, 3.125rem);
@@ -706,7 +702,7 @@ a:focus-visible {
   background: transparent;
   font-size: .9375rem;
   cursor: pointer;
-  transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease; /* ⚠ AUDIT M3: transform restored */
+  transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease;
 }
 
 .filter-button:hover {
@@ -720,7 +716,6 @@ a:focus-visible {
   background: var(--ink);
 }
 
-/* ⚠ AUDIT H2: inset ring so the scroll container cannot clip it */
 .filter-button:focus-visible { outline-offset: -3px; }
 
 .project-count {
@@ -764,7 +759,6 @@ a:focus-visible {
   transition: opacity .2s ease;
 }
 
-/* ⚠ AUDIT H1/12: keyboard focus gets a card-level cue on every device (progressive: needs :has) */
 .project-card:has(:focus-visible) { border-color: var(--accent-color); }
 
 .project-card-trigger {
@@ -779,7 +773,6 @@ a:focus-visible {
   cursor: pointer;
 }
 
-/* ⚠ AUDIT H1: ring was drawn outside an overflow:hidden card and clipped */
 .project-card-trigger:focus-visible { outline-offset: -3px; }
 
 .project-visual,
@@ -854,7 +847,7 @@ a:focus-visible {
   color: var(--muted-text);
   border: 1px solid var(--line);
   background: var(--surface);
-  font: .75rem var(--mono);                      /* ⚠ AUDIT H4: 11px → 12px */
+  font: .75rem var(--mono);
 }
 
 .project-copy { padding: 20px 22px 22px; }
@@ -896,7 +889,7 @@ a:focus-visible {
 
 .project-details > div > span {
   color: var(--muted-text);
-  font-size: .75rem;                             /* ⚠ AUDIT H4: 11px → 12px */
+  font-size: .75rem;
 }
 
 .project-details p {
@@ -973,7 +966,7 @@ a:focus-visible {
    7. ABOUT
    ========================================================================== */
 .about-section {
-  /* ⚠ AUDIT C2: this section is dark in BOTH themes, so it always uses the
+  /* This section is dark in BOTH themes, so it always uses the
      dark-theme accent/focus (light-theme --accent-color was ≈2.2:1 here). */
   --accent-color: #34d399;
   --focus: #34d399;
@@ -1001,7 +994,6 @@ a:focus-visible {
 
 .about-heading .eyebrow { color: #bac3b8; }
 
-/* ⚠ AUDIT M15 */
 .about-heading h2 {
   margin-top: 27px;
   font-size: clamp(3.0625rem, 2.4rem + 1.6vw, 4rem);
@@ -1072,7 +1064,7 @@ a:focus-visible {
 
 .skills-heading { margin-bottom: 40px; }
 
-/* Legacy 3-column grid — ⚠ AUDIT M14: now scoped so it cannot leak into
+/* Legacy 3-column grid, scoped so it cannot leak into
    .skills-evidence (removes the :nth-child(n) specificity hack). */
 .skills-grid {
   display: grid;
@@ -1139,7 +1131,7 @@ a:focus-visible {
 
 .learning-tag {
   color: var(--accent-color);
-  font: .75rem var(--mono);                      /* ⚠ AUDIT H4: was 7px */
+  font: .75rem var(--mono);
 }
 
 .skills-note {
@@ -1221,7 +1213,7 @@ a:focus-visible {
   color: var(--muted-text);
   border-radius: 50%;
   background: var(--paper);
-  font: .75rem var(--mono);                      /* ⚠ AUDIT H4: 10px → 12px */
+  font: .75rem var(--mono);
 }
 
 .skill-chip:hover,
@@ -1230,7 +1222,6 @@ a:focus-visible {
   border-color: var(--accent-color);
 }
 
-/* ⚠ AUDIT M9: pressed = thicker border as well as colour */
 .skill-chip[aria-pressed='true'] { box-shadow: inset 0 0 0 1px currentColor; }
 
 .skill-chip[aria-pressed='true'] span {
@@ -1253,7 +1244,6 @@ a:focus-visible {
   font-size: .875rem;
 }
 
-/* ⚠ AUDIT M9: link inside running text is now underlined, not colour-only */
 .skills-evidence-status a {
   display: inline-flex;
   align-items: center;
@@ -1315,13 +1305,12 @@ a:focus-visible {
 .contact-copy .eyebrow { color: #fffefa; }
 .contact-copy .eyebrow-mark { color: #fff; }
 
-/* ⚠ AUDIT M15 */
 .contact-copy h2 {
   margin-top: 23px;
   font-size: clamp(3rem, 2.3rem + 1.6vw, 4rem);
 }
 
-.contact-copy h2 span { color: var(--mint); }   /* ⚠ AUDIT M4: #d6edb0 → #d8efb2 */
+.contact-copy h2 span { color: var(--mint); }
 
 .contact-copy > p:not(.eyebrow) {
   max-width: 370px;
@@ -1342,7 +1331,7 @@ a:focus-visible {
   min-height: 82px;
   border-bottom: 1px solid rgba(255, 255, 255, .4);
   text-decoration: none;
-  transition: background .18s ease, transform .18s ease;   /* ⚠ AUDIT M13: padding no longer animated */
+  transition: background .18s ease, transform .18s ease;
 }
 
 .resume-row { grid-template-columns: 1fr 1.35fr; }
@@ -1469,7 +1458,7 @@ a:focus-visible {
 
 .case-study-at-a-glance dt {
   color: var(--muted-text);
-  font: .75rem var(--mono);                      /* ⚠ AUDIT H4: 11px → 12px */
+  font: .75rem var(--mono);
 }
 
 .case-study-at-a-glance dd {
@@ -1510,7 +1499,7 @@ a:focus-visible {
 }
 
 .case-study-sections p {
-  max-inline-size: 70ch;                         /* ⚠ AUDIT M10: measure */
+  max-inline-size: 70ch;
   margin: 10px 0 0;
   color: var(--muted-text);
   font-size: 1.125rem;
@@ -1664,7 +1653,6 @@ a:focus-visible {
 
   .main-nav { column-gap: 17px; }
 
-  /* ⚠ AUDIT M12: single-column hero from 900px down (was 2 cramped columns 621–900) */
   .hero {
     display: flex;
     flex-direction: column;
@@ -1789,7 +1777,6 @@ a:focus-visible {
     font-size: .875rem;
   }
 
-  /* ⚠ AUDIT H5: was display:none (removed result count for screen readers) */
   .project-count {
     position: absolute;
     width: 1px;
@@ -1910,7 +1897,7 @@ a:focus-visible {
   .contact-links a > span,
   .resume-row > span:first-child {
     gap: 5px;
-    font-size: .75rem;                           /* ⚠ AUDIT H4: 11px → 12px */
+    font-size: .75rem;
   }
 
   .contact-links a > span svg,
