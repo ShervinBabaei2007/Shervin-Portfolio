@@ -1,7 +1,9 @@
 import { lazy, Suspense, useState } from 'react'
 import { ArrowUpRight, Github } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import PendingFlag from '@/components/shared/PendingFlag'
 import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { Link } from 'react-router-dom'
 import type { Project } from '@/data/projects'
 import CodeBlock from '@/components/shared/CodeBlock'
@@ -54,7 +56,9 @@ function CardMedia({ project }: { project: Project }) {
   return null
 }
 
-const CaseStudySheet = lazy(() => import('./CaseStudySheet'))
+// Started early (hover, focus, touch) so the panel is usually ready by the time it is opened.
+const loadSheet = () => import('./CaseStudySheet')
+const CaseStudySheet = lazy(loadSheet)
 
 const cardLink =
   'hit-area inline-flex items-center gap-[7px] text-sm font-semibold whitespace-nowrap no-underline hover:text-primary max-[360px]:text-xs'
@@ -65,6 +69,7 @@ const card =
 function ProjectCard({ project }: { project: Project }) {
   const [sheetOpen, setSheetOpen] = useState(false)
   const [sheetRequested, setSheetRequested] = useState(false)
+  const [sheetLoading, setSheetLoading] = useState(false)
 
   return (
     <article
@@ -126,15 +131,20 @@ function ProjectCard({ project }: { project: Project }) {
           variant="outline"
           size="sm"
           className="max-[620px]:h-11"
+          aria-busy={sheetLoading}
+          onPointerEnter={() => void loadSheet()}
+          onFocus={() => void loadSheet()}
+          onTouchStart={() => void loadSheet()}
           onClick={() => {
             setSheetRequested(true)
             setSheetOpen(true)
           }}
         >
+          {sheetLoading && <Spinner aria-hidden="true" role="presentation" />}
           Quick look
         </Button>
         {sheetRequested && (
-          <Suspense fallback={null}>
+          <Suspense fallback={<PendingFlag onChange={setSheetLoading} />}>
             <CaseStudySheet project={project} open={sheetOpen} onOpenChange={setSheetOpen} />
           </Suspense>
         )}

@@ -247,6 +247,36 @@ test('the search palette explains an empty result', async ({ page }) => {
   await expect(page.getByText(/Try a project name/)).toBeVisible()
 })
 
+test('the phone menu button shows it is busy while the menu code is still loading', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.route(/\/assets\/MobileNavSheet-[\w-]+\.js$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await route.continue()
+  })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  // Located without a role: once the menu is open it is modal, which hides the button from the accessibility tree.
+  const button = page.locator('button[aria-label="Open menu"]')
+  await button.click()
+  await expect(button).toHaveAttribute('aria-busy', 'true')
+  await expect(page.getByRole('navigation', { name: 'Mobile navigation' })).toBeVisible({ timeout: 5000 })
+  await expect(button).toHaveAttribute('aria-busy', 'false')
+})
+
+test('Quick look shows it is busy while its panel is still loading', async ({ page }) => {
+  await page.route(/\/assets\/CaseStudySheet-[\w-]+\.js$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await route.continue()
+  })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const button = page.locator('button', { hasText: 'Quick look' }).first()
+  await button.click()
+  await expect(button).toHaveAttribute('aria-busy', 'true')
+  await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5000 })
+  await expect(button).toHaveAttribute('aria-busy', 'false')
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')

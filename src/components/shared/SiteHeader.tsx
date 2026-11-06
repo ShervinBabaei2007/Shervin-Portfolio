@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import CommandPalette from '@/components/shared/CommandPalette'
+import PendingFlag from '@/components/shared/PendingFlag'
+import { Spinner } from '@/components/ui/spinner'
 import ScrollProgress from '@/components/shared/ScrollProgress'
 import { useActiveSection } from '@/hooks/useActiveSection'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -22,7 +24,9 @@ type SiteHeaderProps = {
   onPreferenceChange: (preference: Preference) => void
 }
 
-const MobileNavSheet = lazy(() => import('./MobileNavSheet'))
+// Started early (focus, touch) so the menu is usually ready by the time it is opened.
+const loadMobileNav = () => import('./MobileNavSheet')
+const MobileNavSheet = lazy(loadMobileNav)
 
 const navLinks = [
   { to: '/#work', label: 'Work', section: 'work' },
@@ -50,6 +54,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuEverOpened, setMenuEverOpened] = useState(false)
+  const [menuLoading, setMenuLoading] = useState(false)
   const menuButton = useRef<HTMLButtonElement>(null)
   const activeSection = useActiveSection(Object.keys(sectionOwner), pathname === '/')
   const activeOwner = activeSection ? sectionOwner[activeSection] : null
@@ -137,15 +142,18 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
           className="max-[620px]:size-11 min-[621px]:hidden"
           aria-label="Open menu"
           aria-haspopup="dialog"
+          aria-busy={menuLoading}
+          onFocus={() => void loadMobileNav()}
+          onTouchStart={() => void loadMobileNav()}
           onClick={() => {
             setMenuEverOpened(true)
             setMenuOpen(true)
           }}
         >
-          <Menu />
+          {menuLoading ? <Spinner aria-hidden="true" role="presentation" /> : <Menu />}
         </Button>
         {menuEverOpened && (
-          <Suspense fallback={null}>
+          <Suspense fallback={<PendingFlag onChange={setMenuLoading} />}>
             <MobileNavSheet
               open={menuOpen}
               onOpenChange={setMenuOpen}
