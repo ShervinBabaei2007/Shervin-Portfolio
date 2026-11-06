@@ -344,6 +344,45 @@ test('a slow page change shows a progress bar, and a fast one does not', async (
   await expect(bar).toHaveCount(0)
 })
 
+test.describe('typography', () => {
+  // Phones get a floor one pixel higher than desktop, because small text is hardest to read there.
+  for (const [name, width, minimum] of [
+    ['a phone', 390, 13],
+    ['desktop', 1440, 12],
+  ] as const) {
+    test(`no visible text is under ${minimum}px on ${name}, and only the site fonts are used`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 })
+      for (const path of ['/', '/work/skillmatch', '/work/mini-rpg-battle', '/resume', '/notes', '/lab']) {
+        await page.goto(path)
+        await page.waitForLoadState('networkidle')
+        await page.evaluate(() => document.fonts.ready)
+        const found = await page.evaluate((min) => {
+          const problems: string[] = []
+          const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+          for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            const text = node.textContent?.trim()
+            const element = node.parentElement
+            // Skip empty text, hidden elements, and decorative previews (aria-hidden) and screen-reader-only text.
+            if (!text || !element || element.closest('[aria-hidden="true"], .sr-only')) continue
+            const style = getComputedStyle(element)
+            const box = element.getBoundingClientRect()
+            if (style.display === 'none' || style.visibility === 'hidden' || box.width === 0 || box.height === 0)
+              continue
+            const size = parseFloat(style.fontSize)
+            const family = style.fontFamily.split(',')[0].replace(/["']/g, '')
+            if (size < min) problems.push(`${size}px "${text.slice(0, 30)}"`)
+            if (!['DM Sans Variable', 'DM Mono'].includes(family))
+              problems.push(`font ${family} "${text.slice(0, 30)}"`)
+          }
+          const loaded = document.fonts.check('16px "DM Sans Variable"') && document.fonts.check('16px "DM Mono"')
+          return loaded ? problems : [...problems, 'site fonts not loaded']
+        }, minimum)
+        expect(found, `${path} on ${name}`).toEqual([])
+      }
+    })
+  }
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')
