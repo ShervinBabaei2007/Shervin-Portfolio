@@ -5,14 +5,15 @@ function SiteFooter() {
   return (
     <footer className="section-wrap flex min-h-[72px] items-center justify-between font-mono text-xs max-[620px]:min-h-[63px] print:hidden">
       <Link
-        className="hit-area inline-flex items-center text-xl leading-none font-bold no-underline"
+        className="hit-area inline-flex items-center gap-2.5 no-underline"
         to="/"
         aria-label="Shervin Babaei, home"
       >
-        <span className="grid size-[29px] place-items-center border border-foreground text-base dark:border-border">
-          SB
+        <img className="size-[29px] rounded-[7px]" src="/logo.svg" width={29} height={29} alt="" />
+        <span className="flex flex-col font-sans leading-tight">
+          <b className="text-[.8125rem] font-semibold">Shervin Babaei</b>
+          <span className="text-[.6875rem] text-muted-foreground">Portfolio</span>
         </span>
-        <i className="ml-[3px] size-1.5 bg-primary" />
       </Link>
       <span className="hidden items-center gap-2 text-muted-foreground min-[621px]:flex">
         MADE IN VANCOUVER <span className="text-primary">/</span> 2026

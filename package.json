@@ -10,6 +10,7 @@
     "test:e2e": "playwright test",
     "og:images": "node scripts/og-images.mjs",
     "resume:pdf": "node scripts/resume-pdf.mjs",
+    "favicons": "node scripts/favicons.mjs",
     "screenshots": "node scripts/capture-screenshots.mjs && node scripts/image-variants.mjs",
     "images": "node scripts/image-variants.mjs",
     "record": "node scripts/record-demo.mjs",

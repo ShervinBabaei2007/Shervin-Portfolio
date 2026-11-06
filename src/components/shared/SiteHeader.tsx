@@ -1,6 +1,5 @@
 import { Github, Linkedin, Mail, Menu, Monitor, Moon, Sun } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -75,9 +74,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
         to="/"
         aria-label="Shervin Babaei, home"
       >
-        <Avatar className="size-[35px]">
-          <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">SB</AvatarFallback>
-        </Avatar>
+        <img className="size-[35px] rounded-[8px]" src="/logo.svg" width={35} height={35} alt="" />
       </Link>
       <nav
         className="col-start-2 flex flex-wrap justify-center justify-self-center gap-x-[clamp(22px,2.2vw,34px)] max-[620px]:hidden"

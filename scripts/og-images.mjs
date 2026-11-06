@@ -1,7 +1,7 @@
 // Generates 1200×630 PNG share images into public/og/.
 // LinkedIn, Slack, X and iMessage ignore SVG previews, so these must be PNG.
 // Usage: npm run og:images   (re-run after changing project names or highlights)
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fontUrl, importTs, launchBrowser, root } from './lib.mjs'
 
@@ -11,6 +11,7 @@ const { notes } = await importTs('src/data/notes.ts')
 const outDir = resolve(root, 'public/og')
 mkdirSync(outDir, { recursive: true })
 
+const logoUrl = `data:image/svg+xml;base64,${readFileSync(resolve(root, 'public/logo.svg')).toString('base64')}`
 const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;')
 
 const card = ({ kicker, title, subtitle, result }) => `<!doctype html><html><head><style>
@@ -25,15 +26,14 @@ body { width: 1200px; height: 630px; padding: 72px 84px; display: flex; flex-dir
   background-size: 38px 38px; }
 .top { display: flex; align-items: center; justify-content: space-between; }
 .mark { display: flex; align-items: center; gap: 10px; }
-.mark b { display: grid; place-items: center; width: 52px; height: 52px; color: #0a1122; background: #8aa4ff; font: 700 24px Display; border-radius: 12px; }
-.mark i { width: 10px; height: 10px; border-radius: 50%; background: #8aa4ff; }
+.mark img { width: 56px; height: 56px; border-radius: 13px; }
 .kicker { color: #94a3c0; font: 22px Mono; }
 h1 { margin-top: auto; max-width: 960px; font: 600 ${title.length > 40 ? 60 : title.length > 18 ? 84 : 104}px/1.04 Display; letter-spacing: -.02em; }
 p { margin-top: 22px; max-width: 960px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #94a3c0; font-size: 30px; line-height: 1.35; }
 .result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #8aa4ff; background: #111a30; font: 600 26px Body; }
 .foot { display: flex; justify-content: space-between; margin-top: 40px; color: #94a3c0; font: 20px Mono; }
 </style></head><body>
-<div class="top"><div class="mark"><b>SB</b><i></i></div><span class="kicker">${escape(kicker)}</span></div>
+<div class="top"><div class="mark"><img src="${logoUrl}" alt="" /></div><span class="kicker">${escape(kicker)}</span></div>
 <h1>${escape(title)}</h1>
 <p>${escape(subtitle)}</p>
 ${result ? `<div><span class="result">${escape(result)}</span></div>` : ''}
