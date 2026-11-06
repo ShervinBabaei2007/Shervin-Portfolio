@@ -138,6 +138,115 @@ test('toasts still appear even though the toast container loads after idle', asy
   await expect(page.getByText('Email copied')).toBeVisible()
 })
 
+// The header also has an "Email" link, so look inside the form.
+const contactForm = (page: Page) => page.locator('#contact form')
+
+const fillContact = async (page: Page, skip?: 'topic') => {
+  await contactForm(page).getByLabel('Name', { exact: true }).fill('Ada Lovelace')
+  await contactForm(page).getByLabel('Email', { exact: true }).fill('ada@example.com')
+  if (skip !== 'topic') await page.getByRole('radio', { name: 'Job Opportunity' }).click()
+  await contactForm(page).getByLabel('Message', { exact: true }).fill('Hello, I would like to talk about a co-op.')
+}
+
+test.describe('contact form', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+  })
+
+  test('shows an inline error for every empty field, focuses the first, and sends nothing', async ({ page }) => {
+    const requests: string[] = []
+    await page.route('**/api/contact', (route) => {
+      requests.push(route.request().url())
+      return route.fulfill({ json: { ok: true } })
+    })
+    await page.getByRole('button', { name: 'Send message' }).click()
+    await expect(page.getByText('Enter your name.')).toBeVisible()
+    await expect(page.getByText('Enter an email address I can reply to.')).toBeVisible()
+    await expect(page.getByText('Choose what this is about.')).toBeVisible()
+    await expect(page.getByText('Write a short message so I know how to help.')).toBeVisible()
+    await expect(contactForm(page).getByLabel('Name', { exact: true })).toBeFocused()
+    await expect(contactForm(page).getByLabel('Name', { exact: true })).toHaveAttribute('aria-invalid', 'true')
+    expect(requests).toEqual([])
+
+    // An error goes away as soon as its field is fixed.
+    await contactForm(page).getByLabel('Name', { exact: true }).fill('Ada')
+    await expect(page.getByText('Enter your name.')).toBeHidden()
+  })
+
+  test('asks for a topic next to the topic field, not in a toast', async ({ page }) => {
+    await fillContact(page, 'topic')
+    await page.getByRole('button', { name: 'Send message' }).click()
+    await expect(page.getByText('Choose what this is about.')).toBeVisible()
+    await expect(page.getByText('Pick a topic first')).toHaveCount(0)
+    await expect(page.getByRole('radio', { name: 'Job Opportunity' })).toBeFocused()
+  })
+
+  test('rejects an email that is not an email address', async ({ page }) => {
+    await fillContact(page)
+    await contactForm(page).getByLabel('Email', { exact: true }).fill('not-an-email')
+    await page.getByRole('button', { name: 'Send message' }).click()
+    await expect(page.getByText("That email address doesn't look right.")).toBeVisible()
+  })
+
+  test('sends the fields, then shows a confirmation with a way to send another', async ({ page }) => {
+    let body: Record<string, unknown> = {}
+    await page.route('**/api/contact', (route) => {
+      body = route.request().postDataJSON()
+      return route.fulfill({ json: { ok: true } })
+    })
+    await fillContact(page)
+    await page.getByRole('button', { name: 'Send message' }).click()
+    const confirmation = page.getByRole('status').filter({ hasText: 'Message sent' })
+    await expect(confirmation).toBeVisible()
+    await expect(confirmation).toBeFocused()
+    expect(body).toMatchObject({
+      name: 'Ada Lovelace',
+      email: 'ada@example.com',
+      topic: 'Job Opportunity',
+      message: 'Hello, I would like to talk about a co-op.',
+    })
+    await page.getByRole('button', { name: 'Send another message' }).click()
+    await expect(contactForm(page).getByLabel('Name', { exact: true })).toBeFocused()
+    await expect(contactForm(page).getByLabel('Name', { exact: true })).toHaveValue('')
+  })
+
+  test('keeps what was typed and offers the email address when sending fails', async ({ page }) => {
+    await page.route('**/api/contact', (route) =>
+      route.fulfill({ status: 502, json: { error: 'Could not send the message.' } }),
+    )
+    await fillContact(page)
+    await page.getByRole('button', { name: 'Send message' }).click()
+    const alert = page.getByRole('alert').filter({ hasText: 'Message not sent' })
+    await expect(alert).toContainText('Could not send the message.')
+    await expect(alert.getByRole('link', { name: 'shervinb22@gmail.com' })).toBeVisible()
+    await expect(contactForm(page).getByLabel('Name', { exact: true })).toHaveValue('Ada Lovelace')
+  })
+
+  test('counts message characters and passes axe with errors showing', async ({ page }) => {
+    await contactForm(page).getByLabel('Message', { exact: true }).fill('hello')
+    await expect(page.getByText('5 / 5000')).toBeVisible()
+    await contactForm(page).getByLabel('Message', { exact: true }).fill('')
+    await page.getByRole('button', { name: 'Send message' }).click()
+    await expect(page.getByText('Enter your name.')).toBeVisible()
+    const results = await new AxeBuilder({ page })
+      .include('#contact')
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+      .analyze()
+    expect(results.violations.map((violation) => `${violation.id} (${violation.nodes.length})`)).toEqual([])
+  })
+})
+
+test('the search palette explains an empty result', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  await page.keyboard.press('Control+k')
+  await expect(page.getByRole('dialog', { name: 'Search portfolio' })).toBeVisible()
+  await page.keyboard.type('zzzzzz')
+  await expect(page.getByText('Nothing matches that.')).toBeVisible()
+  await expect(page.getByText(/Try a project name/)).toBeVisible()
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')
