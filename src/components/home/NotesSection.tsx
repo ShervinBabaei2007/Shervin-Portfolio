@@ -9,7 +9,7 @@ function NotesSection() {
     <section className="notes-section section-wrap" id="notes" aria-labelledby="notes-title">
       <SectionHeading
         id="notes-title"
-        number="06"
+        number="08"
         eyebrow="ENGINEERING NOTES"
         title="What the bugs taught me"
         aside={

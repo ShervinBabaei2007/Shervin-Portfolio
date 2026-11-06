@@ -8,7 +8,7 @@ import SectionHeading from '@/components/shared/SectionHeading'
 function JourneySection() {
   return (
     <section className="section-wrap" id="journey" aria-labelledby="journey-title">
-      <SectionHeading id="journey-title" number="04" eyebrow="JOURNEY" title="How I got here" />
+      <SectionHeading className="mb-10" id="journey-title" number="06" eyebrow="JOURNEY" title="How I got here" />
       <Accordion type="single" collapsible defaultValue="bcit">
         {journey.map((item) => (
           <AccordionItem key={item.id} value={item.id}>

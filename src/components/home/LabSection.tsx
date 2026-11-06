@@ -8,7 +8,7 @@ function LabSection() {
     <section className="lab-section section-wrap" id="lab" aria-labelledby="lab-title">
       <SectionHeading
         id="lab-title"
-        number="03"
+        number="04"
         eyebrow="THE LAB"
         title="Break the assumption"
         className="lab-heading"
@@ -44,9 +44,8 @@ function LabSection() {
 
       <p className="lab-afterword">
         The interesting part isn&apos;t the mistake. It&apos;s being able to reproduce it, explain the system behind it,
-        and name the better design.
+        and name the better design.{' '}
         <Link to="/work/thinkboard">
-          {' '}
           Read the ThinkBoard case study <ArrowUpRight size={15} />
         </Link>
       </p>

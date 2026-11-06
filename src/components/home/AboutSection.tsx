@@ -8,7 +8,7 @@ function AboutSection() {
       <div className="section-wrap about-grid">
         <div className="about-heading">
           <p className="eyebrow">
-            <span className="eyebrow-mark">04</span> A LITTLE ABOUT ME
+            <span className="eyebrow-mark">05</span> A LITTLE ABOUT ME
           </p>
           <h2 id="about-title">
             Why I keep

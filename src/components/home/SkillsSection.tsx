@@ -18,7 +18,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
     <section className="skills-section section-wrap" id="skills" aria-labelledby="skills-title">
       <SectionHeading
         id="skills-title"
-        number="05"
+        number="07"
         eyebrow="TOOLS & CURIOSITIES"
         title="What I work with"
         className="skills-heading"

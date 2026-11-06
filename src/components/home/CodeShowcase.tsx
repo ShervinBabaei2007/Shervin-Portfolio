@@ -39,6 +39,7 @@ function CodeShowcase() {
   return (
     <section className="section-wrap" id="code" aria-labelledby="code-title">
       <SectionHeading
+        className="mb-10"
         id="code-title"
         number="03"
         eyebrow="CODE"

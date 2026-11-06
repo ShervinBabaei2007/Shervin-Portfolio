@@ -1,7 +1,6 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import AboutSection from '@/components/home/AboutSection'
-import CapabilitiesTable from '@/components/home/CapabilitiesTable'
 import ContactSection from '@/components/home/ContactSection'
 import Hero from '@/components/home/Hero'
 import JourneySection from '@/components/home/JourneySection'
@@ -64,7 +63,6 @@ function HomePage() {
       <AboutSection />
       <JourneySection />
       <SkillsSection activeSkill={activeSkill} onSkillSelect={selectSkill} />
-      <CapabilitiesTable />
       <NotesSection />
       <ContactSection />
     </>
