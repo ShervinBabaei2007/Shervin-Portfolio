@@ -4,11 +4,7 @@ import { Link } from 'react-router-dom'
 function SiteFooter() {
   return (
     <footer className="section-wrap flex min-h-[72px] items-center justify-between font-mono text-xs max-[620px]:min-h-[63px] print:hidden">
-      <Link
-        className="hit-area inline-flex items-center gap-2.5 no-underline"
-        to="/"
-        aria-label="Shervin Babaei, home"
-      >
+      <Link className="hit-area inline-flex items-center gap-2.5 no-underline" to="/" aria-label="Shervin Babaei, home">
         <img className="size-[29px] rounded-[7px]" src="/logo.svg" width={29} height={29} alt="" />
         <span className="flex flex-col font-sans leading-tight">
           <b className="text-[.8125rem] font-semibold">Shervin Babaei</b>

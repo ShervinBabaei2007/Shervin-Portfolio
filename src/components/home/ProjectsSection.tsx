@@ -58,7 +58,10 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         >
           <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:gap-6">
             {flagships.map((project) => (
-              <CarouselItem key={project.slug} className="basis-[88%] sm:basis-[70%] md:basis-auto md:pl-0 [&>*]:h-full">
+              <CarouselItem
+                key={project.slug}
+                className="basis-[88%] sm:basis-[70%] md:basis-auto md:pl-0 [&>*]:h-full"
+              >
                 <ProjectCard project={project} />
               </CarouselItem>
             ))}
