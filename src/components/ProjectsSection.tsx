@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { flagshipProjects, moreProjects } from '../data/projects'
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import ProjectCard from './ProjectCard'
 
 type ProjectsSectionProps = {
@@ -26,9 +27,17 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </p>
       )}
       {flagships.length > 0 && (
-        <div className="project-grid">
-          {flagships.map((project) => <ProjectCard key={project.slug} project={project} />)}
-        </div>
+        <Carousel opts={{ align: 'start' }} aria-label="Featured projects" className="mx-auto w-full px-0 sm:px-12">
+          <CarouselContent>
+            {flagships.map((project) => (
+              <CarouselItem key={project.slug} className="lg:basis-1/2">
+                <ProjectCard project={project} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="hidden sm:inline-flex" />
+          <CarouselNext className="hidden sm:inline-flex" />
+        </Carousel>
       )}
       {others.length > 0 && (
         <div className="more-projects">

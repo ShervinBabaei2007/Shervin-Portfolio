@@ -1,6 +1,7 @@
 import { ArrowUpRight, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { Project } from '../data/projects'
+import CaseStudySheet from './CaseStudySheet'
 import CodeBlock from './CodeBlock'
 import ResponsiveImage from './ResponsiveImage'
 import TerminalBlock from './TerminalBlock'
@@ -68,8 +69,9 @@ function ProjectCard({ project }: { project: Project }) {
           <div className="project-card-footer"><span>{project.role}</span><span>Read case study <ArrowUpRight size={15} /></span></div>
         </div>
       </Link>
-      {(project.live || project.github) && (
+      {(
         <div className="project-links" aria-label={`${project.name} project links`}>
+          <CaseStudySheet project={project} />
           {project.live && <a href={project.live} target="_blank" rel="noreferrer">Live project <ArrowUpRight size={15} /></a>}
           {project.github && <a href={project.github} target="_blank" rel="noreferrer">Source code <Github size={15} /></a>}
         </div>
