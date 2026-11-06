@@ -1,20 +1,16 @@
-import { ArrowUpRight, Cpu, Layers, Wrench, type LucideIcon } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import SectionHeading from '@/components/shared/SectionHeading'
-import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { projects } from '@/data/projects'
-import { projectsUsing, siteStack, skillTabs, usageLevel } from '@/data/skills'
+import { projectsUsing, skillTabs, usageLevel } from '@/data/skills'
 import { cn, textLinkClass } from '@/lib/utils'
 
 type SkillsSectionProps = {
   activeSkill: string | null
   onSkillSelect: (skill: string, trigger: HTMLElement) => void
 }
-
-const icons: Record<(typeof skillTabs)[number]['id'], LucideIcon> = { web: Layers, systems: Cpu, tools: Wrench }
 
 function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
   const matches = activeSkill ? projectsUsing(activeSkill).length : 0
@@ -23,29 +19,28 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
     <section className="section-wrap py-20 max-[620px]:py-12" id="skills" aria-labelledby="skills-title">
       <SectionHeading
         id="skills-title"
-        number="06"
+        number="04"
         eyebrow="TOOLS"
         title="What I work with"
-        className="mb-8"
+        className="mb-6"
         aside={
           <>
             Highlighted skills are used in three or more projects. <br />
-            Click any skill to filter the work above.
+            Click a skill to filter the work above.
           </>
         }
       />
       <TooltipProvider delayDuration={120} skipDelayDuration={400} disableHoverableContent>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="border-t">
           {skillTabs.map((group) => {
-            const Icon = icons[group.id]
             return (
-              <Card key={group.id}>
-                <CardHeader>
-                  <Icon className="mb-2 size-5 text-primary" aria-hidden="true" />
-                  <CardTitle className="text-lg">{group.label}</CardTitle>
-                  <CardDescription>{group.summary}</CardDescription>
-                </CardHeader>
-                <CardContent>
+              <div
+                key={group.id}
+                data-skill-group
+                className="grid items-start gap-x-8 gap-y-3 border-b py-5 md:grid-cols-[13rem_minmax(0,1fr)]"
+              >
+                <h3 className="text-base font-semibold">{group.label}</h3>
+                <div>
                   <ul className="flex flex-wrap gap-2">
                     {group.skills.map(({ name, note }) => {
                       const used = projectsUsing(name)
@@ -69,28 +64,34 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                               </button>
                             </TooltipTrigger>
                             <TooltipContent
-                              className="max-w-72 px-3.5 py-3 text-left text-sm"
+                              className="w-64 max-w-[calc(100vw-2rem)] px-4 py-3.5 text-left text-sm"
                               side="bottom"
                               sideOffset={8}
                             >
-                              <p className="font-semibold">
-                                {name} <Badge variant="outline">{usageLevel(name)}</Badge>
-                              </p>
-                              <p className="mt-1 text-background/75">{note}</p>
+                              <div className="flex items-center justify-between gap-4">
+                                <p className="text-[.9375rem] font-semibold">{name}</p>
+                                <span className="rounded-full border border-background/40 px-2 py-0.5 text-[.6875rem] font-medium tracking-wide text-background uppercase">
+                                  {usageLevel(name)}
+                                </span>
+                              </div>
+                              <p className="mt-1.5 leading-snug text-background/80">{note}</p>
                               {used.length > 0 && (
-                                <>
-                                  <p className="mt-3 text-xs font-medium">
-                                    Used in {used.length} of {projects.length} projects
+                                <div className="mt-3 border-t border-background/20 pt-3">
+                                  <p className="flex justify-between text-xs font-medium">
+                                    <span>Used in</span>
+                                    <span>
+                                      {used.length} of {projects.length} projects
+                                    </span>
                                   </p>
                                   <Progress
-                                    className="mt-1.5 h-1.5 bg-background/25 [&_[data-slot=progress-indicator]]:bg-background"
+                                    className="mt-2 h-1.5 bg-background/25 [&_[data-slot=progress-indicator]]:bg-background"
                                     value={(used.length / projects.length) * 100}
                                     aria-label={`${name} is used in ${used.length} of ${projects.length} projects`}
                                   />
-                                  <p className="mt-2 text-xs text-background/75">
-                                    {used.map((project) => project.name).join(', ')}
+                                  <p className="mt-2.5 text-xs leading-snug text-background/80">
+                                    {used.map((project) => project.name).join(' · ')}
                                   </p>
-                                </>
+                                </div>
                               )}
                             </TooltipContent>
                           </Tooltip>
@@ -106,23 +107,15 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                       </a>
                     </p>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )
           })}
         </div>
       </TooltipProvider>
-      <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 rounded-xl border bg-card px-5 py-4 text-sm">
-        <span className="font-semibold">This site is a project too</span>
-        {siteStack.map((group) => (
-          <span key={group.title} className="text-muted-foreground">
-            <b className="font-medium text-foreground">{group.title}:</b> {group.items.join(', ')}
-          </span>
-        ))}
-        <Link className={cn(textLinkClass, 'ml-auto text-primary')} to="/how-its-built">
-          How it is built <ArrowUpRight size={15} />
-        </Link>
-      </div>
+      <Link className={cn(textLinkClass, 'mt-6 text-primary')} to="/how-its-built">
+        How this site is built <ArrowUpRight size={15} />
+      </Link>
     </section>
   )
 }
