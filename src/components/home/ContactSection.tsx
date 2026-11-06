@@ -14,8 +14,8 @@ const links = [
 function ContactSection() {
   return (
     <section className="border-t py-20 max-[620px]:py-14" id="contact" aria-labelledby="contact-title">
-      <div className="section-wrap grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
-        <div>
+      <div className="section-wrap grid items-stretch gap-12 lg:grid-cols-2 lg:gap-20">
+        <div className="flex flex-col">
           <SectionHeading
             id="contact-title"
             number="05"
@@ -26,7 +26,7 @@ function ContactSection() {
           <p className="mt-6 leading-relaxed text-muted-foreground">
             {availabilityLine()} Tell me what you&apos;re building and I&apos;ll reply within two business days.
           </p>
-          <ul className="mt-8 grid gap-2" aria-label="Contact and social links">
+          <ul className="mt-8 grid gap-2 lg:mt-auto lg:pt-8" aria-label="Contact and social links">
             {links.map(({ label, detail, href, Icon }) => (
               <li key={label}>
                 <Button asChild variant="outline" className="h-12 w-full justify-between px-4">
@@ -53,7 +53,7 @@ function ContactSection() {
             </li>
           </ul>
         </div>
-        <Card>
+        <Card className="h-full">
           <CardHeader>
             <CardTitle>Send a message</CardTitle>
             <CardDescription>
@@ -63,7 +63,7 @@ function ContactSection() {
               </a>
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-1 flex-col">
             <ContactForm />
           </CardContent>
         </Card>

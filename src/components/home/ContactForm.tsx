@@ -125,48 +125,48 @@ function ContactForm() {
   const describedBy = (field: keyof Values) => (errors[field] ? `contact-${field}-error` : undefined)
 
   return (
-    <form className="text-left" noValidate onSubmit={onSubmit}>
-      <FieldGroup>
-        <Field data-invalid={Boolean(errors.name)}>
-          <FieldLabel htmlFor="contact-name">Name</FieldLabel>
-          <Input
-            id="contact-name"
-            name="name"
-            value={values.name}
-            onChange={(event) => update('name', event.target.value)}
-            maxLength={100}
-            autoComplete="name"
-            aria-invalid={Boolean(errors.name)}
-            aria-describedby={describedBy('name')}
-            aria-required="true"
-          />
-          {errors.name && <FieldError id="contact-name-error">{errors.name}</FieldError>}
-        </Field>
+    <form className="flex flex-1 flex-col text-left" noValidate onSubmit={onSubmit}>
+      <FieldGroup className="flex-1 gap-5">
+        <div className="grid items-start gap-5 sm:grid-cols-2">
+          <Field data-invalid={Boolean(errors.name)}>
+            <FieldLabel htmlFor="contact-name">Name</FieldLabel>
+            <Input
+              id="contact-name"
+              name="name"
+              value={values.name}
+              onChange={(event) => update('name', event.target.value)}
+              maxLength={100}
+              autoComplete="name"
+              aria-invalid={Boolean(errors.name)}
+              aria-describedby={describedBy('name')}
+              aria-required="true"
+            />
+            {errors.name && <FieldError id="contact-name-error">{errors.name}</FieldError>}
+          </Field>
 
-        <Field data-invalid={Boolean(errors.email)}>
-          <FieldLabel htmlFor="contact-email">Email</FieldLabel>
-          <Input
-            id="contact-email"
-            name="email"
-            type="email"
-            value={values.email}
-            onChange={(event) => update('email', event.target.value)}
-            maxLength={200}
-            autoComplete="email"
-            aria-invalid={Boolean(errors.email)}
-            aria-describedby={describedBy('email')}
-            aria-required="true"
-          />
-          {errors.email ? (
-            <FieldError id="contact-email-error">{errors.email}</FieldError>
-          ) : (
-            <FieldDescription>Where I should reply.</FieldDescription>
-          )}
-        </Field>
+          <Field data-invalid={Boolean(errors.email)}>
+            <FieldLabel htmlFor="contact-email">Email</FieldLabel>
+            <Input
+              id="contact-email"
+              name="email"
+              type="email"
+              placeholder="you@company.com"
+              value={values.email}
+              onChange={(event) => update('email', event.target.value)}
+              maxLength={200}
+              autoComplete="email"
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={describedBy('email')}
+              aria-required="true"
+            />
+            {errors.email && <FieldError id="contact-email-error">{errors.email}</FieldError>}
+          </Field>
+        </div>
 
         <FieldSet data-invalid={Boolean(errors.topic)}>
           <FieldLegend variant="label">What is this about?</FieldLegend>
           <RadioGroup
+            className="flex flex-wrap gap-x-6 gap-y-2"
             value={values.topic}
             onValueChange={(value) => update('topic', value)}
             aria-invalid={Boolean(errors.topic)}
@@ -174,7 +174,7 @@ function ContactForm() {
             aria-required="true"
           >
             {topics.map((topic, index) => (
-              <Field key={topic} orientation="horizontal">
+              <Field className="w-auto" key={topic} orientation="horizontal">
                 <RadioGroupItem value={topic} id={`contact-topic-${index}`} aria-invalid={Boolean(errors.topic)} />
                 <FieldLabel className="font-normal" htmlFor={`contact-topic-${index}`}>
                   {topic}
@@ -185,16 +185,17 @@ function ContactForm() {
           {errors.topic && <FieldError id="contact-topic-error">{errors.topic}</FieldError>}
         </FieldSet>
 
-        <Field data-invalid={Boolean(errors.message)}>
+        <Field className="flex-1" data-invalid={Boolean(errors.message)}>
           <FieldLabel htmlFor="contact-message">Message</FieldLabel>
           <Textarea
             id="contact-message"
             name="message"
             value={values.message}
             onChange={(event) => update('message', event.target.value)}
+            className="field-sizing-fixed min-h-24 flex-1"
             placeholder="Tell me what you're building"
             maxLength={MESSAGE_MAX}
-            rows={5}
+            rows={4}
             aria-invalid={Boolean(errors.message)}
             aria-describedby={describedBy('message')}
             aria-required="true"
