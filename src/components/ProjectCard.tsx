@@ -1,7 +1,8 @@
+import { lazy, Suspense, useState } from 'react'
 import { ArrowUpRight, Github } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import type { Project } from '../data/projects'
-import CaseStudySheet from './CaseStudySheet'
 import CodeBlock from './CodeBlock'
 import ResponsiveImage from './ResponsiveImage'
 import TerminalBlock from './TerminalBlock'
@@ -42,7 +43,12 @@ function CardMedia({ project }: { project: Project }) {
   return null
 }
 
+const CaseStudySheet = lazy(() => import('./CaseStudySheet'))
+
 function ProjectCard({ project }: { project: Project }) {
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [sheetRequested, setSheetRequested] = useState(false)
+
   return (
     <article
       className="project-card"
@@ -95,7 +101,22 @@ function ProjectCard({ project }: { project: Project }) {
       </Link>
       {
         <div className="project-links" aria-label={`${project.name} project links`}>
-          <CaseStudySheet project={project} />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setSheetRequested(true)
+              setSheetOpen(true)
+            }}
+          >
+            Quick look
+          </Button>
+          {sheetRequested && (
+            <Suspense fallback={null}>
+              <CaseStudySheet project={project} open={sheetOpen} onOpenChange={setSheetOpen} />
+            </Suspense>
+          )}
           {project.live && (
             <a href={project.live} target="_blank" rel="noreferrer">
               Live project <ArrowUpRight size={15} />

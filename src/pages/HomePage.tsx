@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 import AboutSection from '../components/AboutSection'
 import CapabilitiesTable from '../components/CapabilitiesTable'
-import CodeShowcase from '../components/CodeShowcase'
 import ContactSection from '../components/ContactSection'
 import Hero from '../components/Hero'
 import JourneySection from '../components/JourneySection'
@@ -10,6 +10,25 @@ import NotesSection from '../components/NotesSection'
 import ProjectsSection from '../components/ProjectsSection'
 import SkillsSection from '../components/SkillsSection'
 import StackTraceRail from '../components/StackTraceRail'
+
+const CodeShowcase = lazy(() => import('../components/CodeShowcase'))
+
+/**
+ * The code showcase is not needed for the first paint or for search, so it is
+ * left out of the prerendered HTML (a skeleton holds its space) and loaded after mount.
+ */
+function DeferredCodeShowcase() {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  const placeholder = <Skeleton className="section-wrap my-16 h-96" aria-hidden="true" />
+  return mounted ? (
+    <Suspense fallback={placeholder}>
+      <CodeShowcase />
+    </Suspense>
+  ) : (
+    placeholder
+  )
+}
 
 // useLayoutEffect warns during prerendering; the scroll fix only matters in the browser.
 const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -40,7 +59,7 @@ function HomePage() {
       <StackTraceRail />
       <Hero />
       <ProjectsSection activeSkill={activeSkill} onClearSkill={() => setActiveSkill(null)} />
-      <CodeShowcase />
+      <DeferredCodeShowcase />
       <LabSection />
       <AboutSection />
       <JourneySection />

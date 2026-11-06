@@ -4,19 +4,16 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import type { Project } from '../data/projects'
 import CodeBlock from './CodeBlock'
 
+type Props = { project: Project; open: boolean; onOpenChange: (open: boolean) => void }
+
 /** A side-drawer summary of a case study. The full write-up stays at /work/:slug. */
-function CaseStudySheet({ project }: { project: Project }) {
+function CaseStudySheet({ project, open, onOpenChange }: Props) {
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button type="button" variant="outline" size="sm">
-          Quick look
-        </Button>
-      </SheetTrigger>
+    <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-full gap-0 sm:max-w-xl">
         <SheetHeader>
           <SheetTitle>{project.name}</SheetTitle>
