@@ -1,5 +1,5 @@
-import { findProject, projects } from './data/projects'
 import { findNote, notes } from './data/notes'
+import { findProject, projects } from './data/projects'
 import { site } from './data/site'
 
 export type PageMeta = {
@@ -43,7 +43,7 @@ export function getPageMeta(pathname: string): PageMeta {
 
   if (path === '/') {
     return {
-      title: `${site.name} | Full-stack developer in Vancouver`,
+      title: `${site.name} - Portfolio`,
       description: `${site.name} is a full-stack developer and BCIT student in Vancouver building React, Node, and Python apps. Top 6 of 36 at Hack the Break 2026.`,
       path,
       image: image('home'),
