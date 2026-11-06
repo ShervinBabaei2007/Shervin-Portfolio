@@ -115,6 +115,8 @@ test('theme is dark by default and remembers a manual choice', async ({ browser 
   const context = await browser.newContext({ colorScheme: 'dark' })
   const page = await context.newPage()
   await page.goto('/')
+  // Wait for hydration, otherwise the first click can land before the menu has its handlers.
+  await page.waitForLoadState('networkidle')
   const isDark = () => page.evaluate(() => document.documentElement.classList.contains('dark'))
   expect(await isDark()).toBe(true)
 
@@ -122,6 +124,7 @@ test('theme is dark by default and remembers a manual choice', async ({ browser 
   await page.getByRole('menuitemradio', { name: 'Light' }).click()
   expect(await isDark()).toBe(false)
   await page.reload()
+  await page.waitForLoadState('networkidle')
   expect(await isDark()).toBe(false)
 
   await page.getByRole('button', { name: 'Choose theme' }).click()
