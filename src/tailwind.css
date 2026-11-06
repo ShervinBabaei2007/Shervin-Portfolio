@@ -48,6 +48,12 @@
 }
 
 @layer base {
+  /* Tailwind v4 defaults borders to currentColor; use the theme border colour like shadcn does. */
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border);
+  }
   :root {
     color-scheme: light;
   }

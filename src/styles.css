@@ -949,6 +949,7 @@ a:focus-visible {
 
 .about-heading h2 {
   margin-top: 27px;
+  line-height: 1.08;
   font-size: clamp(3.0625rem, 2.4rem + 1.6vw, 4rem);
 }
 
@@ -2635,7 +2636,6 @@ main:focus { outline: none; }
   place-items: center;
   width: 35px;
   height: 24px;
-  background: var(--background);
   font: .6875rem var(--mono);
   transition: color .18s ease;
 }
@@ -2725,7 +2725,8 @@ main:focus { outline: none; }
 }
 .lab-afterword a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-@media (max-width: 1420px) {
+/* The rail sits in the page gutter, so it needs about 130px of free space on each side of the content. */
+@media (max-width: 1579px) {
   .stack-trace-rail { display: none; }
 }
 
