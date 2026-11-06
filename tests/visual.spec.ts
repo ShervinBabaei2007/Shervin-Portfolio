@@ -44,3 +44,19 @@ for (const scheme of ['dark', 'light'] as const) {
     }
   }
 }
+
+// The resume's print stylesheet also produces the downloadable PDF, so it gets its own checks.
+test('@visual /resume in print layout', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 816, height: 1056 }, reducedMotion: 'reduce' })
+  const page = await context.newPage()
+  await page.goto('/resume')
+  await page.waitForLoadState('networkidle')
+  await page.emulateMedia({ media: 'print', colorScheme: 'light' })
+  await page.evaluate(() => document.fonts.ready)
+  await expect(page).toHaveScreenshot('resume-print.png', {
+    fullPage: true,
+    animations: 'disabled',
+    maxDiffPixelRatio: 0.002,
+  })
+  await context.close()
+})

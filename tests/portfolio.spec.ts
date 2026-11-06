@@ -102,6 +102,16 @@ test('case study opens with actions and jump links to its sections', async ({ pa
   await expect(page.locator('#tradeoff')).toBeInViewport()
 })
 
+test('the resume prints to one US Letter page and hides the screen-only toolbar', async ({ page }) => {
+  await page.goto('/resume')
+  await page.waitForLoadState('networkidle')
+  await page.emulateMedia({ media: 'print' })
+  const pdf = await page.pdf({ format: 'Letter', preferCSSPageSize: true, printBackground: false })
+  const pages = pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []
+  expect(pages.length).toBe(1)
+  await expect(page.getByRole('link', { name: 'Download PDF' })).toBeHidden()
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('.terminal-block')).toContainText('Victory! Survived 10 rounds.')
