@@ -20,10 +20,10 @@ function ContactSection() {
             id="contact-title"
             number="08"
             eyebrow="NEXT STEP"
-            title="Have a good problem"
+            title="Have an interesting problem"
             punctuation="?"
           />
-          <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">
+          <p className="mt-6 leading-relaxed text-muted-foreground">
             {availabilityLine()} Tell me what you&apos;re building and I&apos;ll reply within two business days.
           </p>
           <ul className="mt-8 grid gap-2" aria-label="Contact and social links">
