@@ -1,50 +1,72 @@
 import { ArrowUpRight, FileText, Github, Linkedin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ContactForm from '@/components/home/ContactForm'
+import SectionHeading from '@/components/shared/SectionHeading'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { availabilityLine, site } from '@/data/site'
+
+const links = [
+  { label: 'LinkedIn', detail: 'Connect professionally', href: site.linkedin, Icon: Linkedin },
+  { label: 'GitHub', detail: "See what I'm building", href: site.github, Icon: Github },
+]
 
 function ContactSection() {
   return (
-    <section className="contact-section" id="contact" aria-labelledby="contact-title">
-      <div className="section-wrap contact-inner">
-        <div className="contact-copy">
-          <p className="eyebrow">
-            <span className="eyebrow-mark">07</span> NEXT STEP
+    <section className="border-t py-20" id="contact" aria-labelledby="contact-title">
+      <div className="section-wrap grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <SectionHeading
+            id="contact-title"
+            number="09"
+            eyebrow="NEXT STEP"
+            title="Have a good problem"
+            punctuation="?"
+          />
+          <p className="mt-6 max-w-md leading-relaxed text-muted-foreground">
+            {availabilityLine()} Tell me what you&apos;re building and I&apos;ll reply within two business days.
           </p>
-          <h2 id="contact-title">
-            Have a good
-            <br />
-            problem<span>?</span>
-          </h2>
-          <p>{availabilityLine()} Tell me what you&apos;re building and I&apos;ll reply within two business days.</p>
-          <ContactForm />
-          <a className="text-link mt-4 inline-block" href={`mailto:${site.email}`}>
-            Or email {site.email} <ArrowUpRight size={14} />
-          </a>
+          <ul className="mt-8 grid gap-2" aria-label="Contact and social links">
+            {links.map(({ label, detail, href, Icon }) => (
+              <li key={label}>
+                <Button asChild variant="outline" className="h-12 w-full justify-between px-4">
+                  <a href={href} target="_blank" rel="noreferrer">
+                    <span className="inline-flex items-center gap-3">
+                      <Icon /> {label}
+                      <span className="font-normal text-muted-foreground">{detail}</span>
+                    </span>
+                    <ArrowUpRight />
+                  </a>
+                </Button>
+              </li>
+            ))}
+            <li>
+              <Button asChild variant="outline" className="h-12 w-full justify-between px-4">
+                <Link to="/resume">
+                  <span className="inline-flex items-center gap-3">
+                    <FileText /> Resume
+                    <span className="font-normal text-muted-foreground">View resume</span>
+                  </span>
+                  <ArrowUpRight />
+                </Link>
+              </Button>
+            </li>
+          </ul>
         </div>
-        <div className="contact-links" aria-label="Contact and social links">
-          <a href={site.linkedin} target="_blank" rel="noreferrer">
-            <span>
-              <Linkedin size={17} /> LINKEDIN
-            </span>
-            <b>Connect professionally</b>
-            <ArrowUpRight size={16} />
-          </a>
-          <a href={site.github} target="_blank" rel="noreferrer">
-            <span>
-              <Github size={17} /> GITHUB
-            </span>
-            <b>See what I&apos;m building</b>
-            <ArrowUpRight size={16} />
-          </a>
-          <Link className="resume-row" to="/resume">
-            <span>
-              <FileText size={17} /> RESUME
-            </span>
-            <b>View resume</b>
-            <ArrowUpRight size={16} />
-          </Link>
-        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Send a message</CardTitle>
+            <CardDescription>
+              Or email{' '}
+              <a className="text-foreground underline underline-offset-4" href={`mailto:${site.email}`}>
+                {site.email}
+              </a>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ContactForm />
+          </CardContent>
+        </Card>
       </div>
     </section>
   )
