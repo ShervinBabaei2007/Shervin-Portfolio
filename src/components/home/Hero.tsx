@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { ArrowDownRight, ArrowUpRight, Braces, FileText, Mail } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
-import CommandPalette from './CommandPalette'
-import { findProject, type Project } from '../data/projects'
-import { availabilityLine, site } from '../data/site'
-import { facts } from '../data/facts'
+import CommandPalette from '@/components/shared/CommandPalette'
+import { findProject, type Project } from '@/data/projects'
+import { availabilityLine, site } from '@/data/site'
+import { facts } from '@/data/facts'
 
 const systemLayers = [
   {

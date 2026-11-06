@@ -2,7 +2,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
-import { journey } from '../data/journey'
+import { journey } from '@/data/journey'
 
 function JourneySection() {
   return (

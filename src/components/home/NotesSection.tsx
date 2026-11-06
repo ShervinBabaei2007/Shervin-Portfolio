@@ -1,7 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { formatDate, notes } from '../data/notes'
-import GitHubActivity from './GitHubActivity'
+import { formatDate, notes } from '@/data/notes'
+import GitHubActivity from '@/components/home/GitHubActivity'
 
 function NotesSection() {
   return (

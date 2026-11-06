@@ -1,17 +1,17 @@
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
-import AboutSection from '../components/AboutSection'
-import CapabilitiesTable from '../components/CapabilitiesTable'
-import ContactSection from '../components/ContactSection'
-import Hero from '../components/Hero'
-import JourneySection from '../components/JourneySection'
-import LabSection from '../components/LabSection'
-import NotesSection from '../components/NotesSection'
-import ProjectsSection from '../components/ProjectsSection'
-import SkillsSection from '../components/SkillsSection'
-import StackTraceRail from '../components/StackTraceRail'
+import AboutSection from '@/components/home/AboutSection'
+import CapabilitiesTable from '@/components/home/CapabilitiesTable'
+import ContactSection from '@/components/home/ContactSection'
+import Hero from '@/components/home/Hero'
+import JourneySection from '@/components/home/JourneySection'
+import LabSection from '@/components/home/LabSection'
+import NotesSection from '@/components/home/NotesSection'
+import ProjectsSection from '@/components/home/ProjectsSection'
+import SkillsSection from '@/components/home/SkillsSection'
+import StackTraceRail from '@/components/home/StackTraceRail'
 
-const CodeShowcase = lazy(() => import('../components/CodeShowcase'))
+const CodeShowcase = lazy(() => import('@/components/home/CodeShowcase'))
 
 /**
  * The code showcase is not needed for the first paint or for search, so it is

@@ -10,8 +10,8 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command'
-import { projects } from '../data/projects'
-import { site } from '../data/site'
+import { projects } from '@/data/projects'
+import { site } from '@/data/site'
 
 type Props = { open: boolean; onOpenChange: (open: boolean) => void }
 

@@ -1,5 +1,5 @@
 import { Github } from 'lucide-react'
-import type { Snippet } from '../data/projects'
+import type { Snippet } from '@/data/projects'
 
 type CodeBlockProps = {
   snippet: Snippet

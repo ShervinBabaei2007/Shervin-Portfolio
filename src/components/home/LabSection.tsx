@@ -1,6 +1,6 @@
 import { ArrowUpRight, FlaskConical } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import RateLimiterDemo from './RateLimiterDemo'
+import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
 
 function LabSection() {
   return (

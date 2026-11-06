@@ -10,8 +10,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import type { Preference, Scheme } from '../hooks/useTheme'
-import { site } from '../data/site'
+import type { Preference, Scheme } from '@/hooks/useTheme'
+import { site } from '@/data/site'
 
 type SiteHeaderProps = {
   scheme: Scheme

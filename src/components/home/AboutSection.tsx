@@ -1,4 +1,4 @@
-import { facts } from '../data/facts'
+import { facts } from '@/data/facts'
 import { ArrowRight, Code2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 

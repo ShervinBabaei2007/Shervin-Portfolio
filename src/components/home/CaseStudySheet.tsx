@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import type { Project } from '../data/projects'
-import CodeBlock from './CodeBlock'
+import type { Project } from '@/data/projects'
+import CodeBlock from '@/components/shared/CodeBlock'
 
 type Props = { project: Project; open: boolean; onOpenChange: (open: boolean) => void }
 

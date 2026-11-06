@@ -1,7 +1,7 @@
 import { ArrowUpRight, FileText, Github, Linkedin } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import ContactForm from './ContactForm'
-import { availabilityLine, site } from '../data/site'
+import ContactForm from '@/components/home/ContactForm'
+import { availabilityLine, site } from '@/data/site'
 
 function ContactSection() {
   return (

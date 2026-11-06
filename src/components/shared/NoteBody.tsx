@@ -1,6 +1,6 @@
-import type { NoteBlock } from '../data/notes'
-import CodeBlock from './CodeBlock'
-import RichText from './RichText'
+import type { NoteBlock } from '@/data/notes'
+import CodeBlock from '@/components/shared/CodeBlock'
+import RichText from '@/components/shared/RichText'
 
 function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
   return (

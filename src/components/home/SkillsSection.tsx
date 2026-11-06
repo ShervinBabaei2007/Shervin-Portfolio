@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { projectsUsing, siteStack, skillTabs, usageLevel } from '../data/skills'
+import { projectsUsing, siteStack, skillTabs, usageLevel } from '@/data/skills'
 
 type SkillsSectionProps = {
   activeSkill: string | null

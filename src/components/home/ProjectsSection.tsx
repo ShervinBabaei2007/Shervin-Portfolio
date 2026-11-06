@@ -1,8 +1,8 @@
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { flagshipProjects, moreProjects } from '../data/projects'
+import { flagshipProjects, moreProjects } from '@/data/projects'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
-import ProjectCard from './ProjectCard'
+import ProjectCard from '@/components/home/ProjectCard'
 
 type ProjectsSectionProps = {
   activeSkill: string | null

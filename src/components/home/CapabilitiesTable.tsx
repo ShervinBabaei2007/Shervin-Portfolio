@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { projectsUsing, skillTabs, usageLevel } from '../data/skills'
+import { projectsUsing, skillTabs, usageLevel } from '@/data/skills'
 
 const variant = { Core: 'default', Used: 'secondary', Exploring: 'outline' } as const
 

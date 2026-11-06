@@ -1,4 +1,4 @@
-import images from '../data/images.json'
+import images from '@/data/images.json'
 
 type ImageInfo = { width: number; height: number; small?: { src: string; width: number } }
 const catalog = images as Record<string, ImageInfo>

@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { projects } from '../data/projects'
+import { projects } from '@/data/projects'
 
 const languageLabel = { js: 'JavaScript', ts: 'TypeScript', tsx: 'React (TSX)', python: 'Python' } as const
 

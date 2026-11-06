@@ -2,10 +2,10 @@ import { lazy, Suspense, useState } from 'react'
 import { ArrowUpRight, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
-import type { Project } from '../data/projects'
-import CodeBlock from './CodeBlock'
-import ResponsiveImage from './ResponsiveImage'
-import TerminalBlock from './TerminalBlock'
+import type { Project } from '@/data/projects'
+import CodeBlock from '@/components/shared/CodeBlock'
+import ResponsiveImage from '@/components/shared/ResponsiveImage'
+import TerminalBlock from '@/components/shared/TerminalBlock'
 
 function CardMedia({ project }: { project: Project }) {
   if (project.screenshots?.length) {

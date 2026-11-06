@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
-import NoteBody from '../components/NoteBody'
+import NoteBody from '@/components/shared/NoteBody'
 import { findNote, formatDate, notes } from '../data/notes'
 import { findProject } from '../data/projects'
 import { site } from '../data/site'

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, Github } from 'lucide-react'
-import snapshot from '../data/github.json'
-import { site } from '../data/site'
+import snapshot from '@/data/github.json'
+import { site } from '@/data/site'
 
 type Repo = { name: string; url: string; description: string | null; language: string | null; pushedAt: string }
 
