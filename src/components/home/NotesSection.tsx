@@ -5,7 +5,7 @@ import { notes } from '@/data/notes'
 
 function NotesSection() {
   return (
-    <section className="section-wrap pt-10 pb-[110px] max-[620px]:pb-[72px]" id="notes" aria-labelledby="notes-title">
+    <section className="section-wrap pt-10 pb-[110px] max-[620px]:pb-14" id="notes" aria-labelledby="notes-title">
       <SectionHeading
         id="notes-title"
         number="08"

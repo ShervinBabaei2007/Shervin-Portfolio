@@ -8,7 +8,7 @@ import { textLinkClass } from '@/lib/utils'
 /** A vertical timeline: everything is visible at once, with nothing hidden behind a click. */
 function JourneySection() {
   return (
-    <section className="section-wrap py-20" id="journey" aria-labelledby="journey-title">
+    <section className="section-wrap py-20 max-[620px]:py-12" id="journey" aria-labelledby="journey-title">
       <SectionHeading className="mb-10" id="journey-title" number="06" eyebrow="JOURNEY" title="How I got here" />
       <ol className="relative ml-2 list-none border-l p-0">
         {journey.map((item) => (

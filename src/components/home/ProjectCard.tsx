@@ -110,6 +110,7 @@ function ProjectCard({ project }: { project: Project }) {
           type="button"
           variant="outline"
           size="sm"
+          className="max-[620px]:h-11"
           onClick={() => {
             setSheetRequested(true)
             setSheetOpen(true)

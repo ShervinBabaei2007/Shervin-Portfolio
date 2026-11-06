@@ -491,6 +491,7 @@ a:focus-visible {
 
 
   /* Hero */
+  .hero { padding-top: 36px; padding-bottom: 2.5rem; }
   .hero-layer-panel { margin-top: 17px; }
   .hero-layer-projects { gap: 5px 12px; }
 
@@ -740,7 +741,7 @@ main:focus { outline: none; }
 .resume-links { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .875rem; font-weight: 600; }
 .resume-links a { display: inline-flex; align-items: center; gap: 4px; min-height: 28px; }
 .resume-stack { color: var(--muted-foreground); font: .8125rem/1.5 var(--mono); }
-.resume-project ul { margin: 10px 0 0; padding-left: 20px; }
+.resume-project ul { margin: 10px 0 0; padding-left: 20px; list-style: disc; }
 .resume-project li { margin: 6px 0; line-height: 1.6; }
 
 .print-only { display: none; }
@@ -757,6 +758,12 @@ main:focus { outline: none; }
   .resume-sheet { padding: 22px 18px 26px; }
   .resume-head h1 { font-size: 2rem; }
   .resume-skills div { grid-template-columns: 1fr; }
+
+  /* Bigger touch area for the small links, without moving anything. */
+  .resume-contact a,
+  .resume-links a { position: relative; }
+  .resume-contact a::after,
+  .resume-links a::after { content: ''; position: absolute; inset-block: -12px; inset-inline: -4px; }
 }
 
 /* Resume printing: also used to generate the downloadable PDF */
@@ -1110,7 +1117,7 @@ main:focus { outline: none; }
 }
 
 @media (max-width: 620px) {
-  .lab-section { padding-top: 76px; padding-bottom: 86px; }
+  .lab-section { padding-top: 56px; padding-bottom: 64px; }
   .lab-story { grid-template-columns: 1fr; margin-top: 28px; }
   .lab-story-mark { margin-bottom: 14px; }
   .lab-story > div:not(.lab-story-mark) + div { grid-column: auto; }

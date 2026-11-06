@@ -47,7 +47,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
   return (
     <header className="sticky top-0 z-20 grid min-h-[var(--header-height)] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center justify-between border-b bg-background px-[max(var(--gutter),calc((100%-var(--content-max))/2))] py-2 max-[620px]:flex max-[620px]:flex-wrap max-[620px]:gap-y-1 print:hidden">
       <Link
-        className="col-start-1 inline-flex items-center justify-self-start"
+        className="col-start-1 inline-flex min-h-11 min-w-11 items-center justify-self-start"
         to="/"
         aria-label="Shervin Babaei, home"
       >
@@ -87,7 +87,13 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
         </TooltipProvider>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-sm" aria-label="Choose theme" title="Choose theme">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="max-[620px]:size-11"
+              aria-label="Choose theme"
+              title="Choose theme"
+            >
               {scheme === 'dark' ? <Moon /> : <Sun />}
             </Button>
           </DropdownMenuTrigger>
@@ -110,7 +116,12 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
         </DropdownMenu>
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon-sm" className="min-[621px]:hidden" aria-label="Open menu">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="max-[620px]:size-11 min-[621px]:hidden"
+              aria-label="Open menu"
+            >
               <Menu />
             </Button>
           </SheetTrigger>

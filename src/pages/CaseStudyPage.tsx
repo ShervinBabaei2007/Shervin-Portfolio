@@ -16,7 +16,7 @@ const bodyClass =
   'mt-2.5 max-w-[70ch] text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
 const factDt = 'font-mono text-xs text-muted-foreground'
 const factDd = 'mt-[5px] text-sm leading-normal font-semibold'
-const snapshotDt = 'font-mono text-[.6875rem] tracking-[.045em] text-muted-foreground'
+const snapshotDt = 'font-mono text-xs tracking-[.045em] text-muted-foreground'
 const snapshotDd = 'mt-[7px] text-sm leading-normal font-semibold'
 const projectLink =
   'inline-flex min-h-11 items-center gap-2 text-[.9375rem] font-semibold text-primary no-underline underline-offset-4 hover:underline'

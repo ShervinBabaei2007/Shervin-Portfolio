@@ -36,7 +36,7 @@ function CommandPalette() {
         type="button"
         variant="ghost"
         size="sm"
-        className="gap-2 text-muted-foreground"
+        className="gap-2 text-muted-foreground max-[620px]:size-11"
         onClick={openPalette}
         aria-label="Search portfolio"
       >

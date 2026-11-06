@@ -5,7 +5,7 @@ function SiteFooter() {
   return (
     <footer className="section-wrap flex min-h-[72px] items-center justify-between font-mono text-xs max-[620px]:min-h-[63px] print:hidden">
       <Link
-        className="inline-flex items-center text-xl leading-none font-bold no-underline"
+        className="hit-area inline-flex items-center text-xl leading-none font-bold no-underline"
         to="/"
         aria-label="Shervin Babaei, home"
       >

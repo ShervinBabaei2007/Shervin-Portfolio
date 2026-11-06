@@ -20,7 +20,7 @@ function PageBreadcrumb({ trail, current }: { trail: Crumb[]; current: string })
           <Fragment key={crumb.to}>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link className="inline-flex min-h-8 items-center" to={crumb.to}>
+                <Link className="inline-flex min-h-11 items-center sm:min-h-8" to={crumb.to}>
                   {crumb.label}
                 </Link>
               </BreadcrumbLink>
@@ -29,7 +29,7 @@ function PageBreadcrumb({ trail, current }: { trail: Crumb[]; current: string })
           </Fragment>
         ))}
         <BreadcrumbItem>
-          <BreadcrumbPage>{current}</BreadcrumbPage>
+          <BreadcrumbPage className="block max-w-[55vw] truncate sm:max-w-none">{current}</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>

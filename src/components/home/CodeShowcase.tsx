@@ -46,14 +46,13 @@ function CodeShowcase() {
         title="Real code, real repos"
         aside={
           <>
-            Each excerpt is copied from a project
-            <br />
+            Each excerpt is copied from a project <br />
             you can open on GitHub.
           </>
         }
       />
-      <Card>
-        <CardHeader>
+      <Card className="min-w-0">
+        <CardHeader className="min-w-0 [&>*]:min-w-0">
           <ToggleGroup
             type="single"
             variant="outline"
@@ -62,20 +61,22 @@ function CodeShowcase() {
             aria-label="Code language"
           >
             {entries.map((item) => (
-              <ToggleGroupItem key={item.id} value={item.id}>
+              <ToggleGroupItem key={item.id} value={item.id} className="max-[620px]:h-11">
                 {languageLabel[item.snippet.language]}
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
-          <CardTitle className="mt-2 font-mono text-sm">{entry.snippet.file}</CardTitle>
+          <div className="mt-2 flex min-w-0 items-center justify-between gap-3">
+            <CardTitle className="min-w-0 truncate font-mono text-sm">{entry.snippet.file}</CardTitle>
+            <Button type="button" variant="outline" size="sm" className="shrink-0 max-[620px]:h-11" onClick={copy}>
+              {copied ? <Check /> : <Copy />} {copied ? 'Copied' : 'Copy'}
+            </Button>
+          </div>
           <CardDescription>
             {entry.snippet.caption} From {entry.project.name}.
           </CardDescription>
         </CardHeader>
-        <CardContent className="relative">
-          <Button type="button" variant="outline" size="sm" className="absolute top-2 right-8" onClick={copy}>
-            {copied ? <Check /> : <Copy />} {copied ? 'Copied' : 'Copy'}
-          </Button>
+        <CardContent>
           <pre
             className="max-h-96 overflow-auto rounded-md bg-background p-4 font-mono text-xs leading-relaxed"
             tabIndex={0}

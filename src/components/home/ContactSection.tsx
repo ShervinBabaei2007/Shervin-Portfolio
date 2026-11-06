@@ -13,7 +13,7 @@ const links = [
 
 function ContactSection() {
   return (
-    <section className="border-t py-20" id="contact" aria-labelledby="contact-title">
+    <section className="border-t py-20 max-[620px]:py-14" id="contact" aria-labelledby="contact-title">
       <div className="section-wrap grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
         <div>
           <SectionHeading

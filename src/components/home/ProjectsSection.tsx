@@ -17,7 +17,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
 
   return (
     <section
-      className="section-wrap pt-[72px] pb-[120px] max-[620px]:pt-[60px] max-[620px]:pb-[78px]"
+      className="section-wrap pt-[72px] pb-[120px] max-[620px]:pt-12 max-[620px]:pb-14"
       id="work"
       aria-labelledby="work-title"
     >

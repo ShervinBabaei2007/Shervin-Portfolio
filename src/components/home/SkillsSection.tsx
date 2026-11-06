@@ -20,7 +20,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
   const matches = activeSkill ? projectsUsing(activeSkill).length : 0
 
   return (
-    <section className="section-wrap py-20" id="skills" aria-labelledby="skills-title">
+    <section className="section-wrap py-20 max-[620px]:py-12" id="skills" aria-labelledby="skills-title">
       <SectionHeading
         id="skills-title"
         number="07"
@@ -29,7 +29,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
         className="mb-8"
         aside={
           <>
-            Green means used in three or more projects. <br />
+            Highlighted skills are used in three or more projects. <br />
             Click any skill to filter the work above.
           </>
         }
