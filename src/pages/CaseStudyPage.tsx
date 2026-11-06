@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight, Github, Users } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Github, Link2, Users } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import CodeBlock from '@/components/shared/CodeBlock'
@@ -7,9 +7,11 @@ import ScreenshotGallery from '@/components/shared/ScreenshotGallery'
 import TerminalBlock from '@/components/shared/TerminalBlock'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useCopy } from '@/hooks/useCopy'
 import { cn } from '@/lib/utils'
 import { notesForProject } from '../data/notes'
 import { findProject, projects } from '../data/projects'
+import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
 const h2Class = 'text-xl font-semibold'
@@ -24,6 +26,7 @@ const pagerLabel = 'flex items-center gap-1.5 text-sm text-muted-foreground'
 function CaseStudyPage() {
   const { slug } = useParams()
   const project = findProject(slug)
+  const { copied, failed, copy } = useCopy()
   if (!project) return <NotFoundPage />
 
   const index = projects.indexOf(project)
@@ -92,31 +95,42 @@ function CaseStudyPage() {
           ))}
         </dl>
 
-        {(project.live || project.github || project.teamRepo) && (
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            {project.live && (
-              <Button asChild size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
-                <a href={project.live} target="_blank" rel="noreferrer">
-                  Live project <ArrowUpRight />
-                </a>
-              </Button>
-            )}
-            {project.github && (
-              <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
-                <a href={project.github} target="_blank" rel="noreferrer">
-                  {project.teamRepo ? 'My fork' : 'Source code'} <Github />
-                </a>
-              </Button>
-            )}
-            {project.teamRepo && (
-              <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
-                <a href={project.teamRepo} target="_blank" rel="noreferrer">
-                  Team repository <Github />
-                </a>
-              </Button>
-            )}
-          </div>
-        )}
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          {project.live && (
+            <Button asChild size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+              <a href={project.live} target="_blank" rel="noreferrer">
+                Live project <ArrowUpRight />
+              </a>
+            </Button>
+          )}
+          {project.github && (
+            <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+              <a href={project.github} target="_blank" rel="noreferrer">
+                {project.teamRepo ? 'My fork' : 'Source code'} <Github />
+              </a>
+            </Button>
+          )}
+          {project.teamRepo && (
+            <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-[.8125rem] font-semibold">
+              <a href={project.teamRepo} target="_blank" rel="noreferrer">
+                Team repository <Github />
+              </a>
+            </Button>
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="h-11 px-[17px] text-[.8125rem] font-semibold"
+            onClick={() => void copy(`${site.url}/work/${project.slug}`)}
+          >
+            {copied ? <Check /> : <Link2 />}
+            {copied ? 'Link copied' : failed ? 'Copy it from the address bar' : 'Copy link'}
+          </Button>
+          <span className="sr-only" role="status">
+            {copied ? 'Link copied to clipboard.' : ''}
+          </span>
+        </div>
 
         <nav className="mt-6 flex flex-wrap gap-x-1 gap-y-1" aria-label="On this page">
           {sections.map(([id, label]) => (

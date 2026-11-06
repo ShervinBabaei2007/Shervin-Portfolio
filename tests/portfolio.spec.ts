@@ -277,6 +277,49 @@ test('Quick look shows it is busy while its panel is still loading', async ({ pa
   await expect(button).toHaveAttribute('aria-busy', 'false')
 })
 
+test.describe('copy buttons', () => {
+  test('copying a code block copies the whole snippet and confirms it', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto('/work/skillmatch')
+    await page.waitForLoadState('networkidle')
+    const button = page.getByRole('button', { name: /Copy code from backend\/routes\/workshopRoutes\.js/ })
+    await button.click()
+    await expect(button).toHaveText('Copied')
+    const copied = await page.evaluate(() => navigator.clipboard.readText())
+    expect(copied).toContain("router.post('/:id/attend'")
+    expect(copied.trimEnd().endsWith('});')).toBe(true)
+    // The confirmation fades back to "Copy" on its own.
+    await expect(button).toHaveText('Copy', { timeout: 5000 })
+  })
+
+  test('when the clipboard is blocked, the code is selected and the button says so', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: () => Promise.reject(new Error('blocked')) },
+      })
+    })
+    await page.goto('/work/skillmatch')
+    await page.waitForLoadState('networkidle')
+    const button = page.getByRole('button', { name: /Copy code from/ })
+    await button.click()
+    await expect(button).toHaveText('Press Ctrl+C')
+    expect(await page.evaluate(() => window.getSelection()?.toString())).toContain("router.post('/:id/attend'")
+  })
+
+  test('a case study can copy its own link', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.goto('/work/skillmatch')
+    await page.waitForLoadState('networkidle')
+    // The button's name changes with its state (Copy link / Link copied), so match both.
+    const button = page.getByRole('button', { name: /link/i })
+    await button.click()
+    await expect(button).toHaveText('Link copied')
+    const link = await page.evaluate(() => navigator.clipboard.readText())
+    expect(link).toMatch(/^https:\/\/.+\/work\/skillmatch$/)
+    await expect(button).toHaveText('Copy link', { timeout: 5000 })
+  })
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')
