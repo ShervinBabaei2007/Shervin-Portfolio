@@ -43,7 +43,7 @@ function BuiltPage() {
         {sections.map((section) => (
           <section key={section.title} className="border-b py-6">
             <h2 className="text-xl font-semibold">{section.title}</h2>
-            <p className="mt-2.5 max-w-[62ch] leading-[1.7] text-muted-foreground">{section.body}</p>
+            <p className="mt-2.5 max-w-[60ch] leading-[1.7] text-muted-foreground">{section.body}</p>
           </section>
         ))}
       </div>

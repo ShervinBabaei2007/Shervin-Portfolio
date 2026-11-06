@@ -15,7 +15,7 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
             )
           case 'p':
             return (
-              <p key={index} className="mt-[18px] max-w-[68ch] text-[1.0625rem] leading-[1.75] max-[620px]:text-base">
+              <p key={index} className="mt-[18px] max-w-[60ch] text-[1.0625rem] leading-[1.75] max-[620px]:text-base">
                 <RichText text={block.text} />
               </p>
             )
@@ -23,7 +23,7 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
             return (
               <ul
                 key={index}
-                className="mt-3.5 max-w-[68ch] list-disc pl-[22px] text-[1.0625rem] leading-[1.75] max-[620px]:text-base [&>li+li]:mt-2"
+                className="mt-3.5 max-w-[60ch] list-disc pl-[22px] text-[1.0625rem] leading-[1.75] max-[620px]:text-base [&>li+li]:mt-2"
               >
                 {block.items.map((item) => (
                   <li key={item}>

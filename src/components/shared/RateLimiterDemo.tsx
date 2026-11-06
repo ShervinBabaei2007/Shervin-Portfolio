@@ -121,7 +121,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
         >
           Can you lock out another visitor?
         </h2>
-        <p className="mt-2 max-w-[68ch] leading-[1.6] text-muted-foreground">
+        <p className="mt-2 max-w-[60ch] leading-[1.6] text-muted-foreground">
           This is the same sliding-window rule ThinkBoard runs in Redis, scaled to {LIMIT} requests per{' '}
           {WINDOW_MS / 1000} seconds. Start with the shared key, burst your requests, then ask another visitor to send
           one.

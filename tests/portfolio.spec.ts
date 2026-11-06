@@ -383,6 +383,41 @@ test.describe('typography', () => {
   }
 })
 
+test.describe('reading width', () => {
+  // DM Sans digits are wide, so a "ch" cap runs long: 70ch was 862px, over 100 characters a line.
+  // Body text is about 740px and the 19px lead line under a case-study title about 780px, so 800px has room.
+  for (const width of [1440, 2560]) {
+    test(`long prose stays under 800px wide at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 1000 })
+      for (const path of [
+        '/work/skillmatch',
+        '/work/job-application-tracker',
+        '/notes/skillmatch-attend-race-condition',
+        '/lab',
+        '/how-its-built',
+        '/resume',
+      ]) {
+        await page.goto(path)
+        await page.waitForLoadState('networkidle')
+        const tooWide = await page.evaluate(() =>
+          [...document.querySelectorAll('main p, main li:not(:has(p))')]
+            .filter(
+              (element) =>
+                (element.textContent ?? '').trim().length >= 70 && !element.closest('pre, [aria-hidden="true"]'),
+            )
+            .map((element) => ({
+              width: Math.round(element.getBoundingClientRect().width),
+              text: (element.textContent ?? '').trim().slice(0, 30),
+            }))
+            // Rows of the "more projects" list on the home page are grids, not prose; none appear on these pages.
+            .filter((item) => item.width > 800),
+        )
+        expect(tooWide, `${path} at ${width}px`).toEqual([])
+      }
+    })
+  }
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')

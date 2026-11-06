@@ -16,7 +16,7 @@ import NotFoundPage from './NotFoundPage'
 
 const h2Class = 'text-xl font-semibold'
 const bodyClass =
-  'mt-2.5 max-w-[70ch] text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
+  'mt-2.5 max-w-[60ch] text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
 const factDt = 'font-mono text-label text-muted-foreground'
 const factDd = 'mt-[5px] text-sm leading-normal font-semibold'
 const pagerLink =

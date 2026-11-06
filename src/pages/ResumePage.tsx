@@ -26,7 +26,7 @@ const rowDate = 'font-mono text-meta leading-[normal] text-muted-foreground prin
 function ResumePage() {
   return (
     <article
-      className="section-wrap max-w-[860px] pt-10 pb-[100px] print:max-w-none print:p-0"
+      className="section-wrap max-w-[780px] pt-10 pb-[100px] print:max-w-none print:p-0"
       aria-labelledby="resume-title"
     >
       <div className="flex items-center justify-between gap-3.5 print:hidden">
