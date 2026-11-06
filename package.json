@@ -12,7 +12,10 @@
     "resume:pdf": "node scripts/resume-pdf.mjs",
     "screenshots": "node scripts/capture-screenshots.mjs && node scripts/image-variants.mjs",
     "images": "node scripts/image-variants.mjs",
-    "record": "node scripts/record-demo.mjs"
+    "record": "node scripts/record-demo.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
@@ -35,13 +38,20 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.57.0",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.9.10",
     "sharp": "^0.35.5",
     "typescript": "~5.6.2",
+    "typescript-eslint": "^8.72.1",
     "vite": "^6.0.1"
   }
 }
