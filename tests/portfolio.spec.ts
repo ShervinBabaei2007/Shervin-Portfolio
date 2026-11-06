@@ -391,3 +391,34 @@ test('printing the resume uses dark text on white, even when the dark theme is o
     .toEqual({ heading: 'rgb(0, 0, 0)', page: 'rgb(255, 255, 255)' })
   await context.close()
 })
+
+test('a page whose code 404s once recovers with an automatic reload', async ({ page }) => {
+  let requests = 0
+  await page.route(/\/assets\/ResumePage-[\w-]+\.js$/, (route) => {
+    requests += 1
+    // The browser reuses the failed preload for the import, so one page load makes one request.
+    return requests === 1 ? route.fulfill({ status: 404, body: 'Not found' }) : route.continue()
+  })
+  await page.goto('/resume')
+  // Wait for the reload's request, then for the reloaded page to settle.
+  await expect.poll(() => requests).toBeGreaterThanOrEqual(2)
+  await page.waitForLoadState('networkidle')
+  // Only a hydrated page can open the theme menu, so this proves the reload fixed it.
+  await page.getByRole('button', { name: 'Choose theme' }).click()
+  await expect(page.getByRole('menuitemradio', { name: 'Light' })).toBeVisible()
+  expect(requests).toBe(2)
+})
+
+test('a missing page file reloads at most once instead of looping', async ({ page }) => {
+  let requests = 0
+  await page.route(/\/assets\/ResumePage-[\w-]+\.js$/, (route) => {
+    requests += 1
+    return route.fulfill({ status: 404, body: 'Not found' })
+  })
+  await page.goto('/resume')
+  await page.waitForLoadState('networkidle')
+  await page.waitForTimeout(1500)
+  await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
+  // The original load plus one reload; a loop would keep growing this.
+  expect(requests).toBe(2)
+})

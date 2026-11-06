@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
+import { reloadOnceAfterChunkFailure } from './lib/reloadOnce'
 import { pageForPath, preloadAllPages } from './routes'
 import './fonts.css'
 import './tailwind.css'
@@ -41,5 +42,9 @@ pageForPath(window.location.pathname)
       else ReactDOM.createRoot(container).render(app)
       warmOtherPages()
     },
-    (error) => console.error('Could not load this page’s code, so it was left as static HTML.', error),
+    (error) => {
+      // A reload usually fixes a deploy mismatch; if it cannot, the static HTML stays readable.
+      if (reloadOnceAfterChunkFailure()) return
+      console.error('Could not load this page’s code, so it was left as static HTML.', error)
+    },
   )
