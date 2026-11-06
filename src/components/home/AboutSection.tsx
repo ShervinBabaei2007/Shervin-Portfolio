@@ -1,8 +1,8 @@
-import { ArrowRight } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { facts } from '@/data/facts'
 import { site } from '@/data/site'
 import { cn, textLinkClass } from '@/lib/utils'
+import { ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const quickFacts = [
   { label: 'BASED IN', value: 'Vancouver / Burnaby' },
@@ -33,20 +33,19 @@ function AboutSection() {
             id="about-title"
             className="text-[clamp(1.875rem,1.2rem+2.6vw,3.25rem)] leading-[1.12] [&_span]:text-primary"
           >
-            I keep following the request because “it works” has never been a satisfying ending for me<span>.</span>
+            I keep following the request because “it works” has never been enough for me<span>.</span>
           </h2>
           <div className="space-y-4 text-base leading-[1.85] text-[#b4c0da] lg:pt-2">
             <p>
-              I&apos;m studying for a Diploma in Full-Stack Web Development at BCIT, with an {facts.gpa} GPA and an
-              expected graduation in May 2027. My coursework includes object-oriented programming, databases, Agile
-              development, UX/UI, and web application development.
+              I&apos;m a Full-Stack Web Development student at BCIT (expected graduation May 2027, {facts.gpa} academic
+              average). I build end-to-end applications with React, TypeScript, Node.js, and modern databases, and
+              I&apos;ve started integrating AI into real developer tools.
             </p>
             <p>
-              I like understanding how an application works from the interface through the API and data layer. I want to
-              know what happens after fetch(), why one request can freeze an event loop, and what changes when the
-              language model runs on my own machine. I&apos;m also learning lower-level languages like C, and I&apos;m
-              looking for an internship, co-op, or junior role where I can contribute, learn from a team, and keep
-              building that understanding.
+              Recent work includes leading the frontend for GitScribe (Top 6 of 36 teams at Hack The Break 2026), an
+              AI-powered commit message tool, and building Network Growth Assistance, a full-stack platform with
+              authentication, PostgreSQL, and AI-assisted features. I also explore local language models, systems
+              concepts in C++, and the details that sit between the interface, API, and data layer.
             </p>
             <Link className={cn(textLinkClass, 'mt-1 text-[#e6ecf8] hover:text-[#c7d4ff]')} to="/resume">
               Read my resume <ArrowRight size={15} />
