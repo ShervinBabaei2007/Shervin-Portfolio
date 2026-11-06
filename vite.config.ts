@@ -1,5 +1,7 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath } from 'node:url'
 
 /**
  * Preloads the three font files used above the fold so text renders in the
@@ -24,7 +26,8 @@ function preloadFonts(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), preloadFonts()],
+  plugins: [react(), tailwindcss(), preloadFonts()],
+  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
   build: {
     // The manifest maps each page's source file to its chunk, for modulepreload links.
     manifest: true,

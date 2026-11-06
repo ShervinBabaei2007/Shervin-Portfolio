@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { pageForPath, preloadAllPages } from './routes'
 import './fonts.css'
+import './tailwind.css'
 import './styles.css'
 
 const container = document.getElementById('root')!
