@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, Github, Users } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
-import BackLink from '@/components/shared/BackLink'
+import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import CodeBlock from '@/components/shared/CodeBlock'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
 import ResponsiveImage from '@/components/shared/ResponsiveImage'
@@ -39,7 +39,13 @@ function CaseStudyPage() {
       className="section-wrap pt-9 pb-24 max-[620px]:pt-[18px] max-[620px]:pb-16"
       aria-labelledby="case-study-title"
     >
-      <BackLink to="/#work">All projects</BackLink>
+      <PageBreadcrumb
+        trail={[
+          { label: 'Home', to: '/' },
+          { label: 'Work', to: '/#work' },
+        ]}
+        current={project.name}
+      />
 
       <header className="mt-[18px] max-w-[900px]">
         <p className="eyebrow">
@@ -136,7 +142,7 @@ function CaseStudyPage() {
       {project.video && (
         <figure className="mt-8">
           <video
-            className="block h-auto w-full border bg-[#1c2420]"
+            className="block h-auto w-full border bg-[#0f1a30]"
             controls
             muted
             playsInline

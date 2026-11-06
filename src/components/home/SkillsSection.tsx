@@ -2,8 +2,10 @@ import { ArrowUpRight, Cpu, Layers, Wrench, type LucideIcon } from 'lucide-react
 import { Link } from 'react-router-dom'
 import SectionHeading from '@/components/shared/SectionHeading'
 import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+import { projects } from '@/data/projects'
 import { projectsUsing, siteStack, skillTabs, usageLevel } from '@/data/skills'
 import { cn, textLinkClass } from '@/lib/utils'
 
@@ -71,9 +73,19 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                             </p>
                             <p className="mt-1 text-muted-foreground">{note}</p>
                             {used.length > 0 && (
-                              <p className="mt-2 text-xs text-muted-foreground">
-                                Used in {used.map((project) => project.name).join(', ')}.
-                              </p>
+                              <>
+                                <p className="mt-3 text-xs font-medium">
+                                  Used in {used.length} of {projects.length} projects
+                                </p>
+                                <Progress
+                                  className="mt-1.5 h-1.5"
+                                  value={(used.length / projects.length) * 100}
+                                  aria-label={`${name} is used in ${used.length} of ${projects.length} projects`}
+                                />
+                                <p className="mt-2 text-xs text-muted-foreground">
+                                  {used.map((project) => project.name).join(', ')}
+                                </p>
+                              </>
                             )}
                           </HoverCardContent>
                         </HoverCard>

@@ -76,7 +76,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
 
   await page.getByRole('link', { name: /Next/ }).click()
   await expect(page).toHaveURL(/\/work\/gitscribe$/)
-  await page.getByRole('link', { name: 'All projects' }).click()
+  await page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: 'Work' }).click()
   await expect(page).toHaveURL(/\/#work$/)
 })
 
@@ -359,9 +359,9 @@ test('project carousel can be moved with the arrow keys on a phone', async ({ pa
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
   await page.waitForLoadState('networkidle')
-  await page.getByRole('link', { name: 'SkillMatch case study' }).focus()
+  await page.getByRole('link', { name: 'SkillMatch case study', exact: true }).focus()
   await page.keyboard.press('ArrowRight')
-  await expect(page.getByRole('link', { name: 'GitScribe case study' })).toBeInViewport({ ratio: 0.9 })
+  await expect(page.getByRole('link', { name: 'GitScribe case study', exact: true })).toBeInViewport({ ratio: 0.9 })
 })
 
 test('screenshots are served as AVIF to browsers that support it', async ({ page }) => {

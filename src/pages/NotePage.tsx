@@ -1,6 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
-import BackLink from '@/components/shared/BackLink'
+import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import NoteBody from '@/components/shared/NoteBody'
 import { findNote, formatDate, notes } from '../data/notes'
 import { findProject } from '../data/projects'
@@ -23,7 +23,13 @@ function NotePage() {
       className="section-wrap max-w-[760px] pt-9 pb-[100px] max-[620px]:pt-[18px] max-[620px]:pb-16"
       aria-labelledby="note-title"
     >
-      <BackLink to="/notes">All notes</BackLink>
+      <PageBreadcrumb
+        trail={[
+          { label: 'Home', to: '/' },
+          { label: 'Notes', to: '/notes' },
+        ]}
+        current={note.title}
+      />
       <header className="mt-[18px] border-b pb-6">
         <p className="eyebrow">ENGINEERING NOTE</p>
         <h1 id="note-title" className="mt-3.5 text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-[1.1] font-semibold">

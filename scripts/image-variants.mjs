@@ -18,11 +18,16 @@ for (const file of readdirSync(dir).sort()) {
   if (!file.endsWith('.webp') || file.endsWith(`-${SMALL}.webp`)) continue
   const { width, height } = await sharp(resolve(dir, file)).metadata()
   const entry = { width, height, avif: true }
-  await sharp(resolve(dir, file)).avif({ quality: 55, effort: 6 }).toFile(resolve(dir, toAvif(file)))
+  await sharp(resolve(dir, file))
+    .avif({ quality: 55, effort: 6 })
+    .toFile(resolve(dir, toAvif(file)))
   if (width > SMALL * 1.25) {
     const small = file.replace(/\.webp$/, `-${SMALL}.webp`)
     await sharp(resolve(dir, file)).resize({ width: SMALL }).webp({ quality: 80 }).toFile(resolve(dir, small))
-    await sharp(resolve(dir, file)).resize({ width: SMALL }).avif({ quality: 55, effort: 6 }).toFile(resolve(dir, toAvif(small)))
+    await sharp(resolve(dir, file))
+      .resize({ width: SMALL })
+      .avif({ quality: 55, effort: 6 })
+      .toFile(resolve(dir, toAvif(small)))
     entry.small = { src: `/projects/${small}`, width: SMALL }
   }
   images[`/projects/${file}`] = entry

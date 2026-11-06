@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react'
+import { CircleAlert } from 'lucide-react'
 import { toast } from 'sonner'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -11,6 +13,7 @@ const topics = ['Job Opportunity', 'Project Collaboration', 'General Inquiry']
 function ContactForm() {
   const [topic, setTopic] = useState('')
   const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -21,6 +24,7 @@ function ContactForm() {
     const form = event.currentTarget
     const data = Object.fromEntries(new FormData(form).entries())
     setSending(true)
+    setError(null)
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -34,10 +38,8 @@ function ContactForm() {
       toast.success('Message sent!', { description: "Thanks for reaching out. I'll respond within two business days." })
       form.reset()
       setTopic('')
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Something went wrong.', {
-        description: `You can also email ${site.email}.`,
-      })
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Something went wrong.')
     } finally {
       setSending(false)
     }
@@ -77,6 +79,19 @@ function ContactForm() {
       />
       {/* Honeypot for bots; hidden from people and assistive tech. */}
       <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
+      {error && (
+        <Alert variant="destructive">
+          <CircleAlert />
+          <AlertTitle>Message not sent</AlertTitle>
+          <AlertDescription>
+            {error} You can also email{' '}
+            <a className="underline underline-offset-4" href={`mailto:${site.email}`}>
+              {site.email}
+            </a>
+            .
+          </AlertDescription>
+        </Alert>
+      )}
       <Button type="submit" disabled={sending}>
         {sending ? 'Sending...' : 'Send message'}
       </Button>
