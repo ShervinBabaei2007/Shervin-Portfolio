@@ -45,7 +45,7 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
 
 test('home shows four flagships and a compact list for the rest', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('.project-grid .project-card')).toHaveCount(4)
+  await expect(page.locator('[data-slot="carousel"] .project-card')).toHaveCount(4)
   await expect(page.locator('.more-projects li')).toHaveCount(4)
   await expect(page.getByText('Illustrative interface preview')).toHaveCount(0)
 })
@@ -82,13 +82,14 @@ test('unknown routes show a 404 page', async ({ page }) => {
 
 test('skill chips filter projects and can be cleared', async ({ page }) => {
   await page.goto('/')
+  await page.getByRole('tab', { name: 'Systems & Low-Level' }).click()
   const chip = page.locator('.skill-chip', { hasText: 'Redis' })
   await chip.click()
   await expect(page.getByText('Showing projects that use')).toBeVisible()
-  await expect(page.locator('.project-grid .project-card')).toHaveCount(1)
+  await expect(page.locator('[data-slot="carousel"] .project-card')).toHaveCount(1)
   await expect(page.locator('.more-projects')).toHaveCount(0)
   await page.getByRole('button', { name: 'Clear skill filter' }).click()
-  await expect(page.locator('.project-grid .project-card')).toHaveCount(4)
+  await expect(page.locator('[data-slot="carousel"] .project-card')).toHaveCount(4)
 })
 
 test('every listed skill is backed by at least one project', async ({ page }) => {
@@ -98,21 +99,25 @@ test('every listed skill is backed by at least one project', async ({ page }) =>
   for (const count of counts) expect(Number(count)).toBeGreaterThan(0)
 })
 
-test('theme follows the system and remembers a manual choice', async ({ browser }) => {
+test('theme is dark by default and remembers a manual choice', async ({ browser }) => {
   const context = await browser.newContext({ colorScheme: 'dark' })
   const page = await context.newPage()
   await page.goto('/')
   const paper = () => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--paper').trim())
-  expect(await paper()).toBe('#1a211c')
+  expect(await paper()).toBe('#09090b')
 
-  await page.getByRole('button', { name: 'Switch to light theme' }).click()
-  expect(await paper()).toBe('#f5f6f1')
+  await page.getByRole('button', { name: 'Choose theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'Light' }).click()
+  expect(await paper()).toBe('#fafafa')
   await page.reload()
   expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('light')
-  expect(await paper()).toBe('#f5f6f1')
+  expect(await paper()).toBe('#fafafa')
+  expect(await page.evaluate(() => document.documentElement.classList.contains('dark'))).toBe(false)
 
-  await page.getByRole('button', { name: 'Switch to dark theme' }).click()
-  expect(await page.evaluate(() => localStorage.getItem('color-scheme'))).toBeNull()
+  await page.getByRole('button', { name: 'Choose theme' }).click()
+  await page.getByRole('menuitemradio', { name: 'System' }).click()
+  expect(await page.evaluate(() => localStorage.getItem('color-scheme'))).toBe('system')
+  expect(await paper()).toBe('#09090b')
   await context.close()
 })
 
@@ -126,7 +131,7 @@ test('layout stays within phone, tablet, and desktop viewports', async ({ page }
       // .site-shell clips overflow, so also check that no text block is cut off at the edge.
       const clipped = await page.evaluate(() =>
         [...document.querySelectorAll('main p, main h1, main h2, main pre, main li')]
-          .filter((el) => !el.closest('pre') && !el.closest('.project-visual'))
+          .filter((el) => !el.closest('pre') && !el.closest('.project-visual') && !el.closest('[data-slot="carousel"]'))
           .filter((el) => el.getBoundingClientRect().right > window.innerWidth + 1)
           .map((el) => el.textContent?.slice(0, 40)),
       )
@@ -138,6 +143,7 @@ test('layout stays within phone, tablet, and desktop viewports', async ({ page }
 for (const scheme of ['light', 'dark'] as const) {
   test(`pages pass axe accessibility checks in ${scheme} mode`, async ({ browser }) => {
     const context = await browser.newContext({ colorScheme: scheme })
+    await context.addInitScript((value) => localStorage.setItem('color-scheme', value), scheme)
     const page = await context.newPage()
     for (const path of ['/', '/work/skillmatch', '/work/thinkboard', '/work/mini-rpg-battle', '/resume', '/how-its-built', '/notes', '/notes/skillmatch-attend-race-condition']) {
       await page.goto(path)
