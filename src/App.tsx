@@ -46,9 +46,16 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
   render() {
     if (!this.state.failed) return this.props.children
     return (
-      <section className="simple-page section-wrap" aria-labelledby="page-error-title">
-        <h1 id="page-error-title">This page didn&apos;t load.</h1>
-        <p>The connection may have dropped, or the site was updated while this tab was open.</p>
+      <section className="section-wrap pt-16 pb-[110px]" aria-labelledby="page-error-title">
+        <h1
+          id="page-error-title"
+          className="mt-3.5 max-w-[18ch] text-[clamp(2.375rem,1.8rem+2vw,3.5rem)] leading-[1.06]"
+        >
+          This page didn&apos;t load.
+        </h1>
+        <p className="mt-4 mb-7 max-w-[60ch] text-[1.125rem] leading-[1.65] text-muted-foreground">
+          The connection may have dropped, or the site was updated while this tab was open.
+        </p>
         <Button type="button" onClick={() => window.location.reload()}>
           Reload the page
         </Button>

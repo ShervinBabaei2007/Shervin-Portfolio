@@ -106,7 +106,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
   return (
     <section
       className={cn(
-        'mt-9 rounded-xl border border-t-[3px] border-t-primary bg-card px-7 pt-[26px] pb-7 max-[620px]:px-4 max-[620px]:pt-5 max-[620px]:pb-[22px]',
+        'mt-9 rounded-[12px] border border-t-[3px] border-t-primary bg-card px-7 pt-[26px] pb-7 max-[620px]:px-4 max-[620px]:pt-5 max-[620px]:pb-[22px]',
         compact &&
           'mt-[30px] bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[length:22px_22px]',
       )}

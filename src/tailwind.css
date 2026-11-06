@@ -139,3 +139,9 @@
     inset-inline: min(0px, calc(50% - var(--target) / 2));
   }
 }
+
+/* The resume prints to one US Letter page (see ResumePage.tsx); @page cannot be a utility. */
+@page {
+  size: letter;
+  margin: 0.42in 0.5in;
+}
