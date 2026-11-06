@@ -104,6 +104,8 @@
 
 @theme inline {
   --animate-card-reveal: card-reveal 0.38s both;
+  --animate-rise-in: rise-in 0.7s both;
+  --animate-reveal-in: reveal-in 0.8s 0.12s both;
   --font-sans: var(--font-body);
   --font-mono: var(--mono);
   --radius-sm: calc(var(--radius) - 4px);
@@ -153,5 +155,27 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }

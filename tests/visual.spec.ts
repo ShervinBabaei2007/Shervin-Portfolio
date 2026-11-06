@@ -71,3 +71,21 @@ test('@visual /resume in print layout', async ({ browser }) => {
   })
   await context.close()
 })
+
+// Hero orbit: each layer node has its own selected state and the panel below follows it.
+for (const layer of ['api', 'core'] as const) {
+  test(`@visual hero with the ${layer} layer selected`, async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' })
+    const page = await context.newPage()
+    await page.route('https://api.github.com/**', (route) => route.fulfill({ json: [] }))
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+    await page.getByRole('button', { name: new RegExp(`Show ${layer} layer projects`, 'i') }).click()
+    await page.mouse.move(5, 5)
+    await expect(page.locator('#home')).toHaveScreenshot(`hero-${layer}.png`, {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.002,
+    })
+    await context.close()
+  })
+}
