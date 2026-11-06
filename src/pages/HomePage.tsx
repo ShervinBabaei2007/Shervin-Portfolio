@@ -2,9 +2,6 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import AboutSection from '@/components/home/AboutSection'
 import ContactSection from '@/components/home/ContactSection'
 import Hero from '@/components/home/Hero'
-import JourneySection from '@/components/home/JourneySection'
-import LabSection from '@/components/home/LabSection'
-import NotesSection from '@/components/home/NotesSection'
 import ProjectsSection from '@/components/home/ProjectsSection'
 import SkillsSection from '@/components/home/SkillsSection'
 
@@ -36,11 +33,8 @@ function HomePage() {
     <>
       <Hero />
       <ProjectsSection activeSkill={activeSkill} onClearSkill={() => setActiveSkill(null)} />
-      <LabSection />
       <AboutSection />
-      <JourneySection />
       <SkillsSection activeSkill={activeSkill} onSkillSelect={selectSkill} />
-      <NotesSection />
       <ContactSection />
     </>
   )

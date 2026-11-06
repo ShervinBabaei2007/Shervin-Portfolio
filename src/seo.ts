@@ -33,6 +33,7 @@ export const staticRoutes = [
   '/resume',
   '/how-its-built',
   '/notes',
+  '/lab',
   ...projects.map((project) => `/work/${project.slug}`),
   ...notes.map((note) => `/notes/${note.slug}`),
 ]
@@ -70,6 +71,18 @@ export function getPageMeta(pathname: string): PageMeta {
       path,
       image: image('home'),
       type: 'article',
+      jsonLd: [withContext(person)],
+    }
+  }
+
+  if (path === '/lab') {
+    return {
+      title: `The lab: break the assumption | ${site.name}`,
+      description:
+        'An interactive rate-limiter demo that reproduces a real bug from my ThinkBoard project: one shared key lets one visitor use up the whole request budget.',
+      path,
+      image: image('home'),
+      type: 'website',
       jsonLd: [withContext(person)],
     }
   }

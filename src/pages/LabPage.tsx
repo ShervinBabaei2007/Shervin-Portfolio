@@ -1,23 +1,16 @@
 import { ArrowUpRight, FlaskConical } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import PageIntro from '@/components/shared/PageIntro'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
-import SectionHeading from '@/components/shared/SectionHeading'
 
-function LabSection() {
+function LabPage() {
   return (
-    <section className="lab-section section-wrap" id="lab" aria-labelledby="lab-title">
-      <SectionHeading
-        id="lab-title"
-        number="03"
+    <section className="lab-section section-wrap" aria-labelledby="lab-title">
+      <PageIntro
         eyebrow="THE LAB"
+        id="lab-title"
         title="Break the assumption"
-        className="lab-heading"
-        aside={
-          <>
-            I learn fastest when a system disagrees with me. <br />
-            So here&apos;s one mistake you can reproduce yourself.
-          </>
-        }
+        lead="I learn fastest when a system disagrees with me. So here's one mistake you can reproduce yourself."
       />
 
       <div className="lab-story">
@@ -53,4 +46,4 @@ function LabSection() {
   )
 }
 
-export default LabSection
+export default LabPage

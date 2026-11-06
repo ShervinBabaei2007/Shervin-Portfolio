@@ -24,6 +24,7 @@ export const pages = {
     source: 'src/pages/NotePage.tsx',
     Component: lazyPage(() => import('./pages/NotePage')),
   },
+  lab: { path: '/lab', source: 'src/pages/LabPage.tsx', Component: lazyPage(() => import('./pages/LabPage')) },
   resume: {
     path: '/resume',
     source: 'src/pages/ResumePage.tsx',

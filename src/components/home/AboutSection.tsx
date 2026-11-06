@@ -26,7 +26,7 @@ function AboutSection() {
     >
       <div className="section-wrap">
         <p className="eyebrow text-[#a9b6d3]">
-          <span className="eyebrow-mark">04</span> WHY I KEEP DIGGING
+          <span className="eyebrow-mark">03</span> WHY I KEEP DIGGING
         </p>
         <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-[8%]">
           <h2

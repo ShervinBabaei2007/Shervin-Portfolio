@@ -948,11 +948,10 @@ main:focus { outline: none; }
   .note-body > p, .note-body > ul { font-size: 1rem; }
 }
 
-/* The lab acts like a live notebook page embedded in the portfolio. */
+/* The lab acts like a live notebook page. */
 .lab-section {
-  padding-top: 108px;
-  padding-bottom: 120px;
-  border-top: 1px solid var(--border);
+  padding-top: 64px;
+  padding-bottom: 110px;
 }
 
 .lab-heading h2 span { color: var(--primary); }

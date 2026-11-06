@@ -33,7 +33,7 @@ type SiteHeaderProps = {
 const navLinks = [
   { to: '/#work', label: 'Work', section: 'work' },
   { to: '/#about', label: 'About', section: 'about' },
-  { to: '/notes', label: 'Notes', section: 'notes', page: '/notes' },
+  { to: '/notes', label: 'Notes', page: '/notes' },
   { to: '/resume', label: 'Resume', page: '/resume' },
   { to: '/#contact', label: 'Contact', section: 'contact' },
 ] as const
@@ -41,11 +41,8 @@ const navLinks = [
 /** Every home-page section, and which nav item it belongs to while you are reading it. */
 const sectionOwner: Record<string, string> = {
   work: 'work',
-  lab: 'work',
   about: 'about',
-  journey: 'about',
   skills: 'about',
-  notes: 'notes',
   contact: 'contact',
 }
 
