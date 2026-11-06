@@ -342,3 +342,33 @@ test('the first load does not download the SEO data chunk', async ({ page }) => 
   await page.waitForLoadState('networkidle')
   expect(seoRequests).toEqual([])
 })
+
+test('Ctrl+K opens the search palette and jumps to a project', async ({ page }) => {
+  await page.goto('/')
+  // Wait for hydration so the key listener is attached.
+  await page.waitForLoadState('networkidle')
+  await page.keyboard.press('Control+k')
+  const dialog = page.getByRole('dialog', { name: 'Search portfolio' })
+  await expect(dialog).toBeVisible()
+  await page.keyboard.type('ThinkBoard')
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/\/work\/thinkboard$/)
+})
+
+test('project carousel can be moved with the arrow keys on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  await page.getByRole('link', { name: 'SkillMatch case study' }).focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(page.getByRole('link', { name: 'GitScribe case study' })).toBeInViewport({ ratio: 0.9 })
+})
+
+test('screenshots are served as AVIF to browsers that support it', async ({ page }) => {
+  await page.goto('/work/thinkboard')
+  const source = page.locator('picture source[type="image/avif"]').first()
+  await expect(source).toHaveAttribute('srcset', /thinkboard-screen-1(-480)?\.avif/)
+  const avif = await page.request.get('/projects/thinkboard-screen-1.avif')
+  expect(avif.status()).toBe(200)
+  expect(avif.headers()['content-type']).toContain('image/avif')
+})
