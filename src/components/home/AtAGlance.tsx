@@ -11,7 +11,7 @@ const placement = Number(facts.hackathon.placement.match(/\d+/)?.[0])
 const figures = [
   { value: projects.length, prefix: '', label: 'Projects built', detail: 'each with a case study' },
   { value: technologies, prefix: '', label: 'Technologies used', detail: 'across those projects' },
-  { value: notes.length, prefix: '', label: 'Writeups', detail: 'on bugs I found and fixed' },
+  { value: notes.length, prefix: '', label: 'Writeups', detail: 'on bugs, fixes and design choices' },
   { value: placement, prefix: 'Top ', label: `of ${facts.hackathon.teams} teams`, detail: facts.hackathon.name },
 ]
 
