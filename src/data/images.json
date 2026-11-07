@@ -2,17 +2,29 @@
   "/projects/skillmatch-dashboard.webp": {
     "width": 477,
     "height": 1287,
-    "avif": true
+    "avif": true,
+    "small": {
+      "src": "/projects/skillmatch-dashboard-240.webp",
+      "width": 240
+    }
   },
   "/projects/skillmatch-registration.webp": {
     "width": 304,
     "height": 503,
-    "avif": true
+    "avif": true,
+    "small": {
+      "src": "/projects/skillmatch-registration-240.webp",
+      "width": 240
+    }
   },
   "/projects/skillmatch-workshop-details.webp": {
     "width": 403,
     "height": 1169,
-    "avif": true
+    "avif": true,
+    "small": {
+      "src": "/projects/skillmatch-workshop-details-240.webp",
+      "width": 240
+    }
   },
   "/projects/thinkboard-screen-1.webp": {
     "width": 1000,
