@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react'
 import Reveal from '@/components/shared/Reveal'
+import { Highlighter } from '@/components/ui/highlighter'
+import { Particles } from '@/components/ui/particles'
 import { facts } from '@/data/facts'
 import { site } from '@/data/site'
 import { cn, textLinkClass } from '@/lib/utils'
@@ -13,6 +16,12 @@ const quickFacts = [
 ]
 
 function AboutSection() {
+  // Ambient particles are decoration: skipped for reduced motion, and only started after mount.
+  const [ambient, setAmbient] = useState(false)
+  useEffect(() => {
+    setAmbient(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  }, [])
+
   return (
     <section
       // Dark in both themes, so it pins the dark-theme accent (the light one is too dim on this background).
@@ -20,21 +29,35 @@ function AboutSection() {
         'bg-[var(--section-dark)] py-[98px] pb-[88px] text-[var(--on-dark)] max-[620px]:py-[64px]',
         '[--primary:#8aa4ff] [--ring:#8aa4ff]',
         'bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[length:38px_38px]',
-        'print:bg-none print:[&_*]:!text-black',
+        'relative overflow-hidden print:bg-none print:[&_*]:!text-black',
       )}
       id="about"
       aria-labelledby="about-title"
     >
-      <div className="section-wrap">
+      {ambient && (
+        <Particles
+          className="pointer-events-none absolute inset-0 print:hidden"
+          quantity={50}
+          ease={90}
+          staticity={60}
+          size={0.5}
+          color="#8aa4ff"
+        />
+      )}
+      <div className="relative section-wrap">
         <p className="eyebrow text-[#a9b6d3]">
           <span className="text-primary">03</span> WHY I KEEP DIGGING
         </p>
         <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-[8%]">
           <h2
             id="about-title"
-            className="text-[clamp(1.875rem,1.2rem+2.6vw,3.25rem)] leading-[1.12] [&_span]:text-primary"
+            className="text-[clamp(1.875rem,1.2rem+2.6vw,3.25rem)] leading-[1.12] [&>span:last-child]:text-primary"
           >
-            I keep following the request because “it works” has never been enough for me<span>.</span>
+            I keep following the request because{' '}
+            <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
+              “it works”
+            </Highlighter>{' '}
+            has never been enough for me<span>.</span>
           </h2>
           <Reveal delay={0.1}>
             <div className="space-y-4 text-base leading-[1.85] text-[#b4c0da] lg:pt-2">

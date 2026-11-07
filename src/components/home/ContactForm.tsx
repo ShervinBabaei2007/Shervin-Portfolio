@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'react'
 import { CircleAlert, CircleCheck } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { site } from '@/data/site'
@@ -46,6 +47,9 @@ const focusId: Record<keyof Values, string> = {
   topic: 'contact-topic-0',
   message: 'contact-message',
 }
+
+// Loaded only after a message is sent, so the confetti library stays out of the page's first download.
+const Confetti = lazy(() => import('@/components/ui/confetti').then((module) => ({ default: module.Confetti })))
 
 function ContactForm() {
   const [values, setValues] = useState<Values>(emptyValues)
@@ -98,6 +102,15 @@ function ContactForm() {
   if (status === 'sent') {
     return (
       <Empty ref={confirmation} className="border" role="status" tabIndex={-1}>
+        {!window.matchMedia('(prefers-reduced-motion: reduce)').matches && (
+          <Suspense fallback={null}>
+            <Confetti
+              className="pointer-events-none fixed inset-0 z-50 size-full"
+              aria-hidden="true"
+              options={{ particleCount: 90, spread: 70, startVelocity: 38, origin: { y: 0.7 } }}
+            />
+          </Suspense>
+        )}
         <EmptyHeader>
           <EmptyMedia variant="icon">
             <CircleCheck />
@@ -225,7 +238,15 @@ function ContactForm() {
           </Alert>
         )}
 
-        <Button type="submit" disabled={status === 'sending'} aria-busy={status === 'sending'}>
+        <ShimmerButton
+          type="submit"
+          disabled={status === 'sending'}
+          aria-busy={status === 'sending'}
+          background="var(--primary)"
+          shimmerColor="#ffffff"
+          borderRadius="8px"
+          className="h-10 gap-2 px-5 text-control font-medium text-primary-foreground disabled:pointer-events-none disabled:opacity-60"
+        >
           {status === 'sending' ? (
             <>
               <Spinner aria-hidden="true" role="presentation" /> Sending...
@@ -233,7 +254,7 @@ function ContactForm() {
           ) : (
             'Send message'
           )}
-        </Button>
+        </ShimmerButton>
       </FieldGroup>
     </form>
   )

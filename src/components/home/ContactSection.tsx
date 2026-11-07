@@ -1,8 +1,10 @@
 import { ArrowUpRight, FileText, Github, Linkedin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ContactForm from '@/components/home/ContactForm'
+import VancouverGlobe from '@/components/home/VancouverGlobe'
 import SectionHeading from '@/components/shared/SectionHeading'
 import { Button } from '@/components/ui/button'
+import { Highlighter } from '@/components/ui/highlighter'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { availabilityLine, site } from '@/data/site'
 
@@ -20,13 +22,23 @@ function ContactSection() {
             id="contact-title"
             number="05"
             eyebrow="NEXT STEP"
-            title="Have an interesting problem"
+            title={
+              <>
+                Have an{' '}
+                <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
+                  interesting problem
+                </Highlighter>
+              </>
+            }
             punctuation="?"
           />
           <p className="mt-6 leading-relaxed text-muted-foreground">
             {availabilityLine()} Tell me what you&apos;re building and I&apos;ll reply within two business days.
           </p>
-          <ul className="mt-8 grid gap-2 lg:mt-auto lg:pt-8" aria-label="Contact and social links">
+          <div className="mt-8">
+            <VancouverGlobe />
+          </div>
+          <ul className="mt-6 grid gap-2 lg:mt-auto lg:pt-6" aria-label="Contact and social links">
             {links.map(({ label, detail, href, Icon }) => (
               <li key={label}>
                 <Button asChild variant="outline" className="h-12 w-full justify-between px-4">

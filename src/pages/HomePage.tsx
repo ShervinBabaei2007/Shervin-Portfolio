@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import AboutSection from '@/components/home/AboutSection'
 import ContactSection from '@/components/home/ContactSection'
+import AtAGlance from '@/components/home/AtAGlance'
 import Hero from '@/components/home/Hero'
 import ProjectsSection from '@/components/home/ProjectsSection'
 import SkillsSection from '@/components/home/SkillsSection'
@@ -32,6 +33,7 @@ function HomePage() {
   return (
     <>
       <Hero />
+      <AtAGlance />
       <ProjectsSection activeSkill={activeSkill} onClearSkill={() => setActiveSkill(null)} />
       <AboutSection />
       <SkillsSection activeSkill={activeSkill} onSkillSelect={selectSkill} />

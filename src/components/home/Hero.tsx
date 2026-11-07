@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom'
 import { findProject, type Project } from '@/data/projects'
 import { facts } from '@/data/facts'
 import { site } from '@/data/site'
+import { AnimatedShinyText } from '@/components/ui/animated-shiny-text'
 import { Button } from '@/components/ui/button'
+import { DotPattern } from '@/components/ui/dot-pattern'
 import { cn } from '@/lib/utils'
 
 const systemLayers = [
@@ -67,7 +69,23 @@ function Hero() {
       id="home"
       aria-labelledby="hero-title"
     >
+      {/* A soft dot grid that fades out toward the edges. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 inset-y-4 [mask-image:radial-gradient(ellipse_70%_65%_at_50%_45%,#000_20%,transparent_75%)] print:hidden"
+        aria-hidden="true"
+      >
+        <DotPattern width={24} height={24} cr={1.1} className="fill-foreground/[.14]" />
+      </div>
       <div className="z-[1] animate-rise-in pt-[5px]">
+        <p className="mb-6 inline-flex items-center gap-2.5 rounded-full border bg-card/70 py-1.5 pr-4 pl-3 text-sm backdrop-blur-sm">
+          <span className="relative flex size-2" aria-hidden="true">
+            <span className="absolute inline-flex size-full rounded-full bg-emerald-500/70 motion-safe:animate-ping" />
+            <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+          </span>
+          <AnimatedShinyText className="mx-0 max-w-none text-muted-foreground">
+            Open to co-op and internships
+          </AnimatedShinyText>
+        </p>
         <p className="eyebrow">
           <span className="text-primary">01</span> VANCOUVER, BC <span className="text-muted-foreground">/</span> BCIT
         </p>
