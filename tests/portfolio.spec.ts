@@ -411,17 +411,11 @@ test.describe('reading width', () => {
   // DM Sans digits are wide, so a "ch" cap runs long: 70ch was 862px, over 100 characters a line.
   // Body text is about 740px and the 19px lead line under a case-study title about 780px, so 800px has room.
   // The closing card is skipped on purpose: it spans the page and holds one-line text, not prose.
+  // Case studies and writeups are skipped too: case studies run the full width of the page and writeups use a centred column (see the tests below).
   for (const width of [1440, 2560]) {
     test(`long prose stays under 800px wide at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 })
-      for (const path of [
-        '/work/skillmatch',
-        '/work/job-application-tracker',
-        '/writeups/skillmatch-attend-race-condition',
-        '/lab',
-        '/how-its-built',
-        '/resume',
-      ]) {
+      for (const path of ['/lab', '/how-its-built', '/resume']) {
         await page.goto(path)
         await page.waitForLoadState('networkidle')
         const tooWide = await page.evaluate(() =>
@@ -444,6 +438,35 @@ test.describe('reading width', () => {
       }
     })
   }
+})
+
+test('case study sections use the full width of the page, not half of it', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/work/skillmatch')
+  await page.waitForLoadState('networkidle')
+  for (const id of ['why', 'outcome', 'learned']) {
+    const section = await page.locator(`#${id}`).boundingBox()
+    const text = await page.locator(`#${id} p`).first().boundingBox()
+    expect(text!.width, `#${id}`).toBeGreaterThan(section!.width * 0.95)
+  }
+})
+
+test('writeups sit in a centred reading column, and the closing card still has room', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/writeups/skillmatch-attend-race-condition')
+  await page.waitForLoadState('networkidle')
+  const article = (await page.locator('article').boundingBox())!
+  // Centred: the same space on the left and the right.
+  const main = (await page.locator('main').boundingBox())! // its width excludes the scrollbar
+  expect(Math.abs(article.x - main.x - (main.x + main.width - article.x - article.width))).toBeLessThan(2)
+  // Wide enough to breathe, narrow enough that the eye is not tracking across the whole screen.
+  expect(article.width).toBeGreaterThan(800)
+  expect(article.width).toBeLessThanOrEqual(920)
+  const paragraph = (await page.locator('article p').nth(1).boundingBox())!
+  expect(paragraph.width).toBeGreaterThan(article.width * 0.95)
+  const card = page.getByRole('region', { name: 'Found this useful?' })
+  // The text sits beside the buttons rather than being squeezed above them.
+  expect((await card.getByRole('paragraph').first().boundingBox())!.width).toBeGreaterThan(400)
 })
 
 test.describe('the end of a page', () => {
@@ -780,8 +803,9 @@ test('commit history keeps the full-year totals when the live request adds the n
   await page.goto('/')
   const activity = page.locator('[data-github]')
   await expect(activity).toContainText('Live from GitHub')
-  const commits = await activity.locator('dl > div').first().locator('dd').innerText()
-  expect(Number(commits.replace(/,/g, ''))).toBeGreaterThan(100)
+  // The number counts up when scrolled into view, so wait for it to settle.
+  const commits = activity.locator('dl > div').first().locator('dd')
+  await expect.poll(async () => Number((await commits.innerText()).replace(/,/g, ''))).toBeGreaterThan(100)
 })
 
 test('commit history: select a day to list its commits, then go back to the latest', async ({ page }) => {
@@ -961,12 +985,22 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
   await expect(page).toHaveURL(/\/work\/skillmatch$/)
   expect(popups).toBe(0)
   await expect(viewer.getByRole('list', { name: 'All screenshots' }).getByRole('button')).toHaveCount(3)
-  await expect(viewer.getByText('1 of 3', { exact: true })).toBeVisible()
+  await expect(viewer.getByText(/^1 of 3/)).toBeVisible()
+
+  // Click the picture to see it at its real size, and click again to fit it back.
+  const zoom = viewer.getByRole('button', { name: 'Zoom in to actual size' })
+  await zoom.click()
+  await expect(viewer.getByRole('button', { name: 'Zoom out to fit the window' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  )
+  await viewer.getByRole('button', { name: 'Zoom out to fit the window' }).click()
+  await expect(zoom).toHaveAttribute('aria-pressed', 'false')
 
   await viewer.getByRole('button', { name: /Show screenshot 2/ }).click()
-  await expect(viewer.getByText('2 of 3', { exact: true })).toBeVisible()
+  await expect(viewer.getByText(/^2 of 3/)).toBeVisible()
   await page.keyboard.press('ArrowRight')
-  await expect(viewer.getByText('3 of 3', { exact: true })).toBeVisible()
+  await expect(viewer.getByText(/^3 of 3/)).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(viewer).toBeHidden()
 })
