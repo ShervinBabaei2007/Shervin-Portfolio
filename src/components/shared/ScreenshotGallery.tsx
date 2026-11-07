@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import ResponsiveImage from '@/components/shared/ResponsiveImage'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import images from '@/data/images.json'
 import type { Screenshot } from '@/data/projects'
 import { cn } from '@/lib/utils'
+
+const catalog = images as Record<string, { width: number }>
 
 type ScreenshotGalleryProps = { shots: Screenshot[]; projectName: string; layout?: 'stack' | 'strip' }
 
@@ -16,13 +19,27 @@ type ScreenshotGalleryProps = { shots: Screenshot[]; projectName: string; layout
 function ScreenshotGallery({ shots, projectName, layout = 'stack' }: ScreenshotGalleryProps) {
   const [open, setOpen] = useState(false)
   const [index, setIndex] = useState(0)
+  // Click (or tap) the picture to see it at its real size. Zoomed in, a mouse pans by moving over the picture;
+  // touch and keyboard scroll the area as usual.
+  const [zoomed, setZoomed] = useState(false)
+  const scroller = useRef<HTMLDivElement>(null)
   const shot = shots[index]
 
   const openAt = (next: number) => {
     setIndex(next)
     setOpen(true)
   }
+  const pan = (event: React.MouseEvent) => {
+    const area = scroller.current
+    if (!zoomed || !area) return
+    const box = area.getBoundingClientRect()
+    area.scrollLeft = ((event.clientX - box.left) / box.width) * (area.scrollWidth - area.clientWidth)
+    area.scrollTop = ((event.clientY - box.top) / box.height) * (area.scrollHeight - area.clientHeight)
+  }
   const move = (step: number) => setIndex((current) => (current + step + shots.length) % shots.length)
+
+  // A new picture, or reopening the viewer, starts fitted to the window.
+  useEffect(() => setZoomed(false), [index, open])
 
   useEffect(() => {
     if (!open) return
@@ -76,22 +93,42 @@ function ScreenshotGallery({ shots, projectName, layout = 'stack' }: ScreenshotG
           </DialogDescription>
           <div className="grid max-h-[92vh] min-h-0 md:grid-cols-[minmax(0,1fr)_13rem]">
             <div className="flex min-h-0 flex-col">
-              <div className="flex min-h-[40vh] flex-1 items-start justify-center overflow-auto bg-muted p-4 md:items-center">
-                <div className="[&_img]:mx-auto [&_img]:block [&_img]:max-h-[68vh] [&_img]:w-auto [&_img]:max-w-full [&_img]:rounded-md [&_img]:object-contain">
+              <div
+                ref={scroller}
+                onMouseMove={pan}
+                className={cn(
+                  'flex min-h-[40vh] flex-1 overflow-auto bg-muted p-4',
+                  zoomed ? 'items-start justify-start' : 'items-start justify-center md:items-center',
+                )}
+              >
+                <button
+                  type="button"
+                  className={cn(
+                    'block shrink-0 rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&_img]:block [&_img]:rounded-md [&_img]:object-contain',
+                    zoomed
+                      ? 'cursor-zoom-out [&_img]:max-h-none [&_img]:w-full [&_img]:max-w-none'
+                      : 'cursor-zoom-in [&_img]:mx-auto [&_img]:max-h-[68vh] [&_img]:w-auto [&_img]:max-w-full',
+                  )}
+                  style={zoomed ? { width: catalog[shot.src]?.width } : undefined}
+                  onClick={() => setZoomed((current) => !current)}
+                  aria-pressed={zoomed}
+                  aria-label={zoomed ? 'Zoom out to fit the window' : 'Zoom in to actual size'}
+                >
                   <ResponsiveImage
                     key={shot.src}
                     src={shot.src}
                     alt={shot.alt}
-                    sizes="(max-width: 768px) 92vw, 700px"
+                    sizes={zoomed ? `${catalog[shot.src]?.width ?? 1000}px` : '(max-width: 768px) 92vw, 700px'}
                     priority
                   />
-                </div>
+                </button>
               </div>
               <div className="flex items-center justify-between gap-3 border-t px-4 py-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{shot.caption}</p>
                   <p className="text-label text-muted-foreground tabular-nums">
                     {index + 1} of {shots.length}
+                    {' · '}Click the picture to {zoomed ? 'fit it again' : 'zoom in'}
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-2">
