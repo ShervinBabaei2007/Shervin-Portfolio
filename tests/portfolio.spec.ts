@@ -456,6 +456,26 @@ test.describe('the end of a page', () => {
   })
 })
 
+test('the case-study header puts the actions beside the title on desktop and below it on a phone', async ({ page }) => {
+  const position = async () =>
+    page.evaluate(() => {
+      const title = document.querySelector('#case-study-title')!.getBoundingClientRect()
+      const live = [...document.querySelectorAll('main header a')]
+        .find((a) => a.textContent?.includes('Live project'))!
+        .getBoundingClientRect()
+      return {
+        besideTitle: live.left >= title.right - 1 || live.left > title.left + 300,
+        below: live.top >= title.bottom - 1,
+      }
+    })
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/work/skillmatch')
+  await page.waitForLoadState('networkidle')
+  expect((await position()).besideTitle).toBe(true)
+  await page.setViewportSize({ width: 390, height: 844 })
+  expect((await position()).below).toBe(true)
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')
