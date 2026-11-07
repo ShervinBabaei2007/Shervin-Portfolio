@@ -1058,3 +1058,28 @@ test('the header marks the section you are reading and shows scroll progress', a
   await page.goto('/resume')
   await expect(nav.getByRole('link', { name: 'Resume' })).toHaveAttribute('aria-current', 'page')
 })
+
+test('canonical, og:url and share images use the custom domain', async ({ request }) => {
+  const html = await (await request.get('/')).text()
+  expect(html).toContain('<link rel="canonical" href="https://shervin-babaei.me/"')
+  expect(html).toContain('<meta property="og:url" content="https://shervin-babaei.me/"')
+  expect(html).toContain('<meta property="og:image" content="https://shervin-babaei.me/og/home.png"')
+  expect(html).toContain('<meta name="twitter:image" content="https://shervin-babaei.me/og/home.png"')
+  expect(html).not.toContain('shervinbabaei.vercel.app')
+  const sitemap = await (await request.get('/sitemap.xml')).text()
+  expect(sitemap).toContain('<loc>https://shervin-babaei.me/</loc>')
+  expect(sitemap).not.toContain('shervinbabaei.vercel.app')
+})
+
+test('reduced motion: no infinite animations keep running on the home page', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const running = await page.evaluate(() =>
+    document
+      .getAnimations()
+      .filter((animation) => animation.effect?.getComputedTiming().iterations === Infinity)
+      .map((animation) => animation.id || 'unnamed'),
+  )
+  expect(running).toEqual([])
+})

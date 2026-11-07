@@ -6,9 +6,9 @@ export const site = {
   /**
    * Canonical origin, no trailing slash. Used for canonical links, Open Graph
    * images, JSON-LD and the sitemap. Change this the day you connect a custom
-   * domain in Vercel (for example https://shervinbabaei.com) and redeploy.
+   * domain in Vercel (currently https://shervin-babaei.me) and redeploy.
    */
-  url: 'https://shervinbabaei.vercel.app',
+  url: 'https://shervin-babaei.me',
   name: 'Shervin Babaei',
   role: 'Full-stack developer',
   location: 'Vancouver, BC',

@@ -2,6 +2,12 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
+    {
+      "source": "/:path(.*)",
+      "has": [{ "type": "host", "value": "shervinbabaei.vercel.app" }],
+      "destination": "https://shervin-babaei.me/:path",
+      "permanent": true
+    },
     { "source": "/notes", "destination": "/writeups", "permanent": true },
     { "source": "/notes/:slug", "destination": "/writeups/:slug", "permanent": true }
   ],
