@@ -41,6 +41,7 @@ function ProjectsPage() {
       <p className="sr-only" aria-live="polite">
         Showing {shown.length} {shown.length === 1 ? 'project' : 'projects'}
       </p>
+      <h2 className="sr-only">All projects</h2>
       {/* Filtering slides the remaining cards into place instead of jumping; reduced motion turns it off. */}
       <MotionConfig reducedMotion="user" transition={{ duration: 0.22, ease: 'easeOut' }}>
         <LazyMotion features={loadMotion}>

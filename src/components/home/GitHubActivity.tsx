@@ -176,6 +176,18 @@ function GitHubActivity() {
     )
   }
 
+  /** The menu's way to pick a day (or go back to the latest commits with an empty value). */
+  const chooseDay = (day: string) => {
+    if (!day) return setSelectedDay(null)
+    if (day !== selectedDay) selectDay(day)
+  }
+  /** Days with at least one commit, newest first. */
+  const activeDays = weeks
+    .flat()
+    .filter((cell) => !cell.future && cell.count > 0)
+    .map((cell) => ({ day: cell.day, count: cell.count }))
+    .reverse()
+
   const showDay = selectedDay !== null && dayStatus !== 'error'
   const dayCommits = selectedDay && byDay ? commitsForDay(selectedDay, byDay, liveCommits) : []
   const dayTitle = selectedDay ? longDay(selectedDay) : ''
@@ -278,21 +290,23 @@ function GitHubActivity() {
                       />
                     )
                   }
+                  // The cells are 10px squares, too small to be touch targets of their own, so they are a pointer
+                  // shortcut only (hidden from assistive tech). The "Show commits for" menu below does the same for everyone.
                   return (
-                    <button
+                    <span
                       key={cell.day}
-                      type="button"
                       className={cn(
                         box,
-                        'cursor-pointer transition-shadow hover:ring-2 hover:ring-foreground/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none aria-pressed:ring-2 aria-pressed:ring-foreground',
+                        'cursor-pointer transition-shadow hover:ring-2 hover:ring-foreground/60',
+                        selectedDay === cell.day && 'ring-2 ring-foreground',
                       )}
                       title={`${cell.count} ${noun} on ${cell.day}`}
                       style={stagger}
                       data-cell
-                      aria-label={`${cell.count} ${noun} on ${longDay(cell.day)}`}
-                      aria-pressed={selectedDay === cell.day}
+                      data-day={cell.day}
+                      data-selected={selectedDay === cell.day}
+                      aria-hidden="true"
                       onPointerEnter={() => void loadCommits()}
-                      onFocus={() => void loadCommits()}
                       onClick={() => selectDay(cell.day)}
                     />
                   )
@@ -300,15 +314,33 @@ function GitHubActivity() {
             </div>
           </div>
         </div>
-        <div
-          className="mt-3 flex items-center justify-end gap-1.5 font-mono text-label text-muted-foreground"
-          aria-hidden="true"
-        >
-          Less
-          {levelClass.map((name) => (
-            <span key={name} className={cn('size-3 rounded-[3px]', name)} />
-          ))}
-          More
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+          <label className="flex items-center gap-2.5 text-sm text-muted-foreground">
+            Show commits for
+            <select
+              className="h-10 max-w-[16rem] rounded-md border bg-card px-2.5 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              value={selectedDay ?? ''}
+              onFocus={() => void loadCommits()}
+              onChange={(event) => chooseDay(event.target.value)}
+            >
+              <option value="">Latest commits</option>
+              {activeDays.map(({ day, count }) => (
+                <option key={day} value={day}>
+                  {longDay(day)} ({count})
+                </option>
+              ))}
+            </select>
+          </label>
+          <div
+            className="flex items-center gap-1.5 font-mono text-label text-muted-foreground"
+            aria-hidden="true"
+          >
+            Less
+            {levelClass.map((name) => (
+              <span key={name} className={cn('size-3 rounded-[3px]', name)} />
+            ))}
+            More
+          </div>
         </div>
 
         <div className="mt-8" aria-live="polite" data-commit-panel>
