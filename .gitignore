@@ -16,3 +16,5 @@ featuresToImplement
 bugs&improve
 dist-analyze/
 tests/visual.spec.ts-snapshots/
+
+.env.sentry-build-plugin

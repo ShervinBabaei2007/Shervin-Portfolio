@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath } from 'node:url'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
 /**
  * Preloads the three font files used above the fold so text renders in the
@@ -27,20 +28,34 @@ function preloadFonts(): Plugin {
 }
 
 // `npm run analyze` builds into dist-analyze/ and writes a size treemap to dist-analyze/stats.html.
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ mode, isSsrBuild }) => {
   const analyze = mode === 'analyze'
+  // Source maps are uploaded to Sentry from the client build only, and only when a token is present
+  // (Vercel sets SENTRY_AUTH_TOKEN, SENTRY_ORG and SENTRY_PROJECT; local builds skip the upload).
+  const uploadSourceMaps = !isSsrBuild && !analyze && Boolean(process.env.SENTRY_AUTH_TOKEN)
   return {
     plugins: [
       react(),
       tailwindcss(),
       preloadFonts(),
       ...(analyze ? [visualizer({ filename: 'dist-analyze/stats.html', gzipSize: true, template: 'treemap' })] : []),
+      ...(uploadSourceMaps
+        ? [
+            sentryVitePlugin({
+              telemetry: false,
+              // Keep the maps out of the deployed files once they are uploaded.
+              sourcemaps: { filesToDeleteAfterUpload: ['dist/**/*.map'] },
+            }),
+          ]
+        : []),
     ],
     resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
     build: {
       ...(analyze ? { outDir: 'dist-analyze' } : {}),
       // The manifest maps each page's source file to its chunk, for modulepreload links.
       manifest: true,
+      // Hidden maps are generated for the upload but never linked from the shipped JS.
+      ...(uploadSourceMaps ? { sourcemap: 'hidden' as const } : {}),
     },
   }
 })
