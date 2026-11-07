@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /*
  * Screenshot comparison, run locally only (`npm run test:visual`). Baselines are named per
@@ -6,6 +6,10 @@ import { expect, test } from '@playwright/test'
  * from the current code with `npm run test:visual -- --update-snapshots`; after it, `npm run test:visual`
  * should pass. Update them on purpose only after reviewing a diff you intended.
  */
+
+/** The app's script starts just after the first paint, so wait for React to take over before taking a picture. */
+const hydrated = (page: Page) =>
+  page.waitForFunction(() => Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')))
 
 const pages = [
   '/',
@@ -39,6 +43,7 @@ for (const scheme of ['dark', 'light'] as const) {
         await page.clock.setFixedTime(new Date('2026-06-01T12:00:00Z'))
         await page.route('https://api.github.com/**', (route) => route.fulfill({ json: [] }))
         await page.goto(path)
+        await hydrated(page)
         await page.waitForLoadState('networkidle')
         await page.evaluate(() => document.fonts.ready)
         await expect(page).toHaveScreenshot(
@@ -79,6 +84,7 @@ for (const layer of ['api', 'core'] as const) {
     const page = await context.newPage()
     await page.route('https://api.github.com/**', (route) => route.fulfill({ json: [] }))
     await page.goto('/')
+    await hydrated(page)
     await page.waitForLoadState('networkidle')
     await page.getByRole('button', { name: new RegExp(`Show ${layer} layer projects`, 'i') }).click()
     await page.mouse.move(5, 5)

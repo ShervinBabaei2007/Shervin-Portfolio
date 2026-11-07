@@ -11,6 +11,10 @@ const collectErrors = (page: Page) => {
   return errors
 }
 
+/** The app's script starts just after the first paint, so wait for React to take over the prerendered page before clicking. */
+const hydrated = (page: Page) =>
+  page.waitForFunction(() => Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')))
+
 test('hero states the role, links to the resume, and shows no stats or email', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Full-stack developer')
@@ -352,6 +356,7 @@ test('a slow page change shows a progress bar, and a fast one does not', async (
   await page.goto('/writeups')
   // No waiting for the network to go quiet: the delayed home chunk is already being fetched and would finish first.
   await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
+  await hydrated(page)
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
   const bar = page.locator('[data-nav-progress]')
 
@@ -705,12 +710,13 @@ test('CSS is one cached stylesheet, not inlined into every page', async ({ reque
 })
 
 test('each page preloads only its own code chunk', async ({ request }) => {
+  // The preloads sit in the inline loader that starts the app after the first paint, so look for the file names.
   const resume = await (await request.get('/resume')).text()
-  expect(resume).toMatch(/modulepreload[^>]+ResumePage-/)
-  expect(resume).not.toMatch(/modulepreload[^>]+(CaseStudyPage|HomePage)-/)
+  expect(resume).toMatch(/\/assets\/ResumePage-/)
+  expect(resume).not.toMatch(/\/assets\/(CaseStudyPage|HomePage)-/)
   const caseStudy = await (await request.get('/work/thinkboard')).text()
-  expect(caseStudy).toMatch(/modulepreload[^>]+CaseStudyPage-/)
-  expect(caseStudy).not.toMatch(/modulepreload[^>]+(ResumePage|HomePage)-/)
+  expect(caseStudy).toMatch(/\/assets\/CaseStudyPage-/)
+  expect(caseStudy).not.toMatch(/\/assets\/(ResumePage|HomePage)-/)
 })
 
 test('fonts: two above-the-fold files preloaded, unused weight not shipped', async ({ request }) => {
@@ -732,6 +738,7 @@ test('large screenshots offer a small copy and reserve their space', async ({ pa
 
 test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the other visitor', async ({ page }) => {
   await page.goto('/work/thinkboard')
+  await hydrated(page)
   const demo = page.locator('[data-limiter-demo]')
   await demo.getByRole('button', { name: 'Burst 15 requests' }).click()
   await expect(demo.locator('[data-limiter-log] li[data-limited]').first()).toBeVisible({ timeout: 5000 })
@@ -821,10 +828,10 @@ test('commit history: select a day to list its commits, then go back to the late
   const activity = page.locator('[data-github]')
   await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
 
-  const days = activity.locator('[data-heatmap] button')
+  const days = activity.locator('[data-heatmap] [data-day]')
   expect(await days.count()).toBeGreaterThan(10)
   await days.nth(3).click()
-  await expect(days.nth(3)).toHaveAttribute('aria-pressed', 'true')
+  await expect(days.nth(3)).toHaveAttribute('data-selected', 'true')
   await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
   await expect(activity.getByRole('heading', { name: 'Latest commits' })).toHaveCount(0)
   const links = activity.locator('[data-commit-panel] li a')
@@ -833,14 +840,16 @@ test('commit history: select a day to list its commits, then go back to the late
 
   await activity.getByRole('button', { name: 'Show latest commits' }).click()
   await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
-  await expect(days.nth(3)).toHaveAttribute('aria-pressed', 'false')
+  await expect(days.nth(3)).toHaveAttribute('data-selected', 'false')
 
-  // The same cell, from the keyboard.
-  await days.nth(3).focus()
-  await page.keyboard.press('Enter')
+  // The same thing from the keyboard-friendly menu.
+  const menu = activity.getByLabel('Show commits for')
+  await menu.selectOption({ index: 2 })
   await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
-  await days.nth(3).click()
+  await menu.selectOption('')
   await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
+  // The cells are a pointer shortcut and are not in the tab order.
+  await expect(activity.locator('[data-heatmap] button')).toHaveCount(0)
 })
 
 test('a page whose code fails to load shows a reload prompt, not a blank site', async ({ page }) => {
@@ -863,6 +872,7 @@ test('a slow page keeps the current page on screen, then lands on the linked sec
   })
   await page.goto('/writeups')
   await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
+  await hydrated(page)
   await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Contact' }).click()
   await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
   await expect(page.locator('[aria-label="Loading page"]')).toHaveCount(0)
@@ -1105,6 +1115,7 @@ test('writeups have a table of contents that jumps to a heading', async ({ page 
 
 test('back to top appears after scrolling and returns to the top', async ({ page }) => {
   await page.goto('/')
+  await hydrated(page)
   const button = page.getByRole('button', { name: 'Back to top', includeHidden: true })
   await expect(button).toHaveAttribute('aria-hidden', 'true')
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
