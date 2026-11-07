@@ -17,6 +17,7 @@ export async function startMonitoring() {
   if (!dsn) return
   const Sentry = await import('@sentry/react')
   Sentry.init({ dsn, tracesSampleRate: 0.1, environment: import.meta.env.MODE })
+  setTimeout(() => { throw new Error('Source map test') })
 }
 
 /** Reports an error caught by a React error boundary. Does nothing unless Sentry was started. */
