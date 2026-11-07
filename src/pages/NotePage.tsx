@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
+import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import NoteBody from '@/components/shared/NoteBody'
 import { findNote, formatDate, notes } from '../data/notes'
@@ -41,7 +42,11 @@ function NotePage() {
         </p>
       </header>
       <NoteBody blocks={note.body} />
-      <footer className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-3.5 border-t pt-6">
+      <ClosingCta
+        heading="Found this useful?"
+        body="I'm happy to talk through the details, or what I would do differently."
+      />
+      <footer className="mt-6 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-3.5 border-t pt-6">
         {project && (
           <Link className={footerLink} to={`/work/${project.slug}`}>
             <span className={footerLabel}>Case study</span>

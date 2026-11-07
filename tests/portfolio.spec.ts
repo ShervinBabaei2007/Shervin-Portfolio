@@ -418,6 +418,40 @@ test.describe('reading width', () => {
   }
 })
 
+test.describe('the end of a page', () => {
+  test('a case study ends with a way to get in touch, and the link works', async ({ page }) => {
+    await page.goto('/work/skillmatch')
+    await page.waitForLoadState('networkidle')
+    const cta = page.getByRole('region', { name: 'Working on something like SkillMatch?' })
+    await expect(cta.getByRole('link', { name: /Get in touch/ })).toHaveAttribute('href', '/#contact')
+    await expect(cta.getByRole('link', { name: /View resume/ })).toHaveAttribute('href', '/resume')
+    await expect(cta.getByRole('link', { name: /All projects/ })).toHaveAttribute('href', '/#work')
+    await cta.getByRole('link', { name: /Get in touch/ }).click()
+    await expect(page).toHaveURL(/\/#contact$/)
+    await expect(page.locator('#contact')).toBeInViewport()
+  })
+
+  test('a note ends with the same next step', async ({ page }) => {
+    await page.goto('/notes/skillmatch-attend-race-condition')
+    const cta = page.getByRole('region', { name: 'Found this useful?' })
+    await expect(cta.getByRole('link', { name: /Get in touch/ })).toHaveAttribute('href', '/#contact')
+  })
+
+  test('the project pager does not wrap around', async ({ page }) => {
+    const pager = () => page.getByRole('navigation', { name: 'More case studies' })
+    // First project: nothing before it, so the left slot goes back to the work list.
+    await page.goto('/work/skillmatch')
+    await expect(pager().getByRole('link', { name: /Previous/ })).toHaveCount(0)
+    await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
+    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', '/work/gitscribe')
+    // Last project: nothing after it, so the right slot goes back to the work list.
+    await page.goto('/work/jicnic')
+    await expect(pager().getByRole('link', { name: /Next/ })).toHaveCount(0)
+    await expect(pager().getByRole('link', { name: /Previous/ })).toHaveAttribute('href', '/work/jinterest')
+    await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
+  })
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')

@@ -1,5 +1,6 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Github, Link2, Users } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
+import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import CodeBlock from '@/components/shared/CodeBlock'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
@@ -30,8 +31,9 @@ function CaseStudyPage() {
   if (!project) return <NotFoundPage />
 
   const index = projects.indexOf(project)
-  const previous = projects[(index - 1 + projects.length) % projects.length]
-  const next = projects[(index + 1) % projects.length]
+  // No wrap-around: the first project has no previous one and the last has no next one, so those slots go back to the work list.
+  const previous = projects[index - 1]
+  const next = projects[index + 1]
   const relatedNotes = notesForProject(project.slug)
   const glance: [string, string][] = [
     ['MY ROLE', project.role],
@@ -273,19 +275,42 @@ function CaseStudyPage() {
         </div>
       </div>
 
-      <nav className="mt-14 grid grid-cols-2 gap-4 max-[620px]:grid-cols-1" aria-label="More case studies">
-        <Link className={pagerLink} to={`/work/${previous.slug}`}>
-          <span className={pagerLabel}>
-            <ArrowLeft size={15} /> Previous
-          </span>
-          <b className="text-xl font-semibold">{previous.name}</b>
-        </Link>
-        <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to={`/work/${next.slug}`}>
-          <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
-            Next <ArrowRight size={15} />
-          </span>
-          <b className="text-xl font-semibold">{next.name}</b>
-        </Link>
+      <ClosingCta
+        heading={`Working on something like ${project.name}?`}
+        body="Tell me what you're building and I'll reply within two business days."
+      />
+
+      <nav className="mt-6 grid grid-cols-2 gap-4 max-[620px]:grid-cols-1" aria-label="More case studies">
+        {previous ? (
+          <Link className={pagerLink} to={`/work/${previous.slug}`}>
+            <span className={pagerLabel}>
+              <ArrowLeft size={15} /> Previous
+            </span>
+            <b className="text-xl font-semibold">{previous.name}</b>
+          </Link>
+        ) : (
+          <Link className={pagerLink} to="/#work">
+            <span className={pagerLabel}>
+              <ArrowLeft size={15} /> Back to work
+            </span>
+            <b className="text-xl font-semibold">All projects</b>
+          </Link>
+        )}
+        {next ? (
+          <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to={`/work/${next.slug}`}>
+            <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
+              Next <ArrowRight size={15} />
+            </span>
+            <b className="text-xl font-semibold">{next.name}</b>
+          </Link>
+        ) : (
+          <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to="/#work">
+            <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
+              Back to work <ArrowUpRight size={15} />
+            </span>
+            <b className="text-xl font-semibold">All projects</b>
+          </Link>
+        )}
       </nav>
     </article>
   )
