@@ -4,6 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import NavigationProgress from '@/components/shared/NavigationProgress'
 import SiteFooter from '@/components/shared/SiteFooter'
 import SiteHeader from '@/components/shared/SiteHeader'
+import { reportError } from './lib/monitoring'
 import { usePageMeta } from './hooks/usePageMeta'
 import { useTheme, type Scheme } from './hooks/useTheme'
 import { pages } from './routes'
@@ -56,6 +57,10 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
 
   static getDerivedStateFromError() {
     return { failed: true }
+  }
+
+  componentDidCatch(error: unknown) {
+    void reportError(error).catch(() => {})
   }
 
   componentDidUpdate(previous: { pathname: string }) {

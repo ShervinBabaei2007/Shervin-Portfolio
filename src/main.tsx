@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { reloadOnceAfterChunkFailure } from './lib/reloadOnce'
+import { startMonitoring } from './lib/monitoring'
 import { pageForPath, preloadAllPages } from './routes'
 import './fonts.css'
 import './tailwind.css'
@@ -23,6 +24,7 @@ const warmOtherPages = () => {
   const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 1500))
   // A chunk that fails here is retried when someone navigates to that page.
   idle(() => void preloadAllPages().catch(() => {}))
+  idle(() => void startMonitoring().catch(() => {}))
 }
 
 // Load this route's chunk before hydrating, so React renders the same markup
