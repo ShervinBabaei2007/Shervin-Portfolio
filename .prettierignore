@@ -4,6 +4,7 @@ node_modules
 package-lock.json
 src/components/ui
 src/data/github.json
+src/data/github-commits.json
 src/data/images.json
 public
 featuresToImplement
