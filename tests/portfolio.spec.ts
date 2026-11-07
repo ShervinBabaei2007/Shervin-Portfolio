@@ -386,6 +386,7 @@ test.describe('typography', () => {
 test.describe('reading width', () => {
   // DM Sans digits are wide, so a "ch" cap runs long: 70ch was 862px, over 100 characters a line.
   // Body text is about 740px and the 19px lead line under a case-study title about 780px, so 800px has room.
+  // The closing card is skipped on purpose: it spans the page and holds one-line text, not prose.
   for (const width of [1440, 2560]) {
     test(`long prose stays under 800px wide at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height: 1000 })
@@ -403,7 +404,10 @@ test.describe('reading width', () => {
           [...document.querySelectorAll('main p, main li:not(:has(p))')]
             .filter(
               (element) =>
-                (element.textContent ?? '').trim().length >= 70 && !element.closest('pre, [aria-hidden="true"]'),
+                (element.textContent ?? '').trim().length >= 70 &&
+                !element.closest(
+                  'pre, [aria-hidden="true"], #closing-cta-title + p, section[aria-labelledby="closing-cta-title"]',
+                ),
             )
             .map((element) => ({
               width: Math.round(element.getBoundingClientRect().width),

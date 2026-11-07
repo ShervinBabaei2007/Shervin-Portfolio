@@ -69,7 +69,8 @@ function CaseStudyPage() {
         current={project.name}
       />
 
-      <header className="mt-[18px]">
+      {/* Centred on wider screens so the title does not sit in a corner of a mostly empty page; left-aligned on phones. */}
+      <header className="mt-[18px] min-[621px]:text-center">
         <p className="eyebrow">
           {project.category.toUpperCase()} <span className="text-muted-foreground">/</span> {project.date.toUpperCase()}
         </p>
@@ -79,14 +80,16 @@ function CaseStudyPage() {
         >
           {project.name}
         </h1>
-        <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground">{project.subtitle}</p>
+        <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground min-[621px]:mx-auto">
+          {project.subtitle}
+        </p>
 
-        <p className="mt-3.5 flex max-w-[70ch] items-baseline gap-2 text-sm leading-normal text-muted-foreground">
+        <p className="mt-3.5 flex max-w-[70ch] items-baseline gap-2 text-sm leading-normal text-muted-foreground min-[621px]:mx-auto min-[621px]:justify-center">
           <Users className="flex-none translate-y-0.5 text-primary" size={15} aria-hidden="true" /> {project.team}
         </p>
 
         <dl
-          className="mt-[22px] grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-8 gap-y-4 rounded-r-lg border-l-[3px] border-primary bg-card px-5 py-[18px] max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5"
+          className="mt-[22px] grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-8 gap-y-4 rounded-r-lg border-l-[3px] border-primary bg-card px-5 py-[18px] max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5 min-[621px]:text-left"
           aria-label="At a glance"
         >
           {glance.map(([label, value]) => (
@@ -97,7 +100,7 @@ function CaseStudyPage() {
           ))}
         </dl>
 
-        <div className="mt-5 flex flex-wrap items-center gap-3">
+        <div className="mt-5 flex flex-wrap items-center gap-3 min-[621px]:justify-center">
           {project.live && (
             <Button asChild size="lg" className="h-11 px-[17px] text-control font-semibold">
               <a href={project.live} target="_blank" rel="noreferrer">
@@ -134,7 +137,7 @@ function CaseStudyPage() {
           </span>
         </div>
 
-        <nav className="mt-6 flex flex-wrap gap-x-1 gap-y-1" aria-label="On this page">
+        <nav className="mt-6 flex flex-wrap gap-x-1 gap-y-1 min-[621px]:justify-center" aria-label="On this page">
           {sections.map(([id, label]) => (
             <a
               key={id}

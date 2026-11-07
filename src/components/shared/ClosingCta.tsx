@@ -6,16 +6,24 @@ import { textLinkClass } from '@/lib/utils'
 
 type ClosingCtaProps = { heading: string; body: string }
 
-/** The last thing on a case study or note: a clear next step for someone who has just finished reading. */
+/**
+ * The last thing on a case study or note: a clear next step for someone who has just finished reading.
+ * On wide screens the text sits on the left and the actions on the right, so the card is filled edge to edge.
+ */
 function ClosingCta({ heading, body }: ClosingCtaProps) {
   return (
-    <section className="mt-14 rounded-xl border bg-card p-6 max-[620px]:p-5" aria-labelledby="closing-cta-title">
-      <h2 id="closing-cta-title" className="text-xl font-semibold">
-        {heading}
-      </h2>
-      <p className="mt-2 max-w-[60ch] leading-[1.6] text-muted-foreground">{body}</p>
-      <p className="mt-1.5 max-w-[60ch] text-meta leading-[1.5] text-muted-foreground">{availabilityLine()}</p>
-      <div className="mt-5 flex flex-wrap items-center gap-3">
+    <section
+      className="mt-14 grid items-center gap-6 rounded-xl border bg-card p-6 max-[620px]:p-5 min-[900px]:grid-cols-[minmax(0,1fr)_auto] min-[900px]:gap-10 min-[900px]:px-8 min-[900px]:py-7"
+      aria-labelledby="closing-cta-title"
+    >
+      <div>
+        <h2 id="closing-cta-title" className="text-xl font-semibold">
+          {heading}
+        </h2>
+        <p className="mt-2 leading-[1.6] text-muted-foreground">{body}</p>
+        <p className="mt-1.5 text-meta leading-[1.5] text-muted-foreground">{availabilityLine()}</p>
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
         <Button asChild size="lg" className="h-11 px-[17px] text-control font-semibold">
           <Link to="/#contact">
             Get in touch <Mail />
