@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom'
 import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import NoteBody from '@/components/shared/NoteBody'
+import CopyLinkButton from '@/components/shared/CopyLinkButton'
+import TableOfContents from '@/components/shared/TableOfContents'
 import { findNote, formatDate, notes } from '../data/notes'
 import { findProject } from '../data/projects'
 import { site } from '../data/site'
@@ -21,7 +23,7 @@ function WriteupPage() {
 
   return (
     <article
-      className="section-wrap max-w-[920px] pt-9 pb-[110px] max-[620px]:pt-[18px] max-[620px]:pb-16"
+      className="section-wrap pt-9 pb-[110px] max-[620px]:pt-[18px] max-[620px]:pb-16"
       aria-labelledby="note-title"
     >
       <PageBreadcrumb
@@ -33,13 +35,17 @@ function WriteupPage() {
       />
       <header className="mt-[18px] border-b pb-8">
         <p className="eyebrow">WRITEUP</p>
-        <h1 id="note-title" className="mt-3.5 text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-[1.1] font-semibold">
+        <h1 id="note-title" className="mt-3.5 text-wrap text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-[1.1] font-semibold">
           {note.title}
         </h1>
         <p className="mt-5 text-[1.25rem] leading-[1.65] text-muted-foreground">{note.summary}</p>
-        <p className="mt-3.5 font-mono text-meta text-muted-foreground">
-          {site.name} · <time dateTime={note.date}>{formatDate(note.date)}</time> · {note.minutes} min read
-        </p>
+        <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+          <p className="font-mono text-meta text-muted-foreground">
+            {site.name} · <time dateTime={note.date}>{formatDate(note.date)}</time> · {note.minutes} min read
+          </p>
+          <CopyLinkButton />
+        </div>
+        <TableOfContents headings={note.body.flatMap((block) => (block.type === 'h2' ? [block.text] : []))} />
       </header>
       <NoteBody blocks={note.body} />
       <ClosingCta

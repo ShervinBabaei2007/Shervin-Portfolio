@@ -4,6 +4,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import NavigationProgress from '@/components/shared/NavigationProgress'
 import SiteFooter from '@/components/shared/SiteFooter'
 import SiteHeader from '@/components/shared/SiteHeader'
+import BackToTop from '@/components/shared/BackToTop'
+import PageTransition from '@/components/shared/PageTransition'
 import { reportError } from './lib/monitoring'
 import { usePageMeta } from './hooks/usePageMeta'
 import { useTheme, type Scheme } from './hooks/useTheme'
@@ -120,15 +122,18 @@ function App() {
               </div>
             }
           >
-            <Routes>
-              {Object.values(pages).map(({ path, Component }) => (
-                <Route key={path} path={path} element={<Component />} />
-              ))}
-            </Routes>
+            <PageTransition pathname={pathname}>
+              <Routes>
+                {Object.values(pages).map(({ path, Component }) => (
+                  <Route key={path} path={path} element={<Component />} />
+                ))}
+              </Routes>
+            </PageTransition>
           </Suspense>
         </PageErrorBoundary>
       </main>
       <SiteFooter />
+      <BackToTop />
       <LazyToaster scheme={scheme} />
     </div>
   )

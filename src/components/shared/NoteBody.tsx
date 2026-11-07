@@ -1,6 +1,7 @@
 import type { NoteBlock } from '@/data/notes'
 import CodeBlock from '@/components/shared/CodeBlock'
 import RichText from '@/components/shared/RichText'
+import { headingId } from '@/lib/utils'
 
 function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
   return (
@@ -9,7 +10,7 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
         switch (block.type) {
           case 'h2':
             return (
-              <h2 key={index} className="mt-[52px] text-[1.5rem] font-semibold">
+              <h2 key={index} id={headingId(block.text)} className="mt-[52px] text-[1.5rem] font-semibold">
                 {block.text}
               </h2>
             )
