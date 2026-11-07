@@ -58,12 +58,6 @@ export const skillTabs: SkillTab[] = [
 
 export const projectsUsing = (skill: string) => projects.filter((project) => project.stack.includes(skill))
 
-/** Usage is derived from the number of projects, so it can be checked against the case studies. */
-export function usageLevel(skill: string): 'Core' | 'Used' | 'Exploring' {
-  const count = projectsUsing(skill).length
-  return count >= 3 ? 'Core' : count >= 1 ? 'Used' : 'Exploring'
-}
-
 /** What this site itself is built and checked with (shown beside the project skills). */
 export const siteStack = [
   { title: 'Build', items: ['React 19', 'TypeScript', 'Vite', 'React Router', 'Tailwind CSS', 'shadcn/ui'] },
