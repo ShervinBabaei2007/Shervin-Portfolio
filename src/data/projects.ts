@@ -66,6 +66,99 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: 'network-growth-assistant',
+    name: 'Network Growth Assistant',
+    category: 'Full-stack',
+    flagship: true,
+    date: 'Oct – Nov 2026',
+    subtitle: 'A networking and job-search workspace that only counts what actually happened.',
+    summary:
+      'A Next.js and Supabase app for growing a professional network and running a job search: a daily outreach queue, a research assistant that quotes its sources, verified job postings, and an applications board.',
+    role: 'Solo project, design to deployment',
+    team: 'Built on my own. All 256 commits in the repository are mine.',
+    highlight: '1,523 unit tests, 305 database tests, 256 commits',
+    signal: {
+      ownership:
+        'The whole product: Next.js app, Supabase schema and row-level security, job crawler, and test suites.',
+      decision: 'Return fewer people rather than lower the evidence bar, and count only accepted invitations.',
+      evidence: 'A live app, a public repository with CI, and the safe-fetch source shown below.',
+    },
+    why: 'Networking tools tend to flatter you with vanity numbers or automate the part that should stay personal. I wanted one that is honest about progress and leaves every invitation and message to me.',
+    mine: [
+      'Built the Next.js 16 App Router front end with React 19, Tailwind CSS 4, and shadcn/ui, including light and dark themes and lists that turn into cards on a phone.',
+      'Designed the Supabase Postgres schema with row-level security on every table, scoped to the owner, plus Auth (Google, password, emailed link), Storage, and pg_cron jobs.',
+      'Wrote safe-fetch, the only path for fetching outside URLs: it refuses private and reserved addresses, pins the connection to the addresses it just checked, and follows redirects by hand.',
+      'Built Discover, a research assistant over public sources that verifies each fact against the source page and drops any quote it cannot find, with scores computed by visible rules rather than a model.',
+      'Built the Jobs search over employers’ own boards, where a posting gets an Apply button only after its link is verified.',
+      'Wrote 1,523 unit tests and 305 pgTAP database tests, and ran axe-core accessibility scans in the Playwright end-to-end suite, with CI on GitHub Actions.',
+    ],
+    outcome:
+      'A deployed app on Vercel and Supabase that never scrapes LinkedIn, never sends anything for you, and shows progress that cannot be inflated by pending invitations.',
+    tradeoff:
+      'Discover returns fewer people rather than weaker matches, and an AI model only writes text; scores, rankings, and fit are rules. That makes results explainable and checkable, but a short list can feel less impressive than a long, loosely matched one.',
+    learned:
+      'Security and honesty rules are easiest to keep when they live in one place: one function for outside fetches, one place for counting rules, and row-level security in the database instead of checks scattered through the app.',
+    next: 'Run the screen-reader checklist (not done yet, and the README says so) and re-measure Lighthouse on production, which has not been repeated since the newest features landed.',
+    architecture: [
+      { label: 'Next.js 16', detail: 'App Router, server actions' },
+      { label: 'proxy.ts', detail: 'Session refresh, sign-in redirect' },
+      { label: 'Supabase', detail: 'Postgres, row-level security, Auth' },
+      { label: 'pg_cron + API routes', detail: 'Crawler and alerts' },
+    ],
+    stack: ['Next.js', 'React', 'TypeScript', 'PostgreSQL', 'Supabase', 'Vercel', 'Vitest', 'GitHub Actions'],
+    github: 'https://github.com/ShervinBabaei2007/Network-Growth-Assistance',
+    live: 'https://linkedin-network-growth-assistance.vercel.app',
+    screenshots: [
+      {
+        src: '/projects/nga-overview.webp',
+        alt: 'Network Growth Assistant overview: a connection total against a goal, pipeline tiles, and progress per discipline.',
+        caption: 'Overview (example data)',
+      },
+      {
+        src: '/projects/nga-quick-capture.webp',
+        alt: 'Quick capture turning a pasted search results page into rows with school and program already matched.',
+        caption: 'Quick capture (example data)',
+      },
+      {
+        src: '/projects/nga-discover.webp',
+        alt: 'Discover results listing verified matches with a visible score and the reasons each person matches.',
+        caption: 'Discover (example data)',
+      },
+      {
+        src: '/projects/nga-jobs.webp',
+        alt: 'Jobs page with verified postings, a fit score, and the matching requirements on each card.',
+        caption: 'Jobs (example data)',
+      },
+    ],
+    snippet: {
+      file: 'src/lib/net/safe-fetch.ts',
+      href: 'https://github.com/ShervinBabaei2007/Network-Growth-Assistance/blob/main/src/lib/net/safe-fetch.ts',
+      language: 'ts',
+      caption:
+        'Every URL that comes from outside is checked against this block list before the server connects, so a job link cannot point at the server’s own network.',
+      code: `const V4_BLOCKED: [string, number][] = [
+  ["0.0.0.0", 8], // "this" network
+  ["10.0.0.0", 8], // private
+  ["100.64.0.0", 10], // carrier-grade NAT
+  ["127.0.0.0", 8], // loopback
+  ["169.254.0.0", 16], // link-local, incl. 169.254.169.254 metadata
+  ["172.16.0.0", 12], // private
+  ["192.168.0.0", 16], // private
+  ["224.0.0.0", 4], // multicast
+  ["240.0.0.0", 4], // reserved, incl. 255.255.255.255 broadcast
+  // ...and the documentation, benchmarking and 6to4 ranges
+];
+
+function isPublicV4(ip: string): boolean {
+  const n = v4ToInt(ip);
+  return !V4_BLOCKED.some(([base, bits]) => {
+    const mask = bits === 0 ? 0 : (~0 << (32 - bits)) >>> 0;
+    return (n & mask) === (v4ToInt(base) & mask);
+  });
+}`,
+    },
+  },
+  {
     slug: 'skillmatch',
     name: 'SkillMatch',
     category: 'Full-stack',
@@ -184,6 +277,13 @@ export const projects: Project[] = [
     stack: ['React', 'TypeScript', 'Auth0', 'GitHub OAuth', 'Figma'],
     github: 'https://github.com/adriencyr/GitScribe',
     live: 'https://git-scribe-aybm.vercel.app/',
+    screenshots: [
+      {
+        src: '/projects/gitscribe-sign-in.webp',
+        alt: 'GitScribe sign-in card with a Continue with GitHub button on a dark background.',
+        caption: 'Sign-in screen I built',
+      },
+    ],
     snippet: {
       file: 'src/components/LoginpageCard.tsx',
       href: 'https://github.com/adriencyr/GitScribe/blob/main/src/components/LoginpageCard.tsx',
@@ -301,7 +401,7 @@ const ratelimiter = async (req, res, next) => {
     slug: 'discord-ai-bridge',
     name: 'Discord AI Bridge',
     category: 'AI tools',
-    flagship: true,
+    flagship: false,
     date: 'March – April 2026',
     subtitle: 'A Discord bot that answers questions with a model running on my own machine.',
     summary:
@@ -508,6 +608,13 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
     ],
     stack: ['HTML5', 'CSS3', 'JavaScript', 'localStorage'],
     github: 'https://github.com/ShervinBabaei2007/Jinterest',
+    screenshots: [
+      {
+        src: '/projects/jinterest-board.webp',
+        alt: 'The Jinterest mood board with five image cards of different sizes and a toolbar with undo, redo, and help.',
+        caption: 'A seeded board',
+      },
+    ],
   },
   {
     slug: 'jicnic',
@@ -541,6 +648,143 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
     ],
     stack: ['Node.js', 'Express', 'WebSockets', 'OpenWeatherMap API', 'bcrypt', 'JavaScript'],
     github: 'https://github.com/ShervinBabaei2007/Jicnic',
+    screenshots: [
+      {
+        src: '/projects/jicnic-voting.webp',
+        alt: 'Jicnic voting board with five days, yes, maybe, and no buttons, and colored vote bars for each person.',
+        caption: 'Voting board, signed in as a test user',
+      },
+    ],
+  },
+  {
+    slug: 'linklocker',
+    name: 'LinkLocker',
+    category: 'Full-stack',
+    flagship: false,
+    date: 'October 2026',
+    subtitle: 'A URL shortener with Google sign-in, deployed on an Azure VM.',
+    summary:
+      'Paste a long URL, get a short link that redirects to it. Built as a two-person course project, with Google OAuth protecting link creation and the app served over HTTPS from Azure.',
+    role: 'Application and authentication developer, 2-person team',
+    team: 'BCIT course project with a teammate who set up the infrastructure. I made 15 of the 49 commits; they made 34.',
+    highlight: 'Google OAuth with passport.js, live on Azure',
+    why: 'The course asked for an app that is actually deployed, so the work was as much about getting a real server and sign-in flow running as about the shortener itself.',
+    mine: [
+      'Built the front end and the Express backend for URL shortening, backed by MongoDB (Milestone A).',
+      'Implemented Google OAuth with passport.js, the auth routes, user sessions, and login-protected link creation (Milestone B).',
+      'Registered the production OAuth callback and wrote the Milestone B write-up.',
+    ],
+    outcome: 'A live shortener at its own HTTPS address. Milestones A and B are complete; Milestone C was not reached.',
+    tradeoff:
+      'Everything runs on one Azure VM: Nginx terminates HTTPS and forwards to Express on 127.0.0.1:3000, managed by PM2. It keeps the setup small and only Nginx is public, but there is no redundancy if the VM goes down.',
+    learned:
+      'Sign-in works locally long before it works in production: the OAuth callback and environment variables have to match the deployed address exactly.',
+    next: 'Finish Milestone C, which the README lists as not reached yet, and add tests around the redirect and the login-protected routes.',
+    architecture: [
+      { label: 'Visitor', detail: 'HTTPS' },
+      { label: 'Nginx', detail: 'Reverse proxy, Let’s Encrypt cert' },
+      { label: 'Express', detail: '127.0.0.1:3000, PM2' },
+      { label: 'MongoDB', detail: 'Links and users' },
+    ],
+    stack: ['Node.js', 'Express', 'MongoDB', 'JavaScript', 'Azure', 'Nginx'],
+    github: 'https://github.com/ShervinBabaei2007/Web-adminProject',
+    live: 'https://linklocker.northcentralus.cloudapp.azure.com/',
+    screenshots: [
+      {
+        src: '/projects/linklocker-sign-in.webp',
+        alt: 'The live LinkLocker page with a Sign in with Google link and the text Sign in to create short links.',
+        caption: 'Live sign-in page (link creation is behind login)',
+      },
+    ],
+  },
+  {
+    slug: 'tic-tac-toe-minimax',
+    name: 'Tic-Tac-Toe Minimax AI',
+    category: 'Systems',
+    flagship: false,
+    date: 'June 2026',
+    subtitle: 'A terminal game with an AI that picks the best move by searching every outcome.',
+    summary:
+      'A Python command-line Tic-Tac-Toe with a random player, a human player, and a Minimax player, plus a simulation mode that plays many games to show the Minimax player does not lose.',
+    role: 'Solo project',
+    team: 'Built on my own.',
+    highlight: 'Never lost in 1,200 games against a random player',
+    why: 'Minimax is easy to describe and easy to get subtly wrong. I wanted to write the recursion myself and check it against a player that moves at random.',
+    mine: [
+      'Wrote the board, winner detection, and game loop in game.py, and the Random, Human, and Minimax players in player.py.',
+      'Implemented the recursive Minimax search: try a move, simulate the rest of the game, undo the move, and keep the best score.',
+      'Weighted a win by the number of empty squares left, so the AI prefers winning sooner.',
+      'Added a simulation mode that runs any number of games silently and reports win, loss, and tie counts.',
+    ],
+    outcome:
+      'A game you can play in the terminal. Run against a random player for 1,200 games, the Minimax player won 988 and tied 212, with no losses.',
+    tradeoff:
+      'It searches the full game tree on every move. That is fine for a 3×3 board, but it would not scale to larger boards without something like alpha-beta pruning.',
+    learned:
+      'Undoing a move correctly, including the winner flag, is as important as the scoring, because the search shares one board.',
+    next: 'Add alpha-beta pruning and a board-size option to see where the plain search stops being practical.',
+    architecture: [
+      { label: 'game.py', detail: 'Board, winner, game loop' },
+      { label: 'player.py', detail: 'Random, Human, Minimax' },
+      { label: 'Minimax', detail: 'Recursive search, undo each move' },
+      { label: 'Simulation', detail: 'Win, loss, tie counts' },
+    ],
+    stack: ['Python', 'Minimax', 'Recursion'],
+    github: 'https://github.com/ShervinBabaei2007/tic-tac-toe-minimax-ai',
+    terminal: {
+      title: 'python game.py',
+      transcript: `After 1200 iterations, we see 0 X wins, 988 O wins, and 212 ties`,
+    },
+  },
+  {
+    slug: 'ollama-rag',
+    name: 'Local LLM and RAG Experiments',
+    category: 'AI tools',
+    flagship: false,
+    date: 'June 2026',
+    subtitle: 'Two small projects exploring how local models and retrieval work.',
+    summary:
+      'A grocery-list categorizer that gets structured output from a local model, and a PDF question-answering pipeline built on embeddings and a vector database, all running through Ollama.',
+    role: 'Solo project',
+    team: 'Built on my own.',
+    highlight: 'Local RAG over a PDF with ChromaDB',
+    why: 'I wanted to see how retrieval-augmented generation works under the hood, using models on my own machine instead of a hosted API.',
+    mine: [
+      'Wrote categorizer.py, which sends a grocery list to a local model and organizes the items into sections.',
+      'Wrote pdf-rag.py: load a PDF, split it into chunks, embed them with nomic-embed-text, store them in ChromaDB, retrieve relevant context, and answer with llama3.2.',
+    ],
+    outcome: 'Two working scripts, one for structured output and one for asking questions about a document.',
+    tradeoff:
+      'Everything runs locally, so there is no API cost and no data leaves the machine, but answer quality is limited by the size of the model I can run.',
+    learned: 'Most of a RAG system’s quality comes from how the document is chunked and retrieved, not from the model.',
+    next: 'Add citations that point to the retrieved chunk and a small set of test questions to compare chunk sizes.',
+    architecture: [
+      { label: 'PDF loader', detail: 'LangChain' },
+      { label: 'Chunks + embeddings', detail: 'nomic-embed-text' },
+      { label: 'ChromaDB', detail: 'Vector store' },
+      { label: 'Ollama', detail: 'llama3.2 answers' },
+    ],
+    stack: ['Python', 'Ollama', 'LangChain', 'ChromaDB'],
+    github: 'https://github.com/ShervinBabaei2007/Ollama',
+    snippet: {
+      file: 'pdf-rag.py',
+      href: 'https://github.com/ShervinBabaei2007/Ollama/blob/main/pdf-rag.py',
+      language: 'python',
+      caption:
+        'The settings that shape the pipeline: which models run, how the PDF is chunked, and how many chunks are retrieved.',
+      code: `DOC_PATH = "./data/Notes_ML.pdf"
+
+MODEL_NAME = "llama3.2"
+EMBEDDING_MODEL = "nomic-embed-text"
+
+VECTOR_STORE_NAME = "simple-rag"
+PERSIST_DIR = "./chroma_db"
+
+CHUNK_SIZE = 1200
+CHUNK_OVERLAP = 300
+
+TOP_K = 5`,
+    },
   },
 ]
 

@@ -1,5 +1,5 @@
 // Captures sharp 2× screenshots of live projects into public/projects/ as WebP.
-// Usage: npm run screenshots
+// Usage: npm run screenshots   (or: npm run screenshots -- <part of a name>)
 //
 // Edit the list below to add pages. For screens behind a login, sign in in a
 // normal browser, take a full-window screenshot at 2× zoom, and convert it with:
@@ -13,7 +13,10 @@ import { launchBrowser, root } from './lib.mjs'
 const shots = [
   { name: 'skillmatch-home', url: 'https://skillmatch-web.vercel.app/' },
   { name: 'gitscribe-sign-in', url: 'https://git-scribe-aybm.vercel.app/' },
+  { name: 'linklocker-home', url: 'https://linklocker.northcentralus.cloudapp.azure.com/' },
 ]
+// `npm run screenshots -- linklocker` captures only the entries whose name contains the word.
+const only = process.argv[2]
 
 const outDir = resolve(root, 'public/projects')
 mkdirSync(outDir, { recursive: true })
@@ -21,7 +24,7 @@ mkdirSync(outDir, { recursive: true })
 const browser = await launchBrowser()
 const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
 const page = await desktop.newPage()
-for (const shot of shots) {
+for (const shot of shots.filter((shot) => !only || shot.name.includes(only))) {
   await page.goto(shot.url, { waitUntil: 'networkidle', timeout: 60_000 })
   await page.waitForTimeout(1500) // let fonts, images and entrance animations settle
   const png = await page.screenshot()

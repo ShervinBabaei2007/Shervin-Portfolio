@@ -13,6 +13,7 @@ const hydrated = (page: Page) =>
 
 const pages = [
   '/',
+  '/work/network-growth-assistant',
   '/work/skillmatch',
   '/work/mini-rpg-battle',
   '/work/thinkboard',

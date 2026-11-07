@@ -1,4 +1,76 @@
 {
+  "/projects/gitscribe-sign-in.webp": {
+    "width": 1248,
+    "height": 500,
+    "avif": true,
+    "small": {
+      "src": "/projects/gitscribe-sign-in-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/jicnic-voting.webp": {
+    "width": 1600,
+    "height": 622,
+    "avif": true,
+    "small": {
+      "src": "/projects/jicnic-voting-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/jinterest-board.webp": {
+    "width": 1600,
+    "height": 622,
+    "avif": true,
+    "small": {
+      "src": "/projects/jinterest-board-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/linklocker-sign-in.webp": {
+    "width": 1000,
+    "height": 340,
+    "avif": true,
+    "small": {
+      "src": "/projects/linklocker-sign-in-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/nga-discover.webp": {
+    "width": 1600,
+    "height": 1075,
+    "avif": true,
+    "small": {
+      "src": "/projects/nga-discover-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/nga-jobs.webp": {
+    "width": 1600,
+    "height": 1075,
+    "avif": true,
+    "small": {
+      "src": "/projects/nga-jobs-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/nga-overview.webp": {
+    "width": 1600,
+    "height": 1075,
+    "avif": true,
+    "small": {
+      "src": "/projects/nga-overview-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/nga-quick-capture.webp": {
+    "width": 1600,
+    "height": 1075,
+    "avif": true,
+    "small": {
+      "src": "/projects/nga-quick-capture-480.webp",
+      "width": 480
+    }
+  },
   "/projects/skillmatch-dashboard.webp": {
     "width": 477,
     "height": 1287,

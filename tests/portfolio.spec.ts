@@ -66,7 +66,7 @@ test('home shows four flagships and links to the full projects page', async ({ p
   await page.getByRole('link', { name: /View all projects/ }).click()
   await expect(page).toHaveURL(/\/projects$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Everything')
-  await expect(page.locator('[data-project-card]')).toHaveCount(8)
+  await expect(page.locator('[data-project-card]')).toHaveCount(12)
 })
 
 test('the header lists Work, About and Contact together, then Writeups and Resume', async ({ page }) => {
@@ -500,14 +500,14 @@ test.describe('the end of a page', () => {
   test('the project pager does not wrap around', async ({ page }) => {
     const pager = () => page.getByRole('navigation', { name: 'More case studies' })
     // First project: nothing before it, so the left slot goes back to the work list.
-    await page.goto('/work/skillmatch')
+    await page.goto('/work/network-growth-assistant')
     await expect(pager().getByRole('link', { name: /Previous/ })).toHaveCount(0)
     await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
-    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', '/work/gitscribe')
+    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', '/work/skillmatch')
     // Last project: nothing after it, so the right slot goes back to the work list.
-    await page.goto('/work/jicnic')
+    await page.goto('/work/ollama-rag')
     await expect(pager().getByRole('link', { name: /Next/ })).toHaveCount(0)
-    await expect(pager().getByRole('link', { name: /Previous/ })).toHaveAttribute('href', '/work/jinterest')
+    await expect(pager().getByRole('link', { name: /Previous/ })).toHaveAttribute('href', '/work/tic-tac-toe-minimax')
     await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
   })
 })
@@ -917,9 +917,9 @@ test('project carousel can be moved with the arrow keys on a phone', async ({ pa
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
   await page.waitForLoadState('networkidle')
-  await page.getByRole('link', { name: 'SkillMatch case study', exact: true }).focus()
+  await page.getByRole('link', { name: 'Network Growth Assistant case study', exact: true }).focus()
   await page.keyboard.press('ArrowRight')
-  await expect(page.getByRole('link', { name: 'GitScribe case study', exact: true })).toBeInViewport({ ratio: 0.9 })
+  await expect(page.getByRole('link', { name: 'SkillMatch case study', exact: true })).toBeInViewport({ ratio: 0.9 })
 })
 
 test('screenshots are served as AVIF to browsers that support it', async ({ page }) => {
@@ -1101,6 +1101,16 @@ test('projects page filters by type', async ({ page }) => {
   await expect(cards).toHaveCount(1)
   await page.getByRole('button', { name: /^All/ }).click()
   await expect(cards).toHaveCount(all)
+})
+
+test('repos without a case study are listed automatically under More on GitHub', async ({ page }) => {
+  await page.goto('/projects')
+  const more = page.locator('[data-more-repos]')
+  await expect(more.getByRole('heading', { name: 'More on GitHub' })).toBeVisible()
+  expect(await more.getByRole('listitem').count()).toBeGreaterThan(0)
+  // A repo that has a case study is not listed twice.
+  await expect(more.getByRole('link', { name: /^SkillMatch/ })).toHaveCount(0)
+  await expect(more.getByRole('link', { name: /^Network-Growth-Assistance/ })).toHaveCount(0)
 })
 
 test('writeups have a table of contents that jumps to a heading', async ({ page }) => {
