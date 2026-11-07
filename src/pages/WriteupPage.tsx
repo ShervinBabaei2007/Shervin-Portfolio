@@ -21,7 +21,7 @@ function WriteupPage() {
 
   return (
     <article
-      className="section-wrap max-w-[760px] pt-9 pb-[100px] max-[620px]:pt-[18px] max-[620px]:pb-16"
+      className="section-wrap max-w-[920px] pt-9 pb-[110px] max-[620px]:pt-[18px] max-[620px]:pb-16"
       aria-labelledby="note-title"
     >
       <PageBreadcrumb
@@ -31,12 +31,12 @@ function WriteupPage() {
         ]}
         current={note.title}
       />
-      <header className="mt-[18px] border-b pb-6">
+      <header className="mt-[18px] border-b pb-8">
         <p className="eyebrow">WRITEUP</p>
         <h1 id="note-title" className="mt-3.5 text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-[1.1] font-semibold">
           {note.title}
         </h1>
-        <p className="mt-4 text-[1.1875rem] leading-[1.6] text-muted-foreground">{note.summary}</p>
+        <p className="mt-5 text-[1.25rem] leading-[1.65] text-muted-foreground">{note.summary}</p>
         <p className="mt-3.5 font-mono text-meta text-muted-foreground">
           {site.name} · <time dateTime={note.date}>{formatDate(note.date)}</time> · {note.minutes} min read
         </p>
@@ -46,7 +46,7 @@ function WriteupPage() {
         heading="Found this useful?"
         body="I'm happy to talk through the details, or what I would do differently."
       />
-      <footer className="mt-6 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-3.5 border-t pt-6">
+      <footer className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-3.5 border-t pt-6">
         {project && (
           <Link className={footerLink} to={`/work/${project.slug}`}>
             <span className={footerLabel}>Case study</span>

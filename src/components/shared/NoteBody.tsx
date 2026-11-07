@@ -4,18 +4,18 @@ import RichText from '@/components/shared/RichText'
 
 function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
   return (
-    <div className="mt-2.5">
+    <div className="mt-4">
       {blocks.map((block, index) => {
         switch (block.type) {
           case 'h2':
             return (
-              <h2 key={index} className="mt-[38px] text-[1.375rem] font-semibold">
+              <h2 key={index} className="mt-[52px] text-[1.5rem] font-semibold">
                 {block.text}
               </h2>
             )
           case 'p':
             return (
-              <p key={index} className="mt-[18px] max-w-[60ch] text-[1.0625rem] leading-[1.75] max-[620px]:text-base">
+              <p key={index} className="mt-5 text-[1.125rem] leading-[1.8] max-[620px]:text-base">
                 <RichText text={block.text} />
               </p>
             )
@@ -23,7 +23,7 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
             return (
               <ul
                 key={index}
-                className="mt-3.5 max-w-[60ch] list-disc pl-[22px] text-[1.0625rem] leading-[1.75] max-[620px]:text-base [&>li+li]:mt-2"
+                className="mt-4 list-disc pl-[22px] text-[1.125rem] leading-[1.8] max-[620px]:text-base [&>li+li]:mt-2.5"
               >
                 {block.items.map((item) => (
                   <li key={item}>
@@ -36,7 +36,7 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
             return (
               <CodeBlock
                 key={index}
-                className="mt-5"
+                className="mt-6"
                 snippet={{
                   file: block.file,
                   href: '',

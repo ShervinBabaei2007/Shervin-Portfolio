@@ -16,8 +16,7 @@ import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
 const h2Class = 'text-xl font-semibold'
-const bodyClass =
-  'mt-2.5 max-w-[60ch] text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
+const bodyClass = 'mt-2.5 text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
 const factDt = 'font-mono text-label text-muted-foreground'
 // Header action buttons: a row that wraps on small screens, and a stack of equal-width buttons beside the title on wide ones.
 const actionButton = 'h-11 px-[17px] text-control font-semibold min-[1024px]:w-full min-[1024px]:justify-between'
