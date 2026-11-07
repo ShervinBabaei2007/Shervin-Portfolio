@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/github-snapshot.mjs && tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
+    "build": "node scripts/github-snapshot.mjs && node scripts/repos-snapshot.mjs && tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "preview": "vite preview",
     "test:e2e": "playwright test --grep-invert @visual",
     "test:visual": "playwright test --grep @visual",
@@ -16,6 +16,8 @@
     "favicons": "node scripts/favicons.mjs",
     "screenshots": "node scripts/capture-screenshots.mjs && node scripts/image-variants.mjs",
     "images": "node scripts/image-variants.mjs",
+    "repos": "node scripts/repos-snapshot.mjs",
+    "rank": "node scripts/rank-projects.mjs",
     "record": "node scripts/record-demo.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",

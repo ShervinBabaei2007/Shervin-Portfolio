@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, LazyMotion, MotionConfig, m } from 'motion/react'
+import MoreOnGitHub from '@/components/home/MoreOnGitHub'
 import ProjectCard from '@/components/home/ProjectCard'
 import PageIntro from '@/components/shared/PageIntro'
 import { Button } from '@/components/ui/button'
@@ -34,7 +35,7 @@ function ProjectsPage() {
             aria-pressed={category === name}
             onClick={() => setCategory(name)}
           >
-            {name} <span className="tabular-nums opacity-70">{count(name)}</span>
+            {name} <span className="tabular-nums opacity-90">{count(name)}</span>
           </Button>
         ))}
       </div>
@@ -65,6 +66,7 @@ function ProjectsPage() {
           </m.ul>
         </LazyMotion>
       </MotionConfig>
+      <MoreOnGitHub />
     </section>
   )
 }

@@ -10,3 +10,4 @@ public
 featuresToImplement
 tsconfig*.json
 components.json
+src/data/repos.json
