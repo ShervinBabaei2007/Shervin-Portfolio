@@ -31,9 +31,9 @@ const MobileNavSheet = lazy(loadMobileNav)
 const navLinks = [
   { to: '/#work', label: 'Work', section: 'work' },
   { to: '/#about', label: 'About', section: 'about' },
-  { to: '/notes', label: 'Notes', page: '/notes' },
-  { to: '/resume', label: 'Resume', page: '/resume' },
   { to: '/#contact', label: 'Contact', section: 'contact' },
+  { to: '/writeups', label: 'Writeups', page: '/writeups' },
+  { to: '/resume', label: 'Resume', page: '/resume' },
 ] as const
 
 /** Every home-page section, and which nav item it belongs to while you are reading it. */

@@ -11,7 +11,7 @@ import NotFoundPage from './NotFoundPage'
 const footerLink = 'grid gap-1.5 rounded-xl border bg-card px-[18px] py-4 no-underline hover:border-primary'
 const footerLabel = 'inline-flex items-center gap-1.5 text-meta text-muted-foreground'
 
-function NotePage() {
+function WriteupPage() {
   const { slug } = useParams()
   const note = findNote(slug)
   if (!note) return <NotFoundPage />
@@ -27,12 +27,12 @@ function NotePage() {
       <PageBreadcrumb
         trail={[
           { label: 'Home', to: '/' },
-          { label: 'Notes', to: '/notes' },
+          { label: 'Writeups', to: '/writeups' },
         ]}
         current={note.title}
       />
       <header className="mt-[18px] border-b pb-6">
-        <p className="eyebrow">ENGINEERING NOTE</p>
+        <p className="eyebrow">WRITEUP</p>
         <h1 id="note-title" className="mt-3.5 text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-[1.1] font-semibold">
           {note.title}
         </h1>
@@ -54,9 +54,9 @@ function NotePage() {
           </Link>
         )}
         {next.slug !== note.slug && (
-          <Link className={footerLink} to={`/notes/${next.slug}`}>
+          <Link className={footerLink} to={`/writeups/${next.slug}`}>
             <span className={footerLabel}>
-              Next note <ArrowRight size={14} />
+              Next writeup <ArrowRight size={14} />
             </span>
             <b className="text-[1.0625rem] leading-[1.3] font-semibold">{next.title}</b>
           </Link>
@@ -66,4 +66,4 @@ function NotePage() {
   )
 }
 
-export default NotePage
+export default WriteupPage

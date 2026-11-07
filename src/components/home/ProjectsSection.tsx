@@ -1,10 +1,9 @@
-import { ArrowUpRight, SearchX } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, SearchX } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { flagshipProjects, moreProjects } from '@/data/projects'
+import { flagshipProjects, projects } from '@/data/projects'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import GitHubActivity from '@/components/home/GitHubActivity'
 import ProjectCard from '@/components/home/ProjectCard'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import SectionHeading from '@/components/shared/SectionHeading'
@@ -17,8 +16,8 @@ type ProjectsSectionProps = {
 
 function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
   const matches = (stack: string[]) => !activeSkill || stack.includes(activeSkill)
-  const flagships = flagshipProjects.filter((project) => matches(project.stack))
-  const others = moreProjects.filter((project) => matches(project.stack))
+  // With a skill filter on, every project that uses it is shown, flagship or not.
+  const shown = (activeSkill ? projects : flagshipProjects).filter((project) => matches(project.stack))
 
   return (
     <section
@@ -53,19 +52,19 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
           </button>
         </p>
       )}
-      {flagships.length > 0 && (
+      {shown.length > 0 && (
         <Carousel
           opts={{ align: 'start', breakpoints: { '(min-width: 768px)': { active: false } } }}
           aria-label="Featured projects"
           className="mt-10 w-full"
         >
           <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:gap-6">
-            {flagships.map((project) => (
+            {shown.map((project, index) => (
               <CarouselItem
                 key={project.slug}
                 className="basis-[88%] sm:basis-[70%] md:basis-auto md:pl-0 [&>*]:h-full"
               >
-                <ProjectCard project={project} />
+                <ProjectCard project={project} revealDelay={(index % 2) * 0.08} />
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -73,37 +72,13 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
           <CarouselNext className="hidden sm:inline-flex md:hidden" />
         </Carousel>
       )}
-      {others.length > 0 && (
-        <div className="mt-14">
-          <h3 className="mb-1.5 text-[1.375rem] font-semibold">More projects</h3>
-          <ul className="m-0 list-none border-t p-0">
-            {others.map((project) => (
-              <li key={project.slug}>
-                <Link
-                  className="group grid min-h-16 grid-cols-[minmax(150px,.8fr)_minmax(0,2fr)_minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 border-b px-1 py-3 no-underline transition-colors hover:bg-card hover:text-primary max-[1100px]:grid-cols-[minmax(140px,.8fr)_minmax(0,2fr)_auto] max-[900px]:grid-cols-[1fr_auto] max-[900px]:gap-x-3 max-[900px]:gap-y-0.5"
-                  to={`/work/${project.slug}`}
-                >
-                  <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1 max-[900px]:col-start-1">
-                    <span className="text-[1.0625rem] font-semibold">{project.name}</span>
-                    <Badge variant="outline" className="font-normal text-muted-foreground">
-                      {project.category}
-                    </Badge>
-                  </span>
-                  <span className="text-[.9375rem] text-muted-foreground max-[900px]:col-start-1 max-[900px]:row-start-2 max-[900px]:text-sm">
-                    {project.subtitle}
-                  </span>
-                  <span className="font-mono text-label text-muted-foreground max-[1100px]:hidden">
-                    {project.stack.slice(0, 3).join(', ')}
-                  </span>
-                  <ArrowUpRight
-                    className="text-primary transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 max-[900px]:col-start-2 max-[900px]:row-[1/span_2]"
-                    size={16}
-                    aria-hidden="true"
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
+      {!activeSkill && (
+        <div className="mt-10">
+          <Button asChild variant="outline">
+            <Link to="/projects">
+              View all projects <ArrowRight size={15} />
+            </Link>
+          </Button>
         </div>
       )}
       {!activeSkill && (
@@ -116,12 +91,12 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
           <Link className={cn(textLinkClass, 'text-foreground')} to="/lab">
             Try the rate-limiter lab <ArrowUpRight size={15} />
           </Link>
-          <Link className={cn(textLinkClass, 'text-foreground')} to="/notes">
-            Read my engineering notes <ArrowUpRight size={15} />
+          <Link className={cn(textLinkClass, 'text-foreground')} to="/writeups">
+            Read my writeups <ArrowUpRight size={15} />
           </Link>
         </p>
       )}
-      {flagships.length === 0 && others.length === 0 && (
+      {shown.length === 0 && (
         <Empty className="mt-8 border">
           <EmptyHeader>
             <EmptyMedia variant="icon">

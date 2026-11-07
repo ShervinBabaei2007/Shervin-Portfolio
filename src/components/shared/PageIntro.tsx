@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 type PageIntroProps = { eyebrow: string; id: string; title: ReactNode; lead?: ReactNode }
 
-/** Eyebrow, heading and lead paragraph that open the simple pages (404, notes, how it's built). */
+/** Eyebrow, heading and lead paragraph that open the simple pages (404, writeups, how it's built). */
 function PageIntro({ eyebrow, id, title, lead }: PageIntroProps) {
   return (
     <>

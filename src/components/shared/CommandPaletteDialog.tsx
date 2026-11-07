@@ -1,4 +1,4 @@
-import { Copy, Download, FileText, FlaskConical, Home, Mail, NotebookPen } from 'lucide-react'
+import { Copy, Download, FileText, FolderGit2, FlaskConical, Home, Mail, NotebookPen } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
@@ -63,8 +63,11 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
           <CommandItem onSelect={() => run(() => navigate('/'))}>
             <Home /> Home
           </CommandItem>
-          <CommandItem onSelect={() => run(() => navigate('/notes'))}>
-            <NotebookPen /> Notes
+          <CommandItem onSelect={() => run(() => navigate('/projects'))}>
+            <FolderGit2 /> Projects
+          </CommandItem>
+          <CommandItem onSelect={() => run(() => navigate('/writeups'))}>
+            <NotebookPen /> Writeups
           </CommandItem>
           <CommandItem onSelect={() => run(() => navigate('/lab'))}>
             <FlaskConical /> Lab: rate-limiter demo

@@ -14,15 +14,20 @@ export const pages = {
     source: 'src/pages/CaseStudyPage.tsx',
     Component: lazyPage(() => import('./pages/CaseStudyPage')),
   },
-  notes: {
-    path: '/notes',
-    source: 'src/pages/NotesIndexPage.tsx',
-    Component: lazyPage(() => import('./pages/NotesIndexPage')),
+  writeups: {
+    path: '/writeups',
+    source: 'src/pages/WriteupsIndexPage.tsx',
+    Component: lazyPage(() => import('./pages/WriteupsIndexPage')),
   },
-  note: {
-    path: '/notes/:slug',
-    source: 'src/pages/NotePage.tsx',
-    Component: lazyPage(() => import('./pages/NotePage')),
+  writeup: {
+    path: '/writeups/:slug',
+    source: 'src/pages/WriteupPage.tsx',
+    Component: lazyPage(() => import('./pages/WriteupPage')),
+  },
+  projects: {
+    path: '/projects',
+    source: 'src/pages/ProjectsPage.tsx',
+    Component: lazyPage(() => import('./pages/ProjectsPage')),
   },
   lab: { path: '/lab', source: 'src/pages/LabPage.tsx', Component: lazyPage(() => import('./pages/LabPage')) },
   resume: {

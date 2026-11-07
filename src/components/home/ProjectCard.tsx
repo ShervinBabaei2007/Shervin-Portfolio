@@ -10,6 +10,7 @@ import images from '@/data/images.json'
 import CodeBlock from '@/components/shared/CodeBlock'
 import ResponsiveImage from '@/components/shared/ResponsiveImage'
 import TerminalBlock from '@/components/shared/TerminalBlock'
+import Reveal from '@/components/shared/Reveal'
 import WindowFrame from '@/components/shared/WindowFrame'
 import { cn } from '@/lib/utils'
 
@@ -88,7 +89,18 @@ function CardMedia({ project }: { project: Project }) {
       </div>
     )
   }
-  return null
+  // No screenshot, code or transcript: show the stack instead, so every card keeps the same media height.
+  return (
+    <div className={cn(visualClass, 'content-center')} aria-hidden="true" data-card-media>
+      <div className="flex max-w-full flex-wrap justify-center gap-2 font-mono text-sm text-muted-foreground">
+        {project.stack.slice(0, 6).map((item) => (
+          <span key={item} className="rounded-md border bg-card px-2.5 py-1 shadow-sm">
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 // Started early (hover, focus, touch) so the panel is usually ready by the time it is opened.
@@ -99,97 +111,99 @@ const cardLink =
   'hit-area inline-flex items-center gap-[7px] text-control font-semibold whitespace-nowrap no-underline hover:text-primary'
 
 const card =
-  "relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[12px] border bg-card animate-card-reveal transition-[transform,box-shadow,border-color] duration-200 ease-in-out has-[:focus-visible]:border-primary before:pointer-events-none before:absolute before:inset-0 before:z-[2] before:rounded-[inherit] before:opacity-0 before:transition-opacity before:duration-200 before:content-[''] before:bg-[radial-gradient(360px_circle_at_var(--pointer-x,50%)_var(--pointer-y,50%),var(--glow),transparent_68%)] pointer-fine:hover:border-primary pointer-fine:focus-within:border-primary pointer-fine:hover:shadow-[0_14px_32px_rgba(12,26,51,.12)] pointer-fine:focus-within:shadow-[0_14px_32px_rgba(12,26,51,.12)] motion-safe:pointer-fine:hover:-translate-y-1 motion-safe:pointer-fine:focus-within:-translate-y-1 pointer-fine:hover:before:opacity-100 motion-reduce:before:hidden forced-colors:before:hidden print:before:hidden print:animate-none print:break-inside-avoid print:shadow-none"
+  "relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[12px] border bg-card transition-[transform,box-shadow,border-color] duration-200 ease-in-out has-[:focus-visible]:border-primary before:pointer-events-none before:absolute before:inset-0 before:z-[2] before:rounded-[inherit] before:opacity-0 before:transition-opacity before:duration-200 before:content-[''] before:bg-[radial-gradient(360px_circle_at_var(--pointer-x,50%)_var(--pointer-y,50%),var(--glow),transparent_68%)] pointer-fine:hover:border-primary pointer-fine:focus-within:border-primary pointer-fine:hover:shadow-[0_14px_32px_rgba(12,26,51,.12)] pointer-fine:focus-within:shadow-[0_14px_32px_rgba(12,26,51,.12)] motion-safe:pointer-fine:hover:-translate-y-1 motion-safe:pointer-fine:focus-within:-translate-y-1 pointer-fine:hover:before:opacity-100 motion-reduce:before:hidden forced-colors:before:hidden print:before:hidden print:break-inside-avoid print:shadow-none"
 
-function ProjectCard({ project }: { project: Project }) {
+function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDelay?: number }) {
   const [sheetOpen, setSheetOpen] = useState(false)
   const [sheetRequested, setSheetRequested] = useState(false)
   const [sheetLoading, setSheetLoading] = useState(false)
 
   return (
-    <article
-      // The pointer-follow glow reads --pointer-x/--pointer-y, which onPointerMove sets below.
-      className={card}
-      data-project-card
-      onPointerMove={(event) => {
-        if (event.pointerType === 'touch') return
-        const bounds = event.currentTarget.getBoundingClientRect()
-        event.currentTarget.style.setProperty('--pointer-x', `${event.clientX - bounds.left}px`)
-        event.currentTarget.style.setProperty('--pointer-y', `${event.clientY - bounds.top}px`)
-      }}
-    >
-      <Link
-        className="flex w-full flex-1 flex-col text-left no-underline focus-visible:-outline-offset-3"
-        to={`/work/${project.slug}`}
-        aria-label={`${project.name} case study`}
+    <Reveal delay={revealDelay}>
+      <article
+        // The pointer-follow glow reads --pointer-x/--pointer-y, which onPointerMove sets below.
+        className={card}
+        data-project-card
+        onPointerMove={(event) => {
+          if (event.pointerType === 'touch') return
+          const bounds = event.currentTarget.getBoundingClientRect()
+          event.currentTarget.style.setProperty('--pointer-x', `${event.clientX - bounds.left}px`)
+          event.currentTarget.style.setProperty('--pointer-y', `${event.clientY - bounds.top}px`)
+        }}
       >
-        <CardMedia project={project} />
-        <div className="relative z-[1] flex flex-1 flex-col px-[22px] pt-5 pb-[22px] max-[620px]:p-5">
-          <div className="flex justify-between gap-3 font-mono text-label text-muted-foreground" data-card-meta>
-            <span>{project.category}</span>
-            <span>{project.date}</span>
-          </div>
-          <p className="mt-[15px] border-l-[3px] border-primary bg-muted px-3 py-2 text-sm font-semibold">
-            {project.highlight}
-          </p>
-          <h3 className="mt-[15px] text-2xl leading-[1.15] font-semibold max-[620px]:text-xl">{project.name}</h3>
-          <p className="mt-1.5 font-semibold">{project.subtitle}</p>
-          <p className="mt-[11px] line-clamp-2 leading-[1.65] text-muted-foreground">{project.summary}</p>
-          <div className="mt-4 mb-[18px] flex flex-wrap gap-1.5" aria-label="Stack">
-            {project.stack.slice(0, 5).map((item) => (
-              <Badge key={item} variant="secondary">
-                {item}
-              </Badge>
-            ))}
-          </div>
-          <div className="mt-auto flex items-center justify-between gap-4 border-t pt-3.5 text-sm text-muted-foreground max-[620px]:flex-col max-[620px]:items-start">
-            <span>{project.role}</span>
-            <span className="inline-flex items-center gap-[7px] font-semibold text-primary">
-              Read case study <ArrowUpRight size={15} />
-            </span>
-          </div>
-        </div>
-      </Link>
-      <div
-        className="relative z-[1] flex min-h-[54px] flex-wrap items-center gap-x-5 gap-y-2 border-t px-[22px] py-2.5 max-[620px]:gap-[18px] max-[620px]:px-5 max-[360px]:gap-3.5"
-        aria-label={`${project.name} project links`}
-      >
-        {project.live && (
-          <Button asChild size="sm" className="max-[620px]:h-11">
-            <a href={project.live} target="_blank" rel="noreferrer">
-              Live project <ArrowUpRight size={15} />
-            </a>
-          </Button>
-        )}
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="max-[620px]:h-11"
-          aria-busy={sheetLoading}
-          onPointerEnter={() => void loadSheet()}
-          onFocus={() => void loadSheet()}
-          onTouchStart={() => void loadSheet()}
-          onClick={() => {
-            setSheetRequested(true)
-            setSheetOpen(true)
-          }}
+        <Link
+          className="flex w-full flex-1 flex-col text-left no-underline focus-visible:-outline-offset-3"
+          to={`/work/${project.slug}`}
+          aria-label={`${project.name} case study`}
         >
-          {sheetLoading && <Spinner aria-hidden="true" role="presentation" />}
-          Quick look
-        </Button>
-        {sheetRequested && (
-          <Suspense fallback={<PendingFlag onChange={setSheetLoading} />}>
-            <CaseStudySheet project={project} open={sheetOpen} onOpenChange={setSheetOpen} />
-          </Suspense>
-        )}
-        {project.github && (
-          <a className={cardLink} href={project.github} target="_blank" rel="noreferrer">
-            Source code <Github size={15} />
-          </a>
-        )}
-      </div>
-    </article>
+          <CardMedia project={project} />
+          <div className="relative z-[1] flex flex-1 flex-col px-[22px] pt-5 pb-[22px] max-[620px]:p-5">
+            <div className="flex justify-between gap-3 font-mono text-label text-muted-foreground" data-card-meta>
+              <span>{project.category}</span>
+              <span>{project.date}</span>
+            </div>
+            <p className="mt-[15px] border-l-[3px] border-primary bg-muted px-3 py-2 text-sm font-semibold">
+              {project.highlight}
+            </p>
+            <h3 className="mt-[15px] text-2xl leading-[1.15] font-semibold max-[620px]:text-xl">{project.name}</h3>
+            <p className="mt-1.5 font-semibold">{project.subtitle}</p>
+            <p className="mt-[11px] line-clamp-2 leading-[1.65] text-muted-foreground">{project.summary}</p>
+            <div className="mt-4 mb-[18px] flex flex-wrap gap-1.5" aria-label="Stack">
+              {project.stack.slice(0, 5).map((item) => (
+                <Badge key={item} variant="secondary">
+                  {item}
+                </Badge>
+              ))}
+            </div>
+            <div className="mt-auto flex items-center justify-between gap-4 border-t pt-3.5 text-sm text-muted-foreground max-[620px]:flex-col max-[620px]:items-start">
+              <span>{project.role}</span>
+              <span className="inline-flex items-center gap-[7px] font-semibold text-primary">
+                Read case study <ArrowUpRight size={15} />
+              </span>
+            </div>
+          </div>
+        </Link>
+        <div
+          className="relative z-[1] flex min-h-[54px] flex-wrap items-center gap-x-5 gap-y-2 border-t px-[22px] py-2.5 max-[620px]:gap-[18px] max-[620px]:px-5 max-[360px]:gap-3.5"
+          aria-label={`${project.name} project links`}
+        >
+          {project.live && (
+            <Button asChild size="sm" className="max-[620px]:h-11">
+              <a href={project.live} target="_blank" rel="noreferrer">
+                Live project <ArrowUpRight size={15} />
+              </a>
+            </Button>
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="max-[620px]:h-11"
+            aria-busy={sheetLoading}
+            onPointerEnter={() => void loadSheet()}
+            onFocus={() => void loadSheet()}
+            onTouchStart={() => void loadSheet()}
+            onClick={() => {
+              setSheetRequested(true)
+              setSheetOpen(true)
+            }}
+          >
+            {sheetLoading && <Spinner aria-hidden="true" role="presentation" />}
+            Quick look
+          </Button>
+          {sheetRequested && (
+            <Suspense fallback={<PendingFlag onChange={setSheetLoading} />}>
+              <CaseStudySheet project={project} open={sheetOpen} onOpenChange={setSheetOpen} />
+            </Suspense>
+          )}
+          {project.github && (
+            <a className={cardLink} href={project.github} target="_blank" rel="noreferrer">
+              Source code <Github size={15} />
+            </a>
+          )}
+        </div>
+      </article>
+    </Reveal>
   )
 }
 

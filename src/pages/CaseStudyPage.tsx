@@ -258,7 +258,7 @@ function CaseStudyPage() {
                   <Link
                     key={note.slug}
                     className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 rounded-lg border bg-card px-4 py-3.5 no-underline hover:border-primary"
-                    to={`/notes/${note.slug}`}
+                    to={`/writeups/${note.slug}`}
                   >
                     <b className="text-[1.0625rem] font-semibold">{note.title}</b>
                     <span className="font-mono text-label text-muted-foreground">{note.minutes} min read</span>

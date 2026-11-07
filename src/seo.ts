@@ -32,10 +32,11 @@ export const staticRoutes = [
   '/',
   '/resume',
   '/how-its-built',
-  '/notes',
+  '/projects',
+  '/writeups',
   '/lab',
   ...projects.map((project) => `/work/${project.slug}`),
-  ...notes.map((note) => `/notes/${note.slug}`),
+  ...notes.map((note) => `/writeups/${note.slug}`),
 ]
 
 export function getPageMeta(pathname: string): PageMeta {
@@ -87,25 +88,37 @@ export function getPageMeta(pathname: string): PageMeta {
     }
   }
 
-  if (path === '/notes') {
+  if (path === '/projects') {
     return {
-      title: `Engineering notes | ${site.name}`,
+      title: `Projects | ${site.name}`,
       description:
-        'Short write-ups on bugs I found in my own projects, how the underlying systems work, and what I changed.',
+        'Every project I have built, from full-stack apps to a Discord bot, with the stack and what each taught me.',
       path,
-      image: image('notes'),
+      image: image('projects'),
       type: 'website',
       jsonLd: [withContext(person)],
     }
   }
 
-  const note = path.startsWith('/notes/') ? findNote(path.slice('/notes/'.length)) : undefined
+  if (path === '/writeups') {
+    return {
+      title: `Writeups | ${site.name}`,
+      description:
+        'Short write-ups on bugs I found in my own projects, how the underlying systems work, and what I changed.',
+      path,
+      image: image('writeups'),
+      type: 'website',
+      jsonLd: [withContext(person)],
+    }
+  }
+
+  const note = path.startsWith('/writeups/') ? findNote(path.slice('/writeups/'.length)) : undefined
   if (note) {
     return {
       title: `${note.title} | ${site.name}`,
       description: note.summary,
       path,
-      image: image(`note-${note.slug}`),
+      image: image(`writeup-${note.slug}`),
       type: 'article',
       jsonLd: [
         withContext({

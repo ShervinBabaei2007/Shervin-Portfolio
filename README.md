@@ -33,7 +33,7 @@ The last four scripts need Chromium once: `npx playwright install chromium`.
 - `src/data/site.ts`: your URL, contact links, graduation date, and **availability** (fill in `from`, for example `'January 2027'`).
 - `src/data/projects.ts`: case-study content. `flagship: true` puts a project in the large cards on the home page.
 - `src/data/resume.ts`: the resume page and the PDF. Regenerate the PDF after editing.
-- `src/data/notes.ts`: engineering notes. Each note becomes a page at `/notes/<slug>`; run `npm run og:images` after adding one.
+- `src/data/notes.ts`: writeups. Each one becomes a page at `/writeups/<slug>`; run `npm run og:images` after adding one.
 - `src/data/github.json`: written by the build from the GitHub API. Add a `GITHUB_TOKEN` environment variable in Vercel (a token with no scopes is enough) so builds are not rate-limited.
 
 ## Architecture and conventions

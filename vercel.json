@@ -1,6 +1,10 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/notes", "destination": "/writeups", "permanent": true },
+    { "source": "/notes/:slug", "destination": "/writeups/:slug", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
