@@ -476,6 +476,45 @@ test('the case-study header puts the actions beside the title on desktop and bel
   expect((await position()).below).toBe(true)
 })
 
+test.describe('tools cards', () => {
+  test('three cards sit side by side on desktop, every skill has a logo, and they stack on a phone', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+    const cards = page.locator('#skills [data-skill-group]')
+    await expect(cards).toHaveCount(3)
+    const tops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)))
+    expect(new Set(tops).size).toBe(1)
+    const tiles = page.locator('#skills button[aria-pressed]')
+    const count = await tiles.count()
+    expect(count).toBeGreaterThan(10)
+    // Each tile starts with a decorative logo next to the skill name.
+    expect(
+      await tiles.evaluateAll((els) => els.filter((el) => !el.querySelector('svg[aria-hidden="true"]')).length),
+    ).toBe(0)
+
+    await page.setViewportSize({ width: 390, height: 844 })
+    const phoneTops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)))
+    expect(new Set(phoneTops).size).toBe(3)
+  })
+
+  test('no skill tile is clipped at 360px, 390px or 1100px', async ({ page }) => {
+    for (const width of [360, 390, 1100]) {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto('/')
+      await page.waitForLoadState('networkidle')
+      const clipped = await page
+        .locator('#skills ul button')
+        .evaluateAll((els) =>
+          els.filter((el) => el.scrollWidth > el.clientWidth + 1).map((el) => el.getAttribute('aria-label')),
+        )
+      expect(clipped, `${width}px`).toEqual([])
+    }
+  })
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')
