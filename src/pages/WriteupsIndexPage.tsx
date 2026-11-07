@@ -7,6 +7,7 @@ function WriteupsIndexPage() {
   return (
     <section className="section-wrap pt-16 pb-[110px]" aria-labelledby="writeups-index-title">
       <PageIntro
+        wide
         eyebrow="WRITEUPS"
         id="writeups-index-title"
         title="Writeups on things I built and got wrong"
