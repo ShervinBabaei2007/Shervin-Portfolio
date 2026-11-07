@@ -1,5 +1,4 @@
 import Reveal from '@/components/shared/Reveal'
-import { NumberTicker } from '@/components/ui/number-ticker'
 import { facts } from '@/data/facts'
 import { notes } from '@/data/notes'
 import { projects } from '@/data/projects'
@@ -26,7 +25,7 @@ function AtAGlance() {
             <li className="border-r px-6 py-6 last:border-r-0 max-[900px]:border-b max-[900px]:odd:border-r max-[900px]:even:border-r-0 max-[900px]:nth-last-[-n+2]:border-b-0 max-[620px]:px-4 max-[620px]:py-5">
               <p className="text-[clamp(2rem,1.5rem+1.6vw,2.75rem)] leading-none font-semibold tracking-tight">
                 {figure.prefix}
-                <NumberTicker value={figure.value} />
+                {figure.value}
               </p>
               <p className="mt-3 font-mono text-label tracking-wide text-primary uppercase">{figure.label}</p>
               <p className="mt-1 text-sm text-muted-foreground">{figure.detail}</p>

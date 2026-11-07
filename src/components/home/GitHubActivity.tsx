@@ -22,7 +22,6 @@ import {
 import Reveal from '@/components/shared/Reveal'
 import { Button } from '@/components/ui/button'
 import { BorderBeam } from '@/components/ui/border-beam'
-import { NumberTicker } from '@/components/ui/number-ticker'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
@@ -215,18 +214,18 @@ function GitHubActivity() {
 
         <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border md:grid-cols-4">
           {[
-            ['Commits', <NumberTicker key="c" value={stats.total} />],
-            ['Active days', <NumberTicker key="d" value={stats.activeDays} />],
+            ['Commits', stats.total.toLocaleString('en-CA')],
+            ['Active days', stats.activeDays.toLocaleString('en-CA')],
             [
               'Longest streak',
               <span key="s">
-                <NumberTicker value={stats.longestStreak} /> days
+                {stats.longestStreak} days
               </span>,
             ],
             [
               'Busiest day',
               <span key="b">
-                <NumberTicker value={stats.busiest} /> commits
+                {stats.busiest} commits
               </span>,
             ],
           ].map(([label, value]) => (

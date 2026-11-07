@@ -216,9 +216,9 @@
   --text-control: var(--type-control);
   --animate-border-beam: border-beam calc(var(--duration) * 1s) infinite linear;
   --animate-card-reveal: card-reveal 0.38s both;
-  --animate-rise-in: rise-in 0.7s both;
+  --animate-page-in: page-in 0.2s ease-out both;
   --animate-nav-progress: nav-progress 1.1s ease-in-out infinite;
-  --animate-reveal-in: reveal-in 0.8s 0.12s both;
+  --animate-reveal-in: reveal-in 0.3s ease-out both;
   --font-sans: var(--font-body);
   --font-mono: var(--mono);
   --radius-sm: calc(var(--radius) - 4px);
@@ -300,13 +300,11 @@
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translateY(14px);
-    filter: blur(6px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
   }
 }
 
@@ -336,10 +334,10 @@
   }
 }
 
-@keyframes rise-in {
+@keyframes page-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -368,17 +366,16 @@
 /* Scroll reveal (see Reveal.tsx): hidden only after mount, only below the fold. */
 [data-reveal='pending'] {
   opacity: 0;
-  transform: translateY(14px);
-  filter: blur(6px);
+  transform: translateY(10px);
 }
 
 [data-reveal='in'] {
-  animation: reveal-up 0.7s var(--reveal-delay, 0s) ease-out backwards;
+  animation: reveal-up 0.4s var(--reveal-delay, 0s) ease-out backwards;
 }
 
 /* The commit grid fills in column by column once its card has been revealed. */
 [data-reveal='in'] [data-cell] {
-  animation: cell-in 0.45s calc(var(--col, 0) * 14ms + 0.25s) ease-out backwards;
+  animation: cell-in 0.25s calc(var(--col, 0) * 4ms) ease-out backwards;
 }
 
 @media print {

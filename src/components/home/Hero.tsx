@@ -76,7 +76,7 @@ function Hero() {
       >
         <DotPattern width={24} height={24} cr={1.1} className="fill-foreground/[.14]" />
       </div>
-      <div className="z-[1] animate-rise-in pt-[5px]">
+      <div className="z-[1] pt-[5px]">
         <p className="mb-6 inline-flex items-center gap-2.5 rounded-full border bg-card/70 py-1.5 pr-4 pl-3 text-sm backdrop-blur-sm">
           <span className="relative flex size-2" aria-hidden="true">
             <span className="absolute inline-flex size-full rounded-full bg-emerald-500/70 motion-safe:animate-ping" />
