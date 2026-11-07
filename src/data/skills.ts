@@ -22,6 +22,7 @@ export const skillTabs: SkillTab[] = [
     summary: 'Interfaces, the APIs behind them, and the data they store.',
     skills: [
       { name: 'React', category: 'Frontend', note: 'Component UIs, forms and routing.' },
+      { name: 'Next.js', category: 'Frontend', note: 'App Router, server components and actions.' },
       { name: 'TypeScript', category: 'Frontend', note: 'Typed React apps and API code.' },
       { name: 'JavaScript', category: 'Frontend', note: 'Browser and Node.js code.' },
       { name: 'Node.js', category: 'Backend', note: 'Servers, routes and bots.' },
@@ -29,6 +30,8 @@ export const skillTabs: SkillTab[] = [
       { name: 'REST API', category: 'Backend', note: 'Designing and consuming HTTP APIs.' },
       { name: 'JWT', category: 'Backend', note: 'Protecting write routes.' },
       { name: 'MongoDB', category: 'Data', note: 'Mongoose models on Atlas.' },
+      { name: 'PostgreSQL', category: 'Data', note: 'Schemas with row-level security.' },
+      { name: 'Supabase', category: 'Backend', note: 'Postgres, Auth, Storage and scheduled jobs.' },
     ],
   },
   {
@@ -41,6 +44,9 @@ export const skillTabs: SkillTab[] = [
       { name: 'WebSockets', category: 'Systems', note: 'Realtime connections.' },
       { name: 'Redis', category: 'Data', note: 'Rate limiting and counters.' },
       { name: 'SQLite', category: 'Data', note: 'Embedded relational storage.' },
+      { name: 'Ollama', category: 'Systems', note: 'Local models for generation and embeddings.' },
+      { name: 'LangChain', category: 'Systems', note: 'PDF loading, chunking and retrieval.' },
+      { name: 'ChromaDB', category: 'Data', note: 'A local vector store for RAG.' },
     ],
   },
   {
@@ -49,6 +55,10 @@ export const skillTabs: SkillTab[] = [
     summary: 'Shipping, sign-in, design, and testing.',
     skills: [
       { name: 'Vercel', category: 'Tooling', note: 'Deploying frontends and backends.' },
+      { name: 'Azure', category: 'Tooling', note: 'A VM running Express behind a reverse proxy.' },
+      { name: 'Nginx', category: 'Tooling', note: 'Reverse proxy and HTTPS in front of Express.' },
+      { name: 'GitHub Actions', category: 'Tooling', note: 'CI that runs the test suites.' },
+      { name: 'Vitest', category: 'Tooling', note: 'Unit tests for application logic.' },
       { name: 'Auth0', category: 'Tooling', note: 'GitHub OAuth sign-in.' },
       { name: 'Figma', category: 'Tooling', note: 'UI design and prototyping.' },
       { name: 'pytest', category: 'Tooling', note: 'Automated tests for Python code.' },

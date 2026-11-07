@@ -2,19 +2,27 @@ import {
   siAuth0,
   siExpress,
   siFigma,
+  siGithubactions,
   siJavascript,
   siJsonwebtokens,
+  siLangchain,
   siMongodb,
+  siNextdotjs,
+  siNginx,
   siNodedotjs,
+  siOllama,
+  siPostgresql,
   siPython,
   siPytest,
   siReact,
   siRedis,
   siSqlite,
+  siSupabase,
   siTypescript,
   siVercel,
+  siVitest,
 } from 'simple-icons'
-import { Cable, Globe, Workflow, type LucideIcon } from 'lucide-react'
+import { Cable, Cloud, Database, Globe, Workflow, type LucideIcon } from 'lucide-react'
 
 /**
  * A logo for each skill in skills.ts. Brand marks come from Simple Icons (one 24x24 path each, drawn in the
@@ -43,5 +51,15 @@ export const skillIcons: Record<string, SkillIcon> = {
   Vercel: brand(siVercel),
   Auth0: brand(siAuth0),
   Figma: brand(siFigma),
+  'Next.js': brand(siNextdotjs),
+  PostgreSQL: brand(siPostgresql),
+  Supabase: brand(siSupabase),
+  Ollama: brand(siOllama),
+  LangChain: brand(siLangchain),
+  ChromaDB: lucide(Database),
+  Azure: lucide(Cloud),
+  Nginx: brand(siNginx),
+  'GitHub Actions': brand(siGithubactions),
+  Vitest: brand(siVitest),
   pytest: brand(siPytest),
 }
