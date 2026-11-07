@@ -1,0 +1,46 @@
+name: Sync GitHub repos
+
+# Keeps the "More on GitHub" list current and tells you when a repo is good enough to feature.
+# Weekly, and on demand from the Actions tab. It commits src/data/repos.json and public/repos/ when they
+# change (which redeploys the site) and keeps one open issue listing repos that deserve a case study.
+on:
+  schedule:
+    - cron: '0 14 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node scripts/repos-snapshot.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/repos.json public/repos
+          git diff --cached --quiet || (git commit -m "chore: refresh the GitHub repo list" && git push)
+      - name: Suggest repos to feature
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node scripts/rank-projects.mjs --out suggestions.md
+          [ -f suggestions.md ] || exit 0
+          title="Repos worth adding to the portfolio"
+          number=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file suggestions.md
+          else
+            gh issue create --title "$title" --body-file suggestions.md
+          fi
