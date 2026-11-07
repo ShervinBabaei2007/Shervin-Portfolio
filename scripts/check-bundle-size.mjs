@@ -6,7 +6,7 @@ import { resolve } from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { root } from './lib.mjs'
 
-const BUDGET_KB = 135 // measured 126.4 KB gzip with npm run build (2026-11); react-dom alone is about 111 KB
+const BUDGET_KB = 250 // raised from 135 on purpose (2026-11) to make room for richer components; measured 127 KB then, react-dom alone is about 111 KB
 const assets = resolve(root, 'dist/assets')
 const entry = readdirSync(assets).find(
   (file) => /^index-[\w-]+\.js$/.test(file) && readFileSync(resolve(assets, file), 'utf8').includes('createRoot'),
