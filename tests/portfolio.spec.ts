@@ -659,6 +659,9 @@ test('layout stays within phone, tablet, and desktop viewports', async ({ page }
       '/work/thinkboard',
       '/resume',
       '/writeups/skillmatch-attend-race-condition',
+      '/writeups/fetching-links-you-dont-trust',
+      '/writeups/stopping-an-ai-from-inventing-facts',
+      '/writeups/sign-in-behind-a-proxy',
     ]) {
       await page.goto(path)
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
@@ -691,6 +694,9 @@ for (const scheme of ['light', 'dark'] as const) {
       '/writeups',
       '/lab',
       '/writeups/skillmatch-attend-race-condition',
+      '/writeups/fetching-links-you-dont-trust',
+      '/writeups/stopping-an-ai-from-inventing-facts',
+      '/writeups/sign-in-behind-a-proxy',
     ]) {
       await page.goto(path)
       await page.waitForLoadState('networkidle')
@@ -761,7 +767,7 @@ test('writeups: listed on the writeups page, own pages, linked from case studies
   await page.goto('/')
   await page.getByRole('link', { name: /Read my writeups/ }).click()
   await expect(page).toHaveURL(/\/writeups$/)
-  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })).toHaveCount(3)
+  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })).toHaveCount(6)
   await page
     .getByRole('link', { name: /The race condition in SkillMatch/ })
     .first()
@@ -1111,6 +1117,51 @@ test('repos without a case study are listed automatically under More on GitHub',
   // A repo that has a case study is not listed twice.
   await expect(more.getByRole('link', { name: /^SkillMatch/ })).toHaveCount(0)
   await expect(more.getByRole('link', { name: /^Network-Growth-Assistance/ })).toHaveCount(0)
+})
+
+test('each new writeup opens and is linked from its project page', async ({ page }) => {
+  const pairs = [
+    ['network-growth-assistant', 'fetching-links-you-dont-trust'],
+    ['network-growth-assistant', 'stopping-an-ai-from-inventing-facts'],
+    ['linklocker', 'sign-in-behind-a-proxy'],
+  ]
+  for (const [project, note] of pairs) {
+    await page.goto(`/work/${project}`)
+    await expect(page.locator(`a[href="/writeups/${note}"]`)).toHaveCount(1)
+    await page.goto(`/writeups/${note}`)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    expect(await page.locator('pre').count()).toBeGreaterThan(0)
+  }
+})
+
+test('writeups are listed newest first, grouped by month, and can be searched and filtered', async ({ page }) => {
+  await page.goto('/writeups')
+  // Wait for hydration, otherwise typing can land before React attaches its handlers.
+  await page.waitForLoadState('networkidle')
+  const rows = page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })
+  // The newest month comes first, and inside it the best writeup first and LinkLocker's last.
+  await expect(rows.first().getByRole('link')).toHaveAttribute('href', '/writeups/fetching-links-you-dont-trust')
+  await expect(rows.nth(2).getByRole('link')).toHaveAttribute('href', '/writeups/sign-in-behind-a-proxy')
+  await expect(rows.nth(3).getByRole('link')).toHaveAttribute('href', '/writeups/skillmatch-attend-race-condition')
+  await expect(page.locator('main h2')).toHaveText([/November 2026/, /October 2026/])
+  await expect(page.locator('[data-writeup-count]')).toContainText('6 writeups, newest month first')
+  await expect(page.getByText('Featured', { exact: true })).toHaveCount(2)
+
+  await page.getByLabel('Search writeups').fill('rebinding')
+  await expect(rows).toHaveCount(1)
+  await expect(rows.first()).toContainText('fetches links it doesn’t trust')
+  await expect(page.locator('[data-writeup-count]')).toContainText('1 of 6 writeups')
+
+  await page.getByLabel('Search writeups').fill('zzzzzz')
+  await expect(page.getByText('No writeups match')).toBeVisible()
+  await page.getByRole('button', { name: 'Clear filters' }).click()
+  await expect(rows).toHaveCount(6)
+
+  await page.getByRole('button', { name: /^LinkLocker/ }).click()
+  await expect(page.getByRole('button', { name: /^LinkLocker/ })).toHaveAttribute('aria-pressed', 'true')
+  await expect(rows).toHaveCount(1)
+  await page.getByRole('button', { name: /^All/ }).click()
+  await expect(rows).toHaveCount(6)
 })
 
 test('writeups have a table of contents that jumps to a heading', async ({ page }) => {
