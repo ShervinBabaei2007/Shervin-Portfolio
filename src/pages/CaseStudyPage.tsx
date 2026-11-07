@@ -47,6 +47,9 @@ function CaseStudyPage() {
       : []),
   ]
   const sections: [string, string][] = [
+    ...(project.overview ? ([['what', 'What it is']] as [string, string][]) : []),
+    ...(project.features ? ([['does', 'What it can do']] as [string, string][]) : []),
+    ...(project.howItWorks ? ([['works', 'How it works']] as [string, string][]) : []),
     ['why', 'Why'],
     ['built', 'What I built'],
     ...(project.snippet ? ([['code', 'The code']] as [string, string][]) : []),
@@ -204,6 +207,42 @@ function CaseStudyPage() {
       <div className="mt-[18px] grid grid-cols-[minmax(0,1fr)] items-start max-[620px]:mt-5">
         <div className="min-w-0">
           <div className="grid grid-cols-[minmax(0,1fr)] [&>section]:border-b [&>section]:py-[26px]">
+            {project.overview && (
+              <section id="what">
+                <h2 className={h2Class}>What it is</h2>
+                {project.overview.map((paragraph) => (
+                  <p key={paragraph} className={bodyClass}>
+                    {paragraph}
+                  </p>
+                ))}
+              </section>
+            )}
+            {project.features && (
+              <section id="does">
+                <h2 className={h2Class}>What it can do</h2>
+                <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
+                  {project.features.map((feature) => (
+                    <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
+                      <h3 className="text-base font-semibold">{feature.title}</h3>
+                      <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+            {project.howItWorks && (
+              <section id="works">
+                <h2 className={h2Class}>How it works</h2>
+                <ol className="mt-2.5 grid list-none gap-3 p-0">
+                  {project.howItWorks.map((step, i) => (
+                    <li key={step} className="grid grid-cols-[30px_1fr] items-start gap-2.5">
+                      <span className="pt-1 font-mono text-sm text-primary">{String(i + 1).padStart(2, '0')}</span>
+                      <p className={cn(bodyClass, 'm-0')}>{step}</p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
             <section id="why">
               <h2 className={h2Class}>Why</h2>
               <p className={bodyClass}>{project.why}</p>

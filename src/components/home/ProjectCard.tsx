@@ -69,7 +69,9 @@ function CardMedia({ project }: { project: Project }) {
   }
   // The card shows a short preview: no outer margin, full width, a smaller font and no scrolling.
   const preview = { className: 'm-0 w-full', preClassName: 'overflow-hidden text-[.75rem] leading-[1.55]' }
-  if (project.snippet) {
+  // A recorded terminal session says more about a command-line project than code does, unless it is only a line or two.
+  const terminalFirst = project.terminal && project.terminal.transcript.split(/\r?\n/).length >= 3
+  if (project.snippet && !terminalFirst) {
     return (
       <div className={visualClass} aria-hidden="true" data-card-media>
         <CodeBlock snippet={project.snippet} maxLines={11} showCaption={false} {...preview} />
