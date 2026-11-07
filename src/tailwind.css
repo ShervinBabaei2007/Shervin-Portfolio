@@ -292,6 +292,24 @@
   }
 }
 
+/* Scroll reveal (see Reveal.tsx): hidden only after mount, only below the fold. */
+[data-reveal='pending'] {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+[data-reveal='in'] {
+  animation: rise-in 0.6s var(--reveal-delay, 0s) ease-out backwards;
+}
+
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
 /* Page content width: the content column with a gutter on each side. */
 @utility section-wrap {
   width: min(var(--content-max), calc(100% - 2 * var(--gutter)));
