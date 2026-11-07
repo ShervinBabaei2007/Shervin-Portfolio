@@ -21,6 +21,8 @@ import {
 } from '@/lib/githubCommits'
 import Reveal from '@/components/shared/Reveal'
 import { Button } from '@/components/ui/button'
+import { BorderBeam } from '@/components/ui/border-beam'
+import { NumberTicker } from '@/components/ui/number-ticker'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
@@ -76,6 +78,21 @@ function relative(iso: string, now: number) {
 
 const levelClass = ['bg-muted', 'bg-primary/25', 'bg-primary/45', 'bg-primary/70', 'bg-primary']
 
+const getJson = (url: string, init?: RequestInit) =>
+  fetch(url, init).then((response) =>
+    response.ok ? response.json() : Promise.reject(new Error(String(response.status))),
+  )
+
+async function loadSearchPage(): Promise<{ items: Parameters<typeof parseCommits>[0] }> {
+  try {
+    const body = await getJson('/api/github-commits')
+    if (Array.isArray(body?.items)) return body
+  } catch {
+    /* no function here (or it failed): ask GitHub directly */
+  }
+  return getJson(commitSearchUrl(user), { headers: { Accept: 'application/vnd.github+json' } })
+}
+
 /**
  * Commit history for every public repository: a contribution grid plus the latest
  * commits. The build-time snapshot is in the prerendered HTML; after load, the
@@ -113,8 +130,8 @@ function GitHubActivity() {
     } catch {
       /* storage unavailable */
     }
-    fetch(commitSearchUrl(user), { headers: { Accept: 'application/vnd.github+json' } })
-      .then((response) => (response.ok ? response.json() : Promise.reject(new Error(String(response.status)))))
+    // The site's own function first (shared and cached); GitHub directly when it is not available, such as in local development.
+    loadSearchPage()
       .then((body: { items: Parameters<typeof parseCommits>[0] }) => {
         const commits = parseCommits(body.items)
         const complete = body.items.length < 100 // counted before private repositories are filtered out
@@ -166,7 +183,8 @@ function GitHubActivity() {
 
   return (
     <Reveal>
-      <div className="rounded-xl border bg-card p-6 max-[620px]:p-4 md:p-8" data-github>
+      <div className="relative rounded-xl border bg-card p-6 max-[620px]:p-4 md:p-8" data-github>
+        {live && <BorderBeam size={140} duration={9} colorFrom="var(--primary)" colorTo="var(--ring)" />}
         <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
           <div>
             <h3 className="flex items-center gap-2.5 text-xl font-semibold">
@@ -197,12 +215,22 @@ function GitHubActivity() {
 
         <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border md:grid-cols-4">
           {[
-            ['Commits', stats.total.toLocaleString('en-CA')],
-            ['Active days', String(stats.activeDays)],
-            ['Longest streak', `${stats.longestStreak} days`],
-            ['Busiest day', `${stats.busiest} commits`],
+            ['Commits', <NumberTicker key="c" value={stats.total} />],
+            ['Active days', <NumberTicker key="d" value={stats.activeDays} />],
+            [
+              'Longest streak',
+              <span key="s">
+                <NumberTicker value={stats.longestStreak} /> days
+              </span>,
+            ],
+            [
+              'Busiest day',
+              <span key="b">
+                <NumberTicker value={stats.busiest} /> commits
+              </span>,
+            ],
           ].map(([label, value]) => (
-            <div key={label} className="bg-card px-4 py-3.5">
+            <div key={label as string} className="bg-card px-4 py-3.5">
               <dt className="font-mono text-label tracking-wide text-muted-foreground uppercase">{label}</dt>
               <dd className="mt-1 text-2xl leading-none font-semibold tabular-nums">{value}</dd>
             </div>
@@ -232,30 +260,44 @@ function GitHubActivity() {
               ))}
             </div>
             <div className="grid grid-flow-col grid-rows-7 gap-[3px]" style={cols}>
-              {weeks.flat().map((cell) => {
-                if (cell.future) return <span key={cell.day} aria-hidden="true" />
-                const box = cn('aspect-square rounded-[3px]', levelClass[level(cell.count)])
-                const noun = `commit${cell.count === 1 ? '' : 's'}`
-                if (cell.count === 0) {
-                  return <span key={cell.day} className={box} title={`No commits on ${cell.day}`} aria-hidden="true" />
-                }
-                return (
-                  <button
-                    key={cell.day}
-                    type="button"
-                    className={cn(
-                      box,
-                      'cursor-pointer transition-shadow hover:ring-2 hover:ring-foreground/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none aria-pressed:ring-2 aria-pressed:ring-foreground',
-                    )}
-                    title={`${cell.count} ${noun} on ${cell.day}`}
-                    aria-label={`${cell.count} ${noun} on ${longDay(cell.day)}`}
-                    aria-pressed={selectedDay === cell.day}
-                    onPointerEnter={() => void loadCommits()}
-                    onFocus={() => void loadCommits()}
-                    onClick={() => selectDay(cell.day)}
-                  />
-                )
-              })}
+              {weeks
+                .flatMap((week, column) => week.map((cell) => ({ ...cell, column })))
+                .map((cell) => {
+                  if (cell.future) return <span key={cell.day} aria-hidden="true" />
+                  const box = cn('aspect-square rounded-[3px]', levelClass[level(cell.count)])
+                  const stagger = { '--col': cell.column } as React.CSSProperties
+                  const noun = `commit${cell.count === 1 ? '' : 's'}`
+                  if (cell.count === 0) {
+                    return (
+                      <span
+                        key={cell.day}
+                        className={box}
+                        style={stagger}
+                        data-cell
+                        title={`No commits on ${cell.day}`}
+                        aria-hidden="true"
+                      />
+                    )
+                  }
+                  return (
+                    <button
+                      key={cell.day}
+                      type="button"
+                      className={cn(
+                        box,
+                        'cursor-pointer transition-shadow hover:ring-2 hover:ring-foreground/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none aria-pressed:ring-2 aria-pressed:ring-foreground',
+                      )}
+                      title={`${cell.count} ${noun} on ${cell.day}`}
+                      style={stagger}
+                      data-cell
+                      aria-label={`${cell.count} ${noun} on ${longDay(cell.day)}`}
+                      aria-pressed={selectedDay === cell.day}
+                      onPointerEnter={() => void loadCommits()}
+                      onFocus={() => void loadCommits()}
+                      onClick={() => selectDay(cell.day)}
+                    />
+                  )
+                })}
             </div>
           </div>
         </div>
