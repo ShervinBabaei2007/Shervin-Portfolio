@@ -44,8 +44,8 @@ function limitedInMemory(ip: string) {
   return recent.length >= MAX_HITS
 }
 
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } })
+const json = (body: unknown, status = 200, headers: Record<string, string> = {}) =>
+  new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...headers } })
 
 const clean = (value: unknown, max: number) => (typeof value === 'string' ? value.trim().slice(0, max) : '')
 const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
@@ -53,7 +53,10 @@ const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.char
 export async function POST(request: Request) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
   const limited = (await limitedByRedis(ip)) ?? limitedInMemory(ip)
-  if (limited) return json({ error: 'Too many messages. Please try again later.' }, 429)
+  if (limited)
+    return json({ error: 'Too many messages. Please try again later.' }, 429, {
+      'Retry-After': String(WINDOW_MS / 1000),
+    })
 
   let data: Record<string, unknown>
   try {
