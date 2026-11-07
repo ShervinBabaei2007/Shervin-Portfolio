@@ -6,28 +6,63 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { Link } from 'react-router-dom'
 import type { Project } from '@/data/projects'
+import images from '@/data/images.json'
 import CodeBlock from '@/components/shared/CodeBlock'
 import ResponsiveImage from '@/components/shared/ResponsiveImage'
 import TerminalBlock from '@/components/shared/TerminalBlock'
+import WindowFrame from '@/components/shared/WindowFrame'
 import { cn } from '@/lib/utils'
 
-/** The decorative thumbnail area: a dotted backdrop behind screenshots, code, or a terminal. */
-const visualClass = cn(
-  'relative z-[1] grid h-[215px] place-items-center overflow-hidden px-7 py-[19px] max-[620px]:h-[205px] max-[620px]:p-4',
+/**
+ * The decorative thumbnail area: one fixed height for every card, so a row of cards lines up whatever it shows
+ * (a screenshot, code or a terminal), on a dotted backdrop.
+ */
+const mediaBase = cn(
+  'relative z-[1] h-[240px] overflow-hidden max-[620px]:h-[220px]',
   'bg-muted bg-[radial-gradient(color-mix(in_srgb,var(--foreground)_12%,transparent)_.8px,transparent_.8px)] bg-[length:13px_13px]',
 )
+const visualClass = cn(mediaBase, 'grid place-items-center px-7 py-[19px] max-[620px]:p-4')
+
+const catalog = images as Record<string, { width: number; height: number }>
+/** Tall phone screenshots get the "phones peeking up" treatment; wide ones get a browser window. */
+const isPortrait = (src: string) => {
+  const info = catalog[src]
+  return Boolean(info) && info.height / info.width > 1.2
+}
 
 function CardMedia({ project }: { project: Project }) {
   if (project.screenshots?.length) {
+    const shots = project.screenshots
     return (
-      <div className={cn(visualClass, 'block p-0 dark:brightness-[.94] dark:saturate-[.85]')} aria-hidden="true">
-        <div className="absolute inset-0 grid size-full grid-cols-3 grid-rows-[minmax(0,1fr)] items-stretch justify-items-stretch gap-3 px-[18px] py-3.5 max-[620px]:gap-[7px] max-[620px]:px-2 [&_figure]:m-0 [&_figure]:grid [&_figure]:min-h-0 [&_figure]:min-w-0 [&_figure]:place-items-center [&_figure]:overflow-hidden [&_img]:block [&_img]:size-full [&_img]:min-h-0 [&_img]:object-contain">
-          {project.screenshots.slice(0, 3).map((screenshot) => (
-            <figure key={screenshot.src}>
-              <ResponsiveImage src={screenshot.src} alt="" sizes="(max-width: 620px) 30vw, 200px" />
-            </figure>
-          ))}
-        </div>
+      <div
+        className={cn(
+          mediaBase,
+          'flex items-end justify-center px-6 pt-6 max-[620px]:px-4 max-[620px]:pt-4 dark:brightness-[.94] dark:saturate-[.85]',
+        )}
+        aria-hidden="true"
+        data-card-media
+      >
+        {isPortrait(shots[0].src) ? (
+          <div className="flex h-full w-full items-end justify-center gap-3 max-[620px]:gap-2">
+            {shots.slice(0, 3).map((shot, index) => (
+              <figure
+                key={shot.src}
+                className={cn(
+                  'm-0 w-[29%] max-w-[150px] overflow-hidden rounded-t-[20px] border border-b-0 bg-card p-1 pb-0 shadow-lg',
+                  index === 1 ? 'h-full' : 'h-[86%]',
+                )}
+              >
+                <div className="size-full overflow-hidden rounded-t-[16px] [&_img]:block [&_img]:size-full [&_img]:object-cover [&_img]:object-top">
+                  <ResponsiveImage src={shot.src} alt="" sizes="(max-width: 620px) 30vw, 150px" />
+                </div>
+              </figure>
+            ))}
+          </div>
+        ) : (
+          <WindowFrame label={shots[0].caption}>
+            <ResponsiveImage src={shots[0].src} alt="" sizes="(max-width: 620px) 90vw, 560px" />
+          </WindowFrame>
+        )}
       </div>
     )
   }
@@ -35,14 +70,14 @@ function CardMedia({ project }: { project: Project }) {
   const preview = { className: 'm-0 w-full', preClassName: 'overflow-hidden text-[.75rem] leading-[1.55]' }
   if (project.snippet) {
     return (
-      <div className={visualClass} aria-hidden="true">
+      <div className={visualClass} aria-hidden="true" data-card-media>
         <CodeBlock snippet={project.snippet} maxLines={11} showCaption={false} {...preview} />
       </div>
     )
   }
   if (project.terminal) {
     return (
-      <div className={visualClass} aria-hidden="true">
+      <div className={visualClass} aria-hidden="true" data-card-media>
         <TerminalBlock
           title={project.terminal.title}
           transcript={project.terminal.transcript}
@@ -90,7 +125,7 @@ function ProjectCard({ project }: { project: Project }) {
       >
         <CardMedia project={project} />
         <div className="relative z-[1] flex flex-1 flex-col px-[22px] pt-5 pb-[22px] max-[620px]:p-5">
-          <div className="flex justify-between font-mono text-muted-foreground">
+          <div className="flex justify-between gap-3 font-mono text-label text-muted-foreground" data-card-meta>
             <span>{project.category}</span>
             <span>{project.date}</span>
           </div>
@@ -99,7 +134,7 @@ function ProjectCard({ project }: { project: Project }) {
           </p>
           <h3 className="mt-[15px] text-2xl leading-[1.15] font-semibold max-[620px]:text-xl">{project.name}</h3>
           <p className="mt-1.5 font-semibold">{project.subtitle}</p>
-          <p className="mt-[11px] leading-[1.65] text-muted-foreground">{project.summary}</p>
+          <p className="mt-[11px] line-clamp-2 leading-[1.65] text-muted-foreground">{project.summary}</p>
           <div className="mt-4 mb-[18px] flex flex-wrap gap-1.5" aria-label="Stack">
             {project.stack.slice(0, 5).map((item) => (
               <Badge key={item} variant="secondary">

@@ -515,6 +515,31 @@ test.describe('tools cards', () => {
   })
 })
 
+test('every featured project card has the same size of picture area, on desktop and on a phone', async ({ page }) => {
+  for (const [width, expected] of [
+    [1440, 240],
+    [390, 220],
+  ] as const) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+    const heights = await page
+      .locator('[data-slot="carousel"] [data-card-media]')
+      .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().height)))
+    expect(heights, `${width}px`).toEqual([expected, expected, expected, expected])
+  }
+})
+
+test('a project card shows its category and date on one line on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const wrapped = await page
+    .locator('[data-project-card] [data-card-meta]')
+    .evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 24).length)
+  expect(wrapped).toBe(0)
+})
+
 test('terminal projects show a recorded session', async ({ page }) => {
   await page.goto('/work/mini-rpg-battle')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')

@@ -4,6 +4,7 @@ import { flagshipProjects, moreProjects } from '@/data/projects'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import GitHubActivity from '@/components/home/GitHubActivity'
 import ProjectCard from '@/components/home/ProjectCard'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import SectionHeading from '@/components/shared/SectionHeading'
@@ -79,10 +80,15 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
             {others.map((project) => (
               <li key={project.slug}>
                 <Link
-                  className="grid min-h-16 grid-cols-[minmax(150px,.8fr)_minmax(0,2fr)_minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 border-b px-1 py-3 no-underline transition-colors hover:bg-card hover:text-primary max-[1100px]:grid-cols-[minmax(140px,.8fr)_minmax(0,2fr)_auto] max-[900px]:grid-cols-[1fr_auto] max-[900px]:gap-x-3 max-[900px]:gap-y-0.5"
+                  className="group grid min-h-16 grid-cols-[minmax(150px,.8fr)_minmax(0,2fr)_minmax(0,1fr)_auto] items-center gap-x-6 gap-y-2 border-b px-1 py-3 no-underline transition-colors hover:bg-card hover:text-primary max-[1100px]:grid-cols-[minmax(140px,.8fr)_minmax(0,2fr)_auto] max-[900px]:grid-cols-[1fr_auto] max-[900px]:gap-x-3 max-[900px]:gap-y-0.5"
                   to={`/work/${project.slug}`}
                 >
-                  <span className="text-[1.0625rem] font-semibold max-[900px]:col-start-1">{project.name}</span>
+                  <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1 max-[900px]:col-start-1">
+                    <span className="text-[1.0625rem] font-semibold">{project.name}</span>
+                    <Badge variant="outline" className="font-normal text-muted-foreground">
+                      {project.category}
+                    </Badge>
+                  </span>
                   <span className="text-[.9375rem] text-muted-foreground max-[900px]:col-start-1 max-[900px]:row-start-2 max-[900px]:text-sm">
                     {project.subtitle}
                   </span>
@@ -90,7 +96,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
                     {project.stack.slice(0, 3).join(', ')}
                   </span>
                   <ArrowUpRight
-                    className="text-primary max-[900px]:col-start-2 max-[900px]:row-[1/span_2]"
+                    className="text-primary transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 max-[900px]:col-start-2 max-[900px]:row-[1/span_2]"
                     size={16}
                     aria-hidden="true"
                   />
