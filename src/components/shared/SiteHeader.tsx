@@ -1,20 +1,12 @@
 import { lazy, Suspense, useRef, useState } from 'react'
-import { Github, Linkedin, Mail, Menu, Monitor, Moon, Sun } from 'lucide-react'
+import { Github, Linkedin, Mail, Menu, Moon, Sun } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import CommandPalette from '@/components/shared/CommandPalette'
 import PendingFlag from '@/components/shared/PendingFlag'
 import { Spinner } from '@/components/ui/spinner'
 import ScrollProgress from '@/components/shared/ScrollProgress'
 import { useActiveSection } from '@/hooks/useActiveSection'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { Preference, Scheme } from '@/hooks/useTheme'
 import { site } from '@/data/site'
 
@@ -27,6 +19,10 @@ type SiteHeaderProps = {
 // Started early (focus, touch) so the menu is usually ready by the time it is opened.
 const loadMobileNav = () => import('./MobileNavSheet')
 const MobileNavSheet = lazy(loadMobileNav)
+
+// The theme menu pulls in the Radix menu and popper code, so it downloads on first hover, focus, touch or click.
+const loadThemeMenu = () => import('./ThemeMenu')
+const ThemeMenu = lazy(loadThemeMenu)
 
 const navLinks = [
   { to: '/#work', label: 'Work', section: 'work' },
@@ -55,6 +51,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuEverOpened, setMenuEverOpened] = useState(false)
   const [menuLoading, setMenuLoading] = useState(false)
+  const [themeMenuWanted, setThemeMenuWanted] = useState(false)
   const menuButton = useRef<HTMLButtonElement>(null)
   const activeSection = useActiveSection(Object.keys(sectionOwner), pathname === '/')
   const activeOwner = activeSection ? sectionOwner[activeSection] : null
@@ -65,6 +62,22 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
     if (pathname === '/' && 'section' in link && link.section === activeOwner) return 'location' as const
     return undefined
   }
+
+  const themeButton = (
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      className="max-[620px]:size-11"
+      aria-label="Choose theme"
+      title="Choose theme"
+      onPointerEnter={() => void loadThemeMenu()}
+      onFocus={() => void loadThemeMenu()}
+      onTouchStart={() => void loadThemeMenu()}
+      onClick={() => setThemeMenuWanted(true)}
+    >
+      {scheme === 'dark' ? <Moon /> : <Sun />}
+    </Button>
+  )
 
   return (
     <header className="sticky top-0 z-20 grid min-h-[var(--header-height)] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center justify-between border-b bg-background px-[max(var(--gutter),calc((100%-var(--content-max))/2))] py-2 max-[620px]:flex max-[620px]:flex-wrap max-[620px]:gap-y-1 print:hidden">
@@ -92,49 +105,27 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
       </nav>
       <div className="col-start-3 flex items-center gap-4 justify-self-end max-[620px]:gap-0">
         <CommandPalette />
-        <TooltipProvider delayDuration={150}>
-          {socials.map(({ label, href, Icon, external }) => (
-            <Tooltip key={label}>
-              <TooltipTrigger asChild>
-                <Button asChild variant="ghost" size="icon-sm" className="hidden sm:inline-flex">
-                  <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-                    <Icon />
-                  </a>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{label}</TooltipContent>
-            </Tooltip>
-          ))}
-        </TooltipProvider>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="max-[620px]:size-11"
-              aria-label="Choose theme"
-              title="Choose theme"
-            >
-              {scheme === 'dark' ? <Moon /> : <Sun />}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuRadioGroup
-              value={preference}
-              onValueChange={(value) => onPreferenceChange(value as Preference)}
-            >
-              <DropdownMenuRadioItem value="light">
-                <Sun /> Light
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark">
-                <Moon /> Dark
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="system">
-                <Monitor /> System
-              </DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {socials.map(({ label, href, Icon, external }) => (
+          <Button key={label} asChild variant="ghost" size="icon-sm" className="group/tip relative hidden sm:inline-flex">
+            <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
+              <Icon />
+              {/* A label on hover and keyboard focus. Plain CSS, so the header needs no tooltip library. */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute top-full left-1/2 z-30 mt-1.5 -translate-x-1/2 rounded-md bg-foreground px-2.5 py-1 text-meta whitespace-nowrap text-background opacity-0 transition-opacity delay-150 group-hover/tip:opacity-100 group-focus-visible/tip:opacity-100"
+              >
+                {label}
+              </span>
+            </a>
+          </Button>
+        ))}
+        {themeMenuWanted ? (
+          <Suspense fallback={themeButton}>
+            <ThemeMenu scheme={scheme} preference={preference} onPreferenceChange={onPreferenceChange} defaultOpen />
+          </Suspense>
+        ) : (
+          themeButton
+        )}
         <Button
           ref={menuButton}
           variant="ghost"
