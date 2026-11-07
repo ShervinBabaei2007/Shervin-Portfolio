@@ -13,9 +13,9 @@ const pages = [
   '/work/mini-rpg-battle',
   '/work/thinkboard',
   '/work/discord-ai-bridge',
-  '/notes/skillmatch-attend-race-condition',
+  '/writeups/skillmatch-attend-race-condition',
   '/resume',
-  '/notes',
+  '/writeups',
   '/lab',
   '/how-its-built',
 ]

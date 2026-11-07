@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 
@@ -43,9 +44,9 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
     '/work/thinkboard',
     '/resume',
     '/how-its-built',
-    '/notes',
+    '/writeups',
     '/lab',
-    '/notes/sliding-window-rate-limiting',
+    '/writeups/sliding-window-rate-limiting',
   ]) {
     await page.goto(path)
     await page.waitForLoadState('networkidle')
@@ -53,11 +54,34 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
   expect(errors).toEqual([])
 })
 
-test('home shows four flagships and a compact list for the rest', async ({ page }) => {
+test('home shows four flagships and links to the full projects page', async ({ page }) => {
   await page.goto('/')
   await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(4)
-  await expect(page.locator('#work ul li').filter({ has: page.locator('a[href^="/work/"]') })).toHaveCount(4)
+  await expect(page.getByRole('heading', { name: 'More projects' })).toHaveCount(0)
   await expect(page.getByText('Illustrative interface preview')).toHaveCount(0)
+  await page.getByRole('link', { name: /View all projects/ }).click()
+  await expect(page).toHaveURL(/\/projects$/)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Everything')
+  await expect(page.locator('[data-project-card]')).toHaveCount(8)
+})
+
+test('the header lists Work, About and Contact together, then Writeups and Resume', async ({ page }) => {
+  await page.goto('/')
+  const links = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link')
+  await expect(links).toHaveText(['Work', 'About', 'Contact', 'Writeups', 'Resume'])
+})
+
+test('skills do not rank or rate anything', async ({ page }) => {
+  await page.goto('/')
+  const skills = page.locator('#skills')
+  await expect(skills).not.toContainText('Exploring')
+  await expect(skills.getByText('Core', { exact: true })).toHaveCount(0)
+  await expect(skills.locator('[role="progressbar"]')).toHaveCount(0)
+})
+
+test('old /notes links redirect to /writeups in the Vercel config', async () => {
+  const { redirects } = JSON.parse(readFileSync('vercel.json', 'utf8'))
+  expect(redirects).toContainEqual({ source: '/notes/:slug', destination: '/writeups/:slug', permanent: true })
 })
 
 test('case study is a shareable page with team context, code, and trade-off', async ({ page }) => {
@@ -325,9 +349,9 @@ test('a slow page change shows a progress bar, and a fast one does not', async (
     await new Promise((resolve) => setTimeout(resolve, 1500))
     await route.continue()
   })
-  await page.goto('/notes')
+  await page.goto('/writeups')
   // No waiting for the network to go quiet: the delayed home chunk is already being fetched and would finish first.
-  await expect(page.getByRole('heading', { name: /Notes on things I built/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
   const bar = page.locator('[data-nav-progress]')
 
@@ -352,7 +376,7 @@ test.describe('typography', () => {
   ] as const) {
     test(`no visible text is under ${minimum}px on ${name}, and only the site fonts are used`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })
-      for (const path of ['/', '/work/skillmatch', '/work/mini-rpg-battle', '/resume', '/notes', '/lab']) {
+      for (const path of ['/', '/work/skillmatch', '/work/mini-rpg-battle', '/resume', '/writeups', '/lab']) {
         await page.goto(path)
         await page.waitForLoadState('networkidle')
         await page.evaluate(() => document.fonts.ready)
@@ -393,7 +417,7 @@ test.describe('reading width', () => {
       for (const path of [
         '/work/skillmatch',
         '/work/job-application-tracker',
-        '/notes/skillmatch-attend-race-condition',
+        '/writeups/skillmatch-attend-race-condition',
         '/lab',
         '/how-its-built',
         '/resume',
@@ -436,7 +460,7 @@ test.describe('the end of a page', () => {
   })
 
   test('a note ends with the same next step', async ({ page }) => {
-    await page.goto('/notes/skillmatch-attend-race-condition')
+    await page.goto('/writeups/skillmatch-attend-race-condition')
     const cta = page.getByRole('region', { name: 'Found this useful?' })
     await expect(cta.getByRole('link', { name: /Get in touch/ })).toHaveAttribute('href', '/#contact')
   })
@@ -602,7 +626,7 @@ test('layout stays within phone, tablet, and desktop viewports', async ({ page }
       '/work/skillmatch',
       '/work/thinkboard',
       '/resume',
-      '/notes/skillmatch-attend-race-condition',
+      '/writeups/skillmatch-attend-race-condition',
     ]) {
       await page.goto(path)
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
@@ -631,9 +655,10 @@ for (const scheme of ['light', 'dark'] as const) {
       '/work/mini-rpg-battle',
       '/resume',
       '/how-its-built',
-      '/notes',
+      '/projects',
+      '/writeups',
       '/lab',
-      '/notes/skillmatch-attend-race-condition',
+      '/writeups/skillmatch-attend-race-condition',
     ]) {
       await page.goto(path)
       await page.waitForLoadState('networkidle')
@@ -698,16 +723,16 @@ test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the othe
   await expect(demo.locator('[data-limiter-log] li').first()).toContainText('200 OK')
 })
 
-test('engineering notes: listed on the notes page, own pages, linked from case studies', async ({ page }) => {
+test('writeups: listed on the writeups page, own pages, linked from case studies', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('link', { name: /Read my engineering notes/ }).click()
-  await expect(page).toHaveURL(/\/notes$/)
-  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/notes/"]') })).toHaveCount(3)
+  await page.getByRole('link', { name: /Read my writeups/ }).click()
+  await expect(page).toHaveURL(/\/writeups$/)
+  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })).toHaveCount(3)
   await page
     .getByRole('link', { name: /The race condition in SkillMatch/ })
     .first()
     .click()
-  await expect(page).toHaveURL(/\/notes\/skillmatch-attend-race-condition$/)
+  await expect(page).toHaveURL(/\/writeups\/skillmatch-attend-race-condition$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('race condition')
   await expect(page.locator('article code').first()).toBeVisible()
   await page.getByRole('link', { name: /Case study/ }).click()
@@ -715,47 +740,80 @@ test('engineering notes: listed on the notes page, own pages, linked from case s
   await expect(page.getByRole('heading', { name: 'Go deeper' })).toBeVisible()
 })
 
-test('GitHub activity shows live recent pushes, and hides itself when nothing is recent', async ({ page }) => {
+/** A search page. `count` of 100 is a full page, which means older commits exist beyond it. */
+const searchResult = (message: string, date: string, count = 1) => ({
+  total_count: count,
+  items: Array.from({ length: count }, (_, index) => ({
+    sha: `abc${String(index).padStart(4, '0')}def`,
+    commit: { message, author: { date } },
+    repository: { full_name: 'ShervinBabaei2007/Portfolio', private: false },
+  })),
+})
+
+test('GitHub activity shows live recent commits, and hides itself when nothing is recent', async ({ page }) => {
   const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
   await page.route('https://api.github.com/**', (route) =>
-    route.fulfill({
-      json: [
-        {
-          name: 'Portfolio',
-          html_url: 'https://github.com/ShervinBabaei2007/Portfolio',
-          description: null,
-          language: 'TypeScript',
-          pushed_at: recent,
-          fork: false,
-        },
-      ],
-    }),
+    route.fulfill({ json: searchResult('feat: live commit from the mock', recent) }),
   )
   await page.goto('/')
   const activity = page.locator('[data-github]')
-  await expect(activity).toContainText('Portfolio')
+  await expect(activity).toContainText('feat: live commit from the mock')
   await expect(activity).toContainText('2 days ago')
   await expect(activity).toContainText('Live from GitHub')
+  await expect(activity.locator('[data-heatmap]')).toBeVisible()
 
   const stale = await page.context().newPage()
   await stale.route('https://api.github.com/**', (route) =>
-    route.fulfill({
-      json: [
-        {
-          name: 'Old',
-          html_url: 'https://github.com/x/Old',
-          description: null,
-          language: null,
-          pushed_at: '2025-01-01T00:00:00Z',
-          fork: false,
-        },
-      ],
-    }),
+    route.fulfill({ json: searchResult('chore: old commit', '2025-01-01T00:00:00Z') }),
   )
   await stale.goto('/')
   await stale.waitForLoadState('networkidle')
   if (!(await stale.locator('[data-github]').count())) return // stale snapshot and stale live data: hidden
-  await expect(stale.locator('[data-github]')).not.toContainText('Old')
+  await expect(stale.locator('[data-github]')).not.toContainText('old commit')
+})
+
+test('commit history keeps the full-year totals when the live request adds the newest commits', async ({ page }) => {
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({ json: searchResult('feat: mock', recent, 100) }),
+  )
+  await page.goto('/')
+  const activity = page.locator('[data-github]')
+  await expect(activity).toContainText('Live from GitHub')
+  const commits = await activity.locator('dl > div').first().locator('dd').innerText()
+  expect(Number(commits.replace(/,/g, ''))).toBeGreaterThan(100)
+})
+
+test('commit history: select a day to list its commits, then go back to the latest', async ({ page }) => {
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({ json: searchResult('feat: mock', recent, 100) }),
+  )
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const activity = page.locator('[data-github]')
+  await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
+
+  const days = activity.locator('[data-heatmap] button')
+  expect(await days.count()).toBeGreaterThan(10)
+  await days.nth(3).click()
+  await expect(days.nth(3)).toHaveAttribute('aria-pressed', 'true')
+  await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
+  await expect(activity.getByRole('heading', { name: 'Latest commits' })).toHaveCount(0)
+  const links = activity.locator('[data-commit-panel] li a')
+  expect(await links.count()).toBeGreaterThan(0)
+  await expect(links.first()).toHaveAttribute('href', /^https:\/\/github\.com\/.+\/commit\/[0-9a-f]{7}$/)
+
+  await activity.getByRole('button', { name: 'Show latest commits' }).click()
+  await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
+  await expect(days.nth(3)).toHaveAttribute('aria-pressed', 'false')
+
+  // The same cell, from the keyboard.
+  await days.nth(3).focus()
+  await page.keyboard.press('Enter')
+  await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
+  await days.nth(3).click()
+  await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
 })
 
 test('a page whose code fails to load shows a reload prompt, not a blank site', async ({ page }) => {
@@ -776,10 +834,10 @@ test('a slow page keeps the current page on screen, then lands on the linked sec
     await new Promise((resolve) => setTimeout(resolve, 1500))
     await route.continue()
   })
-  await page.goto('/notes')
-  await expect(page.getByRole('heading', { name: /Notes on things I built/ })).toBeVisible()
+  await page.goto('/writeups')
+  await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
   await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Contact' }).click()
-  await expect(page.getByRole('heading', { name: /Notes on things I built/ })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
   await expect(page.locator('[aria-label="Loading page"]')).toHaveCount(0)
 
   await expect(page).toHaveURL(/\/#contact$/, { timeout: 5000 })
@@ -793,7 +851,7 @@ test('if the current page’s code cannot load, the prerendered page stays reada
   await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible()
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
-  await expect(nav.getByRole('link', { name: 'Notes' })).toHaveAttribute('href', '/notes')
+  await expect(nav.getByRole('link', { name: 'Writeups' })).toHaveAttribute('href', '/writeups')
 })
 
 test('the first load does not download the SEO data chunk', async ({ page }) => {
