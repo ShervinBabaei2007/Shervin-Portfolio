@@ -5,8 +5,11 @@ import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import NoteBody from '@/components/shared/NoteBody'
 import CopyLinkButton from '@/components/shared/CopyLinkButton'
 import TableOfContents from '@/components/shared/TableOfContents'
+import WriteupAside from '@/components/shared/WriteupAside'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { findNote, formatDate, notes } from '../data/notes'
 import { findProject } from '../data/projects'
+import { cn } from '@/lib/utils'
 import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
@@ -19,6 +22,7 @@ function WriteupPage() {
   if (!note) return <NotFoundPage />
 
   const project = findProject(note.project)
+  const headings = note.body.flatMap((block) => (block.type === 'h2' ? [block.text] : []))
   const next = notes[(notes.indexOf(note) + 1) % notes.length]
 
   return (
@@ -35,17 +39,30 @@ function WriteupPage() {
       />
       <header className="mt-[18px] border-b pb-8">
         <p className="eyebrow">WRITEUP</p>
-        <h1 id="note-title" className="mt-3.5 text-wrap text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-[1.1] font-semibold">
+        <h1
+          id="note-title"
+          className="mt-3.5 text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-[1.1] font-semibold text-wrap"
+        >
           {note.title}
         </h1>
         <p className="mt-5 text-[1.25rem] leading-[1.65] text-muted-foreground">{note.summary}</p>
         <div className="mt-3.5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-          <p className="font-mono text-meta text-muted-foreground">
-            {site.name} · <time dateTime={note.date}>{formatDate(note.date)}</time> · {note.minutes} min read
-          </p>
+          <div className="flex items-center gap-3">
+            <Avatar>
+              <AvatarFallback className="bg-secondary font-mono text-xs text-secondary-foreground">SB</AvatarFallback>
+            </Avatar>
+            <p className="font-mono text-meta text-muted-foreground">
+              <span className="text-foreground">{site.name}</span> ·{' '}
+              <time dateTime={note.date}>{formatDate(note.date)}</time> · {note.minutes} min read
+            </p>
+          </div>
           <CopyLinkButton />
         </div>
-        <TableOfContents headings={note.body.flatMap((block) => (block.type === 'h2' ? [block.text] : []))} />
+        {/* The two cards are always the same height: the contents list sets it, and the project card fills it. */}
+        <div className={cn('mt-8 grid items-stretch gap-5', project && 'lg:grid-cols-[minmax(0,1fr)_22rem]')}>
+          <TableOfContents headings={headings} />
+          {project && <WriteupAside project={project} />}
+        </div>
       </header>
       <NoteBody blocks={note.body} />
       <ClosingCta
