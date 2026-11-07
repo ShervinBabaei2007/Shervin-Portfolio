@@ -451,7 +451,7 @@ test('case study sections use the full width of the page, not half of it', async
   }
 })
 
-test('writeups sit in a centred reading column, and the closing card still has room', async ({ page }) => {
+test('writeups use the full content width, centred, and the closing card still has room', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/writeups/skillmatch-attend-race-condition')
   await page.waitForLoadState('networkidle')
@@ -459,10 +459,14 @@ test('writeups sit in a centred reading column, and the closing card still has r
   // Centred: the same space on the left and the right.
   const main = (await page.locator('main').boundingBox())! // its width excludes the scrollbar
   expect(Math.abs(article.x - main.x - (main.x + main.width - article.x - article.width))).toBeLessThan(2)
-  // Wide enough to breathe, narrow enough that the eye is not tracking across the whole screen.
-  expect(article.width).toBeGreaterThan(800)
-  expect(article.width).toBeLessThanOrEqual(920)
-  const paragraph = (await page.locator('article p').nth(1).boundingBox())!
+  // The header runs the full width of the page content, and the title is not squeezed into half of it.
+  expect(article.width).toBeGreaterThan(1000)
+  const summary = (await page.locator('article header p').first().boundingBox())!
+  expect(summary.width).toBeGreaterThan(article.width * 0.95)
+  const title = (await page.locator('#note-title').boundingBox())!
+  expect(title.width).toBeGreaterThan(article.width * 0.95)
+  // Body paragraphs span the full width too.
+  const paragraph = (await page.locator('article > div > p').first().boundingBox())!
   expect(paragraph.width).toBeGreaterThan(article.width * 0.95)
   const card = page.getByRole('region', { name: 'Found this useful?' })
   // The text sits beside the buttons rather than being squeezed above them.
@@ -803,7 +807,6 @@ test('commit history keeps the full-year totals when the live request adds the n
   await page.goto('/')
   const activity = page.locator('[data-github]')
   await expect(activity).toContainText('Live from GitHub')
-  // The number counts up when scrolled into view, so wait for it to settle.
   const commits = activity.locator('dl > div').first().locator('dd')
   await expect.poll(async () => Number((await commits.innerText()).replace(/,/g, ''))).toBeGreaterThan(100)
 })
@@ -987,15 +990,7 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
   await expect(viewer.getByRole('list', { name: 'All screenshots' }).getByRole('button')).toHaveCount(3)
   await expect(viewer.getByText(/^1 of 3/)).toBeVisible()
 
-  // Click the picture to see it at its real size, and click again to fit it back.
-  const zoom = viewer.getByRole('button', { name: 'Zoom in to actual size' })
-  await zoom.click()
-  await expect(viewer.getByRole('button', { name: 'Zoom out to fit the window' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
-  await viewer.getByRole('button', { name: 'Zoom out to fit the window' }).click()
-  await expect(zoom).toHaveAttribute('aria-pressed', 'false')
+  await expect(viewer.getByRole('button', { name: /Zoom/ })).toHaveCount(0)
 
   await viewer.getByRole('button', { name: /Show screenshot 2/ }).click()
   await expect(viewer.getByText(/^2 of 3/)).toBeVisible()
@@ -1082,4 +1077,51 @@ test('reduced motion: no infinite animations keep running on the home page', asy
       .map((animation) => animation.id || 'unnamed'),
   )
   expect(running).toEqual([])
+})
+
+test('projects page filters by type', async ({ page }) => {
+  await page.goto('/projects')
+  // Wait for hydration, otherwise the click can land before React attaches its handlers.
+  await page.waitForLoadState('networkidle')
+  const cards = page.getByRole('list').filter({ has: page.getByRole('link', { name: /case study/i }) }).first().getByRole('listitem')
+  const all = await cards.count()
+  await page.getByRole('button', { name: /^Hackathon/ }).click()
+  await expect(page.getByRole('button', { name: /^Hackathon/ })).toHaveAttribute('aria-pressed', 'true')
+  // Cards that are filtered out fade away first, so wait for the list to settle.
+  await expect(cards).toHaveCount(1)
+  await page.getByRole('button', { name: /^All/ }).click()
+  await expect(cards).toHaveCount(all)
+})
+
+test('writeups have a table of contents that jumps to a heading', async ({ page }) => {
+  await page.goto('/writeups/skillmatch-attend-race-condition')
+  const toc = page.getByRole('navigation', { name: 'On this page' })
+  await expect(toc).toBeVisible()
+  await toc.getByRole('link').nth(1).click()
+  await expect(page).toHaveURL(/#.+/)
+  await expect(page.locator(page.url().slice(page.url().indexOf('#')))).toBeInViewport()
+  await expect(page.getByRole('button', { name: /Copy link/ })).toBeVisible()
+})
+
+test('back to top appears after scrolling and returns to the top', async ({ page }) => {
+  await page.goto('/')
+  const button = page.getByRole('button', { name: 'Back to top', includeHidden: true })
+  await expect(button).toHaveAttribute('aria-hidden', 'true')
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+  await expect(button).toHaveAttribute('aria-hidden', 'false')
+  await button.click()
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(5)
+})
+
+test('the writeups index heading and intro use the full width of the page', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/writeups')
+  await page.waitForLoadState('networkidle')
+  const section = (await page.locator('section[aria-labelledby="writeups-index-title"]').boundingBox())!
+  const title = (await page.locator('#writeups-index-title').boundingBox())!
+  const lead = (await page.locator('#writeups-index-title + p').boundingBox())!
+  expect(title.width).toBeGreaterThan(section.width * 0.95)
+  expect(lead.width).toBeGreaterThan(section.width * 0.95)
+  // The heading fits on one line instead of wrapping early.
+  expect(title.height).toBeLessThan(90)
 })
