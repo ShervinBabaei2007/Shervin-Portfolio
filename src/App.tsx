@@ -106,7 +106,7 @@ function App() {
       </a>
       <ScrollManager />
       <NavigationProgress />
-      <SiteHeader scheme={scheme} preference={preference} onPreferenceChange={setPreference} />
+      <SiteHeader preference={preference} onPreferenceChange={setPreference} />
       <main id="main" tabIndex={-1}>
         <PageErrorBoundary pathname={pathname}>
           <Suspense

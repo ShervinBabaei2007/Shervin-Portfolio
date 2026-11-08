@@ -18,7 +18,8 @@ const hydrated = (page: Page) =>
 test('hero states the role, links to the resume, and shows no stats or email', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Full-stack developer')
-  await expect(page.getByRole('link', { name: 'View resume' }).first()).toHaveAttribute('href', '/resume')
+  await expect(page.locator('#home').getByRole('link', { name: 'See my projects' })).toHaveAttribute('href', '/#work')
+  await expect(page.locator('#home').getByRole('link', { name: 'View resume' })).toHaveCount(0)
   await expect(page.getByRole('list', { name: 'Highlights' })).toHaveCount(0)
   await expect(page.locator('#home')).not.toContainText('shervinb22')
   await expect(page.locator('#home').getByRole('link', { name: /Top 6 of 36 teams/ })).toHaveAttribute(
@@ -69,10 +70,14 @@ test('home shows four flagships and links to the full projects page', async ({ p
   await expect(page.locator('[data-project-card]')).toHaveCount(12)
 })
 
-test('the header lists Work, About and Contact together, then Writeups and Resume', async ({ page }) => {
+test('the header lists only Work, About and Contact; Writeups and Resume are in the More menu', async ({ page }) => {
   await page.goto('/')
   const links = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link')
-  await expect(links).toHaveText(['Work', 'About', 'Contact', 'Writeups', 'Resume'])
+  await expect(links).toHaveText(['Work', 'About', 'Contact'])
+  await hydrated(page)
+  await page.getByRole('button', { name: 'More' }).click()
+  await expect(page.getByRole('menuitem', { name: 'Writeups' })).toHaveAttribute('href', '/writeups')
+  await expect(page.getByRole('menuitem', { name: 'Resume' })).toHaveAttribute('href', '/resume')
 })
 
 test('skills do not rank or rate anything', async ({ page }) => {
@@ -361,7 +366,9 @@ test('a slow page change shows a progress bar, and a fast one does not', async (
   const bar = page.locator('[data-nav-progress]')
 
   // /resume's code is not delayed, so this change is quick and must not flash the bar.
-  await nav.getByRole('link', { name: 'Resume' }).click()
+  await hydrated(page)
+  await page.getByRole('button', { name: 'More' }).click()
+  await page.getByRole('menuitem', { name: 'Resume' }).click()
   await expect(page).toHaveURL(/\/resume$/)
   await expect(bar).toHaveCount(0)
 
@@ -677,14 +684,14 @@ test('theme is dark by default and remembers a manual choice', async ({ browser 
   const isDark = () => page.evaluate(() => document.documentElement.classList.contains('dark'))
   expect(await isDark()).toBe(true)
 
-  await page.getByRole('button', { name: 'Choose theme' }).click()
+  await page.getByRole('button', { name: 'More' }).click()
   await page.getByRole('menuitemradio', { name: 'Light' }).click()
   expect(await isDark()).toBe(false)
   await page.reload()
   await page.waitForLoadState('networkidle')
   expect(await isDark()).toBe(false)
 
-  await page.getByRole('button', { name: 'Choose theme' }).click()
+  await page.getByRole('button', { name: 'More' }).click()
   await page.getByRole('menuitemradio', { name: 'System' }).click()
   expect(await page.evaluate(() => localStorage.getItem('color-scheme'))).toBe('system')
   expect(await isDark()).toBe(true)
@@ -908,7 +915,8 @@ test('a page whose code fails to load shows a reload prompt, not a blank site', 
   await expect(page.getByRole('button', { name: 'Reload the page' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible()
 
-  await page.getByRole('link', { name: 'Resume' }).first().click()
+  await page.getByRole('button', { name: 'More' }).click()
+  await page.getByRole('menuitem', { name: 'Resume' }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
 })
 
@@ -935,7 +943,7 @@ test('if the current page’s code cannot load, the prerendered page stays reada
   await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible()
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
-  await expect(nav.getByRole('link', { name: 'Writeups' })).toHaveAttribute('href', '/writeups')
+  await expect(nav.getByRole('link', { name: 'Work' })).toHaveAttribute('href', '/#work')
 })
 
 test('the first load does not download the SEO data chunk', async ({ page }) => {
@@ -1009,7 +1017,7 @@ test('a page whose code 404s once recovers with an automatic reload', async ({ p
   await expect.poll(() => requests).toBeGreaterThanOrEqual(2)
   await page.waitForLoadState('networkidle')
   // Only a hydrated page can open the theme menu, so this proves the reload fixed it.
-  await page.getByRole('button', { name: 'Choose theme' }).click()
+  await page.getByRole('button', { name: 'More' }).click()
   await expect(page.getByRole('menuitemradio', { name: 'Light' })).toBeVisible()
   expect(requests).toBe(2)
 })
@@ -1108,7 +1116,9 @@ test('the header marks the section you are reading and shows scroll progress', a
   await expect(nav.getByRole('link', { name: 'About' })).not.toHaveAttribute('aria-current', /.*/)
 
   await page.goto('/resume')
-  await expect(nav.getByRole('link', { name: 'Resume' })).toHaveAttribute('aria-current', 'page')
+  await hydrated(page)
+  await page.getByRole('button', { name: 'More' }).click()
+  await expect(page.getByRole('menuitem', { name: 'Resume' })).toHaveAttribute('aria-current', 'page')
 })
 
 test('canonical, og:url and share images use the custom domain', async ({ request }) => {

@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef, useState } from 'react'
-import { Github, Linkedin, Mail, Menu, Moon, Sun } from 'lucide-react'
+import { ChevronDown, Github, Linkedin, Mail, Menu } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import CommandPalette from '@/components/shared/CommandPalette'
@@ -8,12 +8,11 @@ import PendingFlag from '@/components/shared/PendingFlag'
 import { Spinner } from '@/components/ui/spinner'
 import ScrollProgress from '@/components/shared/ScrollProgress'
 import { useActiveSection } from '@/hooks/useActiveSection'
-import type { Preference, Scheme } from '@/hooks/useTheme'
+import type { Preference } from '@/hooks/useTheme'
 import { site } from '@/data/site'
 import { hitArea } from '@/lib/hitArea'
 
 type SiteHeaderProps = {
-  scheme: Scheme
   preference: Preference
   onPreferenceChange: (preference: Preference) => void
 }
@@ -22,14 +21,18 @@ type SiteHeaderProps = {
 const loadMobileNav = () => import('./MobileNavSheet')
 const MobileNavSheet = lazy(loadMobileNav)
 
-// The theme menu pulls in the Radix menu and popper code, so it downloads on first hover, focus, touch or click.
-const loadThemeMenu = () => import('./ThemeMenu')
-const ThemeMenu = lazy(loadThemeMenu)
+// The More menu pulls in the dropdown menu code, so it downloads on first hover, focus, touch or click.
+const loadUtilityMenu = () => import('./UtilityMenu')
+const UtilityMenu = lazy(loadUtilityMenu)
 
+// The header shows only the section links; everything else lives in the More menu (or the phone menu).
 const navLinks = [
   { to: '/#work', label: 'Work', section: 'work' },
   { to: '/#about', label: 'About', section: 'about' },
   { to: '/#contact', label: 'Contact', section: 'contact' },
+] as const
+
+const moreLinks = [
   { to: '/writeups', label: 'Writeups', page: '/writeups' },
   { to: '/resume', label: 'Resume', page: '/resume' },
 ] as const
@@ -48,36 +51,35 @@ const socials = [
   { label: 'Email', href: `mailto:${site.email}`, Icon: Mail, external: false },
 ]
 
-function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps) {
+function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuEverOpened, setMenuEverOpened] = useState(false)
   const [menuLoading, setMenuLoading] = useState(false)
-  const [themeMenuWanted, setThemeMenuWanted] = useState(false)
+  const [moreMenuWanted, setMoreMenuWanted] = useState(false)
   const menuButton = useRef<HTMLButtonElement>(null)
   const activeSection = useActiveSection(Object.keys(sectionOwner), pathname === '/')
   const activeOwner = activeSection ? sectionOwner[activeSection] : null
 
   /** `location` while its section is in view on the home page, `page` while you are on its own page. */
-  const currentFor = (link: (typeof navLinks)[number]) => {
+  const currentFor = (link: (typeof navLinks)[number] | (typeof moreLinks)[number]) => {
     if ('page' in link && pathname.startsWith(link.page)) return 'page' as const
     if (pathname === '/' && 'section' in link && link.section === activeOwner) return 'location' as const
     return undefined
   }
 
-  const themeButton = (
+  const moreLinkProps = moreLinks.map((link) => ({ to: link.to, label: link.label, current: currentFor(link) }))
+
+  const moreButton = (
     <Button
       variant="ghost"
-      size="icon-sm"
-      className={`${hitArea} max-[620px]:size-11`}
-      aria-label="Choose theme"
-      title="Choose theme"
-      onPointerEnter={() => void loadThemeMenu().catch(() => {})}
-      onFocus={() => void loadThemeMenu().catch(() => {})}
-      onTouchStart={() => void loadThemeMenu().catch(() => {})}
-      onClick={() => setThemeMenuWanted(true)}
+      size="sm"
+      className={`${hitArea} cursor-pointer gap-1 text-muted-foreground max-[959px]:hidden`}
+      onPointerEnter={() => void loadUtilityMenu().catch(() => {})}
+      onFocus={() => void loadUtilityMenu().catch(() => {})}
+      onClick={() => setMoreMenuWanted(true)}
     >
-      {scheme === 'dark' ? <Moon /> : <Sun />}
+      More <ChevronDown />
     </Button>
   )
 
@@ -105,37 +107,25 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
           </Link>
         ))}
       </nav>
-      <div className="col-start-3 flex items-center gap-4 justify-self-end max-[620px]:gap-0">
+      <div className="col-start-3 flex items-center gap-2 justify-self-end max-[620px]:gap-0">
         <CommandPalette />
-        {socials.map(({ label, href, Icon, external }) => (
-          <Button
-            key={label}
-            asChild
-            variant="ghost"
-            size="icon-sm"
-            className={`group/tip ${hitArea} hidden min-[960px]:inline-flex`}
-          >
-            <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-              <Icon />
-              {/* A label on hover and keyboard focus. Plain CSS, so the header needs no tooltip library. */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute top-full left-1/2 z-30 mt-1.5 -translate-x-1/2 rounded-md bg-foreground px-2.5 py-1 text-meta whitespace-nowrap text-background opacity-0 transition-opacity delay-150 group-hover/tip:opacity-100 group-focus-visible/tip:opacity-100"
-              >
-                {label}
-              </span>
-            </a>
-          </Button>
-        ))}
-        {themeMenuWanted ? (
-          <LazyBoundary label="Theme menu" fallback={themeButton} onFail={() => setThemeMenuWanted(false)}>
-            <Suspense fallback={themeButton}>
-              <ThemeMenu scheme={scheme} preference={preference} onPreferenceChange={onPreferenceChange} defaultOpen />
-            </Suspense>
-          </LazyBoundary>
-        ) : (
-          themeButton
-        )}
+        <div className="max-[959px]:hidden">
+          {moreMenuWanted ? (
+            <LazyBoundary label="More menu" fallback={moreButton} onFail={() => setMoreMenuWanted(false)}>
+              <Suspense fallback={moreButton}>
+                <UtilityMenu
+                  links={moreLinkProps}
+                  socials={socials}
+                  preference={preference}
+                  onPreferenceChange={onPreferenceChange}
+                  defaultOpen
+                />
+              </Suspense>
+            </LazyBoundary>
+          ) : (
+            moreButton
+          )}
+        </div>
         <Button
           ref={menuButton}
           variant="ghost"
@@ -166,8 +156,14 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
               <MobileNavSheet
                 open={menuOpen}
                 onOpenChange={setMenuOpen}
-                links={navLinks.map((link) => ({ to: link.to, label: link.label, current: currentFor(link) }))}
+                links={[...navLinks, ...moreLinks].map((link) => ({
+                  to: link.to,
+                  label: link.label,
+                  current: currentFor(link),
+                }))}
                 socials={socials}
+                preference={preference}
+                onPreferenceChange={onPreferenceChange}
                 onClosed={() => menuButton.current?.focus()}
               />
             </Suspense>

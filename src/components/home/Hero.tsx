@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUpRight, FileText } from 'lucide-react'
+import { ArrowDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { facts } from '@/data/facts'
 import { site } from '@/data/site'
@@ -46,18 +46,12 @@ function Hero() {
               See my projects <ArrowDown aria-hidden="true" />
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="h-[46px] px-[17px] text-control font-semibold">
-            <Link to="/resume">
-              View resume <FileText aria-hidden="true" />
-            </Link>
-          </Button>
         </div>
         <Link
-          className="mt-5 inline-flex min-h-11 items-center gap-2 font-mono text-control text-muted-foreground no-underline transition-colors hover:text-primary"
+          className="mt-5 inline-flex min-h-11 items-center gap-2 font-mono text-control text-muted-foreground no-underline transition-colors hover:text-foreground hover:underline"
           to="/work/gitscribe"
         >
-          <span className="text-primary">&#9670;</span> {facts.hackathon.placement} teams, {facts.hackathon.name}
-          <ArrowUpRight size={14} />
+          {facts.hackathon.placement} teams, {facts.hackathon.name}
         </Link>
       </div>
       <div className="w-full max-w-[400px] self-center justify-self-end max-[900px]:mt-9 max-[900px]:max-w-none max-[900px]:justify-self-stretch max-[620px]:hidden print:hidden">
