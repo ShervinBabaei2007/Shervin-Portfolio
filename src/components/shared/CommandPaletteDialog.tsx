@@ -49,7 +49,7 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
       title="Search portfolio"
       description="Jump to a project, writeup, page, skill, or contact action."
     >
-      <CommandInput placeholder="Search projects, writeups, skills, pages..." value={query} onValueChange={setQuery} />
+      <CommandInput placeholder="Search projects, writeups, skills, pages…" value={query} onValueChange={setQuery} />
       <CommandList>
         <CommandEmpty>
           <p className="font-medium text-foreground">Nothing matches that.</p>

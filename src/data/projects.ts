@@ -76,7 +76,7 @@ export const projects: Project[] = [
     name: 'Network Growth Assistant',
     category: 'Full-stack',
     flagship: true,
-    date: 'Oct – Nov 2026',
+    date: 'Oct 2026 – Current',
     subtitle: 'A networking and job-search workspace that only counts what actually happened.',
     summary:
       'A Next.js and Supabase app for growing a professional network and running a job search: a daily outreach queue, a research assistant that quotes its sources, verified job postings, and an applications board.',
@@ -262,11 +262,11 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
       'Replaced browser alert() errors with toast notifications and wrote a seed script for realistic workshop and user data.',
     ],
     outcome:
-      'A live marketplace where students can browse, check out, attend, and review workshops, and anyone can host one. The frontend and Express API deploy together on Vercel.',
+      'A live marketplace where students can browse, check out, attend, and review workshops, and anyone can host one. The front end and Express API deploy together on Vercel.',
     tradeoff:
       'Workshop capacity is checked in the interface, not enforced by the API. That was quick to build and gives instant feedback, but the attend route only checks that you are not already attending, so two people taking the last seat at the same moment would both get in. The API should be the source of truth for anything a user could race.',
     learned:
-      'Reading my own route back months later, the gaps are on the server, not the screen. A disabled button is a hint; the rule has to live in the API.',
+      'Reading my own route back months later, I could see the gaps are on the server, not the screen. A disabled button is a hint; the rule has to live in the API.',
     next: 'Make the attend route atomic with a single conditional update (only add the user if the attendee count is still below the seat count), and fix the owner check, which compares an ObjectId to a string and so never matches. Then add integration tests for both.',
     architecture: [
       { label: 'React + Vite', detail: 'TypeScript SPA, lazy routes' },
@@ -596,7 +596,7 @@ const ratelimiter = async (req, res, next) => {
     outcome:
       'People in the server can ask the local model a question with one command, and the bot stays responsive while it answers.',
     tradeoff:
-      'I kept the requests library and wrapped it in asyncio.to_thread() instead of switching to an async HTTP client like aiohttp. It fixed the blocking with one line and code I already understood. The cost is a thread per request and no way to cancel one once it starts.',
+      'I kept the requests library and wrapped it in asyncio.to_thread() instead of switching to an async HTTP client like aiohttp. It fixed the blocking with one line, in code I already understood. The cost is a thread per request and no way to cancel one once it starts.',
     learned:
       'Async code only stays async if every slow call respects it. One blocking request can freeze the whole bot.',
     next: 'Add a timeout to the model request (today a hung model server holds a thread forever), and split replies longer than Discord’s 2,000-character message limit.',
@@ -811,7 +811,7 @@ $ cat playerSave.json
     architecture: [
       { label: 'Menu loop', detail: 'input() prompts' },
       { label: 'Validation', detail: 'Status and date checks' },
-      { label: 'sqlite3', detail: 'Parameterised queries' },
+      { label: 'sqlite3', detail: 'Parameterized queries' },
       { label: 'applications.db', detail: 'Local file' },
     ],
     stack: ['Python', 'SQLite', 'CLI design', 'CRUD'],
@@ -1060,7 +1060,7 @@ wss.on("connection", (ws) => {
     screenshots: [
       {
         src: '/projects/jicnic-voting.webp',
-        alt: 'Jicnic voting board with five days, yes, maybe, and no buttons, and colored vote bars for each person.',
+        alt: 'Jicnic voting board with five days, yes, maybe, and no buttons, and coloured vote bars for each person.',
         caption: 'Voting board, signed in as a test user',
       },
     ],

@@ -250,7 +250,7 @@ function ContactForm() {
         <Button type="submit" disabled={status === 'sending'} aria-busy={status === 'sending'} className="h-10 px-5">
           {status === 'sending' ? (
             <>
-              <Spinner aria-hidden="true" role="presentation" /> Sending...
+              <Spinner aria-hidden="true" role="presentation" /> Sending…
             </>
           ) : (
             'Send message'

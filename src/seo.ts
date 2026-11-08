@@ -104,7 +104,7 @@ export function getPageMeta(pathname: string): PageMeta {
     return {
       title: `Writeups | ${site.name}`,
       description:
-        'Short write-ups on bugs I found in my own projects, how the underlying systems work, and what I changed.',
+        'Short writeups on bugs I found in my own projects, how the underlying systems work, and what I changed.',
       path,
       image: image('writeups'),
       type: 'website',

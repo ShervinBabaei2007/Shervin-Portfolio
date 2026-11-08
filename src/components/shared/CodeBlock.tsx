@@ -65,7 +65,7 @@ function CodeBlock({
               {copied
                 ? 'Code copied to clipboard.'
                 : failed
-                  ? 'Copying was blocked. The code is selected; press Control C.'
+                  ? 'Copying was blocked. The code is selected; press Ctrl+C.'
                   : ''}
             </span>
             {snippet.href && (

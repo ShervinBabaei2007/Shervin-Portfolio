@@ -27,7 +27,7 @@ export const resume = {
     { label: 'GitHub', href: site.github },
     { label: 'LinkedIn', href: site.linkedin },
   ] satisfies ResumeLink[],
-  summary: `Full-stack developer and BCIT student who builds across UI, API, and data layers, then traces failures until I can explain the trade-off and fix. ${facts.hackathon.placement} teams at ${facts.hackathon.name}.`,
+  summary: `Full-stack developer and BCIT student. I build across UI, API, and data layers, then trace failures until I can explain the trade-off and the fix. ${facts.hackathon.placement} teams at ${facts.hackathon.name}.`,
   education: {
     school: 'British Columbia Institute of Technology (BCIT)',
     gpa: `GPA: ${facts.gpa}`,
