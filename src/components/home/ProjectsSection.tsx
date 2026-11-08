@@ -7,7 +7,6 @@ import ProjectCard from '@/components/home/ProjectCard'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import SectionHeading from '@/components/shared/SectionHeading'
-import { cn, textLinkClass } from '@/lib/utils'
 
 type ProjectsSectionProps = {
   activeSkill: string | null
@@ -87,14 +86,18 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </div>
       )}
       {!activeSkill && (
-        <p className="mt-10 flex flex-wrap gap-x-8 gap-y-2 text-[.9375rem] text-muted-foreground">
-          <Link className={cn(textLinkClass, 'text-foreground')} to="/lab">
-            Try the rate-limiter lab <ArrowUpRight size={15} />
-          </Link>
-          <Link className={cn(textLinkClass, 'text-foreground')} to="/writeups">
-            Read my writeups <ArrowUpRight size={15} />
-          </Link>
-        </p>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Button asChild size="lg" className="font-semibold">
+            <Link to="/lab">
+              Try the rate-limiter lab <ArrowUpRight size={15} />
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="font-semibold">
+            <Link to="/writeups">
+              Read my writeups <ArrowUpRight size={15} />
+            </Link>
+          </Button>
+        </div>
       )}
       {shown.length === 0 && (
         <Empty className="mt-8 border">
