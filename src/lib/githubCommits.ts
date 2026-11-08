@@ -99,7 +99,8 @@ export function summarize(weeks: ReturnType<typeof buildWeeks>) {
     total: cells.reduce((sum, cell) => sum + cell.count, 0),
     activeDays: cells.filter((cell) => cell.count > 0).length,
     longestStreak: longest,
-    busiest: Math.max(0, ...cells.map((cell) => cell.count)),
+    activeWeeks: weeks.filter((week) => week.some((cell) => !cell.future && cell.count > 0)).length,
+    weeks: weeks.length,
   }
 }
 

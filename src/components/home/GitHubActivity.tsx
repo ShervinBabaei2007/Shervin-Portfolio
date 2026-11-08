@@ -229,7 +229,12 @@ function GitHubActivity() {
             ['Commits', stats.total.toLocaleString('en-CA')],
             ['Active days', stats.activeDays.toLocaleString('en-CA')],
             ['Longest streak', <span key="s">{stats.longestStreak} days</span>],
-            ['Busiest day', <span key="b">{stats.busiest} commits</span>],
+            [
+              'Active weeks',
+              <span key="w">
+                {stats.activeWeeks} <span className="text-base font-medium text-muted-foreground">of {stats.weeks}</span>
+              </span>,
+            ],
           ].map(([label, value]) => (
             <div key={label as string} className="bg-card px-4 py-3.5">
               <dt className="font-mono text-label tracking-wide text-muted-foreground uppercase">{label}</dt>
