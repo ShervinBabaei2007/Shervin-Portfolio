@@ -49,10 +49,7 @@ function AboutSection() {
           <span className="text-primary">03</span> WHY I KEEP DIGGING
         </p>
         <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-[8%]">
-          <h2
-            id="about-title"
-            className="text-[clamp(1.875rem,1.2rem+2.6vw,3.25rem)] leading-[1.12] [&>span:last-child]:text-primary"
-          >
+          <h2 id="about-title" className="text-h2-section [&>span:last-child]:text-primary">
             I keep following the request because{' '}
             <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
               “it works”
@@ -60,7 +57,7 @@ function AboutSection() {
             has never been enough for me<span>.</span>
           </h2>
           <Reveal delay={0.1}>
-            <div className="space-y-4 text-base leading-[1.85] text-[#b4c0da] lg:pt-2">
+            <div className="space-y-4 text-base leading-[1.75] text-[#b4c0da] lg:pt-2">
               <p>
                 I&apos;m a Full-Stack Web Development student at BCIT (expected graduation May 2027, {facts.gpa}{' '}
                 academic average). I build end-to-end applications with React, TypeScript, Node.js, and modern

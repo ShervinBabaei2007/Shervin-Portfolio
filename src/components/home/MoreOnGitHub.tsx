@@ -9,7 +9,7 @@ function MoreOnGitHub() {
   if (otherRepos.length === 0) return null
   return (
     <div className="mt-20" data-more-repos>
-      <h2 className="text-2xl font-semibold">More on GitHub</h2>
+      <h2 className="text-h2 font-semibold">More on GitHub</h2>
       <p className="mt-2 max-w-[60ch] text-muted-foreground">
         Smaller or older repositories, listed here straight from GitHub. They don&apos;t have a case study yet.
       </p>
@@ -36,7 +36,7 @@ function MoreOnGitHub() {
                   href={repo.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-6 items-center gap-1.5 no-underline after:absolute after:inset-0 after:content-[''] hover:text-primary focus-visible:outline-offset-4"
+                  className="inline-flex min-h-6 items-center gap-1.5 no-underline after:absolute after:inset-0 after:content-[''] hover:text-primary focus-visible:outline-offset-4 pointer-coarse:min-h-11"
                 >
                   {repo.name}
                   <ArrowUpRight size={15} aria-hidden="true" />

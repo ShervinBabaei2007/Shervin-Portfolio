@@ -9,13 +9,7 @@ function PageIntro({ eyebrow, id, title, lead, wide = false }: PageIntroProps) {
   return (
     <>
       <p className="mt-4 mb-7 eyebrow">{eyebrow}</p>
-      <h1
-        id={id}
-        className={cn(
-          'mt-3.5 text-[clamp(2.25rem,1.7rem+2vw,3.25rem)] leading-[1.08] font-semibold',
-          wide ? 'text-wrap' : 'max-w-[18ch]',
-        )}
-      >
+      <h1 id={id} className={cn('mt-3.5 text-title font-semibold', wide ? 'text-wrap' : 'max-w-[18ch]')}>
         {title}
       </h1>
       {lead && (

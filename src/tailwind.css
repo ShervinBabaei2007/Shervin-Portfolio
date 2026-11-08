@@ -71,6 +71,15 @@
   --type-label: 0.75rem; /* mono labels, chips, dates, code bar, counters */
   --type-meta: 0.8125rem; /* secondary sans text: badges, captions, card sub-labels */
   --type-control: 0.875rem; /* button labels and tappable link text */
+
+  /* Heading scale (fluid, so no breakpoints). Roughly: hero 38-64px, page title 38-52px, section 30-40px,
+     in-page section 24-30px, sub-section 22-24px. Body text stays 16-18px, and prose is capped at --measure. */
+  --type-h1: clamp(2.375rem, 1.4rem + 3.2vw, 4rem); /* the home hero */
+  --type-title: clamp(2.375rem, 1.7rem + 2.2vw, 3.25rem); /* the title at the top of a page */
+  --type-h2-section: clamp(1.875rem, 1.5rem + 1.4vw, 2.5rem); /* a section of the home page */
+  --type-h2: clamp(1.5rem, 1.3rem + 0.7vw, 1.875rem); /* a section inside a case study or writeup */
+  --type-h3: clamp(1.375rem, 1.3rem + 0.3vw, 1.5rem); /* a card or sub-section title */
+  --measure: 38rem; /* longest body line: about 72 characters. (DM Sans digits are wide, so 68ch ran to 100 characters.) */
 }
 
 .dark {
@@ -214,6 +223,16 @@
   --text-label: var(--type-label);
   --text-meta: var(--type-meta);
   --text-control: var(--type-control);
+  --text-h1: var(--type-h1);
+  --text-h1--line-height: 1.1;
+  --text-title: var(--type-title);
+  --text-title--line-height: 1.1;
+  --text-h2-section: var(--type-h2-section);
+  --text-h2-section--line-height: 1.15;
+  --text-h2: var(--type-h2);
+  --text-h2--line-height: 1.2;
+  --text-h3: var(--type-h3);
+  --text-h3--line-height: 1.25;
   --animate-border-beam: border-beam calc(var(--duration) * 1s) infinite linear;
   --animate-card-reveal: card-reveal 0.38s both;
   --animate-page-in: page-in 0.2s ease-out both;
@@ -392,6 +411,11 @@
 @utility section-wrap {
   width: min(var(--content-max), calc(100% - 2 * var(--gutter)));
   margin-inline: auto;
+}
+
+/* Longest comfortable line of body text (about 72 characters in DM Sans). */
+@utility measure {
+  max-width: var(--measure);
 }
 
 /* Mono label family (sizes are set per component). */

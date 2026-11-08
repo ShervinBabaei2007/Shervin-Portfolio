@@ -30,10 +30,7 @@ function SectionHeading({ id, number, eyebrow, title, punctuation = '.', aside, 
           <p className="eyebrow">
             <span className="text-primary">{number}</span> {eyebrow}
           </p>
-          <h2
-            id={id}
-            className="mt-4 text-[clamp(1.875rem,1.5rem+1.4vw,2.5rem)] leading-[1.15] [&>span:last-child]:text-primary"
-          >
+          <h2 id={id} className="mt-4 text-h2-section [&>span:last-child]:text-primary">
             {title}
             <span>{punctuation}</span>
           </h2>

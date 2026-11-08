@@ -19,7 +19,7 @@ function ClosingCta({ heading, body }: ClosingCtaProps) {
         aria-labelledby="closing-cta-title"
       >
         <div>
-          <h2 id="closing-cta-title" className="text-xl font-semibold">
+          <h2 id="closing-cta-title" className="text-h2 font-semibold">
             {heading}
           </h2>
           <p className="mt-2 leading-[1.6] text-muted-foreground">{body}</p>

@@ -42,7 +42,7 @@ function BuiltPage() {
       <div className="mb-9 grid grid-cols-2 gap-x-12 border-t max-[900px]:grid-cols-1">
         {sections.map((section) => (
           <section key={section.title} className="border-b py-6">
-            <h2 className="text-xl font-semibold">{section.title}</h2>
+            <h2 className="text-h2 font-semibold">{section.title}</h2>
             <p className="mt-2.5 max-w-[60ch] leading-[1.7] text-muted-foreground">{section.body}</p>
           </section>
         ))}

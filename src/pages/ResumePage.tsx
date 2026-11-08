@@ -40,7 +40,7 @@ function ResumePage() {
 
       <div className="mt-[18px] rounded-[12px] border bg-card px-10 pt-9 pb-10 max-[620px]:px-[18px] max-[620px]:pt-[22px] max-[620px]:pb-[26px] print:m-0 print:rounded-none print:border-0 print:bg-transparent print:p-0 print:text-[9.5pt]">
         <header>
-          <h1 id="resume-title" className="text-[2.5rem] leading-[1.1] max-[620px]:text-[2rem] print:text-[20pt]">
+          <h1 id="resume-title" className="text-title print:text-[20pt]">
             {resume.name}
           </h1>
           <p className="mt-1.5 text-[1.125rem] text-muted-foreground print:text-[9.5pt]">{resume.title}</p>
@@ -118,7 +118,7 @@ function ResumePage() {
                     <a
                       className={cn(
                         contactLink,
-                        'inline-flex min-h-7 items-center gap-1 print:min-h-0 print:[&_svg]:hidden',
+                        'inline-flex min-h-7 items-center gap-1 print:min-h-0 pointer-coarse:min-h-11 print:[&_svg]:hidden',
                       )}
                       key={link.href}
                       href={link.href}

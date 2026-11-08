@@ -89,10 +89,7 @@ function Hero() {
         <p className="eyebrow">
           <span className="text-primary">01</span> VANCOUVER, BC <span className="text-muted-foreground">/</span> BCIT
         </p>
-        <h1
-          id="hero-title"
-          className="mt-[18px] max-w-[20ch] text-[clamp(2.5rem,1.3rem+4vw,4.25rem)] leading-[1.05] max-[620px]:mt-[22px] max-[360px]:text-[2.25rem] [&_span]:text-primary"
-        >
+        <h1 id="hero-title" className="mt-[18px] max-w-[20ch] text-h1 max-[620px]:mt-[22px] [&_span]:text-primary">
           Full-stack developer who goes <span>down the stack.</span>
         </h1>
         <p className="mt-[22px] max-w-[58ch] text-[1.125rem] leading-[1.65] text-muted-foreground max-[620px]:max-w-[390px] max-[620px]:text-base">
