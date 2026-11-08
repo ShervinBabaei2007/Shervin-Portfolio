@@ -1,4 +1,7 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Github, Link2, Users } from 'lucide-react'
+import ArticleLayout from '@/components/shared/ArticleLayout'
+import TableOfContents from '@/components/shared/TableOfContents'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Link, useParams } from 'react-router-dom'
 import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
@@ -15,7 +18,7 @@ import { findProject, projects } from '../data/projects'
 import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
-const h2Class = 'text-xl font-semibold'
+const h2Class = 'text-h2 font-semibold'
 const bodyClass = 'mt-2.5 text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
 const factDt = 'font-mono text-label text-muted-foreground'
 // Header action buttons: a row that wraps on small screens, and a stack of equal-width buttons beside the title on wide ones.
@@ -81,10 +84,7 @@ function CaseStudyPage() {
               {project.category.toUpperCase()} <span className="text-muted-foreground">/</span>{' '}
               {project.date.toUpperCase()}
             </p>
-            <h1
-              id="case-study-title"
-              className="mt-3.5 text-[clamp(2.25rem,1.6rem+2.2vw,3.5rem)] leading-[1.08] font-semibold"
-            >
+            <h1 id="case-study-title" className="mt-3.5 text-title font-semibold">
               {project.name}
             </h1>
             <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground">{project.subtitle}</p>
@@ -142,18 +142,6 @@ function CaseStudyPage() {
             </div>
           ))}
         </dl>
-
-        <nav className="mt-6 flex flex-wrap gap-x-1 gap-y-1" aria-label="On this page">
-          {sections.map(([id, label]) => (
-            <a
-              key={id}
-              className="inline-flex min-h-8 items-center rounded-full border px-3 font-mono text-label text-muted-foreground no-underline transition-colors hover:border-primary hover:text-primary max-[620px]:min-h-11"
-              href={`#${id}`}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
       </header>
 
       {project.video && (
@@ -204,53 +192,78 @@ function CaseStudyPage() {
 
       {project.demo === 'rate-limiter' && <RateLimiterDemo />}
 
-      <div className="mt-[18px] grid grid-cols-[minmax(0,1fr)] items-start max-[620px]:mt-5">
-        <div className="min-w-0">
-          <div className="grid grid-cols-[minmax(0,1fr)] [&>section]:border-b [&>section]:py-[26px]">
-            {project.overview && (
-              <section id="what">
-                <h2 className={h2Class}>What it is</h2>
-                {project.overview.map((paragraph) => (
-                  <p key={paragraph} className={bodyClass}>
-                    {paragraph}
-                  </p>
-                ))}
-              </section>
-            )}
-            {project.features && (
-              <section id="does">
-                <h2 className={h2Class}>What it can do</h2>
-                <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
-                  {project.features.map((feature) => (
-                    <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
-                      <h3 className="text-base font-semibold">{feature.title}</h3>
-                      <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
+      <ArticleLayout
+        className="mt-[18px] max-[620px]:mt-5"
+        rail={
+          <>
+            <TableOfContents items={sections.map(([id, label]) => ({ id, label }))} />
+            <Card className="gap-3 py-5">
+              <CardHeader className="px-5">
+                <h2 className="eyebrow uppercase">Built with</h2>
+              </CardHeader>
+              <CardContent className="px-5">
+                <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+                  {project.stack.map((t) => (
+                    <li key={t}>
+                      <Badge variant="outline" className="rounded-none font-mono font-normal">
+                        {t}
+                      </Badge>
                     </li>
                   ))}
                 </ul>
-              </section>
-            )}
-            {project.howItWorks && (
-              <section id="works">
-                <h2 className={h2Class}>How it works</h2>
-                <ol className="mt-2.5 grid list-none gap-3 p-0">
-                  {project.howItWorks.map((step, i) => (
-                    <li key={step} className="grid grid-cols-[30px_1fr] items-start gap-2.5">
-                      <span className="pt-1 font-mono text-sm text-primary">{String(i + 1).padStart(2, '0')}</span>
-                      <p className={cn(bodyClass, 'm-0')}>{step}</p>
-                    </li>
+              </CardContent>
+            </Card>
+            {relatedNotes.length > 0 && (
+              <Card className="gap-3 py-5">
+                <CardHeader className="px-5">
+                  <h2 className="eyebrow uppercase">Go deeper</h2>
+                </CardHeader>
+                <CardContent className="grid gap-2 px-5">
+                  {relatedNotes.map((note) => (
+                    <Link
+                      key={note.slug}
+                      className="grid gap-1 rounded-lg border bg-background px-3 py-2.5 no-underline transition-colors hover:border-primary"
+                      to={`/writeups/${note.slug}`}
+                    >
+                      <b className="text-[.9375rem] leading-snug font-semibold">{note.title}</b>
+                      <span className="font-mono text-label text-muted-foreground">{note.minutes} min read</span>
+                    </Link>
                   ))}
-                </ol>
-              </section>
+                </CardContent>
+              </Card>
             )}
-            <section id="why">
-              <h2 className={h2Class}>Why</h2>
-              <p className={bodyClass}>{project.why}</p>
+          </>
+        }
+      >
+        <div className="grid grid-cols-[minmax(0,1fr)] [&>section]:border-b [&>section]:py-[26px]">
+          {project.overview && (
+            <section id="what">
+              <h2 className={h2Class}>What it is</h2>
+              {project.overview.map((paragraph) => (
+                <p key={paragraph} className={bodyClass}>
+                  {paragraph}
+                </p>
+              ))}
             </section>
-            <section id="built">
-              <h2 className={h2Class}>What I built</h2>
+          )}
+          {project.features && (
+            <section id="does">
+              <h2 className={h2Class}>What it can do</h2>
+              <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
+                {project.features.map((feature) => (
+                  <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
+                    <h3 className="text-base font-semibold">{feature.title}</h3>
+                    <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+          {project.howItWorks && (
+            <section id="works">
+              <h2 className={h2Class}>How it works</h2>
               <ol className="mt-2.5 grid list-none gap-3 p-0">
-                {project.mine.map((step, i) => (
+                {project.howItWorks.map((step, i) => (
                   <li key={step} className="grid grid-cols-[30px_1fr] items-start gap-2.5">
                     <span className="pt-1 font-mono text-sm text-primary">{String(i + 1).padStart(2, '0')}</span>
                     <p className={cn(bodyClass, 'm-0')}>{step}</p>
@@ -258,67 +271,52 @@ function CaseStudyPage() {
                 ))}
               </ol>
             </section>
-            {project.snippet && (
-              <section id="code">
-                <h2 className={h2Class}>The code</h2>
-                <CodeBlock snippet={project.snippet} />
-              </section>
-            )}
-            {project.terminal && (
-              <section id="run">
-                <h2 className={h2Class}>See it run</h2>
-                <TerminalBlock title={project.terminal.title} transcript={project.terminal.transcript} />
-              </section>
-            )}
-            <section id="outcome">
-              <h2 className={h2Class}>Outcome</h2>
-              <p className={bodyClass}>{project.outcome}</p>
-            </section>
-            <section
-              id="tradeoff"
-              className="mt-1 rounded-r-lg !border-b-0 border-l-[3px] border-l-primary bg-card px-5"
-            >
-              <h2 className={h2Class}>The trade-off</h2>
-              <p className={bodyClass}>{project.tradeoff}</p>
-            </section>
-            <section id="learned">
-              <h2 className={h2Class}>What I learned</h2>
-              <p className={bodyClass}>{project.learned}</p>
-            </section>
-            <section id="next">
-              <h2 className={h2Class}>What I&apos;d fix next</h2>
-              <p className={bodyClass}>{project.next}</p>
-            </section>
-            {relatedNotes.length > 0 && (
-              <section>
-                <h2 className={h2Class}>Go deeper</h2>
-                {relatedNotes.map((note) => (
-                  <Link
-                    key={note.slug}
-                    className="mt-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 rounded-lg border bg-card px-4 py-3.5 no-underline hover:border-primary"
-                    to={`/writeups/${note.slug}`}
-                  >
-                    <b className="text-[1.0625rem] font-semibold">{note.title}</b>
-                    <span className="font-mono text-label text-muted-foreground">{note.minutes} min read</span>
-                  </Link>
-                ))}
-              </section>
-            )}
-          </div>
-          <div className="pt-6">
-            <h2 className={h2Class}>Built with</h2>
-            <ul className="mt-[15px] flex list-none flex-wrap gap-1.5 p-0">
-              {project.stack.map((t) => (
-                <li key={t}>
-                  <Badge variant="outline" className="rounded-none font-mono font-normal">
-                    {t}
-                  </Badge>
+          )}
+          <section id="why">
+            <h2 className={h2Class}>Why</h2>
+            <p className={bodyClass}>{project.why}</p>
+          </section>
+          <section id="built">
+            <h2 className={h2Class}>What I built</h2>
+            <ol className="mt-2.5 grid list-none gap-3 p-0">
+              {project.mine.map((step, i) => (
+                <li key={step} className="grid grid-cols-[30px_1fr] items-start gap-2.5">
+                  <span className="pt-1 font-mono text-sm text-primary">{String(i + 1).padStart(2, '0')}</span>
+                  <p className={cn(bodyClass, 'm-0')}>{step}</p>
                 </li>
               ))}
-            </ul>
-          </div>
+            </ol>
+          </section>
+          {project.snippet && (
+            <section id="code">
+              <h2 className={h2Class}>The code</h2>
+              <CodeBlock snippet={project.snippet} />
+            </section>
+          )}
+          {project.terminal && (
+            <section id="run">
+              <h2 className={h2Class}>See it run</h2>
+              <TerminalBlock title={project.terminal.title} transcript={project.terminal.transcript} />
+            </section>
+          )}
+          <section id="outcome">
+            <h2 className={h2Class}>Outcome</h2>
+            <p className={bodyClass}>{project.outcome}</p>
+          </section>
+          <section id="tradeoff" className="mt-1 rounded-r-lg !border-b-0 border-l-[3px] border-l-primary bg-card px-5">
+            <h2 className={h2Class}>The trade-off</h2>
+            <p className={bodyClass}>{project.tradeoff}</p>
+          </section>
+          <section id="learned">
+            <h2 className={h2Class}>What I learned</h2>
+            <p className={bodyClass}>{project.learned}</p>
+          </section>
+          <section id="next">
+            <h2 className={h2Class}>What I&apos;d fix next</h2>
+            <p className={bodyClass}>{project.next}</p>
+          </section>
         </div>
-      </div>
+      </ArticleLayout>
 
       <ClosingCta
         heading={`Working on something like ${project.name}?`}

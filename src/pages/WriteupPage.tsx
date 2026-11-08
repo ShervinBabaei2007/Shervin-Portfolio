@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
+import ArticleLayout from '@/components/shared/ArticleLayout'
 import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import NoteBody from '@/components/shared/NoteBody'
@@ -9,7 +10,7 @@ import WriteupAside from '@/components/shared/WriteupAside'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { findNote, formatDate, notes } from '../data/notes'
 import { findProject } from '../data/projects'
-import { cn } from '@/lib/utils'
+import { headingId } from '@/lib/utils'
 import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
@@ -22,7 +23,10 @@ function WriteupPage() {
   if (!note) return <NotFoundPage />
 
   const project = findProject(note.project)
-  const headings = note.body.flatMap((block) => (block.type === 'h2' ? [block.text] : []))
+  // The same ids NoteBody gives each h2, so the contents links and the scroll-spy find their sections.
+  const contents = note.body.flatMap((block) =>
+    block.type === 'h2' ? [{ id: headingId(block.text), label: block.text }] : [],
+  )
   const next = notes[(notes.indexOf(note) + 1) % notes.length]
 
   return (
@@ -39,10 +43,7 @@ function WriteupPage() {
       />
       <header className="mt-[18px] border-b pb-8">
         <p className="eyebrow">WRITEUP</p>
-        <h1
-          id="note-title"
-          className="mt-3.5 text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-[1.1] font-semibold text-wrap"
-        >
+        <h1 id="note-title" className="mt-3.5 text-title font-semibold text-wrap">
           {note.title}
         </h1>
         <p className="mt-5 text-[1.25rem] leading-[1.65] text-muted-foreground">{note.summary}</p>
@@ -58,13 +59,17 @@ function WriteupPage() {
           </div>
           <CopyLinkButton />
         </div>
-        {/* The two cards are always the same height: the contents list sets it, and the project card fills it. */}
-        <div className={cn('mt-8 grid items-stretch gap-5', project && 'lg:grid-cols-[minmax(0,1fr)_22rem]')}>
-          <TableOfContents headings={headings} />
-          {project && <WriteupAside project={project} />}
-        </div>
       </header>
-      <NoteBody blocks={note.body} />
+      <ArticleLayout
+        rail={
+          <>
+            <TableOfContents items={contents} />
+            {project && <WriteupAside project={project} />}
+          </>
+        }
+      >
+        <NoteBody blocks={note.body} />
+      </ArticleLayout>
       <ClosingCta
         heading="Found this useful?"
         body="I'm happy to talk through the details, or what I would do differently."
