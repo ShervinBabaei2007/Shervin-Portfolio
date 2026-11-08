@@ -3,6 +3,7 @@ import { Github, Linkedin, Mail, Menu, Moon, Sun } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import CommandPalette from '@/components/shared/CommandPalette'
+import LazyBoundary from '@/components/shared/LazyBoundary'
 import PendingFlag from '@/components/shared/PendingFlag'
 import { Spinner } from '@/components/ui/spinner'
 import ScrollProgress from '@/components/shared/ScrollProgress'
@@ -70,9 +71,9 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
       className="max-[620px]:size-11"
       aria-label="Choose theme"
       title="Choose theme"
-      onPointerEnter={() => void loadThemeMenu()}
-      onFocus={() => void loadThemeMenu()}
-      onTouchStart={() => void loadThemeMenu()}
+      onPointerEnter={() => void loadThemeMenu().catch(() => {})}
+      onFocus={() => void loadThemeMenu().catch(() => {})}
+      onTouchStart={() => void loadThemeMenu().catch(() => {})}
       onClick={() => setThemeMenuWanted(true)}
     >
       {scheme === 'dark' ? <Moon /> : <Sun />}
@@ -106,7 +107,13 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
       <div className="col-start-3 flex items-center gap-4 justify-self-end max-[620px]:gap-0">
         <CommandPalette />
         {socials.map(({ label, href, Icon, external }) => (
-          <Button key={label} asChild variant="ghost" size="icon-sm" className="group/tip relative hidden sm:inline-flex">
+          <Button
+            key={label}
+            asChild
+            variant="ghost"
+            size="icon-sm"
+            className="group/tip relative hidden sm:inline-flex"
+          >
             <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
               <Icon />
               {/* A label on hover and keyboard focus. Plain CSS, so the header needs no tooltip library. */}
@@ -120,9 +127,11 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
           </Button>
         ))}
         {themeMenuWanted ? (
-          <Suspense fallback={themeButton}>
-            <ThemeMenu scheme={scheme} preference={preference} onPreferenceChange={onPreferenceChange} defaultOpen />
-          </Suspense>
+          <LazyBoundary label="Theme menu" fallback={themeButton} onFail={() => setThemeMenuWanted(false)}>
+            <Suspense fallback={themeButton}>
+              <ThemeMenu scheme={scheme} preference={preference} onPreferenceChange={onPreferenceChange} defaultOpen />
+            </Suspense>
+          </LazyBoundary>
         ) : (
           themeButton
         )}
@@ -134,8 +143,8 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
           aria-label="Open menu"
           aria-haspopup="dialog"
           aria-busy={menuLoading}
-          onFocus={() => void loadMobileNav()}
-          onTouchStart={() => void loadMobileNav()}
+          onFocus={() => void loadMobileNav().catch(() => {})}
+          onTouchStart={() => void loadMobileNav().catch(() => {})}
           onClick={() => {
             setMenuEverOpened(true)
             setMenuOpen(true)
@@ -144,15 +153,24 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
           {menuLoading ? <Spinner aria-hidden="true" role="presentation" /> : <Menu />}
         </Button>
         {menuEverOpened && (
-          <Suspense fallback={<PendingFlag onChange={setMenuLoading} />}>
-            <MobileNavSheet
-              open={menuOpen}
-              onOpenChange={setMenuOpen}
-              links={navLinks.map((link) => ({ to: link.to, label: link.label, current: currentFor(link) }))}
-              socials={socials}
-              onClosed={() => menuButton.current?.focus()}
-            />
-          </Suspense>
+          <LazyBoundary
+            label="Menu"
+            onFail={() => {
+              setMenuOpen(false)
+              setMenuEverOpened(false)
+              setMenuLoading(false)
+            }}
+          >
+            <Suspense fallback={<PendingFlag onChange={setMenuLoading} />}>
+              <MobileNavSheet
+                open={menuOpen}
+                onOpenChange={setMenuOpen}
+                links={navLinks.map((link) => ({ to: link.to, label: link.label, current: currentFor(link) }))}
+                socials={socials}
+                onClosed={() => menuButton.current?.focus()}
+              />
+            </Suspense>
+          </LazyBoundary>
         )}
       </div>
       <ScrollProgress />

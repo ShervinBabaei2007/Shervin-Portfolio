@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import { ArrowUpRight, Github } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import LazyBoundary from '@/components/shared/LazyBoundary'
 import PendingFlag from '@/components/shared/PendingFlag'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -147,7 +148,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
             <p className="mt-[15px] border-l-[3px] border-primary bg-muted px-3 py-2 text-sm font-semibold">
               {project.highlight}
             </p>
-            <h3 className="mt-[15px] text-2xl leading-[1.15] font-semibold max-[620px]:text-xl">{project.name}</h3>
+            <h3 className="mt-[15px] text-h3 font-semibold">{project.name}</h3>
             <p className="mt-1.5 font-semibold">{project.subtitle}</p>
             <p className="mt-[11px] line-clamp-2 leading-[1.65] text-muted-foreground">{project.summary}</p>
             <div className="mt-4 mb-[18px] flex flex-wrap gap-1.5" aria-label="Stack">
@@ -182,9 +183,9 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
             size="sm"
             className="max-[620px]:h-11"
             aria-busy={sheetLoading}
-            onPointerEnter={() => void loadSheet()}
-            onFocus={() => void loadSheet()}
-            onTouchStart={() => void loadSheet()}
+            onPointerEnter={() => void loadSheet().catch(() => {})}
+            onFocus={() => void loadSheet().catch(() => {})}
+            onTouchStart={() => void loadSheet().catch(() => {})}
             onClick={() => {
               setSheetRequested(true)
               setSheetOpen(true)
@@ -194,9 +195,18 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
             Quick look
           </Button>
           {sheetRequested && (
-            <Suspense fallback={<PendingFlag onChange={setSheetLoading} />}>
-              <CaseStudySheet project={project} open={sheetOpen} onOpenChange={setSheetOpen} />
-            </Suspense>
+            <LazyBoundary
+              label="Quick look"
+              onFail={() => {
+                setSheetRequested(false)
+                setSheetOpen(false)
+                setSheetLoading(false)
+              }}
+            >
+              <Suspense fallback={<PendingFlag onChange={setSheetLoading} />}>
+                <CaseStudySheet project={project} open={sheetOpen} onOpenChange={setSheetOpen} />
+              </Suspense>
+            </LazyBoundary>
           )}
           {project.github && (
             <a className={cardLink} href={project.github} target="_blank" rel="noreferrer">

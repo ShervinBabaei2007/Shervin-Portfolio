@@ -228,18 +228,8 @@ function GitHubActivity() {
           {[
             ['Commits', stats.total.toLocaleString('en-CA')],
             ['Active days', stats.activeDays.toLocaleString('en-CA')],
-            [
-              'Longest streak',
-              <span key="s">
-                {stats.longestStreak} days
-              </span>,
-            ],
-            [
-              'Busiest day',
-              <span key="b">
-                {stats.busiest} commits
-              </span>,
-            ],
+            ['Longest streak', <span key="s">{stats.longestStreak} days</span>],
+            ['Busiest day', <span key="b">{stats.busiest} commits</span>],
           ].map(([label, value]) => (
             <div key={label as string} className="bg-card px-4 py-3.5">
               <dt className="font-mono text-label tracking-wide text-muted-foreground uppercase">{label}</dt>
@@ -248,7 +238,15 @@ function GitHubActivity() {
           ))}
         </dl>
 
-        <div ref={scroller} className="mt-6 overflow-x-auto p-1 pb-2">
+        <div
+          ref={scroller}
+          className="mt-6 overflow-x-auto p-1 pb-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          role="region"
+          aria-label="Commit activity by day. Scrolls sideways on small screens."
+          // A scrollable area must be reachable by keyboard (WCAG 2.1.1), or keyboard users cannot scroll it.
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
+        >
           <div
             className="grid min-w-[44rem] grid-cols-[auto_minmax(0,1fr)] gap-x-2.5 gap-y-1.5"
             role="group"
@@ -331,10 +329,7 @@ function GitHubActivity() {
               ))}
             </select>
           </label>
-          <div
-            className="flex items-center gap-1.5 font-mono text-label text-muted-foreground"
-            aria-hidden="true"
-          >
+          <div className="flex items-center gap-1.5 font-mono text-label text-muted-foreground" aria-hidden="true">
             Less
             {levelClass.map((name) => (
               <span key={name} className={cn('size-3 rounded-[3px]', name)} />

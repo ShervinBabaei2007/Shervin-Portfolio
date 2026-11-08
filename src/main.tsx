@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
+import RootErrorBoundary from './components/shared/RootErrorBoundary'
 import { reloadOnceAfterChunkFailure } from './lib/reloadOnce'
 import { startMonitoring } from './lib/monitoring'
 import { pageForPath, preloadAllPages } from './routes'
@@ -13,7 +14,9 @@ const app = (
   <React.StrictMode>
     {/* Navigations run as transitions: the current page stays on screen until the next page's code has loaded. */}
     <BrowserRouter future={{ v7_startTransition: true }}>
-      <App />
+      <RootErrorBoundary>
+        <App />
+      </RootErrorBoundary>
     </BrowserRouter>
   </React.StrictMode>
 )
