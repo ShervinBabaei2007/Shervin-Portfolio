@@ -1,8 +1,8 @@
 # Shervin Babaei · Portfolio
 
-[![Live site](https://img.shields.io/badge/live-shervin--babaei.me-111?style=flat-square)](https://shervin-babaei.me)
-
-Welcome to the source of my personal portfolio, live at **[shervin-babaei.me](https://shervin-babaei.me)**.
+<a href="https://shervin-babaei.me">
+  <img alt="Visit the live site: shervin-babaei.me" src="https://img.shields.io/website?url=https%3A%2F%2Fshervin-babaei.me&style=flat-square&label=live%20site&up_message=shervin-babaei.me&up_color=111111&down_message=offline&down_color=b91c1c&labelColor=2563eb&logo=vercel&logoColor=white" />
+</a>
 
 ## Hi, I'm Shervin 👋
 
