@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { SearchX } from 'lucide-react'
+import { Search, SearchX, X } from 'lucide-react'
 import NoteRow from '@/components/shared/NoteRow'
 import PageIntro from '@/components/shared/PageIntro'
 import { Button } from '@/components/ui/button'
@@ -86,18 +86,41 @@ function WriteupsIndexPage() {
       />
 
       <div className="mt-2 grid gap-4">
-        <Input
-          type="search"
-          aria-label="Search writeups"
-          placeholder="Search writeups"
-          autoComplete="off"
-          value={query}
-          onChange={(event) => {
-            setQuery(event.target.value)
-            setVisible(PAGE_SIZE)
-          }}
-          className="h-11 max-w-[32rem] md:text-base"
-        />
+        {/* A card-coloured field with a border and soft shadow, so it stands out from the page, with a search icon
+            and a clear button. The browser's own clear button is hidden so there is only one. */}
+        <div className="relative w-full max-w-[34rem]">
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3.5 size-[18px] -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
+          <Input
+            type="search"
+            aria-label="Search writeups"
+            placeholder="Search writeups"
+            autoComplete="off"
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              setVisible(PAGE_SIZE)
+            }}
+            className="h-12 rounded-xl border-foreground/20 bg-card pr-12 pl-11 shadow-sm hover:border-primary/60 focus-visible:border-primary md:text-base dark:bg-card [&::-webkit-search-cancel-button]:hidden"
+          />
+          {query && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              aria-label="Clear search"
+              className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground"
+              onClick={() => {
+                setQuery('')
+                setVisible(PAGE_SIZE)
+              }}
+            >
+              <X />
+            </Button>
+          )}
+        </div>
         <div role="group" aria-label="Filter writeups by project" className="flex flex-wrap gap-2">
           <Button
             type="button"
