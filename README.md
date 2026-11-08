@@ -1,55 +1,51 @@
 # Shervin Babaei · Portfolio
 
 [![Live site](https://img.shields.io/badge/live-shervin--babaei.me-111?style=flat-square)](https://shervin-babaei.me)
-![React](https://img.shields.io/badge/React_19-111?style=flat-square&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-111?style=flat-square&logo=typescript)
-![Vite](https://img.shields.io/badge/Vite-111?style=flat-square&logo=vite)
-![Tailwind](https://img.shields.io/badge/Tailwind_4-111?style=flat-square&logo=tailwindcss)
-![Vercel](https://img.shields.io/badge/Vercel-111?style=flat-square&logo=vercel)
 
-My projects, writeups and resume live at **[shervin-babaei.me](https://shervin-babaei.me)**. Every route is prerendered to static HTML at build time and deployed on Vercel.
+Welcome to the source of my personal portfolio, live at **[shervin-babaei.me](https://shervin-babaei.me)**.
 
-## Quick start
+## Hi, I'm Shervin 👋
 
-```sh
-npm install
-npm run dev
-```
+I'm a full-stack developer based in Vancouver, BC, and a Diploma in Full-Stack Web Development student at BCIT, graduating in May 2027. I care most about backend development and application architecture: clean APIs, well-designed data, and software that is easy to trust and easy to maintain.
 
-## Commands
+I like taking a project the whole way, from the first sketch to a deployed app with real users and real tests. Along the way I have built:
 
-| Command                | What it does                                                         |
-| ---------------------- | -------------------------------------------------------------------- |
-| `npm run build`        | Type-check, build and prerender every page into `dist/`.             |
-| `npm run preview`      | Serve the production build locally.                                  |
-| `npm run test:e2e`     | Playwright end-to-end and axe accessibility tests.                   |
-| `npm run test:visual`  | Local screenshot comparison across widths and themes.                |
-| `npm run check:bundle` | Fail if the entry chunk is over its gzip budget (run after a build). |
-| `npm run og:images`    | Regenerate share images in `public/og/`.                             |
-| `npm run resume:pdf`   | Print `/resume` to a PDF (run `npm run build` first).                |
+- **Network Growth Assistant**, a networking and job-search tracker that only counts what is real.
+- **GitScribe**, an AI commit-message tool built in a 24-hour hackathon, where our team placed in the top 6 of 36.
+- **SkillMatch**, a workshop marketplace with sign-up, tickets and attendee reviews.
+- **ThinkBoard** and **Discord AI Bridge**, a note-taking app and a bot that talks to an AI model running on my own machine.
 
-Image and screenshot scripts (`screenshots`, `images`, `record`) are in `package.json` and need `npx playwright install chromium` once.
+Each one has a short case study on the site explaining what I built, the decisions behind it and what I would do differently.
 
-## Where to edit
+## What you'll find on the site
 
-| File                   | Content                                           |
-| ---------------------- | ------------------------------------------------- |
-| `src/data/site.ts`     | URL, contact links, availability.                 |
-| `src/data/projects.ts` | Case studies (`flagship: true` for large cards).  |
-| `src/data/resume.ts`   | Resume page and PDF.                              |
-| `src/data/notes.ts`    | Writeups, each served at `/writeups/<slug>`.      |
-| `src/data/facts.ts`    | Numbers used in more than one place, defined once. |
+- **Work:** project case studies with screenshots, the stack behind each one and links to the live apps and code.
+- **Writeups:** short notes on things I learned while building.
+- **About:** a bit more about me and what I'm looking for.
+- **Resume:** a one-page resume you can read online or download as a PDF.
+- **Contact:** the quickest way to reach me.
 
-After adding a project or note, run `npm run og:images`. New pages go in `src/routes.ts`, `src/seo.ts` and `staticRoutes`.
+I'm currently open to co-op, internship and software roles in Vancouver, on-site or hybrid.
 
-## Conventions
+## How it's built
 
-- **Content is data.** Anything that changes lives in `src/data/`, not in components.
-- **Tailwind only.** No hand-written stylesheet; tokens are in `src/tailwind.css`. Run `npm run format` to sort classes.
-- **Type scale.** Small text uses `text-label`, `text-meta` and `text-control`. A test fails on text under 12px or on fonts other than DM Sans and DM Mono.
-- **Performance.** The entry chunk has a size budget. Load heavy UI on demand (see `CommandPalette.tsx`) and run `npm run analyze` before adding a dependency.
-- **Before a PR**, run `npx tsc -b`, `npm run lint`, `npm run format:check`, `npm run test:e2e` and `npm run check:bundle`.
+The site is a small React app that is prerendered to static HTML, so pages load fast and work well for search and sharing.
 
-## Deploy
+- **Front end:** React 19, TypeScript, Vite and React Router
+- **Styling:** Tailwind CSS 4 with shadcn/ui and Radix primitives, set in DM Sans and DM Mono
+- **Motion and detail:** Motion for animation, a Cobe globe, a command palette (⌘K / Ctrl+K), light and dark themes
+- **Quality:** Playwright end-to-end tests, axe accessibility checks, ESLint and Prettier
+- **Monitoring:** Sentry for errors, plus Vercel Analytics and Speed Insights
+- **Hosting:** Vercel
 
-Import the repo into Vercel with the Vite preset, build command `npm run build` and output directory `dist`. For a custom domain, add it in Vercel, update `url` in `src/data/site.ts`, then run `npm run og:images` and `npm run build && npm run resume:pdf`.
+I built it with accessibility, performance and readable code in mind, and I used Claude Code as a coding partner along the way.
+
+## Say hello
+
+I'm always happy to talk about projects, ideas or opportunities.
+
+- Email: [shervinb22@gmail.com](mailto:shervinb22@gmail.com)
+- LinkedIn: [shervin-babaei](https://www.linkedin.com/in/shervin-babaei/)
+- GitHub: [ShervinBabaei2007](https://github.com/ShervinBabaei2007)
+
+Thanks for stopping by. I hope you enjoy the site! 🙌
