@@ -111,7 +111,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
   await expect.poll(() => screenshot.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
 
   await page.getByRole('link', { name: /Next/ }).click()
-  await expect(page).toHaveURL(/\/work\/gitscribe$/)
+  await expect(page).toHaveURL(/\/work\/thinkboard$/)
   await page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: 'Work' }).click()
   await expect(page).toHaveURL(/\/#work$/)
 })
@@ -135,7 +135,7 @@ test('case study opens with actions and jump links to its sections', async ({ pa
   await expect(page.locator('#tradeoff')).toBeInViewport()
 })
 
-test('the resume prints to one US Letter page and hides the screen-only toolbar', async ({ page }) => {
+test('the resume prints on one US Letter page and hides the screen-only toolbar', async ({ page }) => {
   await page.goto('/resume')
   await page.waitForLoadState('networkidle')
   await page.emulateMedia({ media: 'print' })
@@ -551,7 +551,7 @@ test.describe('the end of a page', () => {
     await page.goto('/work/network-growth-assistant')
     await expect(pager().getByRole('link', { name: /Previous/ })).toHaveCount(0)
     await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
-    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', '/work/skillmatch')
+    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', '/work/gitscribe')
     // Last project: nothing after it, so the right slot goes back to the work list.
     await page.goto('/work/ollama-rag')
     await expect(pager().getByRole('link', { name: /Next/ })).toHaveCount(0)
@@ -974,7 +974,7 @@ test('project carousel can be moved with the arrow keys on a phone', async ({ pa
   await page.waitForLoadState('networkidle')
   await page.getByRole('link', { name: 'Network Growth Assistant case study', exact: true }).focus()
   await page.keyboard.press('ArrowRight')
-  await expect(page.getByRole('link', { name: 'SkillMatch case study', exact: true })).toBeInViewport({ ratio: 0.9 })
+  await expect(page.getByRole('link', { name: 'GitScribe case study', exact: true })).toBeInViewport({ ratio: 0.9 })
 })
 
 test('screenshots are served as AVIF to browsers that support it', async ({ page }) => {
@@ -986,7 +986,7 @@ test('screenshots are served as AVIF to browsers that support it', async ({ page
   expect(avif.headers()['content-type']).toContain('image/avif')
 })
 
-test('printing the resume uses dark text on white, even when the dark theme is on screen', async ({ browser }) => {
+test('printing the resume uses navy headings on white, even when the dark theme is on screen', async ({ browser }) => {
   const context = await browser.newContext()
   await context.addInitScript(() => localStorage.setItem('color-scheme', 'dark'))
   const page = await context.newPage()
@@ -1001,7 +1001,7 @@ test('printing the resume uses dark text on white, even when the dark theme is o
         page: getComputedStyle(document.documentElement).backgroundColor,
       })),
     )
-    .toEqual({ heading: 'rgb(0, 0, 0)', page: 'rgb(255, 255, 255)' })
+    .toEqual({ heading: 'rgb(27, 58, 107)', page: 'rgb(255, 255, 255)' })
   await context.close()
 })
 

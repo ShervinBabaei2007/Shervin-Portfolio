@@ -199,6 +199,105 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     },
   },
   {
+    slug: 'gitscribe',
+    name: 'GitScribe',
+    category: 'Hackathon',
+    flagship: true,
+    date: 'March 2026',
+    subtitle: 'AI commit-message suggestions, built in 24 hours.',
+    summary: `Compare two versions of your code and get a suggested commit message. Built at ${facts.hackathon.name}, where the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
+    role: 'UI/UX lead and front-end developer',
+    team: 'Hack the Break 2026 team project. I built the sign-in, navigation, and profile screens; teammates built the FastAPI backend and the OpenAI generation pipeline.',
+    highlight: hackathonLine,
+    signal: {
+      ownership: 'Sign-in, navigation, profile UI, and the Auth0-to-GitHub entry path.',
+      decision: 'Use managed OAuth in a 24-hour sprint and remove an unnecessary provider-selection step.',
+      evidence: `Working live demo; the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
+    },
+    overview: [
+      'GitScribe suggests commit messages. A commit message is the short note a programmer writes when saving a change to their code, like “Fix the login bug”. Good ones help everyone understand what changed, but they are easy to rush.',
+      'You can use GitScribe on a website, or as a command in the terminal. It was built in 24 hours at Hack the Break 2026, where our team placed in the top 6 of 36. I built the website’s sign-in, navigation bar, and profile screens.',
+    ],
+    features: [
+      {
+        title: 'Compare two versions',
+        text: 'Upload the old version of a file and the new one. GitScribe looks at what changed.',
+      },
+      {
+        title: 'Suggested messages',
+        text: 'You choose how many suggestions you want, and each one comes with a copy button.',
+      },
+      {
+        title: 'Sign in with GitHub',
+        text: 'One click takes you straight to GitHub to sign in, so there is no new account to create.',
+      },
+      {
+        title: 'A terminal version',
+        text: 'Typing gs generate in a project folder does the same job without opening the website.',
+      },
+    ],
+    howItWorks: [
+      'You sign in with your GitHub account.',
+      'You upload the old version of your file, then the new version.',
+      'You choose how many message suggestions you want.',
+      'The site sends both versions to the team’s server, which asks an AI model to describe the change in a short message.',
+      'The suggestions appear on screen, and you copy the one you like.',
+    ],
+    why: 'Writing a clear commit message is a small task people rush. GitScribe takes the before and after of a change and suggests one.',
+    mine: [
+      'Built the sign-in card, navigation bar, and profile layout from the team’s Figma designs.',
+      'Passed Auth0’s connection option so “Continue with GitHub” goes straight to GitHub instead of stopping at Auth0’s choose-a-provider screen, one fewer screen between a visitor and the app.',
+      'Kept the front end merging cleanly in a shared repo with several teammates pushing during a 24-hour sprint.',
+    ],
+    outcome:
+      'A working demo, live today, that signs you in with GitHub and turns two file versions into a suggested commit message. The team placed in the top 6 of 36.',
+    tradeoff:
+      'We used Auth0’s GitHub connection instead of writing our own OAuth flow. Auth0 handled tokens, refresh, and session storage, which we could not have built safely in 24 hours. The cost is a third-party dependency and less control over the redirect and the look of the sign-in step.',
+    learned:
+      'In a 24-hour build, the useful contribution is often removing friction at the edges, like the first screen someone sees, so the core feature gets used.',
+    next: 'Replace the hotlinked GitHub logo with a local SVG, move the inline styles into the component stylesheet, and add a loading state while the suggestion is generated.',
+    architecture: [
+      { label: 'React + Chakra UI', detail: 'TypeScript front end' },
+      { label: 'Auth0', detail: 'GitHub connection' },
+      { label: 'FastAPI', detail: 'Upload and compare endpoint' },
+      { label: 'OpenAI + Redis', detail: 'Generation, cached messages' },
+    ],
+    stack: ['React', 'TypeScript', 'Auth0', 'GitHub OAuth', 'Figma'],
+    github: 'https://github.com/adriencyr/GitScribe',
+    live: 'https://git-scribe-aybm.vercel.app/',
+    screenshots: [
+      {
+        src: '/projects/gitscribe-sign-in.webp',
+        alt: 'GitScribe sign-in card with a Continue with GitHub button on a dark background.',
+        caption: 'Sign-in screen I built',
+      },
+    ],
+    snippet: {
+      file: 'src/components/LoginpageCard.tsx',
+      href: 'https://github.com/adriencyr/GitScribe/blob/main/src/components/LoginpageCard.tsx',
+      language: 'tsx',
+      caption:
+        'Because the button names GitHub directly, people skip an extra “choose how to sign in” screen and go straight to GitHub.',
+      code: `const LoginPageCard = () => {
+  const { loginWithRedirect } = useAuth0();
+
+  return (
+    <div style={cardStyle}>
+      <h1>GitScribe</h1>
+      <p>Please sign in with your GitHub account to continue.</p>
+      <button
+        onClick={() =>
+          loginWithRedirect({ authorizationParams: { connection: "github" } })
+        }
+      >
+        Continue with GitHub
+      </button>
+    </div>
+  );
+};`,
+    },
+  },
+  {
     slug: 'skillmatch',
     name: 'SkillMatch',
     category: 'Full-stack',
@@ -315,105 +414,6 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     res.status(500).json({ error: 'Failed to attend' });
   }
 });`,
-    },
-  },
-  {
-    slug: 'gitscribe',
-    name: 'GitScribe',
-    category: 'Hackathon',
-    flagship: true,
-    date: 'March 2026',
-    subtitle: 'AI commit-message suggestions, built in 24 hours.',
-    summary: `Compare two versions of your code and get a suggested commit message. Built at ${facts.hackathon.name}, where the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
-    role: 'UI/UX lead and front-end developer',
-    team: 'Hack the Break 2026 team project. I built the sign-in, navigation, and profile screens; teammates built the FastAPI backend and the OpenAI generation pipeline.',
-    highlight: hackathonLine,
-    signal: {
-      ownership: 'Sign-in, navigation, profile UI, and the Auth0-to-GitHub entry path.',
-      decision: 'Use managed OAuth in a 24-hour sprint and remove an unnecessary provider-selection step.',
-      evidence: `Working live demo; the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
-    },
-    overview: [
-      'GitScribe suggests commit messages. A commit message is the short note a programmer writes when saving a change to their code, like “Fix the login bug”. Good ones help everyone understand what changed, but they are easy to rush.',
-      'You can use GitScribe on a website, or as a command in the terminal. It was built in 24 hours at Hack the Break 2026, where our team placed in the top 6 of 36. I built the website’s sign-in, navigation bar, and profile screens.',
-    ],
-    features: [
-      {
-        title: 'Compare two versions',
-        text: 'Upload the old version of a file and the new one. GitScribe looks at what changed.',
-      },
-      {
-        title: 'Suggested messages',
-        text: 'You choose how many suggestions you want, and each one comes with a copy button.',
-      },
-      {
-        title: 'Sign in with GitHub',
-        text: 'One click takes you straight to GitHub to sign in, so there is no new account to create.',
-      },
-      {
-        title: 'A terminal version',
-        text: 'Typing gs generate in a project folder does the same job without opening the website.',
-      },
-    ],
-    howItWorks: [
-      'You sign in with your GitHub account.',
-      'You upload the old version of your file, then the new version.',
-      'You choose how many message suggestions you want.',
-      'The site sends both versions to the team’s server, which asks an AI model to describe the change in a short message.',
-      'The suggestions appear on screen, and you copy the one you like.',
-    ],
-    why: 'Writing a clear commit message is a small task people rush. GitScribe takes the before and after of a change and suggests one.',
-    mine: [
-      'Built the sign-in card, navigation bar, and profile layout from the team’s Figma designs.',
-      'Passed Auth0’s connection option so “Continue with GitHub” goes straight to GitHub instead of stopping at Auth0’s choose-a-provider screen, one fewer screen between a visitor and the app.',
-      'Kept the front end merging cleanly in a shared repo with several teammates pushing during a 24-hour sprint.',
-    ],
-    outcome:
-      'A working demo, live today, that signs you in with GitHub and turns two file versions into a suggested commit message. The team placed in the top 6 of 36.',
-    tradeoff:
-      'We used Auth0’s GitHub connection instead of writing our own OAuth flow. Auth0 handled tokens, refresh, and session storage, which we could not have built safely in 24 hours. The cost is a third-party dependency and less control over the redirect and the look of the sign-in step.',
-    learned:
-      'In a 24-hour build, the useful contribution is often removing friction at the edges, like the first screen someone sees, so the core feature gets used.',
-    next: 'Replace the hotlinked GitHub logo with a local SVG, move the inline styles into the component stylesheet, and add a loading state while the suggestion is generated.',
-    architecture: [
-      { label: 'React + Chakra UI', detail: 'TypeScript front end' },
-      { label: 'Auth0', detail: 'GitHub connection' },
-      { label: 'FastAPI', detail: 'Upload and compare endpoint' },
-      { label: 'OpenAI + Redis', detail: 'Generation, cached messages' },
-    ],
-    stack: ['React', 'TypeScript', 'Auth0', 'GitHub OAuth', 'Figma'],
-    github: 'https://github.com/adriencyr/GitScribe',
-    live: 'https://git-scribe-aybm.vercel.app/',
-    screenshots: [
-      {
-        src: '/projects/gitscribe-sign-in.webp',
-        alt: 'GitScribe sign-in card with a Continue with GitHub button on a dark background.',
-        caption: 'Sign-in screen I built',
-      },
-    ],
-    snippet: {
-      file: 'src/components/LoginpageCard.tsx',
-      href: 'https://github.com/adriencyr/GitScribe/blob/main/src/components/LoginpageCard.tsx',
-      language: 'tsx',
-      caption:
-        'Because the button names GitHub directly, people skip an extra “choose how to sign in” screen and go straight to GitHub.',
-      code: `const LoginPageCard = () => {
-  const { loginWithRedirect } = useAuth0();
-
-  return (
-    <div style={cardStyle}>
-      <h1>GitScribe</h1>
-      <p>Please sign in with your GitHub account to continue.</p>
-      <button
-        onClick={() =>
-          loginWithRedirect({ authorizationParams: { connection: "github" } })
-        }
-      >
-        Continue with GitHub
-      </button>
-    </div>
-  );
-};`,
     },
   },
   {

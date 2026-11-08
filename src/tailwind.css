@@ -310,10 +310,30 @@
   }
 }
 
-/* The resume prints to one US Letter page (see ResumePage.tsx); @page cannot be a utility. */
+/* The resume prints on US Letter (see ResumePage.tsx); @page cannot be a utility. */
 @page {
   size: letter;
-  margin: 0.42in 0.5in;
+  margin: 0.35in 0.5in;
+}
+
+/* Resume colours: a navy accent for headings and links, and ink that always prints dark on white paper. */
+.resume-sheet {
+  --resume-accent: #1b3a6b;
+}
+
+.dark .resume-sheet {
+  --resume-accent: #9db8f0;
+}
+
+@media print {
+  .resume-sheet,
+  .dark .resume-sheet {
+    --resume-accent: #1b3a6b;
+    --foreground: #111827;
+    --muted-foreground: #374151;
+    --border: #9ca3af;
+    color: #111827;
+  }
 }
 
 @keyframes reveal-up {
