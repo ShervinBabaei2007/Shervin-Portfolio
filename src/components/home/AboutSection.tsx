@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import AboutPortraits from '@/components/home/AboutPortraits'
 import Reveal from '@/components/shared/Reveal'
 import { Button } from '@/components/ui/button'
 import { Highlighter } from '@/components/ui/highlighter'
@@ -50,13 +51,18 @@ function AboutSection() {
           <span className="text-primary">03</span> WHY I KEEP DIGGING
         </p>
         <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-[8%]">
-          <h2 id="about-title" className="text-h2-section [&>span:last-child]:text-primary">
-            I keep following the request because{' '}
-            <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
-              “it works”
-            </Highlighter>{' '}
-            has never been enough for me<span>.</span>
-          </h2>
+          <div className="min-w-0">
+            <h2 id="about-title" className="text-h2-section [&>span:last-child]:text-primary">
+              I keep following the request because{' '}
+              <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
+                “it works”
+              </Highlighter>{' '}
+              has never been enough for me<span>.</span>
+            </h2>
+            <Reveal delay={0.05}>
+              <AboutPortraits />
+            </Reveal>
+          </div>
           <Reveal delay={0.1}>
             <div className="space-y-4 text-base leading-[1.75] text-[#b4c0da] lg:pt-2">
               <p>
