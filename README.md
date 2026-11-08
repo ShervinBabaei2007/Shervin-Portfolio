@@ -1,76 +1,55 @@
-# Shervin Babaei Portfolio
+# Shervin Babaei · Portfolio
 
-Personal portfolio built with React, TypeScript, Vite, and React Router. Every route is prerendered to static HTML at build time and deployed to Vercel.
+[![Live site](https://img.shields.io/badge/live-shervin--babaei.me-111?style=flat-square)](https://shervin-babaei.me)
+![React](https://img.shields.io/badge/React_19-111?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-111?style=flat-square&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-111?style=flat-square&logo=vite)
+![Tailwind](https://img.shields.io/badge/Tailwind_4-111?style=flat-square&logo=tailwindcss)
+![Vercel](https://img.shields.io/badge/Vercel-111?style=flat-square&logo=vercel)
 
-## Run locally
+My projects, writeups and resume live at **[shervin-babaei.me](https://shervin-babaei.me)**. Every route is prerendered to static HTML at build time and deployed on Vercel.
+
+## Quick start
 
 ```sh
 npm install
 npm run dev
 ```
 
-## Scripts
+## Commands
 
-| Command | What it does |
-| --- | --- |
-| `npm run build` | Type-checks, builds, and prerenders every page into `dist/` (plus `sitemap.xml` and `robots.txt`). |
-| `npm run preview` | Serves the production build locally. |
-| `npm run test:e2e` | Builds, then runs Playwright end-to-end and axe accessibility tests (what CI runs). |
-| `npm run test:visual` | Local screenshot comparison of every page at three widths in both themes, plus the resume's print layout. See "Checking a refactor" below. |
-| `npm run analyze` | Builds into `dist-analyze/` and writes a bundle treemap to `dist-analyze/stats.html`. |
-| `npm run check:bundle` | Fails if the shared entry chunk is over its gzip budget (run after `npm run build`; CI runs it). |
-| `npm run format` | Prettier, including automatic Tailwind class sorting. |
-| `npm run og:images` | Regenerates the 1200×630 PNG share images in `public/og/`. Run after changing project names, subtitles, or highlights. |
-| `npm run resume:pdf` | Prints `/resume` to `public/Shervin_Babaei_Resume.pdf`. Run `npm run build` first. |
-| `npm run screenshots` | Captures 2× screenshots of live projects into `public/projects/` as WebP, then runs `npm run images`. |
-| `npm run images` | Makes 480px copies of large screenshots and records every image's size in `src/data/images.json`. Run after adding any screenshot. |
-| `npm run record -- skillmatch` | Records a short silent screen capture of a live project (`.webm`, plus `.mp4` if ffmpeg is installed). Edit the steps in `scripts/record-demo.mjs`. |
+| Command                | What it does                                                         |
+| ---------------------- | -------------------------------------------------------------------- |
+| `npm run build`        | Type-check, build and prerender every page into `dist/`.             |
+| `npm run preview`      | Serve the production build locally.                                  |
+| `npm run test:e2e`     | Playwright end-to-end and axe accessibility tests.                   |
+| `npm run test:visual`  | Local screenshot comparison across widths and themes.                |
+| `npm run check:bundle` | Fail if the entry chunk is over its gzip budget (run after a build). |
+| `npm run og:images`    | Regenerate share images in `public/og/`.                             |
+| `npm run resume:pdf`   | Print `/resume` to a PDF (run `npm run build` first).                |
 
-The last four scripts need Chromium once: `npx playwright install chromium`.
+Image and screenshot scripts (`screenshots`, `images`, `record`) are in `package.json` and need `npx playwright install chromium` once.
 
-## Where to edit things
+## Where to edit
 
-- `src/data/site.ts`: your URL, contact links, graduation date, and **availability** (fill in `from`, for example `'January 2027'`).
-- `src/data/projects.ts`: case-study content. `flagship: true` puts a project in the large cards on the home page.
-- `src/data/resume.ts`: the resume page and the PDF. Regenerate the PDF after editing.
-- `src/data/notes.ts`: writeups. Each one becomes a page at `/writeups/<slug>`; run `npm run og:images` after adding one.
-- `src/data/github.json`: written by the build from the GitHub API. Add a `GITHUB_TOKEN` environment variable in Vercel (a token with no scopes is enough) so builds are not rate-limited.
+| File                   | Content                                           |
+| ---------------------- | ------------------------------------------------- |
+| `src/data/site.ts`     | URL, contact links, availability.                 |
+| `src/data/projects.ts` | Case studies (`flagship: true` for large cards).  |
+| `src/data/resume.ts`   | Resume page and PDF.                              |
+| `src/data/notes.ts`    | Writeups, each served at `/writeups/<slug>`.      |
+| `src/data/facts.ts`    | Numbers used in more than one place, defined once. |
 
-## Architecture and conventions
+After adding a project or note, run `npm run og:images`. New pages go in `src/routes.ts`, `src/seo.ts` and `staticRoutes`.
 
-**Content lives in `src/data/`, not in components.** Anything that changes over time (projects, notes, resume, availability) is data. A number that appears in more than one place (commit counts, GPA, hackathon result) lives once in `src/data/facts.ts` and is imported. Check such numbers against the source (for example the GitHub API) before changing them.
+## Conventions
 
-**One styling system: Tailwind.** There is no hand-written stylesheet.
+- **Content is data.** Anything that changes lives in `src/data/`, not in components.
+- **Tailwind only.** No hand-written stylesheet; tokens are in `src/tailwind.css`. Run `npm run format` to sort classes.
+- **Type scale.** Small text uses `text-label`, `text-meta` and `text-control`. A test fails on text under 12px or on fonts other than DM Sans and DM Mono.
+- **Performance.** The entry chunk has a size budget. Load heavy UI on demand (see `CommandPalette.tsx`) and run `npm run analyze` before adding a dependency.
+- **Before a PR**, run `npx tsc -b`, `npm run lint`, `npm run format:check`, `npm run test:e2e` and `npm run check:bundle`.
 
-- Style components with utility classes. Colour tokens (`--background`, `--primary`, ...) and the site tokens (`--header-height`, `--gutter`, `--content-max`, `--mono`, ...) are in `src/tailwind.css`; use the Tailwind names (`bg-card`, `text-muted-foreground`, `font-mono`) rather than raw colours.
-- Reuse by extracting a component or a `cva` variant, or a shared class string (see `src/components/shared/blockStyles.ts`), not by writing new CSS. Plain CSS belongs in `src/tailwind.css` only for things utilities cannot express: keyframes, `@page`, `prefers-reduced-motion` and similar media queries.
-- Prose is capped at `max-w-[60ch]` (about 740px at 18px). DM Sans digits are wide, so `ch` runs long: 70ch came out at 862px, over 100 characters a line.
-- Skill logos live in `src/data/skillIcons.ts` (Simple Icons marks imported one by one, or a lucide icon when a skill has no brand). Add a skill's logo there when you add the skill to `src/data/skills.ts`. Project-card pictures are a fixed height (`data-card-media`): tall phone screenshots become three phones peeking up, wide ones sit in a `WindowFrame`, and code or terminal projects show a preview.
-- `prettier-plugin-tailwindcss` sorts classes on `npm run format`; do not sort by hand.
-- **Type scale.** Body copy and headings use normal Tailwind sizes (16-18px and up). Small text uses three tokens defined in `src/tailwind.css` that grow by 1px on phones: `text-label` (mono labels, chips, dates; 12px, 13px on phones), `text-meta` (secondary sans text; 13px, 14px) and `text-control` (button labels and tappable links; 14px, 15px). Do not write raw sizes below 12px; a test fails if any visible text is under 12px on desktop or 13px on phones, or renders in a font other than DM Sans or DM Mono. DM Mono only ships weight 400, so do not put `font-medium` or `font-semibold` on mono text.
-- Gotchas that cost time before: `text-xs` / `text-sm` add a line-height (use `text-[.75rem]` if you do not want one); `cn()` (tailwind-merge) drops an earlier `leading-*` when a `text-*` size comes after it, so put `leading-*` last or build the string without `cn`; shadcn's `rounded-xl` is 14px, not 12px.
-- Tests find elements by role, text or a `data-*` hook (`data-project-card`, `data-limiter-demo`, ...), never by styling classes.
+## Deploy
 
-**Pages.** Each route is its own lazy chunk (`src/routes.ts`) and is prerendered by `scripts/prerender.mjs`. To add a page: add it to `src/routes.ts`, give it metadata in `src/seo.ts` (`getPageMeta`) and add its path to `staticRoutes`. To add a project or note, add an entry to `src/data/projects.ts` or `src/data/notes.ts`, then run `npm run og:images`.
-
-**Performance.** The entry chunk has a budget (`scripts/check-bundle-size.mjs`). Heavy, rarely used UI (the command palette, the phone menu, the toast container, the quick-look sheet) loads on demand; follow `CommandPalette.tsx` for the pattern. Anything that loads on demand should also show that it is loading: use `PendingFlag` as the Suspense fallback to put a spinner on the button that opened it (see `ProjectCard.tsx`), and start the load on hover, focus or touch. Page changes get the top progress bar from `NavigationProgress.tsx` automatically. Run `npm run analyze` before adding a dependency.
-
-### Checking a refactor
-
-Screenshot baselines are not committed (they are about 9 MB and differ per OS). Before changing styles or layout:
-
-1. `npm run test:visual -- --update-snapshots` to record the current look.
-2. Make the change.
-3. `npm run test:visual`; a failure writes expected/actual/diff images under `test-results/`. Update the baselines only for differences you meant to make.
-
-Before opening a pull request, run what CI runs: `npx tsc -b`, `npm run lint`, `npm run format:check`, `npm run test:e2e`, then `npm run check:bundle`.
-
-## Deploy to Vercel
-
-Import the repo, keep the Vite preset, build command `npm run build`, output directory `dist`. `vercel.json` enables clean URLs, so `/work/skillmatch` is served from `work/skillmatch.html`.
-
-### Using a custom domain
-
-1. Add the domain in Vercel (Project → Settings → Domains).
-2. Change `url` in `src/data/site.ts`.
-3. Run `npm run og:images` and `npm run build && npm run resume:pdf`, then commit and deploy.
+Import the repo into Vercel with the Vite preset, build command `npm run build` and output directory `dist`. For a custom domain, add it in Vercel, update `url` in `src/data/site.ts`, then run `npm run og:images` and `npm run build && npm run resume:pdf`.
