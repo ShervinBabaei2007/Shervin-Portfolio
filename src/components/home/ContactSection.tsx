@@ -2,6 +2,7 @@ import { ArrowUpRight, FileText, Github, Linkedin } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ContactForm from '@/components/home/ContactForm'
 import VancouverGlobe from '@/components/home/VancouverGlobe'
+import CopyEmailButton from '@/components/shared/CopyEmailButton'
 import SectionHeading from '@/components/shared/SectionHeading'
 import { Button } from '@/components/ui/button'
 import { Highlighter } from '@/components/ui/highlighter'
@@ -68,11 +69,14 @@ function ContactSection() {
         <Card className="h-full">
           <CardHeader>
             <CardTitle>Send a message</CardTitle>
-            <CardDescription>
-              Or email{' '}
-              <a className="text-foreground underline underline-offset-4" href={`mailto:${site.email}`}>
-                {site.email}
-              </a>
+            <CardDescription className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <span>
+                Or email{' '}
+                <a className="text-foreground underline underline-offset-4" href={`mailto:${site.email}`}>
+                  {site.email}
+                </a>
+              </span>
+              <CopyEmailButton />
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col">

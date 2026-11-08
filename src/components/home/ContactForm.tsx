@@ -14,15 +14,12 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
+import { contactLimits, contactTopics, emailPattern } from '@/data/contact'
 import { site } from '@/data/site'
 
-/** Keep these in step with api/contact.ts, which re-checks everything on the server. */
-const topics = ['Job Opportunity', 'Project Collaboration', 'General Inquiry']
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const MESSAGE_MAX = 5000
+const MESSAGE_MAX = contactLimits.message
 
 type Values = { name: string; email: string; topic: string; message: string }
 type Errors = Partial<Record<keyof Values, string>>
@@ -34,7 +31,7 @@ function validate({ name, email, topic, message }: Values): Errors {
   if (!name.trim()) errors.name = 'Enter your name.'
   if (!email.trim()) errors.email = 'Enter an email address I can reply to.'
   else if (!emailPattern.test(email.trim())) errors.email = "That email address doesn't look right."
-  if (!topics.includes(topic)) errors.topic = 'Choose what this is about.'
+  if (!contactTopics.includes(topic)) errors.topic = 'Choose what this is about.'
   if (!message.trim()) errors.message = 'Write a short message so I know how to help.'
   return errors
 }
@@ -56,10 +53,15 @@ function ContactForm() {
   const [errors, setErrors] = useState<Errors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle')
   const [serverError, setServerError] = useState<string | null>(null)
+  const [celebrate, setCelebrate] = useState(false)
   const confirmation = useRef<HTMLDivElement>(null)
 
+  // Confetti only for people who have not asked for less motion. Checked after sending, in the browser,
+  // so it is safe while the page is prerendered and follows the setting as it is at that moment.
   useEffect(() => {
-    if (status === 'sent') confirmation.current?.focus()
+    if (status !== 'sent') return
+    setCelebrate(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    confirmation.current?.focus()
   }, [status])
 
   const update = (field: keyof Values, value: string) => {
@@ -94,7 +96,14 @@ function ContactForm() {
       setValues(emptyValues)
       setStatus('sent')
     } catch (caught) {
-      setServerError(caught instanceof Error ? caught.message : 'Something went wrong.')
+      // A network failure surfaces as a TypeError ("Failed to fetch"), which means nothing to a visitor.
+      setServerError(
+        caught instanceof TypeError
+          ? "I couldn't reach the server. Check your connection and try again."
+          : caught instanceof Error
+            ? caught.message
+            : 'Something went wrong.',
+      )
       setStatus('idle')
     }
   }
@@ -102,7 +111,7 @@ function ContactForm() {
   if (status === 'sent') {
     return (
       <Empty ref={confirmation} className="border" role="status" tabIndex={-1}>
-        {!window.matchMedia('(prefers-reduced-motion: reduce)').matches && (
+        {celebrate && (
           <Suspense fallback={null}>
             <Confetti
               className="pointer-events-none fixed inset-0 z-50 size-full"
@@ -148,7 +157,7 @@ function ContactForm() {
               name="name"
               value={values.name}
               onChange={(event) => update('name', event.target.value)}
-              maxLength={100}
+              maxLength={contactLimits.name}
               autoComplete="name"
               aria-invalid={Boolean(errors.name)}
               aria-describedby={describedBy('name')}
@@ -166,7 +175,7 @@ function ContactForm() {
               placeholder="you@company.com"
               value={values.email}
               onChange={(event) => update('email', event.target.value)}
-              maxLength={200}
+              maxLength={contactLimits.email}
               autoComplete="email"
               aria-invalid={Boolean(errors.email)}
               aria-describedby={describedBy('email')}
@@ -186,7 +195,7 @@ function ContactForm() {
             aria-describedby={describedBy('topic')}
             aria-required="true"
           >
-            {topics.map((topic, index) => (
+            {contactTopics.map((topic, index) => (
               <Field className="w-auto" key={topic} orientation="horizontal">
                 <RadioGroupItem value={topic} id={`contact-topic-${index}`} aria-invalid={Boolean(errors.topic)} />
                 <FieldLabel className="font-normal" htmlFor={`contact-topic-${index}`}>
@@ -238,15 +247,7 @@ function ContactForm() {
           </Alert>
         )}
 
-        <ShimmerButton
-          type="submit"
-          disabled={status === 'sending'}
-          aria-busy={status === 'sending'}
-          background="var(--primary)"
-          shimmerColor="#ffffff"
-          borderRadius="8px"
-          className="h-10 gap-2 px-5 text-control font-medium text-primary-foreground disabled:pointer-events-none disabled:opacity-60"
-        >
+        <Button type="submit" disabled={status === 'sending'} aria-busy={status === 'sending'} className="h-10 px-5">
           {status === 'sending' ? (
             <>
               <Spinner aria-hidden="true" role="presentation" /> Sending...
@@ -254,7 +255,7 @@ function ContactForm() {
           ) : (
             'Send message'
           )}
-        </ShimmerButton>
+        </Button>
       </FieldGroup>
     </form>
   )

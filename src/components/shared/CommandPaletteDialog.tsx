@@ -1,4 +1,5 @@
-import { Copy, Download, FileText, FolderGit2, FlaskConical, Home, Mail, NotebookPen } from 'lucide-react'
+import { useState } from 'react'
+import { Copy, Download, FileText, FolderGit2, FlaskConical, Home, Mail, NotebookPen, Wrench } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
@@ -10,17 +11,25 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command'
+import { notes } from '@/data/notes'
 import { projects } from '@/data/projects'
 import { site } from '@/data/site'
+import { projectsUsing, skillTabs } from '@/data/skills'
 
 type Props = { open: boolean; onOpenChange: (open: boolean) => void }
 
 /** The palette's dialog and its items. Loaded the first time the palette opens. */
 function CommandPaletteDialog({ open, onOpenChange }: Props) {
   const navigate = useNavigate()
+  const [query, setQuery] = useState('')
+  const allSkills = skillTabs.flatMap((tab) => tab.skills.map((skill) => skill.name))
 
+  const close = (next: boolean) => {
+    if (!next) setQuery('')
+    onOpenChange(next)
+  }
   const run = (action: () => void) => {
-    onOpenChange(false)
+    close(false)
     action()
   }
 
@@ -36,15 +45,17 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
   return (
     <CommandDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={close}
       title="Search portfolio"
-      description="Jump to a project, page, or contact action."
+      description="Jump to a project, writeup, page, skill, or contact action."
     >
-      <CommandInput placeholder="Search projects, pages, actions..." />
+      <CommandInput placeholder="Search projects, writeups, skills, pages..." value={query} onValueChange={setQuery} />
       <CommandList>
         <CommandEmpty>
           <p className="font-medium text-foreground">Nothing matches that.</p>
-          <p className="mt-1 text-muted-foreground">Try a project name, a skill, or &quot;resume&quot;.</p>
+          <p className="mt-1 text-muted-foreground">
+            Try a project name, a skill like &quot;React&quot;, or &quot;resume&quot;.
+          </p>
         </CommandEmpty>
         <CommandGroup heading="Projects">
           {projects.map((project) => (
@@ -58,6 +69,41 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
             </CommandItem>
           ))}
         </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Writeups">
+          {notes.map((note) => (
+            <CommandItem
+              key={note.slug}
+              value={`${note.title} ${note.summary} writeup`}
+              onSelect={() => run(() => navigate(`/writeups/${note.slug}`))}
+            >
+              <NotebookPen /> {note.title}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+        {/* Skills only appear once you type, because there are about thirty of them and they would crowd the list. */}
+        {query.trim() && (
+          <>
+            <CommandSeparator />
+            <CommandGroup heading="Skills">
+              {allSkills.map((skill) => {
+                const count = projectsUsing(skill).length
+                return (
+                  <CommandItem
+                    key={skill}
+                    value={`${skill} skill`}
+                    onSelect={() => run(() => navigate('/', { state: { skill } }))}
+                  >
+                    <Wrench /> {skill}
+                    <span className="ml-auto text-label text-muted-foreground">
+                      {count} {count === 1 ? 'project' : 'projects'}
+                    </span>
+                  </CommandItem>
+                )
+              })}
+            </CommandGroup>
+          </>
+        )}
         <CommandSeparator />
         <CommandGroup heading="Pages">
           <CommandItem onSelect={() => run(() => navigate('/'))}>
