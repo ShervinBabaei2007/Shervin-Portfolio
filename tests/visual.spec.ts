@@ -9,7 +9,9 @@ import { expect, test, type Page } from '@playwright/test'
 
 /** The app's script starts just after the first paint, so wait for React to take over before taking a picture. */
 const hydrated = (page: Page) =>
-  page.waitForFunction(() => Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')))
+  page.waitForFunction(() =>
+    Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')),
+  )
 
 const pages = [
   '/',
@@ -84,7 +86,7 @@ test('@visual /resume in print layout', async ({ browser }) => {
   await context.close()
 })
 
-// Hero orbit: each layer node has its own selected state and the panel below follows it.
+// Hero request trace: each layer is a tab with its own selected state, and the panel below follows it.
 for (const layer of ['api', 'core'] as const) {
   test(`@visual hero with the ${layer} layer selected`, async ({ browser }) => {
     const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' })
@@ -93,7 +95,7 @@ for (const layer of ['api', 'core'] as const) {
     await page.goto('/')
     await hydrated(page)
     await page.waitForLoadState('networkidle')
-    await page.getByRole('button', { name: new RegExp(`Show ${layer} layer projects`, 'i') }).click()
+    await page.getByRole('tab', { name: new RegExp(layer, 'i') }).click()
     await page.mouse.move(5, 5)
     await expect(page.locator('#home')).toHaveScreenshot(`hero-${layer}.png`, {
       animations: 'disabled',
