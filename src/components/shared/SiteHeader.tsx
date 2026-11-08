@@ -10,6 +10,7 @@ import ScrollProgress from '@/components/shared/ScrollProgress'
 import { useActiveSection } from '@/hooks/useActiveSection'
 import type { Preference, Scheme } from '@/hooks/useTheme'
 import { site } from '@/data/site'
+import { hitArea } from '@/lib/hitArea'
 
 type SiteHeaderProps = {
   scheme: Scheme
@@ -68,7 +69,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
     <Button
       variant="ghost"
       size="icon-sm"
-      className="max-[620px]:size-11"
+      className={`${hitArea} max-[620px]:size-11`}
       aria-label="Choose theme"
       title="Choose theme"
       onPointerEnter={() => void loadThemeMenu().catch(() => {})}
@@ -112,7 +113,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
             asChild
             variant="ghost"
             size="icon-sm"
-            className="group/tip relative hidden min-[960px]:inline-flex"
+            className={`group/tip ${hitArea} hidden min-[960px]:inline-flex`}
           >
             <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
               <Icon />

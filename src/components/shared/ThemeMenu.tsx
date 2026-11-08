@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import type { Preference, Scheme } from '@/hooks/useTheme'
+import { hitArea } from '@/lib/hitArea'
 
 type ThemeMenuProps = {
   scheme: Scheme
@@ -25,7 +26,7 @@ function ThemeMenu({ scheme, preference, onPreferenceChange, defaultOpen }: Them
         <Button
           variant="ghost"
           size="icon-sm"
-          className="max-[620px]:size-11"
+          className={`${hitArea} max-[620px]:size-11`}
           aria-label="Choose theme"
           title="Choose theme"
         >

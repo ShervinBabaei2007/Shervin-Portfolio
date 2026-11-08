@@ -3,6 +3,7 @@ import { Search } from 'lucide-react'
 import LazyBoundary from '@/components/shared/LazyBoundary'
 import { Button } from '@/components/ui/button'
 import { Kbd } from '@/components/ui/kbd'
+import { hitArea } from '@/lib/hitArea'
 
 const CommandPaletteDialog = lazy(() => import('./CommandPaletteDialog'))
 
@@ -54,7 +55,7 @@ function CommandPalette() {
         type="button"
         variant="ghost"
         size="sm"
-        className="gap-2 text-muted-foreground max-[620px]:size-11"
+        className={`${hitArea} gap-2 text-muted-foreground max-[620px]:size-11`}
         onClick={openPalette}
         aria-label="Search portfolio"
       >

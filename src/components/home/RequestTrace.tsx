@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Card } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -51,7 +51,7 @@ function RequestTrace() {
     <Card className="gap-0 overflow-hidden py-0 shadow-none">
       <div className="flex items-center justify-between gap-3 border-b bg-muted/40 px-4 py-2.5">
         <span className={cn(monoLabel, 'tracking-wide text-muted-foreground')}>FOLLOW A REQUEST DOWN THE STACK</span>
-        <span className={cn(monoLabel, 'shrink-0 text-muted-foreground')}>Select a step</span>
+        <span className={cn(monoLabel, 'shrink-0 text-muted-foreground')}>Click a step</span>
       </div>
       <Tabs value={active} onValueChange={(value) => setActive(value as LayerId)}>
         <TabsList aria-label="Explore projects by application layer" className="grid w-full">
@@ -66,6 +66,7 @@ function RequestTrace() {
                 className={cn(
                   monoLabel,
                   'relative z-[1] grid size-7 shrink-0 place-items-center rounded-full border bg-background font-medium text-muted-foreground transition-colors duration-200 motion-reduce:transition-none',
+                  'group-hover:border-primary group-hover:text-primary',
                   'group-data-[state=active]:border-primary group-data-[state=active]:bg-primary group-data-[state=active]:text-primary-foreground',
                 )}
                 aria-hidden="true"
@@ -80,11 +81,15 @@ function RequestTrace() {
               )}
               {/* One line per step: the name on the left and its caption on the right, so the row has no dead space. */}
               <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
-                <span className="text-base leading-none font-semibold text-muted-foreground group-data-[state=active]:text-foreground">
+                <span className="text-base leading-none font-semibold text-muted-foreground group-hover:text-foreground group-data-[state=active]:text-foreground">
                   {layer.title}
                 </span>
                 <span className={cn(monoLabel, 'shrink-0 text-right text-muted-foreground')}>{layer.caption}</span>
               </span>
+              <ChevronRight
+                className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary group-data-[state=active]:text-primary"
+                aria-hidden="true"
+              />
             </TabsTrigger>
           ))}
         </TabsList>

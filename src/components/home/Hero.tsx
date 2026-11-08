@@ -1,4 +1,4 @@
-import { ArrowDownRight, ArrowUpRight, FileText } from 'lucide-react'
+import { ArrowDown, ArrowUpRight, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { facts } from '@/data/facts'
 import { site } from '@/data/site'
@@ -43,12 +43,12 @@ function Hero() {
         <div className="mt-7 flex flex-wrap items-center gap-3 max-[900px]:mt-6 max-[900px]:gap-2.5">
           <Button asChild size="lg" className="h-[46px] px-[17px] text-control font-semibold">
             <Link to="/#work">
-              See my projects <ArrowDownRight />
+              See my projects <ArrowDown aria-hidden="true" />
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="h-[46px] px-[17px] text-control font-semibold">
             <Link to="/resume">
-              View resume <FileText />
+              View resume <FileText aria-hidden="true" />
             </Link>
           </Button>
         </div>
