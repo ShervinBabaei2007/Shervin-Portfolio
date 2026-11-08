@@ -90,7 +90,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
         <img className="size-[35px] rounded-[8px]" src="/logo.svg" width={35} height={35} alt="" />
       </Link>
       <nav
-        className="col-start-2 flex flex-wrap justify-center gap-x-[clamp(22px,2.2vw,34px)] justify-self-center max-[620px]:hidden"
+        className="col-start-2 flex flex-wrap justify-center gap-x-[clamp(22px,2.2vw,34px)] justify-self-center max-[959px]:hidden"
         aria-label="Main navigation"
       >
         {navLinks.map((link) => (
@@ -112,7 +112,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
             asChild
             variant="ghost"
             size="icon-sm"
-            className="group/tip relative hidden sm:inline-flex"
+            className="group/tip relative hidden min-[960px]:inline-flex"
           >
             <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
               <Icon />
@@ -139,7 +139,7 @@ function SiteHeader({ scheme, preference, onPreferenceChange }: SiteHeaderProps)
           ref={menuButton}
           variant="ghost"
           size="icon-sm"
-          className="max-[620px]:size-11 min-[621px]:hidden"
+          className="max-[959px]:size-11 min-[960px]:hidden"
           aria-label="Open menu"
           aria-haspopup="dialog"
           aria-busy={menuLoading}
