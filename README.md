@@ -8,15 +8,6 @@ Welcome to the source of my personal portfolio, live at **[shervin-babaei.me](ht
 
 I'm a full-stack developer based in Vancouver, BC, and a Diploma in Full-Stack Web Development student at BCIT, graduating in May 2027. I care most about backend development and application architecture: clean APIs, well-designed data, and software that is easy to trust and easy to maintain.
 
-I like taking a project the whole way, from the first sketch to a deployed app with real users and real tests. Along the way I have built:
-
-- **Network Growth Assistant**, a networking and job-search tracker that only counts what is real.
-- **GitScribe**, an AI commit-message tool built in a 24-hour hackathon, where our team placed in the top 6 of 36.
-- **SkillMatch**, a workshop marketplace with sign-up, tickets and attendee reviews.
-- **ThinkBoard** and **Discord AI Bridge**, a note-taking app and a bot that talks to an AI model running on my own machine.
-
-Each one has a short case study on the site explaining what I built, the decisions behind it and what I would do differently.
-
 ## What you'll find on the site
 
 - **Work:** project case studies with screenshots, the stack behind each one and links to the live apps and code.
@@ -46,6 +37,5 @@ I'm always happy to talk about projects, ideas or opportunities.
 
 - Email: [shervinb22@gmail.com](mailto:shervinb22@gmail.com)
 - LinkedIn: [shervin-babaei](https://www.linkedin.com/in/shervin-babaei/)
-- GitHub: [ShervinBabaei2007](https://github.com/ShervinBabaei2007)
 
 Thanks for stopping by. I hope you enjoy the site! 🙌
