@@ -1,6 +1,7 @@
 // Generates 1200×630 PNG share images into public/og/.
 // LinkedIn, Slack, X and iMessage ignore SVG previews, so these must be PNG.
 // Usage: npm run og:images   (re-run after changing project names or highlights)
+//        npm run og:images -- writeups   (only the named images)
 import { mkdirSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fontUrl, importTs, launchBrowser, root } from './lib.mjs'
@@ -66,7 +67,7 @@ const cards = [
     name: 'writeups',
     kicker: 'WRITEUPS',
     title: 'Writeups',
-    subtitle: 'Short write-ups on bugs I found in my own projects and what I changed.',
+    subtitle: 'Short writeups on bugs I found in my own projects and what I changed.',
     result: `${notes.length} writeups`,
   },
   ...notes.map((note) => ({
@@ -78,9 +79,11 @@ const cards = [
   })),
 ]
 
+// Optional: name the images to regenerate, for example `npm run og:images -- writeups home`. No names means all.
+const only = process.argv.slice(2)
 const browser = await launchBrowser()
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } })
-for (const item of cards) {
+for (const item of cards.filter((card) => only.length === 0 || only.includes(card.name))) {
   await page.setContent(card(item), { waitUntil: 'load' })
   await page.evaluate(() => document.fonts.ready)
   await page.screenshot({ path: resolve(outDir, `${item.name}.png`) })

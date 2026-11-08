@@ -6,7 +6,7 @@ import { site } from '../data/site'
 const sections = [
   {
     title: 'Stack',
-    body: 'React 19 and TypeScript, bundled with Vite, with React Router for the case-study pages. Tailwind CSS and shadcn/ui provide the components and the light and dark colour tokens. A small hand-written stylesheet covers the few visuals utilities do not express, such as the hero artwork and the pointer glow on project cards.',
+    body: 'React 19 and TypeScript, bundled with Vite, with React Router for the case-study pages. Tailwind CSS and shadcn/ui provide the components and the light and dark colour tokens. The only hand-written CSS sits in the same file and covers what utilities cannot express: keyframe animations, the resume’s print layout, and the reduced-motion rules.',
   },
   {
     title: 'Every page is real HTML',
