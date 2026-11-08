@@ -5,6 +5,7 @@ import ContactSection from '@/components/home/ContactSection'
 import AtAGlance from '@/components/home/AtAGlance'
 import Hero from '@/components/home/Hero'
 import ProjectsSection from '@/components/home/ProjectsSection'
+import FaqSection from '@/components/home/FaqSection'
 import SkillsSection from '@/components/home/SkillsSection'
 
 // useLayoutEffect warns during prerendering; the scroll fix only matters in the browser.
@@ -50,6 +51,7 @@ function HomePage() {
       <ProjectsSection activeSkill={activeSkill} onClearSkill={() => setActiveSkill(null)} />
       <AboutSection />
       <SkillsSection activeSkill={activeSkill} onSkillSelect={selectSkill} />
+      <FaqSection />
       <ContactSection />
     </>
   )

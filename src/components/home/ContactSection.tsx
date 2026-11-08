@@ -21,7 +21,7 @@ function ContactSection() {
         <div className="flex flex-col">
           <SectionHeading
             id="contact-title"
-            number="05"
+            number="06"
             eyebrow="NEXT STEP"
             title={
               <>

@@ -5,6 +5,7 @@ import NavigationProgress from '@/components/shared/NavigationProgress'
 import SiteFooter from '@/components/shared/SiteFooter'
 import SiteHeader from '@/components/shared/SiteHeader'
 import BackToTop from '@/components/shared/BackToTop'
+import LocalTime from '@/components/shared/LocalTime'
 import PageTransition from '@/components/shared/PageTransition'
 import { reportError } from './lib/monitoring'
 import { usePageMeta } from './hooks/usePageMeta'
@@ -134,6 +135,7 @@ function App() {
       </main>
       <SiteFooter />
       <BackToTop />
+      <LocalTime />
       <LazyToaster scheme={scheme} />
     </div>
   )
