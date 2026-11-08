@@ -79,21 +79,46 @@ export function Globe({
     window.addEventListener("resize", onResize)
     onResize()
 
-    const globe = createGlobe(canvasRef.current!, {
-      ...config,
-      width: widthRef.current * 2,
-      height: widthRef.current * 2,
-      onRender: (state) => {
-        if (!pointerInteracting.current) phiRef.current += 0.003
-        state.phi = phiRef.current + rs.get()
-        state.width = widthRef.current * 2
-        state.height = widthRef.current * 2
-      },
-    })
+    const canvas = canvasRef.current!
+    let globe: ReturnType<typeof createGlobe> | null = null
+    let inView = true
 
-    setTimeout(() => (canvasRef.current!.style.opacity = "1"), 0)
+    // The globe has no pause, so it is destroyed while off screen or in a hidden tab and created again on return.
+    // The rotation is kept in phiRef, so it carries on from where it stopped.
+    const start = () => {
+      if (globe || !inView || document.hidden) return
+      globe = createGlobe(canvas, {
+        ...config,
+        width: widthRef.current * 2,
+        height: widthRef.current * 2,
+        onRender: (state) => {
+          if (!pointerInteracting.current) phiRef.current += 0.003
+          state.phi = phiRef.current + rs.get()
+          state.width = widthRef.current * 2
+          state.height = widthRef.current * 2
+        },
+      })
+    }
+    const stop = () => {
+      globe?.destroy()
+      globe = null
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting
+      if (inView) start()
+      else stop()
+    })
+    observer.observe(canvas)
+    const onVisibility = () => (document.hidden ? stop() : start())
+    document.addEventListener("visibilitychange", onVisibility)
+
+    start()
+    setTimeout(() => (canvas.style.opacity = "1"), 0)
     return () => {
-      globe.destroy()
+      observer.disconnect()
+      document.removeEventListener("visibilitychange", onVisibility)
+      stop()
       window.removeEventListener("resize", onResize)
     }
   }, [rs, config])

@@ -100,13 +100,39 @@ export const Particles: React.FC<ParticlesProps> = ({
   const initCanvasRef = useRef<() => void>(() => {})
   const onMouseMoveRef = useRef<() => void>(() => {})
   const animateRef = useRef<() => void>(() => {})
+  // True while the animation loop is stopped because the canvas is off screen or the tab is hidden.
+  const paused = useRef(false)
 
   useEffect(() => {
     if (canvasRef.current) {
       context.current = canvasRef.current.getContext("2d")
     }
     initCanvasRef.current()
+    paused.current = false
     animateRef.current()
+
+    // Stop drawing frames nobody can see (scrolled away, or another tab in front), and pick up again on return.
+    let inView = true
+    const stop = () => {
+      paused.current = true
+      if (rafID.current != null) window.cancelAnimationFrame(rafID.current)
+    }
+    const start = () => {
+      if (!paused.current || !inView || document.hidden) return
+      paused.current = false
+      animateRef.current()
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting
+      if (inView) start()
+      else stop()
+    })
+    if (canvasContainerRef.current) observer.observe(canvasContainerRef.current)
+    const onVisibility = () => {
+      if (document.hidden) stop()
+      else start()
+    }
+    document.addEventListener("visibilitychange", onVisibility)
 
     const handleResize = () => {
       if (resizeTimeout.current) {
@@ -120,6 +146,8 @@ export const Particles: React.FC<ParticlesProps> = ({
     window.addEventListener("resize", handleResize)
 
     return () => {
+      observer.disconnect()
+      document.removeEventListener("visibilitychange", onVisibility)
       if (rafID.current != null) {
         window.cancelAnimationFrame(rafID.current)
       }
@@ -299,7 +327,7 @@ export const Particles: React.FC<ParticlesProps> = ({
         drawCircle(newCircle)
       }
     })
-    rafID.current = window.requestAnimationFrame(animateRef.current)
+    if (!paused.current) rafID.current = window.requestAnimationFrame(animateRef.current)
   }
 
   initCanvasRef.current = initCanvas
