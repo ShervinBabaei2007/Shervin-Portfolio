@@ -1,5 +1,6 @@
 import {
   siAuth0,
+  siClaudecode,
   siExpress,
   siFigma,
   siGithubactions,
@@ -61,5 +62,6 @@ export const skillIcons: Record<string, SkillIcon> = {
   Nginx: brand(siNginx),
   'GitHub Actions': brand(siGithubactions),
   Vitest: brand(siVitest),
+  'Claude Code': brand(siClaudecode),
   pytest: brand(siPytest),
 }

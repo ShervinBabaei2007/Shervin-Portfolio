@@ -38,11 +38,28 @@ export const resume = {
   skills: [
     ['Languages', 'JavaScript (ES6+), TypeScript, Python, SQL'],
     ['Front end', 'React, Vite, Tailwind CSS, HTML, CSS'],
-    ['Back end & data', 'Node.js, Express, MongoDB (Mongoose), Redis (Upstash), SQLite'],
+    ['Back end & data', 'Node.js, Express, MongoDB, Supabase (PostgreSQL), Redis, SQLite'],
     ['Auth & APIs', 'REST APIs, JWT, Auth0 (GitHub OAuth), WebSockets'],
-    ['Tools & testing', 'Git, GitHub, Vercel, Figma, pytest, Playwright'],
+    ['Tooling', 'Claude Code, GitHub Actions (CI), Playwright, Vitest, pytest, Git, Vercel, Figma'],
   ] as [string, string][],
   projects: [
+    {
+      name: 'Network Growth Assistant',
+      detail: 'Networking & Job Search App',
+      links: [
+        { label: 'Live App', href: 'https://linkedin-network-growth-assistance.vercel.app' },
+        { label: 'Repo', href: 'https://github.com/ShervinBabaei2007/Network-Growth-Assistance' },
+        { label: 'Case Study', href: `${site.url}/work/network-growth-assistant` },
+      ],
+      date: 'Oct 2026 – Current',
+      stack: 'Next.js, React, TypeScript, Supabase, PostgreSQL, Vercel',
+      role: 'Solo project, design to deployment',
+      bullets: [
+        'Built a site that makes a short daily list of people to contact and tracks job applications, counting an invitation only once it is accepted.',
+        'Added a research tool that shows proof for every person it finds, and job listings that get an Apply button only after the link is checked.',
+        'Kept each user’s data private with database access rules, and wrote over 1,800 automated tests.',
+      ],
+    },
     {
       name: 'SkillMatch',
       detail: 'Full-Stack Workshop Marketplace',
@@ -86,18 +103,6 @@ export const resume = {
         'Protected the API with Upstash Redis sliding-window rate limiting (50 requests per 60 seconds), returning HTTP 429 with a dedicated rate-limited screen in the UI.',
         'Built full CRUD for notes, with required fields enforced in both the form and the Mongoose schema.',
         'Gave every create, edit, and delete clear feedback with toast notifications, without a page refresh.',
-      ],
-    },
-    {
-      name: 'Discord AI Bridge',
-      detail: 'Local LLM Chat Bot',
-      links: [{ label: 'Repo', href: 'https://github.com/ShervinBabaei2007/Discord-ai-bridge' }],
-      date: 'March – April 2026',
-      stack: 'Python, discord.py, LM Studio, REST API, asyncio',
-      bullets: [
-        'Connected a Discord bot to a locally hosted Qwen 3.5 9B model through LM Studio’s OpenAI-compatible API.',
-        'Kept the bot responsive during generation by moving the blocking HTTP call into a worker thread with asyncio.to_thread().',
-        'Reported connection, HTTP, and malformed-response failures as plain messages in the channel instead of failing silently.',
       ],
     },
   ] as ResumeProject[],

@@ -149,7 +149,7 @@ export const projects: Project[] = [
       { label: 'Supabase', detail: 'Postgres, row-level security, Auth' },
       { label: 'pg_cron + API routes', detail: 'Crawler and alerts' },
     ],
-    stack: ['Next.js', 'React', 'TypeScript', 'PostgreSQL', 'Supabase', 'Vercel', 'Vitest', 'GitHub Actions'],
+    stack: ['Next.js', 'React', 'TypeScript', 'PostgreSQL', 'Supabase', 'Vercel', 'Vitest', 'GitHub Actions', 'Claude Code'],
     github: 'https://github.com/ShervinBabaei2007/Network-Growth-Assistance',
     live: 'https://linkedin-network-growth-assistance.vercel.app',
     screenshots: [

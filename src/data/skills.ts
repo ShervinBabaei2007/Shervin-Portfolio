@@ -54,6 +54,11 @@ export const skillTabs: SkillTab[] = [
     label: 'Tools & Infrastructure',
     summary: 'Shipping, sign-in, design, and testing.',
     skills: [
+      {
+        name: 'Claude Code',
+        category: 'Tooling',
+        note: 'AI coding agent for building, testing and reviewing changes.',
+      },
       { name: 'Vercel', category: 'Tooling', note: 'Deploying frontends and backends.' },
       { name: 'Azure', category: 'Tooling', note: 'A VM running Express behind a reverse proxy.' },
       { name: 'Nginx', category: 'Tooling', note: 'Reverse proxy and HTTPS in front of Express.' },
