@@ -16,5 +16,7 @@ featuresToImplement
 bugs&improve
 dist-analyze/
 tests/visual.spec.ts-snapshots/
-
+PersonalPhoto.jpeg
+PersonalPhoto2.jpeg
+PersonalPhoto3.jpeg
 .env.sentry-build-plugin
