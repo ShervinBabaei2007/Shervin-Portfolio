@@ -445,18 +445,57 @@ test.describe('reading width', () => {
   }
 })
 
-test('case study sections use the full width of the page, not half of it', async ({ page }) => {
+test('case study text fills the column up to the rail, with no empty gap between them', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/work/skillmatch')
   await page.waitForLoadState('networkidle')
+  const rail = (await page.getByRole('navigation', { name: 'On this page' }).boundingBox())!
   for (const id of ['why', 'outcome', 'learned']) {
-    const section = await page.locator(`#${id}`).boundingBox()
-    const text = await page.locator(`#${id} p`).first().boundingBox()
-    expect(text!.width, `#${id}`).toBeGreaterThan(section!.width * 0.95)
+    const section = (await page.locator(`#${id}`).boundingBox())!
+    // The sections are a wide column with the rail to the right of it...
+    expect(section.width, `#${id}`).toBeGreaterThan(800)
+    expect(rail.x, `#${id}`).toBeGreaterThan(section.x + section.width)
+    // ...the paragraph fills that column, and only the normal gutter separates it from the rail.
+    const text = (await page.locator(`#${id} p`).first().boundingBox())!
+    expect(text.width, `#${id}`).toBeGreaterThan(section.width * 0.95)
+    expect(rail.x - (text.x + text.width), `#${id}`).toBeLessThan(80)
   }
 })
 
-test('writeups use the full content width, centred, and the closing card still has room', async ({ page }) => {
+test('body text lines stay under about 120 characters on case studies and writeups', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  for (const path of ['/work/skillmatch', '/writeups/skillmatch-attend-race-condition']) {
+    await page.goto(path)
+    await page.waitForLoadState('networkidle')
+    const longest = await page.evaluate(() => {
+      const paragraph = [...document.querySelectorAll('main p')].find(
+        (element) => (element.textContent ?? '').length > 260 && element.firstChild?.nodeType === Node.TEXT_NODE,
+      )!
+      const node = paragraph.firstChild as Text
+      const range = document.createRange()
+      const lines: number[] = []
+      let count = 0
+      let top = -1
+      for (let index = 0; index < node.length; index++) {
+        range.setStart(node, index)
+        range.setEnd(node, index + 1)
+        const y = Math.round(range.getBoundingClientRect().top)
+        if (top === -1) top = y
+        if (y !== top) {
+          lines.push(count)
+          count = 0
+          top = y
+        }
+        count++
+      }
+      return Math.max(...lines)
+    })
+    expect(longest, path).toBeLessThanOrEqual(120)
+    expect(longest, path).toBeGreaterThanOrEqual(55)
+  }
+})
+
+test('writeups are centred, their header spans the page, and the closing card still has room', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/writeups/skillmatch-attend-race-condition')
   await page.waitForLoadState('networkidle')
@@ -470,9 +509,11 @@ test('writeups use the full content width, centred, and the closing card still h
   expect(summary.width).toBeGreaterThan(article.width * 0.95)
   const title = (await page.locator('#note-title').boundingBox())!
   expect(title.width).toBeGreaterThan(article.width * 0.95)
-  // Body paragraphs span the full width too.
-  const paragraph = (await page.locator('article > div > p').first().boundingBox())!
-  expect(paragraph.width).toBeGreaterThan(article.width * 0.95)
+  // Body paragraphs fill the column up to the rail, which sits to their right.
+  const paragraph = (await page.locator('#note-body > p').first().boundingBox())!
+  const rail = (await page.getByRole('navigation', { name: 'On this page' }).boundingBox())!
+  expect(paragraph.width).toBeGreaterThan(800)
+  expect(rail.x - (paragraph.x + paragraph.width)).toBeLessThan(80)
   const card = page.getByRole('region', { name: 'Found this useful?' })
   // The text sits beside the buttons rather than being squeezed above them.
   expect((await card.getByRole('paragraph').first().boundingBox())!.width).toBeGreaterThan(400)
@@ -700,7 +741,7 @@ for (const scheme of ['light', 'dark'] as const) {
     ]) {
       await page.goto(path)
       await page.waitForLoadState('networkidle')
-      const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
+      const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()
       expect(results.violations.map((v) => `${path}: ${v.id} (${v.nodes.length})`)).toEqual([])
     }
     await context.close()

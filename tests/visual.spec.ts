@@ -47,6 +47,12 @@ for (const scheme of ['dark', 'light'] as const) {
         await hydrated(page)
         await page.waitForLoadState('networkidle')
         await page.evaluate(() => document.fonts.ready)
+        // Images below the fold are lazy and decode asynchronously, so a full-page capture can catch them half done
+        // (two captures then differ and never settle). Load and decode every one before taking the picture.
+        await page.evaluate(async () => {
+          for (const image of document.images) image.loading = 'eager'
+          await Promise.all([...document.images].map((image) => image.decode().catch(() => undefined)))
+        })
         await expect(page).toHaveScreenshot(
           `${path.replace(/\W+/g, '-').replace(/^-|-$/g, '') || 'home'}-${width}-${scheme}.png`,
           {
