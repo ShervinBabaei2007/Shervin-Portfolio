@@ -8,6 +8,9 @@ import { commitsLine, facts, hackathonLine, mergedPrsLine } from './facts'
 
 export type Screenshot = { src: string; alt: string; caption: string }
 
+/** A drawn mock-up for projects with no real screenshots. It is labelled as an illustration on the page. */
+export type Illustration = { src: string; alt: string; caption: string }
+
 export type Snippet = {
   /** Path inside the repo, shown as the code block's title. */
   file: string
@@ -58,6 +61,7 @@ export type Project = {
   teamRepo?: string
   live?: string
   screenshots?: Screenshot[]
+  illustration?: Illustration
   snippet?: Snippet
   /** A real recorded terminal session, used for command-line projects. */
   terminal?: { title: string; transcript: string }
@@ -606,6 +610,11 @@ const ratelimiter = async (req, res, next) => {
       { label: 'Worker thread', detail: 'asyncio.to_thread()' },
       { label: 'LM Studio', detail: 'Qwen 3.5 9B, local' },
     ],
+    illustration: {
+      src: '/projects/discord-ai-bridge-illustration.svg',
+      alt: 'What a Discord channel could look like: someone types !.ask with a question, the AI Bridge bot replies with the answer, and a later question gets a plain error message because LM Studio is not running.',
+      caption: 'A drawing of the bot in a Discord channel: an answer to a question, then an error message when LM Studio is off.',
+    },
     stack: ['Python', 'discord.py', 'LM Studio', 'REST API', 'asyncio'],
     github: 'https://github.com/ShervinBabaei2007/Discord-ai-bridge',
     snippet: {
@@ -693,6 +702,11 @@ except requests.exceptions.HTTPError as e:
       { label: 'Player state', detail: 'Inventory, pity counters' },
       { label: 'JSON file', detail: 'Save and load' },
     ],
+    illustration: {
+      src: '/projects/mini-rpg-battle-illustration.svg',
+      alt: 'A terminal window showing a fight with a White Tiger: health bars for the player and the boss, the boss becoming enraged, a pity reward, and the menu of actions.',
+      caption: 'A drawing of a fight in the terminal: health bars, an enraged boss, a pity reward and the menu.',
+    },
     stack: ['Python', 'Object-oriented design', 'pytest', 'JSON'],
     snippet: {
       file: 'main.py',
@@ -814,6 +828,11 @@ $ cat playerSave.json
       { label: 'sqlite3', detail: 'Parameterized queries' },
       { label: 'applications.db', detail: 'Local file' },
     ],
+    illustration: {
+      src: '/projects/job-application-tracker-illustration.svg',
+      alt: 'A terminal window showing a table of job applications with company, role, status and date, and the menu with add, view, update and filter.',
+      caption: 'A drawing of the tracker in the terminal: a list of applications and the menu.',
+    },
     stack: ['Python', 'SQLite', 'CLI design', 'CRUD'],
     snippet: {
       file: 'main.py',
@@ -1227,6 +1246,11 @@ app.post("/api/links", requireAuth, async (req, res) => {
       { label: 'Minimax', detail: 'Recursive search, undo each move' },
       { label: 'Simulation', detail: 'Win, loss, tie counts' },
     ],
+    illustration: {
+      src: '/projects/tic-tac-toe-minimax-illustration.svg',
+      alt: 'A Tic-Tac-Toe board in the middle of a game, with X and O placed.',
+      caption: 'A drawing of a game in progress, where the AI picks the best move.',
+    },
     stack: ['Python', 'Minimax', 'Recursion'],
     snippet: {
       file: 'player.py',
@@ -1342,6 +1366,11 @@ app.post("/api/links", requireAuth, async (req, res) => {
       { label: 'ChromaDB', detail: 'Vector store' },
       { label: 'Ollama', detail: 'llama3.2 answers' },
     ],
+    illustration: {
+      src: '/projects/ollama-rag-illustration.svg',
+      alt: 'Four boxes joined by arrows: PDF, Chunks, ChromaDB and Answer.',
+      caption: 'A drawing of the steps from PDF to answer.',
+    },
     stack: ['Python', 'Ollama', 'LangChain', 'ChromaDB'],
     github: 'https://github.com/ShervinBabaei2007/Ollama',
     snippet: {

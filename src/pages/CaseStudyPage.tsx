@@ -55,7 +55,9 @@ function CaseStudyPage() {
     ...(project.overview ? ([['what', 'What it is']] as [string, string][]) : []),
     ...(project.features ? ([['does', 'What it can do']] as [string, string][]) : []),
     ...(project.howItWorks ? ([['works', 'How it works']] as [string, string][]) : []),
-    ...(project.video || project.screenshots ? ([['media', 'Screenshots']] as [string, string][]) : []),
+    ...(project.video || project.screenshots || project.illustration
+      ? ([['media', project.video || project.screenshots ? 'Screenshots' : 'Illustration']] as [string, string][])
+      : []),
     ['why', 'Why'],
     ['built', 'What I built'],
     ...(project.snippet ? ([['code', 'The code']] as [string, string][]) : []),
@@ -237,9 +239,9 @@ function CaseStudyPage() {
               </ol>
             </section>
           )}
-          {(project.video || project.screenshots) && (
+          {(project.video || project.screenshots || project.illustration) && (
             <section id="media">
-              <h2 className={h2Class}>Screenshots</h2>
+              <h2 className={h2Class}>{project.video || project.screenshots ? 'Screenshots' : 'Illustration'}</h2>
               {project.video && (
                 <figure className="mt-4">
                   <video
@@ -261,6 +263,23 @@ function CaseStudyPage() {
                 <div className="mt-4" aria-label={`${project.name} screenshots`} role="group">
                   <ScreenshotGallery shots={project.screenshots} projectName={project.name} layout="strip" />
                 </div>
+              )}
+              {project.illustration && !project.video && !project.screenshots && (
+                <figure className="m-0 mt-4">
+                  <img
+                    className="block h-auto w-full rounded-xl border"
+                    src={project.illustration.src}
+                    alt={project.illustration.alt}
+                    width={960}
+                    height={540}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <figcaption className="mt-2 text-sm text-muted-foreground">
+                    Illustration, not a real screenshot. {project.illustration.caption} It is a sketch, so the real app may
+                    look different.
+                  </figcaption>
+                </figure>
               )}
             </section>
           )}

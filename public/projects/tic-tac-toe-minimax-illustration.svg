@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" role="img" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="20">
+<title>Tic-Tac-Toe</title>
+<rect width="960" height="540" rx="14" fill="#0f1a30"/>
+<path d="M0 14a14 14 0 0 1 14-14h932a14 14 0 0 1 14 14v34H0z" fill="#162240"/>
+<circle cx="28" cy="24" r="6" fill="#3b4a68"/><circle cx="50" cy="24" r="6" fill="#3b4a68"/><circle cx="72" cy="24" r="6" fill="#3b4a68"/>
+<text x="480" y="30" text-anchor="middle" font-size="15" fill="#9fb0cc">Tic-Tac-Toe</text>
+<text x="936" y="30" text-anchor="end" font-size="13" fill="#9fb0cc" opacity=".8">illustration</text>
+<line x1="420.0" y1="98.0" x2="420.0" y2="458.0" stroke="#22304d" stroke-width="5" stroke-linecap="round"/><line x1="300.0" y1="218.0" x2="660.0" y2="218.0" stroke="#22304d" stroke-width="5" stroke-linecap="round"/><line x1="540.0" y1="98.0" x2="540.0" y2="458.0" stroke="#22304d" stroke-width="5" stroke-linecap="round"/><line x1="300.0" y1="338.0" x2="660.0" y2="338.0" stroke="#22304d" stroke-width="5" stroke-linecap="round"/><path d="M332.0 130.0L388.0 186.0M388.0 130.0L332.0 186.0" stroke="#e2e8f6" stroke-width="9" stroke-linecap="round"/><circle cx="480.0" cy="158.0" r="30" fill="none" stroke="#8aa4ff" stroke-width="9"/><path d="M572.0 130.0L628.0 186.0M628.0 130.0L572.0 186.0" stroke="#e2e8f6" stroke-width="9" stroke-linecap="round"/><circle cx="480.0" cy="278.0" r="30" fill="none" stroke="#8aa4ff" stroke-width="9"/><path d="M572.0 370.0L628.0 426.0M628.0 370.0L572.0 426.0" stroke="#e2e8f6" stroke-width="9" stroke-linecap="round"/><text x="480" y="512" fill="#9fb0cc" text-anchor="middle" font-size="18">The AI picks the best move for O</text>
+</svg>

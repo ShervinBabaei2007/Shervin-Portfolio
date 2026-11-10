@@ -92,6 +92,18 @@ test('the writeups page has a back button to the projects page', async ({ page }
   await expect(page).toHaveURL(/\/projects$/)
 })
 
+test('projects with no screenshots show a labelled illustration that loads', async ({ page }) => {
+  for (const slug of ['discord-ai-bridge', 'mini-rpg-battle', 'job-application-tracker', 'tic-tac-toe-minimax', 'ollama-rag']) {
+    await page.goto(`/work/${slug}`)
+    const media = page.locator('#media')
+    await expect(media.getByRole('heading', { name: 'Illustration' })).toBeVisible()
+    await expect(media.getByText(/not a real screenshot/)).toBeVisible()
+    const image = media.getByRole('img')
+    await image.scrollIntoViewIfNeeded()
+    await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0)
+  }
+})
+
 test('skills do not rank or rate anything', async ({ page }) => {
   await page.goto('/')
   const skills = page.locator('#skills')
