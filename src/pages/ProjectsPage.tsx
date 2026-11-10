@@ -19,10 +19,11 @@ function ProjectsPage() {
   const ordered = [...projects.filter((p) => p.flagship), ...projects.filter((p) => !p.flagship)]
   const [category, setCategory] = useState('All')
   const shown = category === 'All' ? ordered : ordered.filter((p) => p.category === category)
-  const count = (name: string) => (name === 'All' ? projects.length : projects.filter((p) => p.category === name).length)
+  const count = (name: string) =>
+    name === 'All' ? projects.length : projects.filter((p) => p.category === name).length
 
   return (
-    <section className="section-wrap pt-16 pb-[110px]" aria-labelledby="projects-title">
+    <section className="section-wrap page-y" aria-labelledby="projects-title">
       <PageIntro
         eyebrow="PROJECTS"
         id="projects-title"

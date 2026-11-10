@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import SectionHeading from '@/components/shared/SectionHeading'
 import { tone } from '@/lib/buttonTones'
-import { cn } from '@/lib/utils'
+import { cn, textLinkClass } from '@/lib/utils'
 
 type ProjectsSectionProps = {
   activeSkill: string | null
@@ -21,26 +21,19 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
   const shown = (activeSkill ? projects : flagshipProjects.slice(0, 4)).filter((project) => matches(project.stack))
 
   return (
-    <section
-      className="section-wrap pt-[72px] pb-[120px] max-[620px]:pt-12 max-[620px]:pb-14"
-      id="work"
-      aria-labelledby="work-title"
-    >
+    <section className="section-wrap section-y" id="work" aria-labelledby="work-title">
       <SectionHeading
         id="work-title"
         number="02"
         eyebrow="SELECTED WORK"
         title="Built, broken, understood"
         aside={
-          <>
-            The useful part isn&apos;t just what shipped. It&apos;s the <br />
-            assumption each project forced me to rethink.
-          </>
+          <>The useful part isn&apos;t just what shipped. It&apos;s the assumption each project forced me to rethink.</>
         }
       />
       {activeSkill && (
         <p
-          className="mt-3 flex flex-wrap items-center gap-[5px] text-sm text-muted-foreground [&_strong]:text-foreground"
+          className="-mt-6 mb-8 flex flex-wrap items-center gap-[5px] text-sm text-muted-foreground [&_strong]:text-foreground"
           aria-live="polite"
         >
           Showing projects that use <strong>{activeSkill}</strong>.
@@ -57,9 +50,9 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         <Carousel
           opts={{ align: 'start', breakpoints: { '(min-width: 768px)': { active: false } } }}
           aria-label="Featured projects"
-          className="mt-10 w-full"
+          className="w-full"
         >
-          <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:gap-6">
+          <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:gap-[var(--space-card)]">
             {shown.map((project, index) => (
               <CarouselItem
                 key={project.slug}
@@ -74,7 +67,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </Carousel>
       )}
       {!activeSkill && (
-        <div className="mt-10">
+        <div className="mt-[var(--space-block)]">
           <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
             <Link to="/projects">
               View all projects <ArrowRight size={15} />
@@ -83,23 +76,19 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </div>
       )}
       {!activeSkill && (
-        <div className="mt-14 empty:hidden">
+        <div className="mt-[var(--space-section)] empty:hidden">
           <GitHubActivity />
         </div>
       )}
       {!activeSkill && (
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Button asChild size="lg" className="font-semibold">
-            <Link to="/lab">
-              Try the rate-limiter lab <ArrowUpRight size={15} />
-            </Link>
-          </Button>
-          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
-            <Link to="/writeups">
-              Read my writeups <ArrowUpRight size={15} />
-            </Link>
-          </Button>
-        </div>
+        <p className="mt-[var(--space-block)] flex flex-wrap gap-x-8 gap-y-2">
+          <Link className={cn(textLinkClass, 'text-primary')} to="/lab">
+            Try the rate-limiter lab <ArrowUpRight size={15} />
+          </Link>
+          <Link className={cn(textLinkClass, 'text-primary')} to="/writeups">
+            Read my writeups <ArrowUpRight size={15} />
+          </Link>
+        </p>
       )}
       {shown.length === 0 && (
         <Empty className="mt-8 border">

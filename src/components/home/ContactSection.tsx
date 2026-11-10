@@ -16,8 +16,8 @@ const links = [
 
 function ContactSection() {
   return (
-    <section className="border-t py-20 max-[620px]:py-14" id="contact" aria-labelledby="contact-title">
-      <div className="section-wrap grid items-stretch gap-12 lg:grid-cols-2 lg:gap-20">
+    <section className="border-t section-y" id="contact" aria-labelledby="contact-title">
+      <div className="section-wrap grid items-stretch gap-16 lg:grid-cols-2 lg:gap-24">
         <div className="flex flex-col">
           <SectionHeading
             id="contact-title"
@@ -32,8 +32,9 @@ function ContactSection() {
               </>
             }
             punctuation="?"
+            className="mb-6"
           />
-          <p className="mt-6 leading-relaxed text-muted-foreground">
+          <p className="leading-relaxed text-muted-foreground">
             {availabilityLine()} Tell me what you&apos;re building and I&apos;ll reply within two business days.
           </p>
           <div className="mt-8">

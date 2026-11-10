@@ -73,7 +73,7 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
   render() {
     if (!this.state.failed) return this.props.children
     return (
-      <section className="section-wrap pt-16 pb-[110px]" aria-labelledby="page-error-title">
+      <section className="section-wrap page-y" aria-labelledby="page-error-title">
         <h1
           id="page-error-title"
           className="mt-3.5 max-w-[18ch] text-[clamp(2.375rem,1.8rem+2vw,3.5rem)] leading-[1.06]"

@@ -30,10 +30,7 @@ function WriteupPage() {
   const next = notes[(notes.indexOf(note) + 1) % notes.length]
 
   return (
-    <article
-      className="section-wrap pt-9 pb-[110px] max-[620px]:pt-[18px] max-[620px]:pb-16"
-      aria-labelledby="note-title"
-    >
+    <article className="section-wrap page-y" aria-labelledby="note-title">
       <PageBreadcrumb
         trail={[
           { label: 'Home', to: '/' },

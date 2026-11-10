@@ -322,12 +322,12 @@ test.describe('animation', () => {
 
     await page.goto('/')
     await hydrated(page)
-    // At the top of the page the particles (About) and the globe (Contact) are far below the screen.
+    // At the top of the page the globe (Contact) is far below the screen.
     await page.waitForTimeout(800)
     expect(await frames(600)).toBeLessThan(8)
 
-    // Scrolled to the About section, the particles are on screen and animate.
-    await page.locator('#about-title').scrollIntoViewIfNeeded()
+    // Scrolled to the Contact section, the globe is on screen and animates.
+    await page.locator('#contact-title').scrollIntoViewIfNeeded()
     await page.waitForTimeout(500)
     expect(await frames(600)).toBeGreaterThan(15)
   })

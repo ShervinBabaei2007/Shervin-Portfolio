@@ -17,32 +17,26 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
   const matches = activeSkill ? projectsUsing(activeSkill).length : 0
 
   return (
-    <section className="section-wrap py-20 max-[620px]:py-12" id="skills" aria-labelledby="skills-title">
+    <section className="section-wrap section-y" id="skills" aria-labelledby="skills-title">
       <SectionHeading
         id="skills-title"
         number="04"
         eyebrow="TOOLS"
         title="What I work with"
-        className="mb-8"
-        aside={
-          <>
-            Every skill here shipped in a project. <br />
-            Click one to filter the work above.
-          </>
-        }
+        aside="Every skill here shipped in a project. Click one to filter the work above."
       />
       <TooltipProvider delayDuration={120} skipDelayDuration={400} disableHoverableContent>
-        <div className="grid items-stretch gap-4 lg:grid-cols-3">
+        <div className="grid items-stretch gap-6 lg:grid-cols-3">
           {skillTabs.map((group, index) => (
             <Reveal key={group.id} delay={index * 0.08}>
-              <Card data-skill-group className="gap-4">
+              <Card data-skill-group className="gap-5">
                 <CardHeader className="max-[620px]:px-4">
                   <CardTitle className="text-lg">{group.label}</CardTitle>
                   <CardDescription className="text-meta">{group.summary}</CardDescription>
                 </CardHeader>
                 {/* A container query, so tiles pair up when the card is wide enough rather than by screen width. */}
                 <CardContent className="@container max-[620px]:px-4">
-                  <ul className="grid grid-cols-1 gap-2 @[17.5rem]:grid-cols-2 @[42rem]:grid-cols-3">
+                  <ul className="grid grid-cols-1 gap-3 @[17.5rem]:grid-cols-2 @[42rem]:grid-cols-3">
                     {group.skills.map(({ name, note }) => {
                       const used = projectsUsing(name)
                       return (
@@ -52,7 +46,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                               <button
                                 type="button"
                                 className={cn(
-                                  'group flex w-full items-center gap-2.5 rounded-lg border bg-background/40 p-3 text-left transition-colors',
+                                  'group flex w-full items-center gap-3 rounded-lg border bg-background/40 p-4 text-left transition-colors',
                                   'hover:border-primary aria-pressed:border-primary aria-pressed:bg-primary/10',
                                 )}
                                 aria-pressed={activeSkill === name}
@@ -101,7 +95,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
           ))}
         </div>
       </TooltipProvider>
-      <Link className={cn(textLinkClass, 'mt-6 text-primary')} to="/how-its-built">
+      <Link className={cn(textLinkClass, 'mt-10 text-primary')} to="/how-its-built">
         How this site is built <ArrowUpRight size={15} />
       </Link>
     </section>

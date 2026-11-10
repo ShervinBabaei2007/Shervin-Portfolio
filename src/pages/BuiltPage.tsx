@@ -32,7 +32,7 @@ const sections = [
 
 function BuiltPage() {
   return (
-    <article className="section-wrap pt-16 pb-[110px]" aria-labelledby="built-title">
+    <article className="section-wrap page-y" aria-labelledby="built-title">
       <PageIntro
         eyebrow="COLOPHON"
         id="built-title"

@@ -8,10 +8,7 @@ const storyBody = 'mt-[7px] max-w-[44ch] leading-[1.62]'
 
 function LabPage() {
   return (
-    <section
-      className="section-wrap pt-16 pb-[110px] max-[620px]:pt-14 max-[620px]:pb-16 print:hidden"
-      aria-labelledby="lab-title"
-    >
+    <section className="section-wrap page-y print:hidden" aria-labelledby="lab-title">
       <PageIntro
         eyebrow="THE LAB"
         id="lab-title"

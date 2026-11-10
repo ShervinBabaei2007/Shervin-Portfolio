@@ -40,7 +40,8 @@ function CaseStudyPage() {
   const next = projects[index + 1]
   const relatedNotes = notesForProject(project.slug)
   // One writeup opens directly; several open the writeups list filtered to this project.
-  const writeupHref = relatedNotes.length === 1 ? `/writeups/${relatedNotes[0].slug}` : `/writeups?project=${project.slug}`
+  const writeupHref =
+    relatedNotes.length === 1 ? `/writeups/${relatedNotes[0].slug}` : `/writeups?project=${project.slug}`
   const glance: [string, string][] = [
     ['MY ROLE', project.role],
     ['KEY RESULT', project.highlight],
@@ -69,10 +70,7 @@ function CaseStudyPage() {
   ]
 
   return (
-    <article
-      className="section-wrap pt-9 pb-24 max-[620px]:pt-[18px] max-[620px]:pb-16"
-      aria-labelledby="case-study-title"
-    >
+    <article className="section-wrap page-y" aria-labelledby="case-study-title">
       <PageBreadcrumb
         trail={[
           { label: 'Home', to: '/' },
@@ -169,29 +167,29 @@ function CaseStudyPage() {
         </div>
       </header>
 
-    {project.overview && (
-      <section id="what" className="border-b py-[26px]">
-        <h2 className={h2Class}>What it is</h2>
-        {project.overview.map((paragraph) => (
-          <p key={paragraph} className={bodyClass}>
-            {paragraph}
-          </p>
-        ))}
-      </section>
-    )}
-    {project.features && (
-      <section id="does" className="border-b py-[26px]">
-        <h2 className={h2Class}>What it can do</h2>
-        <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
-          {project.features.map((feature) => (
-            <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
-              <h3 className="text-base font-semibold">{feature.title}</h3>
-              <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
-            </li>
+      {project.overview && (
+        <section id="what" className="border-b py-10">
+          <h2 className={h2Class}>What it is</h2>
+          {project.overview.map((paragraph) => (
+            <p key={paragraph} className={bodyClass}>
+              {paragraph}
+            </p>
           ))}
-        </ul>
-      </section>
-    )}
+        </section>
+      )}
+      {project.features && (
+        <section id="does" className="border-b py-10">
+          <h2 className={h2Class}>What it can do</h2>
+          <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
+            {project.features.map((feature) => (
+              <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
+                <h3 className="text-base font-semibold">{feature.title}</h3>
+                <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="mt-9 border-t pt-[22px] pb-1.5" aria-labelledby="architecture-title">
         <h2 id="architecture-title" className={h2Class}>
@@ -276,8 +274,8 @@ function CaseStudyPage() {
                     decoding="async"
                   />
                   <figcaption className="mt-2 text-sm text-muted-foreground">
-                    Illustration, not a real screenshot. {project.illustration.caption} It is a sketch, so the real app may
-                    look different.
+                    Illustration, not a real screenshot. {project.illustration.caption} It is a sketch, so the real app
+                    may look different.
                   </figcaption>
                 </figure>
               )}

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 
 function NotFoundPage() {
   return (
-    <section className="section-wrap pt-16 pb-[110px]" aria-labelledby="not-found-title">
+    <section className="section-wrap page-y" aria-labelledby="not-found-title">
       <PageIntro
         eyebrow="404"
         id="not-found-title"

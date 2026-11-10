@@ -143,22 +143,16 @@ const columns = [faqs.slice(0, 4), faqs.slice(4)]
 /** The eight questions an employer asks first, answered up front. */
 function FaqSection() {
   return (
-    <section className="section-wrap py-20 max-[620px]:py-12" id="faq" aria-labelledby="faq-title">
+    <section className="section-wrap section-y" id="faq" aria-labelledby="faq-title">
       <SectionHeading
         id="faq-title"
         number="05"
         eyebrow="FOR EMPLOYERS"
         title="Quick answers"
-        className="mb-8"
-        aside={
-          <>
-            What a hiring manager usually wants to know first, <br />
-            answered up front.
-          </>
-        }
+        aside="What a hiring manager usually wants to know first, answered up front."
       />
       <Reveal>
-        <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-6">
+        <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-8">
           {columns.map((items) => (
             <Accordion key={items[0].id} type="single" collapsible className={accordionClass}>
               {items.map(({ id, question, answer }) => (

@@ -20,10 +20,7 @@ import { cn } from '@/lib/utils'
  * The decorative thumbnail area: one fixed height for every card, so a row of cards lines up whatever it shows
  * (a screenshot, code or a terminal), on a dotted backdrop.
  */
-const mediaBase = cn(
-  'relative z-[1] h-[240px] overflow-hidden max-[620px]:h-[220px]',
-  'bg-muted bg-[radial-gradient(color-mix(in_srgb,var(--foreground)_12%,transparent)_.8px,transparent_.8px)] bg-[length:13px_13px]',
-)
+const mediaBase = cn('relative z-[1] h-[240px] overflow-hidden bg-muted max-[620px]:h-[220px]')
 const visualClass = cn(mediaBase, 'grid place-items-center px-7 py-[19px] max-[620px]:p-4')
 
 const catalog = images as Record<string, { width: number; height: number }>
@@ -115,7 +112,7 @@ const cardLink =
   'hit-area inline-flex items-center gap-[7px] text-control font-semibold whitespace-nowrap no-underline hover:text-primary'
 
 const card =
-  "relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[12px] border bg-card transition-[transform,box-shadow,border-color] duration-200 ease-in-out has-[:focus-visible]:border-primary before:pointer-events-none before:absolute before:inset-0 before:z-[2] before:rounded-[inherit] before:opacity-0 before:transition-opacity before:duration-200 before:content-[''] before:bg-[radial-gradient(360px_circle_at_var(--pointer-x,50%)_var(--pointer-y,50%),var(--glow),transparent_68%)] pointer-fine:hover:border-primary pointer-fine:focus-within:border-primary pointer-fine:hover:shadow-[0_14px_32px_rgba(12,26,51,.12)] pointer-fine:focus-within:shadow-[0_14px_32px_rgba(12,26,51,.12)] motion-safe:pointer-fine:hover:-translate-y-1 motion-safe:pointer-fine:focus-within:-translate-y-1 pointer-fine:hover:before:opacity-100 motion-reduce:before:hidden forced-colors:before:hidden print:before:hidden print:break-inside-avoid print:shadow-none"
+  'relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[12px] border bg-card transition-[border-color] duration-200 ease-in-out has-[:focus-visible]:border-primary pointer-fine:hover:border-primary pointer-fine:focus-within:border-primary print:break-inside-avoid'
 
 type PrimaryAction = { label: string; href: string; github?: boolean }
 
@@ -134,34 +131,22 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
 
   return (
     <Reveal delay={revealDelay}>
-      <article
-        // The pointer-follow glow reads --pointer-x/--pointer-y, which onPointerMove sets below.
-        className={card}
-        data-project-card
-        onPointerMove={(event) => {
-          if (event.pointerType === 'touch') return
-          const bounds = event.currentTarget.getBoundingClientRect()
-          event.currentTarget.style.setProperty('--pointer-x', `${event.clientX - bounds.left}px`)
-          event.currentTarget.style.setProperty('--pointer-y', `${event.clientY - bounds.top}px`)
-        }}
-      >
+      <article className={card} data-project-card>
         <Link
           className="flex w-full flex-1 flex-col text-left no-underline focus-visible:-outline-offset-3"
           to={`/work/${project.slug}`}
           aria-label={`${project.name} case study`}
         >
           <CardMedia project={project} />
-          <div className="relative z-[1] flex flex-1 flex-col px-[22px] pt-5 pb-[22px] max-[620px]:p-5">
+          <div className="relative z-[1] flex flex-1 flex-col p-[var(--pad-card)]">
             <div className="flex justify-between gap-3 font-mono text-label text-muted-foreground" data-card-meta>
               <span>{project.category}</span>
               <span>{project.date}</span>
             </div>
-            <h3 className="mt-[15px] text-h3 font-semibold">{project.name}</h3>
-            <p className="mt-1.5 font-semibold">{project.tagline}</p>
-            <p className="mt-[11px] mb-[18px] line-clamp-3 leading-[1.65] text-muted-foreground">
-              {project.nonTechnicalSummary}
-            </p>
-            <div className="mt-auto flex items-center justify-end border-t pt-3.5 text-sm">
+            <h3 className="mt-4 text-h3 font-semibold">{project.name}</h3>
+            <p className="mt-2 font-semibold">{project.tagline}</p>
+            <p className="mt-3 mb-6 line-clamp-3 leading-[1.7] text-muted-foreground">{project.nonTechnicalSummary}</p>
+            <div className="mt-auto flex items-center justify-end text-sm">
               <span className="inline-flex items-center gap-[7px] font-semibold text-primary">
                 Read case study <ArrowUpRight size={15} />
               </span>
@@ -169,7 +154,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
           </div>
         </Link>
         <div
-          className="relative z-[1] flex min-h-[54px] flex-wrap items-center gap-x-5 gap-y-2 border-t px-[22px] py-2.5 max-[620px]:gap-[18px] max-[620px]:px-5 max-[360px]:gap-3.5"
+          className="relative z-[1] flex min-h-[54px] flex-wrap items-center gap-x-5 gap-y-3 border-t px-[var(--pad-card)] py-4 max-[360px]:gap-x-3.5"
           aria-label={`${project.name} project links`}
         >
           {primary && (
@@ -216,9 +201,9 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
             </a>
           )}
         </div>
-        <Accordion type="single" collapsible className="relative z-[1] border-t px-[22px] max-[620px]:px-5">
+        <Accordion type="single" collapsible className="relative z-[1] border-t px-[var(--pad-card)]">
           <AccordionItem value="technical" className="border-b-0">
-            <AccordionTrigger className="py-3 text-sm">Technical Architecture &amp; Stack</AccordionTrigger>
+            <AccordionTrigger className="py-4 text-sm">Technical Architecture &amp; Stack</AccordionTrigger>
             <AccordionContent className="pr-0 text-sm">
               <p className="border-l-[3px] border-primary bg-muted px-3 py-2 font-semibold text-foreground">
                 {project.highlight}
