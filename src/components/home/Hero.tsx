@@ -24,8 +24,8 @@ function Hero() {
       <div className="z-[1] pt-[5px]">
         <p className="mb-6 inline-flex items-center gap-2.5 rounded-full border bg-card/70 py-1.5 pr-4 pl-3 text-sm backdrop-blur-sm">
           <span className="relative flex size-2" aria-hidden="true">
-            <span className="absolute inline-flex size-full rounded-full bg-primary/70 motion-safe:animate-ping" />
-            <span className="relative inline-flex size-2 rounded-full bg-primary" />
+            <span className="absolute inline-flex size-full rounded-full bg-emerald-500/70 motion-safe:animate-ping" />
+            <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
           </span>
           <AnimatedShinyText className="mx-0 max-w-none text-muted-foreground">
             Open to co-op and internships
