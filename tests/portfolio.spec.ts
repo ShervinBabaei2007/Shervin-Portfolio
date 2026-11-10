@@ -28,6 +28,14 @@ test('hero states the role, links to the resume, and shows no stats or email', a
   )
 })
 
+test('the commit history card shows merged PRs and active days, with no streak', async ({ page }) => {
+  await page.goto('/')
+  const card = page.locator('[data-github]')
+  await expect(card.getByText('PRs merged', { exact: true })).toBeVisible()
+  await expect(card.getByText('Active days', { exact: true })).toBeVisible()
+  await expect(card.getByText('Longest streak')).toHaveCount(0)
+})
+
 test('pages are prerendered with content, metadata, and a PNG share image', async ({ request }) => {
   const html = await (await request.get('/work/skillmatch')).text()
   expect(html).toMatch(/<h1[^>]*id="case-study-title"[^>]*>SkillMatch<\/h1>/)
