@@ -77,7 +77,7 @@ function Card({ photo, featured = false }: { photo: Photo; featured?: boolean })
           className="size-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out motion-safe:group-hover:scale-[1.04]"
         />
       </picture>
-      {featured && <BorderBeam size={120} duration={9} colorFrom="#8aa4ff" colorTo="#f5b042" borderWidth={1.5} />}
+      {featured && <BorderBeam size={120} duration={9} colorFrom="#8aa4ff" colorTo="#8aa4ff" borderWidth={1.5} />}
     </figure>
   )
 }

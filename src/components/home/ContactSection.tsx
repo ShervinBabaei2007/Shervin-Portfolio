@@ -26,7 +26,7 @@ function ContactSection() {
             title={
               <>
                 Have an{' '}
-                <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
+                <Highlighter action="underline" color="#8aa4ff" strokeWidth={2.5} iterations={2} padding={3} isView>
                   interesting problem
                 </Highlighter>
               </>

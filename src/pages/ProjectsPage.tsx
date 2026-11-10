@@ -1,10 +1,14 @@
 import { useState } from 'react'
+import { ArrowRight, NotebookPen } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { AnimatePresence, LazyMotion, MotionConfig, m } from 'motion/react'
 import MoreOnGitHub from '@/components/home/MoreOnGitHub'
 import ProjectCard from '@/components/home/ProjectCard'
 import PageIntro from '@/components/shared/PageIntro'
 import { Button } from '@/components/ui/button'
 import { projects } from '../data/projects'
+import { tone } from '@/lib/buttonTones'
+import { cn } from '@/lib/utils'
 
 const loadMotion = () => import('../lib/motionFeatures').then((module) => module.default)
 
@@ -23,6 +27,13 @@ function ProjectsPage() {
         eyebrow="PROJECTS"
         id="projects-title"
         title="Everything I've built"
+        action={
+          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
+            <Link to="/writeups">
+              <NotebookPen size={16} /> Writeups <ArrowRight size={15} />
+            </Link>
+          </Button>
+        }
         lead="The full set, from the hackathon app to a Discord bot. Each one has a case study on what I built, what broke and what I would change."
       />
       <div role="group" aria-label="Filter projects by type" className="mt-6 flex flex-wrap gap-2">

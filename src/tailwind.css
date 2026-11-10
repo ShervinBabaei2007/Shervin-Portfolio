@@ -22,7 +22,7 @@
   --muted-foreground: #475569;
   --accent: #e9edfd;
   --accent-foreground: #0c1a33;
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #0c1a33; /* errors use ink, not red: the site has three colours only */
   --border: #dce3ef;
   --input: #dce3ef;
   --ring: #3f51e0;
@@ -43,7 +43,7 @@
   --muted-foreground: #94a3c0;
   --accent: #18233f;
   --accent-foreground: #e6ecf8;
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: #e6ecf8;
   --border: #22304d;
   --input: #22304d;
   --ring: #8aa4ff;

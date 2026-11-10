@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import { resume } from '../data/resume'
 import { Button } from '@/components/ui/button'
+import { tone } from '@/lib/buttonTones'
 
 /*
  * One plain, single-column document: no cards, icons or decoration, so it reads the same in a parser, on
@@ -33,7 +34,7 @@ function ResumePage() {
     >
       <div className="flex items-center justify-between gap-3.5 print:hidden">
         <p className="eyebrow">RESUME</p>
-        <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-control font-semibold">
+        <Button asChild size="lg" className={cn('h-11 px-[17px] text-control font-semibold shadow-md', tone.ink)}>
           <a href="/Shervin_Babaei_Resume.pdf" download="Shervin_Babaei_Resume.pdf">
             Download PDF
           </a>

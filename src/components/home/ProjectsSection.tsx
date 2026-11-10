@@ -7,6 +7,8 @@ import ProjectCard from '@/components/home/ProjectCard'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import SectionHeading from '@/components/shared/SectionHeading'
+import { tone } from '@/lib/buttonTones'
+import { cn } from '@/lib/utils'
 
 type ProjectsSectionProps = {
   activeSkill: string | null
@@ -73,7 +75,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
       )}
       {!activeSkill && (
         <div className="mt-10">
-          <Button asChild variant="outline">
+          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
             <Link to="/projects">
               View all projects <ArrowRight size={15} />
             </Link>
@@ -92,7 +94,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
               Try the rate-limiter lab <ArrowUpRight size={15} />
             </Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="font-semibold">
+          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
             <Link to="/writeups">
               Read my writeups <ArrowUpRight size={15} />
             </Link>

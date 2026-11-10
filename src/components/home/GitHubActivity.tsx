@@ -208,7 +208,7 @@ function GitHubActivity() {
           <div className="flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-2 font-mono text-label text-muted-foreground">
               <span
-                className={cn('size-2 rounded-full', live ? 'bg-emerald-500' : 'bg-muted-foreground/50')}
+                className={cn('size-2 rounded-full', live ? 'bg-primary' : 'bg-muted-foreground/50')}
                 aria-hidden="true"
               />
               {live ? 'Live from GitHub' : 'Updated at last deploy'}

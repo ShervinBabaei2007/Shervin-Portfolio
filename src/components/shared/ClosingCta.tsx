@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button'
 import Reveal from '@/components/shared/Reveal'
 import { availabilityLine } from '@/data/site'
 import { textLinkClass } from '@/lib/utils'
+import { tone } from '@/lib/buttonTones'
+import { cn } from '@/lib/utils'
 
 type ClosingCtaProps = { heading: string; body: string }
 
@@ -31,7 +33,7 @@ function ClosingCta({ heading, body }: ClosingCtaProps) {
               Get in touch <Mail />
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg" className="h-11 px-[17px] text-control font-semibold">
+          <Button asChild size="lg" className={cn('h-11 px-[17px] text-control font-semibold shadow-md', tone.ink)}>
             <Link to="/resume">
               View resume <FileText />
             </Link>

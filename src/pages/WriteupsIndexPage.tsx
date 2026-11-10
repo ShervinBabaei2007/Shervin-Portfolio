@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Search, SearchX, X } from 'lucide-react'
+import { ArrowLeft, Search, SearchX, X } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
 import NoteRow from '@/components/shared/NoteRow'
 import PageIntro from '@/components/shared/PageIntro'
 import { Button } from '@/components/ui/button'
@@ -7,6 +8,8 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { Input } from '@/components/ui/input'
 import { formatMonth, notes, type Note } from '../data/notes'
 import { findProject } from '../data/projects'
+import { tone } from '@/lib/buttonTones'
+import { cn } from '@/lib/utils'
 
 /** How many writeups show before "Show more". Newest first, so the latest are always on screen. */
 const PAGE_SIZE = 8
@@ -52,7 +55,12 @@ function byMonth(list: Note[]) {
 
 function WriteupsIndexPage() {
   const [query, setQuery] = useState('')
-  const [project, setProject] = useState<string | null>(null)
+  // A link from a case study can open the list already filtered to its project (?project=slug).
+  const [searchParams] = useSearchParams()
+  const fromLink = searchParams.get('project')
+  const [project, setProject] = useState<string | null>(
+    projectFilters.some((entry) => entry.slug === fromLink) ? fromLink : null,
+  )
   const [visible, setVisible] = useState(PAGE_SIZE)
 
   const matches = useMemo(() => {
@@ -77,11 +85,16 @@ function WriteupsIndexPage() {
 
   return (
     <section className="section-wrap pt-16 pb-[110px]" aria-labelledby="writeups-index-title">
+      <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
+        <Link to="/projects">
+          <ArrowLeft size={16} aria-hidden="true" /> Back to projects
+        </Link>
+      </Button>
       <PageIntro
         wide
         eyebrow="WRITEUPS"
         id="writeups-index-title"
-        title="Writeups on things I built and got wrong"
+        title="Writeups on things I built"
         lead="Each writeup starts from real code in one of my projects, explains what it actually does, and ends with what I would change."
       />
 
@@ -174,7 +187,7 @@ function WriteupsIndexPage() {
           ))}
           {matches.length > shown.length && (
             <div>
-              <Button type="button" variant="outline" onClick={() => setVisible((count) => count + PAGE_SIZE)}>
+              <Button type="button" size="lg" className={cn('font-semibold shadow-md', tone.ink)} onClick={() => setVisible((count) => count + PAGE_SIZE)}>
                 Show more writeups ({matches.length - shown.length} left)
               </Button>
             </div>
