@@ -58,7 +58,7 @@ function ProjectsPage() {
       {/* Filtering slides the remaining cards into place instead of jumping; reduced motion turns it off. */}
       <MotionConfig reducedMotion="user" transition={{ duration: 0.22, ease: 'easeOut' }}>
         <LazyMotion features={loadMotion}>
-          <m.ul layout className="m-0 mt-6 grid list-none gap-6 p-0 md:grid-cols-2">
+          <m.ul layout className="m-0 mt-6 grid list-none gap-6 p-0 md:grid-cols-2 md:items-start">
             <AnimatePresence initial={false} mode="popLayout">
               {shown.map((project, index) => (
                 <m.li

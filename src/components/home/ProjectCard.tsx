@@ -145,12 +145,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
             </div>
             <h3 className="mt-4 text-h3 font-semibold">{project.name}</h3>
             <p className="mt-2 font-semibold">{project.tagline}</p>
-            <p className="mt-3 mb-6 line-clamp-3 leading-[1.7] text-muted-foreground">{project.nonTechnicalSummary}</p>
-            <div className="mt-auto flex items-center justify-end text-sm">
-              <span className="inline-flex items-center gap-[7px] font-semibold text-primary">
-                Read case study <ArrowUpRight size={15} />
-              </span>
-            </div>
+            <p className="mt-3 line-clamp-3 leading-[1.7] text-muted-foreground">{project.nonTechnicalSummary}</p>
           </div>
         </Link>
         <div

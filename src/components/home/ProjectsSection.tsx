@@ -52,7 +52,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
           aria-label="Featured projects"
           className="w-full"
         >
-          <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:gap-[var(--space-card)]">
+          <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:items-start md:gap-[var(--space-card)]">
             {shown.map((project, index) => (
               <CarouselItem
                 key={project.slug}

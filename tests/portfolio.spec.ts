@@ -96,6 +96,19 @@ test('project cards hide the technical stack in a drawer and only live projects 
   await expect(first.getByRole('list', { name: 'Stack' })).toBeVisible()
 })
 
+test('opening a technical drawer does not resize the card beside it', async ({ page }) => {
+  for (const path of ['/', '/projects']) {
+    await page.goto(path)
+    await page.waitForLoadState('networkidle')
+    const cards = page.locator('[data-project-card]')
+    const height = async (index: number) => Math.round((await cards.nth(index).boundingBox())!.height)
+    const neighbour = await height(1)
+    await cards.first().getByRole('button', { name: 'Technical Architecture & Stack' }).click()
+    await expect(cards.first().getByRole('list', { name: 'Stack' })).toBeVisible()
+    expect(await height(1)).toBe(neighbour)
+  }
+})
+
 test('the header lists only Work, About and Contact; Settings holds only the theme choices', async ({ page }) => {
   await page.goto('/')
   const links = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link')
