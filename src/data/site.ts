@@ -14,6 +14,8 @@ export const site = {
   location: 'Vancouver, BC',
   email: 'shervinb22@gmail.com',
   github: 'https://github.com/ShervinBabaei2007',
+  /** This site's own repository (`owner/repo`). Its commits are counted but not listed under "Recent work". */
+  siteRepo: 'ShervinBabaei2007/Shervin-Portfolio',
   linkedin: 'https://www.linkedin.com/in/shervin-babaei/',
   school: 'BCIT',
   program: 'Diploma in Full-Stack Web Development',

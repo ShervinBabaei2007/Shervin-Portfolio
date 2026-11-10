@@ -191,6 +191,8 @@ function GitHubActivity() {
     .map((cell) => ({ day: cell.day, count: cell.count }))
     .reverse()
 
+  /** The default list highlights other projects; this site's own commits are still in the grid and the day view. */
+  const recent = data.commits.filter((commit) => commit.repo !== site.siteRepo).slice(0, SHOWN)
   const showDay = selectedDay !== null && dayStatus !== 'error'
   const dayCommits = selectedDay && byDay ? commitsForDay(selectedDay, byDay, liveCommits) : []
   const dayTitle = selectedDay ? longDay(selectedDay) : ''
@@ -205,7 +207,8 @@ function GitHubActivity() {
               <Github size={20} aria-hidden="true" /> Commit history
             </h3>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              Every commit to my public repositories over the last year. Select a day to see what I committed.
+              The grid counts every commit to my public repositories over the last year. Select a day to see all of
+              them.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -235,7 +238,8 @@ function GitHubActivity() {
             [
               'Active weeks',
               <span key="w">
-                {stats.activeWeeks} <span className="text-base font-medium text-muted-foreground">of {stats.weeks}</span>
+                {stats.activeWeeks}{' '}
+                <span className="text-base font-medium text-muted-foreground">of {stats.weeks}</span>
               </span>,
             ],
           ].map(([label, value]) => (
@@ -368,16 +372,18 @@ function GitHubActivity() {
           ) : (
             <>
               <h4 className="border-b pb-3 font-mono text-label tracking-wide text-muted-foreground uppercase">
-                Latest commits
+                Recent work
               </h4>
               {selectedDay && dayStatus === 'error' && (
                 <p className="pt-3 text-sm text-muted-foreground">Couldn&apos;t load that day&apos;s commits.</p>
               )}
-              <CommitList
-                commits={data.commits.slice(0, SHOWN)}
-                now={now}
-                className="max-md:[&>li:nth-child(n+4)]:hidden"
-              />
+              {recent.length > 0 ? (
+                <CommitList commits={recent} now={now} className="max-md:[&>li:nth-child(n+4)]:hidden" />
+              ) : (
+                <p className="pt-3 text-sm text-muted-foreground">
+                  Nothing recent outside this site. Select a day above to see every commit.
+                </p>
+              )}
             </>
           )}
         </div>

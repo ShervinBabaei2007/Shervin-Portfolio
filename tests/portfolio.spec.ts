@@ -911,12 +911,12 @@ test('a project with several writeups links to the list filtered to it', async (
 })
 
 /** A search page. `count` of 100 is a full page, which means older commits exist beyond it. */
-const searchResult = (message: string, date: string, count = 1) => ({
+const searchResult = (message: string, date: string, count = 1, repo = 'ShervinBabaei2007/Portfolio') => ({
   total_count: count,
   items: Array.from({ length: count }, (_, index) => ({
     sha: `abc${String(index).padStart(4, '0')}def`,
     commit: { message, author: { date } },
-    repository: { full_name: 'ShervinBabaei2007/Portfolio', private: false },
+    repository: { full_name: repo, private: false },
   })),
 })
 
@@ -942,6 +942,22 @@ test('GitHub activity shows live recent commits, and hides itself when nothing i
   await expect(stale.locator('[data-github]')).not.toContainText('old commit')
 })
 
+test('the recent work list skips commits to this site, but the day view still shows them', async ({ page }) => {
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({ json: searchResult('chore: site-only commit', recent, 1, 'ShervinBabaei2007/Shervin-Portfolio') }),
+  )
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const activity = page.locator('[data-github]')
+  await expect(activity).toContainText('Live from GitHub')
+  const panel = activity.locator('[data-commit-panel]')
+  await expect(panel).not.toContainText('chore: site-only commit')
+
+  await activity.locator('[data-heatmap] [data-day]').last().click()
+  await expect(panel).toContainText('chore: site-only commit')
+})
+
 test('commit history keeps the full-year totals when the live request adds the newest commits', async ({ page }) => {
   const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
   await page.route('https://api.github.com/**', (route) =>
@@ -962,20 +978,20 @@ test('commit history: select a day to list its commits, then go back to the late
   await page.goto('/')
   await page.waitForLoadState('networkidle')
   const activity = page.locator('[data-github]')
-  await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
+  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
 
   const days = activity.locator('[data-heatmap] [data-day]')
   expect(await days.count()).toBeGreaterThan(10)
   await days.nth(3).click()
   await expect(days.nth(3)).toHaveAttribute('data-selected', 'true')
   await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
-  await expect(activity.getByRole('heading', { name: 'Latest commits' })).toHaveCount(0)
+  await expect(activity.getByRole('heading', { name: 'Recent work' })).toHaveCount(0)
   const links = activity.locator('[data-commit-panel] li a')
   expect(await links.count()).toBeGreaterThan(0)
   await expect(links.first()).toHaveAttribute('href', /^https:\/\/github\.com\/.+\/commit\/[0-9a-f]{7}$/)
 
   await activity.getByRole('button', { name: 'Show latest commits' }).click()
-  await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
+  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
   await expect(days.nth(3)).toHaveAttribute('data-selected', 'false')
 
   // The same thing from the keyboard-friendly menu.
@@ -983,7 +999,7 @@ test('commit history: select a day to list its commits, then go back to the late
   await menu.selectOption({ index: 2 })
   await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
   await menu.selectOption('')
-  await expect(activity.getByRole('heading', { name: 'Latest commits' })).toBeVisible()
+  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
   // The cells are a pointer shortcut and are not in the tab order.
   await expect(activity.locator('[data-heatmap] button')).toHaveCount(0)
 })
