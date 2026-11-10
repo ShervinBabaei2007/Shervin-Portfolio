@@ -21,11 +21,11 @@ type SiteHeaderProps = {
 const loadMobileNav = () => import('./MobileNavSheet')
 const MobileNavSheet = lazy(loadMobileNav)
 
-// The More menu pulls in the dropdown menu code, so it downloads on first hover, focus, touch or click.
+// The Settings menu pulls in the dropdown menu code, so it downloads on first hover, focus, touch or click.
 const loadUtilityMenu = () => import('./UtilityMenu')
 const UtilityMenu = lazy(loadUtilityMenu)
 
-// The header shows only the section links; everything else lives in the More menu (or the phone menu).
+// The header shows only the section links and the Settings menu; the phone menu also lists the extra pages and socials.
 const navLinks = [
   { to: '/#work', label: 'Work', section: 'work' },
   { to: '/#about', label: 'About', section: 'about' },
@@ -68,8 +68,6 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
     return undefined
   }
 
-  const moreLinkProps = moreLinks.map((link) => ({ to: link.to, label: link.label, current: currentFor(link) }))
-
   const moreButton = (
     <Button
       variant="ghost"
@@ -79,7 +77,7 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
       onFocus={() => void loadUtilityMenu().catch(() => {})}
       onClick={() => setMoreMenuWanted(true)}
     >
-      More <ChevronDown />
+      Settings <ChevronDown />
     </Button>
   )
 
@@ -111,11 +109,9 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
         <CommandPalette />
         <div className="max-[959px]:hidden">
           {moreMenuWanted ? (
-            <LazyBoundary label="More menu" fallback={moreButton} onFail={() => setMoreMenuWanted(false)}>
+            <LazyBoundary label="Settings menu" fallback={moreButton} onFail={() => setMoreMenuWanted(false)}>
               <Suspense fallback={moreButton}>
                 <UtilityMenu
-                  links={moreLinkProps}
-                  socials={socials}
                   preference={preference}
                   onPreferenceChange={onPreferenceChange}
                   defaultOpen
