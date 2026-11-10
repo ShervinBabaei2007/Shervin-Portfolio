@@ -24,6 +24,10 @@ type SearchItem = {
 export const commitSearchUrl = (user: string, page = 1) =>
   `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${user}`)}&sort=author-date&order=desc&per_page=100&page=${page}`
 
+/** Search URL for the user's merged pull requests (public repositories) since a `YYYY-MM-DD` day; only `total_count` is used. */
+export const mergedPrsUrl = (user: string, since: string) =>
+  `https://api.github.com/search/issues?q=${encodeURIComponent(`author:${user} type:pr is:public is:merged merged:>=${since}`)}&per_page=1`
+
 export function parseCommits(items: SearchItem[]): Commit[] {
   return items
     .filter((item) => !item.repository.private)
@@ -89,16 +93,9 @@ export const level = (count: number) => (count === 0 ? 0 : count < 3 ? 1 : count
 /** Totals for the cells in view (future cells are ignored). */
 export function summarize(weeks: ReturnType<typeof buildWeeks>) {
   const cells = weeks.flat().filter((cell) => !cell.future)
-  let longest = 0
-  let run = 0
-  for (const cell of cells) {
-    run = cell.count > 0 ? run + 1 : 0
-    longest = Math.max(longest, run)
-  }
   return {
     total: cells.reduce((sum, cell) => sum + cell.count, 0),
     activeDays: cells.filter((cell) => cell.count > 0).length,
-    longestStreak: longest,
     activeWeeks: weeks.filter((week) => week.some((cell) => !cell.future && cell.count > 0)).length,
     weeks: weeks.length,
   }

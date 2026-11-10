@@ -46,6 +46,9 @@ type Data = { days: DayCounts; commits: Commit[]; asOf: string }
 const isFresh = (commits: Commit[], reference: number) =>
   commits.some((commit) => reference - new Date(commit.date).getTime() < FRESH_DAYS * 86_400_000)
 
+/** Merged pull requests over the last year, counted at build time (see scripts/github-snapshot.mjs). */
+const mergedPrs = (snapshot as { mergedPrs?: number | null }).mergedPrs ?? null
+
 const snapshotData: Data | null = snapshot.fetchedAt
   ? {
       days: snapshot.days as DayCounts,
@@ -208,7 +211,7 @@ function GitHubActivity() {
           <div className="flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-2 font-mono text-label text-muted-foreground">
               <span
-                className={cn('size-2 rounded-full', live ? 'bg-primary' : 'bg-muted-foreground/50')}
+                className={cn('size-2 rounded-full', live ? 'bg-emerald-500' : 'bg-muted-foreground/50')}
                 aria-hidden="true"
               />
               {live ? 'Live from GitHub' : 'Updated at last deploy'}
@@ -227,8 +230,8 @@ function GitHubActivity() {
         <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border md:grid-cols-4">
           {[
             ['Commits', stats.total.toLocaleString('en-CA')],
+            ...(mergedPrs === null ? [] : [['PRs merged', mergedPrs.toLocaleString('en-CA')]]),
             ['Active days', stats.activeDays.toLocaleString('en-CA')],
-            ['Longest streak', <span key="s">{stats.longestStreak} days</span>],
             [
               'Active weeks',
               <span key="w">

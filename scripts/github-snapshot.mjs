@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { importTs, root } from './lib.mjs'
 
-const { commitSearchUrl, countByDay, dayOf, parseCommits, toTuple } = await importTs('src/lib/githubCommits.ts')
+const { commitSearchUrl, countByDay, dayOf, mergedPrsUrl, parseCommits, toTuple } = await importTs('src/lib/githubCommits.ts')
 
 const WEEKS = 52
 const MAX_PAGES = 10
@@ -46,6 +46,25 @@ async function fetchPage(page) {
   }
 }
 
+/** Merged pull requests over the same window as the commits. A failure here keeps the previous number. */
+async function fetchMergedPrs(since) {
+  try {
+    const response = await fetch(mergedPrsUrl(user, since), {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
+      },
+      signal: AbortSignal.timeout(8000),
+    })
+    if (!response.ok) throw new Error(`GitHub responded ${response.status}`)
+    const count = (await response.json()).total_count
+    return Number.isInteger(count) ? count : null
+  } catch (error) {
+    console.warn(`github snapshot: merged PR count skipped (${error.message})`)
+    return null
+  }
+}
+
 try {
   if (!user) throw new Error('could not read the GitHub username from src/data/site.ts')
   const since = new Date(Date.now() - WEEKS * 7 * 86_400_000).toISOString().slice(0, 10)
@@ -76,10 +95,11 @@ try {
   const days = countByDay(inWindow)
   const byDay = {}
   for (const commit of inWindow) (byDay[dayOf(commit.date)] ??= []).push(toTuple(commit))
-  const summary = { fetchedAt: new Date().toISOString(), days, commits: commits.slice(0, 8) }
+  const mergedPrs = (await fetchMergedPrs(since)) ?? existing.mergedPrs ?? null
+  const summary = { fetchedAt: new Date().toISOString(), mergedPrs, days, commits: commits.slice(0, 8) }
   writeFileSync(summaryFile, `${JSON.stringify(summary, null, 2)}\n`)
   writeFileSync(commitsFile, `${JSON.stringify(byDay)}\n`)
-  console.log(`github snapshot: ${inWindow.length} commits over ${Object.keys(days).length} days`)
+  console.log(`github snapshot: ${inWindow.length} commits over ${Object.keys(days).length} days, ${mergedPrs ?? 'unknown'} merged PRs`)
 } catch (error) {
   console.warn(`github snapshot skipped (${error.message}); keeping the existing src/data/github*.json`)
 }
