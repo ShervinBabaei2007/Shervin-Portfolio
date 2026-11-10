@@ -271,7 +271,7 @@ test.describe('theme colour', () => {
     await page.goto('/')
     await hydrated(page)
     expect(await themeColor()).toBe('#0a1122')
-    await page.getByRole('button', { name: 'More' }).click()
+    await page.getByRole('button', { name: 'Settings' }).click()
     await page.getByRole('menuitemradio', { name: 'Light' }).click()
     expect(await themeColor()).toBe('#f6f8fc')
     // And it is right from the first paint after a reload, before the app starts.
@@ -411,15 +411,15 @@ test.describe('the rail beside writeups and case studies', () => {
     await expect(page.locator(page.url().slice(page.url().indexOf('#')))).toBeInViewport()
   })
 
-  test('a case study puts the stack and related writeups in the rail too', async ({ page }) => {
+  test('a case study shows the stack near the top and the contents list in the rail', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto('/work/skillmatch')
     await page.waitForLoadState('networkidle')
-    const sections = (await page.locator('#why').boundingBox())!
-    for (const name of ['Built with', 'Go deeper']) {
-      const heading = (await page.getByRole('heading', { name }).boundingBox())!
-      expect(heading.x, name).toBeGreaterThan(sections.x + sections.width)
-    }
+    const why = (await page.locator('#why').boundingBox())!
+    const built = (await page.getByRole('heading', { name: 'Built with' }).boundingBox())!
+    expect(built.y).toBeLessThan(why.y)
+    const contents = (await page.getByRole('navigation', { name: 'On this page' }).boundingBox())!
+    expect(contents.x).toBeGreaterThan(why.x + why.width)
   })
 })
 

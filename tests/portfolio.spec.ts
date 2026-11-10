@@ -70,14 +70,26 @@ test('home shows four flagships and links to the full projects page', async ({ p
   await expect(page.locator('[data-project-card]')).toHaveCount(12)
 })
 
-test('the header lists only Work, About and Contact; Writeups and Resume are in the More menu', async ({ page }) => {
+test('the header lists only Work, About and Contact; Settings holds only the theme choices', async ({ page }) => {
   await page.goto('/')
   const links = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link')
   await expect(links).toHaveText(['Work', 'About', 'Contact'])
   await hydrated(page)
-  await page.getByRole('button', { name: 'More' }).click()
-  await expect(page.getByRole('menuitem', { name: 'Writeups' })).toHaveAttribute('href', '/writeups')
-  await expect(page.getByRole('menuitem', { name: 'Resume' })).toHaveAttribute('href', '/resume')
+  await page.getByRole('button', { name: 'Settings' }).click()
+  await expect(page.getByRole('menuitemradio')).toHaveText(['Light', 'Dark', 'System'])
+  await expect(page.getByRole('menuitem')).toHaveCount(0)
+})
+
+test('the projects page has a Writeups button beside the heading that opens the writeups page', async ({ page }) => {
+  await page.goto('/projects')
+  await page.getByRole('link', { name: /^Writeups/ }).click()
+  await expect(page).toHaveURL(/\/writeups$/)
+})
+
+test('the writeups page has a back button to the projects page', async ({ page }) => {
+  await page.goto('/writeups')
+  await page.getByRole('link', { name: /Back to projects/ }).click()
+  await expect(page).toHaveURL(/\/projects$/)
 })
 
 test('skills do not rank or rate anything', async ({ page }) => {
@@ -367,8 +379,8 @@ test('a slow page change shows a progress bar, and a fast one does not', async (
 
   // /resume's code is not delayed, so this change is quick and must not flash the bar.
   await hydrated(page)
-  await page.getByRole('button', { name: 'More' }).click()
-  await page.getByRole('menuitem', { name: 'Resume' }).click()
+  await page.getByRole('button', { name: 'Search portfolio' }).click()
+  await page.getByRole('option', { name: 'Resume', exact: true }).click()
   await expect(page).toHaveURL(/\/resume$/)
   await expect(bar).toHaveCount(0)
 
@@ -684,14 +696,14 @@ test('theme is dark by default and remembers a manual choice', async ({ browser 
   const isDark = () => page.evaluate(() => document.documentElement.classList.contains('dark'))
   expect(await isDark()).toBe(true)
 
-  await page.getByRole('button', { name: 'More' }).click()
+  await page.getByRole('button', { name: 'Settings' }).click()
   await page.getByRole('menuitemradio', { name: 'Light' }).click()
   expect(await isDark()).toBe(false)
   await page.reload()
   await page.waitForLoadState('networkidle')
   expect(await isDark()).toBe(false)
 
-  await page.getByRole('button', { name: 'More' }).click()
+  await page.getByRole('button', { name: 'Settings' }).click()
   await page.getByRole('menuitemradio', { name: 'System' }).click()
   expect(await page.evaluate(() => localStorage.getItem('color-scheme'))).toBe('system')
   expect(await isDark()).toBe(true)
@@ -825,7 +837,33 @@ test('writeups: listed on the writeups page, own pages, linked from case studies
   await expect(page.locator('article code').first()).toBeVisible()
   await page.getByRole('link', { name: /Case study/ }).click()
   await expect(page).toHaveURL(/\/work\/skillmatch$/)
-  await expect(page.getByRole('heading', { name: 'Go deeper' })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Read the writeup/ })).toHaveAttribute(
+    'href',
+    '/writeups/skillmatch-attend-race-condition',
+  )
+})
+
+test('a case study opens with what it is, and the screenshots come after how it works', async ({ page }) => {
+  await page.goto('/work/skillmatch')
+  const y = async (locator: ReturnType<typeof page.locator>) => (await locator.boundingBox())!.y
+  const what = await y(page.getByRole('heading', { name: 'What it is' }))
+  const flow = await y(page.getByRole('heading', { name: 'How a request flows' }))
+  const works = await y(page.getByRole('heading', { name: 'How it works' }))
+  const media = await y(page.locator('#media'))
+  const why = await y(page.locator('#why'))
+  expect(what).toBeLessThan(flow)
+  expect(works).toBeLessThan(media)
+  expect(media).toBeLessThan(why)
+  const copy = (await page.getByRole('button', { name: 'Copy link' }).boundingBox())!
+  const writeup = (await page.getByRole('link', { name: /Read the writeup/ }).boundingBox())!
+  expect(writeup.y).toBeGreaterThanOrEqual(copy.y)
+})
+
+test('a project with several writeups links to the list filtered to it', async ({ page }) => {
+  await page.goto('/work/network-growth-assistant')
+  await page.getByRole('link', { name: /Read the writeups/ }).click()
+  await expect(page).toHaveURL(/\/writeups\?project=network-growth-assistant$/)
+  await expect(page.locator('main li a[href^="/writeups/"]')).toHaveCount(2)
 })
 
 /** A search page. `count` of 100 is a full page, which means older commits exist beyond it. */
@@ -915,8 +953,8 @@ test('a page whose code fails to load shows a reload prompt, not a blank site', 
   await expect(page.getByRole('button', { name: 'Reload the page' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible()
 
-  await page.getByRole('button', { name: 'More' }).click()
-  await page.getByRole('menuitem', { name: 'Resume' }).click()
+  await page.getByRole('button', { name: 'Search portfolio' }).click()
+  await page.getByRole('option', { name: 'Resume', exact: true }).click()
   await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
 })
 
@@ -1017,7 +1055,7 @@ test('a page whose code 404s once recovers with an automatic reload', async ({ p
   await expect.poll(() => requests).toBeGreaterThanOrEqual(2)
   await page.waitForLoadState('networkidle')
   // Only a hydrated page can open the theme menu, so this proves the reload fixed it.
-  await page.getByRole('button', { name: 'More' }).click()
+  await page.getByRole('button', { name: 'Settings' }).click()
   await expect(page.getByRole('menuitemradio', { name: 'Light' })).toBeVisible()
   expect(requests).toBe(2)
 })
@@ -1117,8 +1155,7 @@ test('the header marks the section you are reading and shows scroll progress', a
 
   await page.goto('/resume')
   await hydrated(page)
-  await page.getByRole('button', { name: 'More' }).click()
-  await expect(page.getByRole('menuitem', { name: 'Resume' })).toHaveAttribute('aria-current', 'page')
+  await expect(nav.locator('[aria-current]')).toHaveCount(0)
 })
 
 test('canonical, og:url and share images use the custom domain', async ({ request }) => {
@@ -1177,8 +1214,13 @@ test('each new writeup opens and is linked from its project page', async ({ page
     ['linklocker', 'sign-in-behind-a-proxy'],
   ]
   for (const [project, note] of pairs) {
+    // The project page's writeup button opens the writeup, or the project's filtered list when it has several.
     await page.goto(`/work/${project}`)
-    await expect(page.locator(`a[href="/writeups/${note}"]`)).toHaveCount(1)
+    await page.getByRole('link', { name: /Read the writeup/ }).click()
+    await expect(page).toHaveURL(/\/writeups/)
+    if (!page.url().endsWith(`/writeups/${note}`)) {
+      await expect(page.locator(`a[href="/writeups/${note}"]`).first()).toBeVisible()
+    }
     await page.goto(`/writeups/${note}`)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     expect(await page.locator('pre').count()).toBeGreaterThan(0)
