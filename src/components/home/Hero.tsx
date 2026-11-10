@@ -8,12 +8,12 @@ import RequestTrace from '@/components/home/RequestTrace'
 function Hero() {
   return (
     <section
-      className="relative section-wrap grid min-h-[calc(100svh-var(--header-height))] grid-cols-[1.08fr_.92fr] items-center gap-x-12 pt-[var(--space-page)] pb-[var(--space-block)] max-[900px]:flex max-[900px]:min-h-0 max-[900px]:flex-col max-[900px]:items-stretch print:min-h-0 print:py-4"
+      className="relative section-wrap grid min-h-[calc(100svh-var(--header-height))] grid-cols-[1.08fr_.92fr] items-center gap-x-12 pt-[clamp(2rem,5svh,4rem)] pb-[var(--space-block)] max-[900px]:flex max-[900px]:min-h-0 max-[900px]:flex-col max-[900px]:items-stretch print:min-h-0 print:py-4"
       id="home"
       aria-labelledby="hero-title"
     >
       <div className="z-[1]">
-        <p className="mb-8 inline-flex items-center gap-2.5 rounded-full border bg-card py-1.5 pr-4 pl-3 text-sm text-muted-foreground">
+        <p className="mb-6 inline-flex items-center gap-2.5 rounded-full border bg-card py-1.5 pr-4 pl-3 text-sm text-muted-foreground">
           <span className="size-2 rounded-full bg-emerald-500" aria-hidden="true" />
           Open to co-op and internships
         </p>
@@ -26,7 +26,7 @@ function Hero() {
         <p className="mt-6 measure text-[1.125rem] leading-[1.7] text-muted-foreground max-[620px]:text-base">
           I&apos;m {site.name}. I follow the request from the interface through the API until everything makes sense.
         </p>
-        <div className="mt-10 flex flex-wrap items-center gap-3">
+        <div className="mt-8 flex flex-wrap items-center gap-3">
           <Button asChild size="lg" className="h-[46px] px-[17px] text-control font-semibold">
             <Link to="/#work">
               See my projects <ArrowDown aria-hidden="true" />
