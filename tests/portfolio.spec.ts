@@ -944,8 +944,11 @@ test('GitHub activity shows live recent commits, and hides itself when nothing i
 
 test('the recent work list skips commits to this site, but the day view still shows them', async ({ page }) => {
   const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  // A full page (100) so the live commits win over the snapshot for that day.
   await page.route('https://api.github.com/**', (route) =>
-    route.fulfill({ json: searchResult('chore: site-only commit', recent, 1, 'ShervinBabaei2007/Shervin-Portfolio') }),
+    route.fulfill({
+      json: searchResult('chore: site-only commit', recent, 100, 'ShervinBabaei2007/Shervin-Portfolio'),
+    }),
   )
   await page.goto('/')
   await page.waitForLoadState('networkidle')
@@ -953,8 +956,9 @@ test('the recent work list skips commits to this site, but the day view still sh
   await expect(activity).toContainText('Live from GitHub')
   const panel = activity.locator('[data-commit-panel]')
   await expect(panel).not.toContainText('chore: site-only commit')
+  await expect(panel).toContainText('Nothing recent outside this site')
 
-  await activity.locator('[data-heatmap] [data-day]').last().click()
+  await activity.locator(`[data-heatmap] [data-day="${recent.slice(0, 10)}"]`).click()
   await expect(panel).toContainText('chore: site-only commit')
 })
 

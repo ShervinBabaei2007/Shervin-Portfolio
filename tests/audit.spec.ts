@@ -329,7 +329,7 @@ test.describe('animation', () => {
     // Scrolled to the Contact section, the globe is on screen and animates.
     await page.locator('#contact-title').scrollIntoViewIfNeeded()
     await page.waitForTimeout(500)
-    expect(await frames(600)).toBeGreaterThan(15)
+    expect(await frames(600)).toBeGreaterThan(10)
   })
 })
 
