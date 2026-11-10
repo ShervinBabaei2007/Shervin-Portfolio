@@ -17,8 +17,8 @@ type ProjectsSectionProps = {
 
 function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
   const matches = (stack: string[]) => !activeSkill || stack.includes(activeSkill)
-  // With a skill filter on, every project that uses it is shown, flagship or not.
-  const shown = (activeSkill ? projects : flagshipProjects).filter((project) => matches(project.stack))
+  // The home page shows at most four flagships. With a skill filter on, every project that uses it is shown.
+  const shown = (activeSkill ? projects : flagshipProjects.slice(0, 4)).filter((project) => matches(project.stack))
 
   return (
     <section

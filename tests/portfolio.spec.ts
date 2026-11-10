@@ -13,7 +13,9 @@ const collectErrors = (page: Page) => {
 
 /** The app's script starts just after the first paint, so wait for React to take over the prerendered page before clicking. */
 const hydrated = (page: Page) =>
-  page.waitForFunction(() => Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')))
+  page.waitForFunction(() =>
+    Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')),
+  )
 
 test('hero states the role, links to the resume, and shows no stats or email', async ({ page }) => {
   await page.goto('/')
@@ -78,6 +80,22 @@ test('home shows four flagships and links to the full projects page', async ({ p
   await expect(page.locator('[data-project-card]')).toHaveCount(12)
 })
 
+test('project cards hide the technical stack in a drawer and only live projects say Launch Live App', async ({
+  page,
+}) => {
+  await page.goto('/projects')
+  await page.waitForLoadState('networkidle')
+  const cards = page.locator('[data-project-card]')
+  await expect(cards.filter({ has: page.getByRole('link', { name: 'Launch Live App' }) })).toHaveCount(5)
+  const first = cards.first()
+  const trigger = first.getByRole('button', { name: 'Technical Architecture & Stack' })
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
+  await expect(first.getByRole('list', { name: 'Stack' })).toHaveCount(0)
+  await trigger.click()
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
+  await expect(first.getByRole('list', { name: 'Stack' })).toBeVisible()
+})
+
 test('the header lists only Work, About and Contact; Settings holds only the theme choices', async ({ page }) => {
   await page.goto('/')
   const links = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link')
@@ -101,7 +119,13 @@ test('the writeups page has a back button to the projects page', async ({ page }
 })
 
 test('projects with no screenshots show a labelled illustration that loads', async ({ page }) => {
-  for (const slug of ['discord-ai-bridge', 'mini-rpg-battle', 'job-application-tracker', 'tic-tac-toe-minimax', 'ollama-rag']) {
+  for (const slug of [
+    'discord-ai-bridge',
+    'mini-rpg-battle',
+    'job-application-tracker',
+    'tic-tac-toe-minimax',
+    'ollama-rag',
+  ]) {
     await page.goto(`/work/${slug}`)
     const media = page.locator('#media')
     await expect(media.getByRole('heading', { name: 'Illustration' })).toBeVisible()
@@ -1207,7 +1231,11 @@ test('projects page filters by type', async ({ page }) => {
   await page.goto('/projects')
   // Wait for hydration, otherwise the click can land before React attaches its handlers.
   await page.waitForLoadState('networkidle')
-  const cards = page.getByRole('list').filter({ has: page.getByRole('link', { name: /case study/i }) }).first().getByRole('listitem')
+  const cards = page
+    .getByRole('list')
+    .filter({ has: page.getByRole('link', { name: /case study/i }) })
+    .first()
+    .getByRole('listitem')
   const all = await cards.count()
   await page.getByRole('button', { name: /^Hackathon/ }).click()
   await expect(page.getByRole('button', { name: /^Hackathon/ })).toHaveAttribute('aria-pressed', 'true')

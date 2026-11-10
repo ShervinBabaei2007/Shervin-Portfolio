@@ -30,6 +30,10 @@ export type Project = {
   flagship: boolean
   date: string
   subtitle: string
+  /** One plain-English line for the card face, with no jargon. */
+  tagline: string
+  /** Two plain sentences: the problem it solves, then who it is for. Shown on the card face. */
+  nonTechnicalSummary: string
   summary: string
   /** Plain-language introduction for someone who has never heard of the project: what it is and who it is for. */
   overview?: string[]
@@ -82,6 +86,9 @@ export const projects: Project[] = [
     flagship: true,
     date: 'Oct 2026 – Current',
     subtitle: 'A networking and job-search workspace that only counts what actually happened.',
+    tagline: 'Grow your professional network and run your job search in one honest place.',
+    nonTechnicalSummary:
+      'Networking tools often flatter you with vanity numbers or send messages on your behalf. This one keeps track of who to contact and which jobs you applied for, and only counts an invitation once someone accepts.',
     summary:
       'A Next.js and Supabase app for growing a professional network and running a job search: a daily outreach queue, a research assistant that quotes its sources, verified job postings, and an applications board.',
     role: 'Solo project, design to deployment',
@@ -153,7 +160,17 @@ export const projects: Project[] = [
       { label: 'Supabase', detail: 'Postgres, row-level security, Auth' },
       { label: 'pg_cron + API routes', detail: 'Crawler and alerts' },
     ],
-    stack: ['Next.js', 'React', 'TypeScript', 'PostgreSQL', 'Supabase', 'Vercel', 'Vitest', 'GitHub Actions', 'Claude Code'],
+    stack: [
+      'Next.js',
+      'React',
+      'TypeScript',
+      'PostgreSQL',
+      'Supabase',
+      'Vercel',
+      'Vitest',
+      'GitHub Actions',
+      'Claude Code',
+    ],
     github: 'https://github.com/ShervinBabaei2007/Network-Growth-Assistance',
     live: 'https://linkedin-network-growth-assistance.vercel.app',
     screenshots: [
@@ -209,6 +226,9 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     flagship: true,
     date: 'March 2026',
     subtitle: 'AI commit-message suggestions, built in 24 hours.',
+    tagline: 'Upload two versions of a file and get a suggested description of what changed.',
+    nonTechnicalSummary:
+      'Programmers write a short note whenever they save a change, and it is easy to rush. GitScribe suggests that note for them, and it was built by a team of students in 24 hours.',
     summary: `Compare two versions of your code and get a suggested commit message. Built at ${facts.hackathon.name}, where the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
     role: 'UI/UX lead and front-end developer',
     team: 'Hack the Break 2026 team project. I built the sign-in, navigation, and profile screens; teammates built the FastAPI backend and the OpenAI generation pipeline.',
@@ -308,6 +328,9 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     flagship: true,
     date: 'Spring 2026',
     subtitle: 'A workshop marketplace where students attend, review, and host short classes.',
+    tagline: 'Find a short workshop, sign up, or host your own.',
+    nonTechnicalSummary:
+      'Students wanted an easy way to find focused workshops outside their regular courses, and to teach one if they had a skill to share. SkillMatch lets them browse, register, leave a review and host a class.',
     summary:
       'A MERN marketplace for short skill workshops. I built the attend, review, and host-a-workshop flows and was the most active committer on a three-person team.',
     role: 'Backend & DevOps lead, 3-person team',
@@ -427,6 +450,9 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     flagship: true,
     date: 'March – April 2026',
     subtitle: 'A notes app with a rate-limited Express API.',
+    tagline: 'A calm notes app that protects itself from being overloaded.',
+    nonTechnicalSummary:
+      'It is a simple place to write, edit and delete notes, and it slows down anyone who sends too many requests at once. I built every part myself, and you can try the slow-down behaviour on this site.',
     summary:
       'A MERN notes app with create, edit, and delete, plus a Redis sliding-window rate limiter that returns HTTP 429 and a matching screen in the UI.',
     role: 'Solo project',
@@ -489,6 +515,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     ],
     stack: ['React', 'JavaScript', 'Node.js', 'Express', 'MongoDB', 'Redis'],
     github: 'https://github.com/ShervinBabaei2007/MERN-thinkBoard',
+    live: 'https://mern-thinkboard-plum.vercel.app/',
     demo: 'rate-limiter',
     screenshots: [
       {
@@ -547,6 +574,9 @@ const ratelimiter = async (req, res, next) => {
     flagship: false,
     date: 'March – April 2026',
     subtitle: 'A Discord bot that answers questions with a model running on my own machine.',
+    tagline: 'A chat bot that answers questions using an AI running on my own computer.',
+    nonTechnicalSummary:
+      'It shows what it takes to put an AI behind a real chat app without a cloud service in between. People in a Discord server can ask a question with one command, and the bot keeps answering others while it thinks.',
     summary:
       'A Python bot that sends a Discord command to a local Qwen 3.5 9B model through LM Studio, without freezing the bot while the model thinks.',
     role: 'Solo project',
@@ -613,7 +643,8 @@ const ratelimiter = async (req, res, next) => {
     illustration: {
       src: '/projects/discord-ai-bridge-illustration.svg',
       alt: 'What a Discord channel could look like: someone types !.ask with a question, the AI Bridge bot replies with the answer, and a later question gets a plain error message because LM Studio is not running.',
-      caption: 'A drawing of the bot in a Discord channel: an answer to a question, then an error message when LM Studio is off.',
+      caption:
+        'A drawing of the bot in a Discord channel: an answer to a question, then an error message when LM Studio is off.',
     },
     stack: ['Python', 'discord.py', 'LM Studio', 'REST API', 'asyncio'],
     github: 'https://github.com/ShervinBabaei2007/Discord-ai-bridge',
@@ -645,6 +676,9 @@ except requests.exceptions.HTTPError as e:
     flagship: false,
     date: '2026',
     subtitle: 'A terminal RPG with combat, loot, bosses, and save files.',
+    tagline: 'A fighting game you play in a text window, with bosses, loot and saved progress.',
+    nonTechnicalSummary:
+      'Games are a good way to practise keeping health, items, levels and saves all in agreement. This one is for anyone who wants to fight enemies, level up and pick the game up again later.',
     summary:
       'A turn-based Python RPG with progression, weighted loot, boss encounters, and JSON save and load, covered by pytest.',
     role: 'Solo project',
@@ -776,6 +810,9 @@ $ cat playerSave.json
     flagship: false,
     date: '2026',
     subtitle: 'A command-line tool for keeping a job search organized.',
+    tagline: 'Keep track of every job you applied for in one place on your own computer.',
+    nonTechnicalSummary:
+      'When you apply to many places, it is easy to forget where you applied, when, and what happened since. This tool is for job seekers who want a simple record with no account and nothing to install.',
     summary:
       'A Python CLI for tracking co-op and junior applications, stored in SQLite, with status updates and filtering.',
     role: 'Solo project',
@@ -894,6 +931,9 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
     flagship: false,
     date: '2026',
     subtitle: 'A mood board built with vanilla JavaScript.',
+    tagline: 'A mood board that remembers exactly how you left it.',
+    nonTechnicalSummary:
+      'You add pictures, resize them and drag them around, and the board is still there when you come back. It is for anyone collecting ideas visually, and I built it with no helper libraries to learn how a web page works underneath.',
     summary:
       'A single-page mood board with resizable, reorderable image cards, draggable pop-outs, undo and redo, and localStorage persistence.',
     role: 'Course project',
@@ -995,6 +1035,9 @@ function redo() {
     flagship: false,
     date: '2026',
     subtitle: 'Live availability voting for planning a picnic.',
+    tagline: 'Plan a picnic with friends and watch everyone’s answers appear live.',
+    nonTechnicalSummary:
+      'Picking a day that suits a whole group usually means a long chat thread. Here everyone votes on which days they are free, sees each other’s answers instantly, and checks the weather forecast for each day.',
     summary:
       'A group votes on which days they are free, sees everyone’s votes update live over WebSockets, and checks the forecast for each day.',
     role: 'Course project',
@@ -1091,6 +1134,9 @@ wss.on("connection", (ws) => {
     flagship: false,
     date: 'October 2026',
     subtitle: 'A URL shortener with Google sign-in, deployed on an Azure VM.',
+    tagline: 'Turn a long web address into a short link you can share.',
+    nonTechnicalSummary:
+      'Long web addresses are awkward to share. LinkLocker gives signed-in people a short link that sends visitors to the original page, and it runs online on a real server.',
     summary:
       'Paste a long URL, get a short link that redirects to it. Built as a two-person course project, with Google OAuth protecting link creation and the app served over HTTPS from Azure.',
     role: 'Application and authentication developer, 2-person team',
@@ -1197,6 +1243,9 @@ app.post("/api/links", requireAuth, async (req, res) => {
     flagship: false,
     date: 'June 2026',
     subtitle: 'A terminal game with an AI that picks the best move by searching every outcome.',
+    tagline: 'A Tic-Tac-Toe opponent that never loses.',
+    nonTechnicalSummary:
+      'The computer player tries out every way the rest of the game could go before it moves, so the worst it can do is draw. To check it, I made it play 1,200 games against a random player, and it lost none.',
     summary:
       'A Python command-line Tic-Tac-Toe with a random player, a human player, and a Minimax player, plus a simulation mode that plays many games to show the Minimax player does not lose.',
     role: 'Solo project',
@@ -1319,6 +1368,9 @@ app.post("/api/links", requireAuth, async (req, res) => {
     flagship: false,
     date: 'June 2026',
     subtitle: 'Two small projects exploring how local models and retrieval work.',
+    tagline: 'Ask questions about a PDF using an AI that runs on my own computer.',
+    nonTechnicalSummary:
+      'These experiments sort a messy grocery list into sections and answer questions about a document, using only what the document says. They are for anyone curious how AI can work with your own files without sending them to an outside service.',
     summary:
       'A grocery-list categorizer that gets structured output from a local model, and a PDF question-answering pipeline built on embeddings and a vector database, all running through Ollama.',
     role: 'Solo project',

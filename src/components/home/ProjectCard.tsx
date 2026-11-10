@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from 'react'
 import { ArrowUpRight, Github } from 'lucide-react'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
 import LazyBoundary from '@/components/shared/LazyBoundary'
 import PendingFlag from '@/components/shared/PendingFlag'
@@ -116,7 +117,17 @@ const cardLink =
 const card =
   "relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[12px] border bg-card transition-[transform,box-shadow,border-color] duration-200 ease-in-out has-[:focus-visible]:border-primary before:pointer-events-none before:absolute before:inset-0 before:z-[2] before:rounded-[inherit] before:opacity-0 before:transition-opacity before:duration-200 before:content-[''] before:bg-[radial-gradient(360px_circle_at_var(--pointer-x,50%)_var(--pointer-y,50%),var(--glow),transparent_68%)] pointer-fine:hover:border-primary pointer-fine:focus-within:border-primary pointer-fine:hover:shadow-[0_14px_32px_rgba(12,26,51,.12)] pointer-fine:focus-within:shadow-[0_14px_32px_rgba(12,26,51,.12)] motion-safe:pointer-fine:hover:-translate-y-1 motion-safe:pointer-fine:focus-within:-translate-y-1 pointer-fine:hover:before:opacity-100 motion-reduce:before:hidden forced-colors:before:hidden print:before:hidden print:break-inside-avoid print:shadow-none"
 
+type PrimaryAction = { label: string; href: string; github?: boolean }
+
+/** One honest primary action: only a project with a live URL says "Launch Live App". */
+function primaryAction(project: Project): PrimaryAction | null {
+  if (project.live) return { label: 'Launch Live App', href: project.live }
+  if (project.github) return { label: 'View source on GitHub', href: project.github, github: true }
+  return null
+}
+
 function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDelay?: number }) {
+  const primary = primaryAction(project)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [sheetRequested, setSheetRequested] = useState(false)
   const [sheetLoading, setSheetLoading] = useState(false)
@@ -145,21 +156,12 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
               <span>{project.category}</span>
               <span>{project.date}</span>
             </div>
-            <p className="mt-[15px] border-l-[3px] border-primary bg-muted px-3 py-2 text-sm font-semibold">
-              {project.highlight}
-            </p>
             <h3 className="mt-[15px] text-h3 font-semibold">{project.name}</h3>
-            <p className="mt-1.5 font-semibold">{project.subtitle}</p>
-            <p className="mt-[11px] line-clamp-2 leading-[1.65] text-muted-foreground">{project.summary}</p>
-            <div className="mt-4 mb-[18px] flex flex-wrap gap-1.5" aria-label="Stack">
-              {project.stack.slice(0, 5).map((item) => (
-                <Badge key={item} variant="secondary">
-                  {item}
-                </Badge>
-              ))}
-            </div>
-            <div className="mt-auto flex items-center justify-between gap-4 border-t pt-3.5 text-sm text-muted-foreground max-[620px]:flex-col max-[620px]:items-start">
-              <span>{project.role}</span>
+            <p className="mt-1.5 font-semibold">{project.tagline}</p>
+            <p className="mt-[11px] mb-[18px] line-clamp-3 leading-[1.65] text-muted-foreground">
+              {project.nonTechnicalSummary}
+            </p>
+            <div className="mt-auto flex items-center justify-end border-t pt-3.5 text-sm">
               <span className="inline-flex items-center gap-[7px] font-semibold text-primary">
                 Read case study <ArrowUpRight size={15} />
               </span>
@@ -170,10 +172,10 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
           className="relative z-[1] flex min-h-[54px] flex-wrap items-center gap-x-5 gap-y-2 border-t px-[22px] py-2.5 max-[620px]:gap-[18px] max-[620px]:px-5 max-[360px]:gap-3.5"
           aria-label={`${project.name} project links`}
         >
-          {project.live && (
+          {primary && (
             <Button asChild size="sm" className="max-[620px]:h-11">
-              <a href={project.live} target="_blank" rel="noreferrer">
-                Live project <ArrowUpRight size={15} />
+              <a href={primary.href} target="_blank" rel="noreferrer">
+                {primary.label} {primary.github ? <Github size={15} /> : <ArrowUpRight size={15} />}
               </a>
             </Button>
           )}
@@ -208,12 +210,38 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
               </Suspense>
             </LazyBoundary>
           )}
-          {project.github && (
+          {project.github && !primary?.github && (
             <a className={cardLink} href={project.github} target="_blank" rel="noreferrer">
               Source code <Github size={15} />
             </a>
           )}
         </div>
+        <Accordion type="single" collapsible className="relative z-[1] border-t px-[22px] max-[620px]:px-5">
+          <AccordionItem value="technical" className="border-b-0">
+            <AccordionTrigger className="py-3 text-sm">Technical Architecture &amp; Stack</AccordionTrigger>
+            <AccordionContent className="pr-0 text-sm">
+              <p className="border-l-[3px] border-primary bg-muted px-3 py-2 font-semibold text-foreground">
+                {project.highlight}
+              </p>
+              <p className="mt-3 font-semibold text-foreground">{project.subtitle}</p>
+              <p className="mt-1">{project.role}</p>
+              <ol className="m-0 mt-3 grid list-none gap-1.5 p-0" aria-label="Architecture">
+                {project.architecture.map((step) => (
+                  <li key={step.label}>
+                    <span className="font-semibold text-foreground">{step.label}</span>: {step.detail}
+                  </li>
+                ))}
+              </ol>
+              <ul className="m-0 mt-3 flex list-none flex-wrap gap-1.5 p-0" aria-label="Stack">
+                {project.stack.map((item) => (
+                  <li key={item}>
+                    <Badge variant="secondary">{item}</Badge>
+                  </li>
+                ))}
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </article>
     </Reveal>
   )
