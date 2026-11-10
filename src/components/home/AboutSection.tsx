@@ -54,7 +54,7 @@ function AboutSection() {
           <div className="min-w-0">
             <h2 id="about-title" className="text-h2-section [&>span:last-child]:text-primary">
               I keep following the request because{' '}
-              <Highlighter action="underline" color="#8aa4ff" strokeWidth={2.5} iterations={2} padding={3} isView>
+              <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
                 “it works”
               </Highlighter>{' '}
               has never been enough for me<span>.</span>
