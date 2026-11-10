@@ -154,7 +154,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
           </div>
         </Link>
         <div
-          className="relative z-[1] flex min-h-[54px] flex-wrap items-center gap-x-5 gap-y-3 border-t px-[var(--pad-card)] py-4 max-[360px]:gap-x-3.5"
+          className="relative z-[1] flex min-h-[54px] flex-wrap items-center gap-x-5 gap-y-3 border-t px-[var(--pad-card)] py-3.5 max-[360px]:gap-x-3.5"
           aria-label={`${project.name} project links`}
         >
           {primary && (
@@ -195,11 +195,6 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
               </Suspense>
             </LazyBoundary>
           )}
-          {project.github && !primary?.github && (
-            <a className={cardLink} href={project.github} target="_blank" rel="noreferrer">
-              Source code <Github size={15} />
-            </a>
-          )}
         </div>
         <Accordion type="single" collapsible className="relative z-[1] border-t px-[var(--pad-card)]">
           <AccordionItem value="technical" className="border-b-0">
@@ -224,6 +219,11 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
                   </li>
                 ))}
               </ul>
+              {project.github && !primary?.github && (
+                <a className={cn(cardLink, 'mt-4')} href={project.github} target="_blank" rel="noreferrer">
+                  Source code <Github size={15} />
+                </a>
+              )}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
