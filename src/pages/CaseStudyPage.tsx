@@ -1,7 +1,6 @@
-import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Github, Link2, Users } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Github, Link2, NotebookPen, Users } from 'lucide-react'
 import ArticleLayout from '@/components/shared/ArticleLayout'
 import TableOfContents from '@/components/shared/TableOfContents'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Link, useParams } from 'react-router-dom'
 import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
@@ -12,6 +11,7 @@ import TerminalBlock from '@/components/shared/TerminalBlock'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useCopy } from '@/hooks/useCopy'
+import { tone } from '@/lib/buttonTones'
 import { cn } from '@/lib/utils'
 import { notesForProject } from '../data/notes'
 import { findProject, projects } from '../data/projects'
@@ -39,6 +39,8 @@ function CaseStudyPage() {
   const previous = projects[index - 1]
   const next = projects[index + 1]
   const relatedNotes = notesForProject(project.slug)
+  // One writeup opens directly; several open the writeups list filtered to this project.
+  const writeupHref = relatedNotes.length === 1 ? `/writeups/${relatedNotes[0].slug}` : `/writeups?project=${project.slug}`
   const glance: [string, string][] = [
     ['MY ROLE', project.role],
     ['KEY RESULT', project.highlight],
@@ -53,6 +55,7 @@ function CaseStudyPage() {
     ...(project.overview ? ([['what', 'What it is']] as [string, string][]) : []),
     ...(project.features ? ([['does', 'What it can do']] as [string, string][]) : []),
     ...(project.howItWorks ? ([['works', 'How it works']] as [string, string][]) : []),
+    ...(project.video || project.screenshots ? ([['media', 'Screenshots']] as [string, string][]) : []),
     ['why', 'Why'],
     ['built', 'What I built'],
     ...(project.snippet ? ([['code', 'The code']] as [string, string][]) : []),
@@ -125,6 +128,13 @@ function CaseStudyPage() {
               {copied ? 'Link copied' : failed ? 'Copy it from the address bar' : 'Copy link'}
               {copied ? <Check /> : <Link2 />}
             </Button>
+            {relatedNotes.length > 0 && (
+              <Button asChild size="lg" className={cn(actionButton, 'shadow-md', tone.ink)}>
+                <Link to={writeupHref}>
+                  {relatedNotes.length === 1 ? 'Read the writeup' : 'Read the writeups'} <NotebookPen />
+                </Link>
+              </Button>
+            )}
             <span className="sr-only" role="status">
               {copied ? 'Link copied to clipboard.' : ''}
             </span>
@@ -142,31 +152,44 @@ function CaseStudyPage() {
             </div>
           ))}
         </dl>
+
+        <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <h2 className="eyebrow uppercase">Built with</h2>
+          <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+            {project.stack.map((t) => (
+              <li key={t}>
+                <Badge variant="outline" className="rounded-none font-mono font-normal">
+                  {t}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        </div>
       </header>
 
-      {project.video && (
-        <figure className="mt-8">
-          <video
-            className="block h-auto w-full rounded-xl border bg-[#0f1a30]"
-            controls
-            muted
-            playsInline
-            preload="none"
-            poster={project.video.poster}
-            width={1280}
-            height={800}
-          >
-            <source src={project.video.src} type={project.video.type ?? 'video/mp4'} />
-          </video>
-          <figcaption className="mt-2 text-sm text-muted-foreground">{project.video.caption}</figcaption>
-        </figure>
-      )}
-
-      {project.screenshots && (
-        <section className="mt-8" aria-label={`${project.name} screenshots`}>
-          <ScreenshotGallery shots={project.screenshots} projectName={project.name} layout="strip" />
-        </section>
-      )}
+    {project.overview && (
+      <section id="what" className="border-b py-[26px]">
+        <h2 className={h2Class}>What it is</h2>
+        {project.overview.map((paragraph) => (
+          <p key={paragraph} className={bodyClass}>
+            {paragraph}
+          </p>
+        ))}
+      </section>
+    )}
+    {project.features && (
+      <section id="does" className="border-b py-[26px]">
+        <h2 className={h2Class}>What it can do</h2>
+        <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
+          {project.features.map((feature) => (
+            <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
+              <h3 className="text-base font-semibold">{feature.title}</h3>
+              <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
       <section className="mt-9 border-t pt-[22px] pb-1.5" aria-labelledby="architecture-title">
         <h2 id="architecture-title" className={h2Class}>
@@ -197,68 +220,10 @@ function CaseStudyPage() {
         rail={
           <>
             <TableOfContents items={sections.map(([id, label]) => ({ id, label }))} />
-            <Card className="gap-3 py-5">
-              <CardHeader className="px-5">
-                <h2 className="eyebrow uppercase">Built with</h2>
-              </CardHeader>
-              <CardContent className="px-5">
-                <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
-                  {project.stack.map((t) => (
-                    <li key={t}>
-                      <Badge variant="outline" className="rounded-none font-mono font-normal">
-                        {t}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-            {relatedNotes.length > 0 && (
-              <Card className="gap-3 py-5">
-                <CardHeader className="px-5">
-                  <h2 className="eyebrow uppercase">Go deeper</h2>
-                </CardHeader>
-                <CardContent className="grid gap-2 px-5">
-                  {relatedNotes.map((note) => (
-                    <Link
-                      key={note.slug}
-                      className="grid gap-1 rounded-lg border bg-background px-3 py-2.5 no-underline transition-colors hover:border-primary"
-                      to={`/writeups/${note.slug}`}
-                    >
-                      <b className="text-[.9375rem] leading-snug font-semibold">{note.title}</b>
-                      <span className="font-mono text-label text-muted-foreground">{note.minutes} min read</span>
-                    </Link>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
           </>
         }
       >
         <div className="grid grid-cols-[minmax(0,1fr)] [&>section]:border-b [&>section]:py-[26px]">
-          {project.overview && (
-            <section id="what">
-              <h2 className={h2Class}>What it is</h2>
-              {project.overview.map((paragraph) => (
-                <p key={paragraph} className={bodyClass}>
-                  {paragraph}
-                </p>
-              ))}
-            </section>
-          )}
-          {project.features && (
-            <section id="does">
-              <h2 className={h2Class}>What it can do</h2>
-              <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
-                {project.features.map((feature) => (
-                  <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
-                    <h3 className="text-base font-semibold">{feature.title}</h3>
-                    <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
           {project.howItWorks && (
             <section id="works">
               <h2 className={h2Class}>How it works</h2>
@@ -270,6 +235,33 @@ function CaseStudyPage() {
                   </li>
                 ))}
               </ol>
+            </section>
+          )}
+          {(project.video || project.screenshots) && (
+            <section id="media">
+              <h2 className={h2Class}>Screenshots</h2>
+              {project.video && (
+                <figure className="mt-4">
+                  <video
+                    className="block h-auto w-full rounded-xl border bg-[#0f1a30]"
+                    controls
+                    muted
+                    playsInline
+                    preload="none"
+                    poster={project.video.poster}
+                    width={1280}
+                    height={800}
+                  >
+                    <source src={project.video.src} type={project.video.type ?? 'video/mp4'} />
+                  </video>
+                  <figcaption className="mt-2 text-sm text-muted-foreground">{project.video.caption}</figcaption>
+                </figure>
+              )}
+              {project.screenshots && (
+                <div className="mt-4" aria-label={`${project.name} screenshots`} role="group">
+                  <ScreenshotGallery shots={project.screenshots} projectName={project.name} layout="strip" />
+                </div>
+              )}
             </section>
           )}
           <section id="why">
