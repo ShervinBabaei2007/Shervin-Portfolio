@@ -3,6 +3,7 @@ import Reveal from '@/components/shared/Reveal'
 import { Button } from '@/components/ui/button'
 import { Highlighter } from '@/components/ui/highlighter'
 import { facts } from '@/data/facts'
+import { highlightColor } from '@/lib/colors'
 import { site } from '@/data/site'
 import { cn, textLinkClass } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
@@ -21,21 +22,28 @@ function AboutSection() {
       // Dark in both themes, so it pins the dark-theme accent (the light one is too dim on this background).
       className={cn(
         'bg-[var(--section-dark)] section-y text-[var(--on-dark)]',
-        '[--primary:#8aa4ff] [--ring:#8aa4ff]',
+        '[--primary-foreground:var(--primary-on-dark-foreground)] [--primary:var(--primary-on-dark)] [--ring:var(--primary-on-dark)]',
         'relative overflow-hidden print:bg-none print:[&_*]:!text-black',
       )}
       id="about"
       aria-labelledby="about-title"
     >
       <div className="relative section-wrap">
-        <p className="eyebrow text-[#a9b6d3]">
+        <p className="eyebrow text-on-dark-muted">
           <span className="text-primary">03</span> WHY I KEEP DIGGING
         </p>
         <div className="mt-5 grid items-start gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-[8%]">
           <div className="min-w-0">
             <h2 id="about-title" className="text-h2-section [&>span:last-child]:text-primary">
               I keep following the request because{' '}
-              <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
+              <Highlighter
+                action="underline"
+                color={highlightColor}
+                strokeWidth={2.5}
+                iterations={2}
+                padding={3}
+                isView
+              >
                 “it works”
               </Highlighter>{' '}
               has never been enough for me<span>.</span>
@@ -45,7 +53,7 @@ function AboutSection() {
             </Reveal>
           </div>
           <Reveal delay={0.1}>
-            <div className="space-y-6 text-[1.0625rem] leading-[1.8] text-[#b4c0da] max-[620px]:space-y-5 max-[620px]:text-base max-[620px]:leading-[1.75] lg:pt-2">
+            <div className="space-y-6 text-[1.0625rem] leading-[1.8] text-on-dark-muted max-[620px]:space-y-5 max-[620px]:text-base max-[620px]:leading-[1.75] lg:pt-2">
               <p>
                 I got into software to understand how things actually work, not just use them. That took me from
                 full-stack web (React, TypeScript, Node.js, PostgreSQL) into running local models like Qwen through LM
@@ -74,7 +82,7 @@ function AboutSection() {
                 Vancouver, where code review is part of the culture. I want to learn how good teams build, test, and
                 ship software, and I&apos;ll take on hard problems to get there.
               </p>
-              <Button asChild size="lg" className="mt-4 bg-[#8aa4ff] font-semibold text-[#0a1122] hover:bg-[#a5b9ff]">
+              <Button asChild size="lg" className="mt-4 font-semibold">
                 <Link to="/resume">
                   Read my resume <ArrowRight size={15} />
                 </Link>
@@ -86,7 +94,7 @@ function AboutSection() {
           <dl className="mt-20 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-white/15 pt-10 max-[620px]:mt-12 max-[620px]:gap-x-5 max-[620px]:gap-y-6 max-[620px]:pt-8 md:grid-cols-4">
             {quickFacts.map((fact) => (
               <div key={fact.label}>
-                <dt className="font-mono text-label tracking-[.08em] text-[#93a3c4]">{fact.label}</dt>
+                <dt className="font-mono text-label tracking-[.08em] text-on-dark-subtle">{fact.label}</dt>
                 <dd className="mt-2 text-base leading-snug font-medium first-letter:uppercase">{fact.value}</dd>
               </div>
             ))}

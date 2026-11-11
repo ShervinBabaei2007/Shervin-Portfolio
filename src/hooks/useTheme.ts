@@ -3,8 +3,6 @@ import { useCallback, useEffect, useState } from 'react'
 export type Scheme = 'light' | 'dark'
 export type Preference = Scheme | 'system'
 const STORAGE_KEY = 'color-scheme'
-/** The page background in each theme, so the browser's address bar and status bar match it. Mirrors index.html. */
-const THEME_COLOR: Record<Scheme, string> = { dark: '#0a1122', light: '#f6f8fc' }
 const query = '(prefers-color-scheme: dark)'
 
 const systemScheme = (): Scheme =>
@@ -29,7 +27,9 @@ function applyScheme(scheme: Scheme) {
   const meta = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]')
   if (meta) meta.content = scheme
   const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-  if (themeColor) themeColor.content = THEME_COLOR[scheme]
+  // The page background in the new theme, read from the token so the address bar always matches it.
+  const background = getComputedStyle(root).getPropertyValue('--background').trim()
+  if (themeColor && background) themeColor.content = background
 }
 
 /**

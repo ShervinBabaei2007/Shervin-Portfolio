@@ -18,7 +18,7 @@ function Hero() {
     >
       <div className="z-[1]">
         <p className="mb-6 inline-flex items-center gap-2.5 rounded-full border bg-card py-1.5 pr-4 pl-3 text-sm text-muted-foreground">
-          <span className="size-2 rounded-full bg-emerald-500" aria-hidden="true" />
+          <span className="size-2 rounded-full bg-success" aria-hidden="true" />
           Open to co-op and internships
         </p>
         <p className="eyebrow">

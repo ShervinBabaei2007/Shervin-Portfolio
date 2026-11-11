@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Highlighter } from '@/components/ui/highlighter'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { availabilityLine, site } from '@/data/site'
+import { highlightColor } from '@/lib/colors'
 
 const links = [
   { label: 'LinkedIn', detail: 'Connect professionally', href: site.linkedin, Icon: Linkedin },
@@ -26,7 +27,14 @@ function ContactSection() {
             title={
               <>
                 Have an{' '}
-                <Highlighter action="underline" color="#f5b042" strokeWidth={2.5} iterations={2} padding={3} isView>
+                <Highlighter
+                  action="underline"
+                  color={highlightColor}
+                  strokeWidth={2.5}
+                  iterations={2}
+                  padding={3}
+                  isView
+                >
                   interesting problem
                 </Highlighter>
               </>

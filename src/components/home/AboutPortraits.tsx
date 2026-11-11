@@ -50,7 +50,7 @@ function Card({ photo, featured = false }: { photo: Photo; featured?: boolean })
       className={cn(
         'group relative overflow-hidden rounded-2xl border border-white/15 bg-white/5 ring-1 ring-black/20',
         'shadow-[0_24px_60px_-24px_rgba(0,0,0,.75)]',
-        featured && 'shadow-[0_30px_80px_-28px_rgba(138,164,255,.45)]',
+        featured && 'shadow-[0_30px_80px_-28px_color-mix(in_srgb,var(--primary)_45%,transparent)]',
         className,
       )}
     >
@@ -77,7 +77,9 @@ function Card({ photo, featured = false }: { photo: Photo; featured?: boolean })
           className="size-full object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out motion-safe:group-hover:scale-[1.04]"
         />
       </picture>
-      {featured && <BorderBeam size={120} duration={9} colorFrom="#8aa4ff" colorTo="#8aa4ff" borderWidth={1.5} />}
+      {featured && (
+        <BorderBeam size={120} duration={9} colorFrom="var(--primary)" colorTo="var(--primary)" borderWidth={1.5} />
+      )}
     </figure>
   )
 }

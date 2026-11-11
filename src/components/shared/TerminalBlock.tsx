@@ -12,7 +12,7 @@ type TerminalBlockProps = {
   preClassName?: string
 }
 
-const dot = 'size-[9px] rounded-full bg-[#3b4a68]'
+const dot = 'size-[9px] rounded-full bg-code-muted/40'
 
 /** A recorded session from the real program, not a mock-up. */
 function TerminalBlock({

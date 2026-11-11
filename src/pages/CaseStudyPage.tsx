@@ -246,7 +246,7 @@ function CaseStudyPage() {
               {project.video && (
                 <figure className="mt-4">
                   <video
-                    className="block h-auto w-full rounded-xl border bg-[#0f1a30]"
+                    className="block h-auto w-full rounded-xl border bg-code"
                     controls
                     muted
                     playsInline

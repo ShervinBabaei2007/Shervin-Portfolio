@@ -53,7 +53,7 @@ function CodeBlock({
         {showLink && (
           <div className="flex flex-none items-center gap-3">
             <button
-              className="inline-flex min-h-7 cursor-pointer items-center gap-1.5 rounded-md px-1.5 text-[#a5b8ff] hover:bg-white/10 pointer-coarse:min-h-11 pointer-coarse:px-3"
+              className="inline-flex min-h-7 cursor-pointer items-center gap-1.5 rounded-md px-1.5 text-code-accent hover:bg-white/10 pointer-coarse:min-h-11 pointer-coarse:px-3"
               type="button"
               aria-label={`Copy code from ${snippet.file}`}
               onClick={() => void copyCode()}
@@ -70,7 +70,7 @@ function CodeBlock({
             </span>
             {snippet.href && (
               <a
-                className="inline-flex items-center gap-1.5 text-[#a5b8ff] no-underline hover:underline hover:underline-offset-[3px]"
+                className="inline-flex items-center gap-1.5 text-code-accent no-underline hover:underline hover:underline-offset-[3px]"
                 href={snippet.href}
                 target="_blank"
                 rel="noreferrer"

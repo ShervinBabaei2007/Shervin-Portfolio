@@ -55,15 +55,23 @@
   --font-body: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --display: var(--font-body);
-  --accent-dark: #3340c0;
   --writeup: #0f766e; /* writeups button: 5.5:1 under white text */
   --writeup-foreground: #ffffff;
   --grid-line: rgba(12, 26, 51, 0.02);
-  --ring-2: #c9d3e6; /* hero orbit, dashed */
-  --ring-3: #dce3ef; /* hero orbit, outer */
   --section-dark: #0c1a33; /* About section background */
   --on-dark: #e6ecf8;
-  --glow: rgba(255, 255, 255, 0.2);
+  --on-dark-muted: #b4c0da;
+  --on-dark-subtle: #93a3c4;
+  /* The About band stays dark in both themes, so it pins the dark-theme accent (the light one is too dim on it). */
+  --primary-on-dark: #8aa4ff;
+  --primary-on-dark-foreground: #0a1122;
+  /* Code and terminal panels stay dark in both themes. */
+  --code-bg: #0f1a30;
+  --code-fg: #e2e8f6;
+  --code-muted: #9fb0cc;
+  --code-border: #22304d;
+  --code-accent: #a5b8ff;
+  --success: #10b981; /* status dots */
   --header-height: 78px;
   --gutter: 40px;
   --content-max: 1160px;
@@ -93,14 +101,8 @@
 }
 
 .dark {
-  --accent-dark: #b0c1ff;
-  --writeup: #0f766e;
-  --writeup-foreground: #ffffff;
   --grid-line: rgba(148, 163, 192, 0.03);
-  --ring-2: #2a3a5c;
-  --ring-3: #22304d;
   --section-dark: #070d1b;
-  --glow: rgba(138, 164, 255, 0.14);
 }
 
 @media (min-width: 1280px) {
@@ -149,7 +151,6 @@
   .dark {
     --muted-foreground: #cbd5e8;
     --border: #5a6d92;
-    --ring-3: #5a6d92;
   }
 }
 
@@ -280,6 +281,14 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-code: var(--code-bg);
+  --color-code-foreground: var(--code-fg);
+  --color-code-muted: var(--code-muted);
+  --color-code-border: var(--code-border);
+  --color-code-accent: var(--code-accent);
+  --color-on-dark-muted: var(--on-dark-muted);
+  --color-on-dark-subtle: var(--on-dark-subtle);
   --animate-shiny-text: shiny-text 8s infinite;
   @keyframes shiny-text {
     0%,
