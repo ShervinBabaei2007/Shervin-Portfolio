@@ -346,7 +346,7 @@ function GitHubActivity() {
               <label className="flex items-center gap-2.5 text-sm text-muted-foreground">
                 Show commits for
                 <select
-                  className="h-10 max-w-[16rem] rounded-md border bg-card px-2.5 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                  className="h-10 max-w-[16rem] rounded-md border border-input bg-card px-2.5 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                   value={selectedDay ?? ''}
                   onFocus={() => void loadCommits()}
                   onChange={(event) => chooseDay(event.target.value)}

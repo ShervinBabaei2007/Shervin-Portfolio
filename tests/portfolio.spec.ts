@@ -1203,6 +1203,45 @@ test('the matching-projects message appears inside the group of the skill you cl
   await expect(web).not.toContainText('matching')
 })
 
+test('form field outlines are at least 3:1 against the page and the card, in light and dark', async ({ browser }) => {
+  for (const theme of ['light', 'dark']) {
+    const context = await browser.newContext()
+    await context.addInitScript((value) => localStorage.setItem('color-scheme', value), theme)
+    const page = await context.newPage()
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+    const ratios = await page.evaluate(() => {
+      const rgb = (value: string) => (value.match(/\d+(\.\d+)?/g) ?? []).slice(0, 3).map(Number)
+      const luminance = (value: string) => {
+        const [r, g, b] = rgb(value).map((channel) => {
+          const v = channel / 255
+          return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4
+        })
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+      }
+      const ratio = (a: string, b: string) => {
+        const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x)
+        return (hi + 0.05) / (lo + 0.05)
+      }
+      // Resolve a token to an rgb() string by painting it on a probe element.
+      const resolve = (token: string) => {
+        const probe = document.createElement('span')
+        probe.style.color = `var(${token})`
+        document.body.append(probe)
+        const color = getComputedStyle(probe).color
+        probe.remove()
+        return color
+      }
+      const field = document.querySelector('#contact-email') as HTMLElement
+      const border = getComputedStyle(field).borderTopColor
+      return { page: ratio(border, resolve('--background')), card: ratio(border, resolve('--card')) }
+    })
+    expect(ratios.page, `${theme} against the page`).toBeGreaterThanOrEqual(3)
+    expect(ratios.card, `${theme} against a card`).toBeGreaterThanOrEqual(3)
+    await context.close()
+  }
+})
+
 test('the 404 page and the resume page offer a way onward', async ({ page }) => {
   await page.goto('/no-such-page')
   const onward = page.getByRole('navigation', { name: 'Where to go instead' })
