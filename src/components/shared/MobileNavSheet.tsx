@@ -25,7 +25,15 @@ type MobileNavSheetProps = {
 }
 
 /** The phone menu. Loaded on the first tap of the menu button (see SiteHeader), so the dialog code is not in every page. */
-function MobileNavSheet({ open, onOpenChange, links, socials, preference, onPreferenceChange, onClosed }: MobileNavSheetProps) {
+function MobileNavSheet({
+  open,
+  onOpenChange,
+  links,
+  socials,
+  preference,
+  onPreferenceChange,
+  onClosed,
+}: MobileNavSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
@@ -44,7 +52,7 @@ function MobileNavSheet({ open, onOpenChange, links, socials, preference, onPref
           {links.map((link) => (
             <SheetClose key={link.to} asChild>
               <Link
-                className="rounded-md px-3 py-3 text-base font-medium hover:bg-accent aria-[current]:bg-accent aria-[current]:text-primary"
+                className="rounded-md px-3 py-3 text-base font-medium hover:bg-accent focus-visible:bg-accent active:bg-accent/70 aria-[current]:bg-accent aria-[current]:text-primary"
                 to={link.to}
                 aria-current={link.current}
               >
@@ -69,13 +77,13 @@ function MobileNavSheet({ open, onOpenChange, links, socials, preference, onPref
             ))}
           </div>
           <div className="flex gap-1">
-          {socials.map(({ label, href, Icon, external }) => (
-            <Button key={label} asChild variant="outline" size="icon">
-              <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-                <Icon />
-              </a>
-            </Button>
-          ))}
+            {socials.map(({ label, href, Icon, external }) => (
+              <Button key={label} asChild variant="outline" size="icon">
+                <a href={href} aria-label={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
+                  <Icon />
+                </a>
+              </Button>
+            ))}
           </div>
         </div>
       </SheetContent>

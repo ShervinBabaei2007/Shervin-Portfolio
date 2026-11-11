@@ -27,7 +27,7 @@ const UtilityMenu = lazy(loadUtilityMenu)
 
 // The header shows only the section links and the Settings menu; the phone menu also lists the extra pages and socials.
 const navLinks = [
-  { to: '/#work', label: 'Work', section: 'work' },
+  { to: '/#work', label: 'Work', section: 'work', pages: ['/projects', '/work/'] },
   { to: '/#about', label: 'About', section: 'about' },
   { to: '/#contact', label: 'Contact', section: 'contact' },
 ] as const
@@ -64,6 +64,7 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
   /** `location` while its section is in view on the home page, `page` while you are on its own page. */
   const currentFor = (link: (typeof navLinks)[number] | (typeof moreLinks)[number]) => {
     if ('page' in link && pathname.startsWith(link.page)) return 'page' as const
+    if ('pages' in link && link.pages.some((page) => pathname.startsWith(page))) return 'page' as const
     if (pathname === '/' && 'section' in link && link.section === activeOwner) return 'location' as const
     return undefined
   }
@@ -97,7 +98,7 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
         {navLinks.map((link) => (
           <Link
             key={link.to}
-            className="relative inline-flex min-h-[var(--target)] items-center text-muted-foreground no-underline transition-colors after:absolute after:inset-x-0 after:bottom-1.5 after:h-0.5 after:rounded-full after:bg-primary after:opacity-0 after:transition-opacity hover:text-primary aria-[current]:text-foreground aria-[current]:after:opacity-100"
+            className="relative inline-flex min-h-[var(--target)] items-center text-muted-foreground no-underline transition-colors after:absolute after:inset-x-0 after:bottom-1.5 after:h-0.5 after:rounded-full after:bg-primary after:opacity-0 after:transition-opacity hover:text-primary focus-visible:text-foreground active:text-foreground aria-[current]:text-foreground aria-[current]:after:opacity-100"
             to={link.to}
             aria-current={currentFor(link)}
           >
@@ -111,11 +112,7 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
           {moreMenuWanted ? (
             <LazyBoundary label="Settings menu" fallback={moreButton} onFail={() => setMoreMenuWanted(false)}>
               <Suspense fallback={moreButton}>
-                <UtilityMenu
-                  preference={preference}
-                  onPreferenceChange={onPreferenceChange}
-                  defaultOpen
-                />
+                <UtilityMenu preference={preference} onPreferenceChange={onPreferenceChange} defaultOpen />
               </Suspense>
             </LazyBoundary>
           ) : (

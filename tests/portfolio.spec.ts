@@ -1197,6 +1197,14 @@ test('the matching-projects message appears inside the group of the skill you cl
   await expect(web).not.toContainText('matching')
 })
 
+test('Work is marked as the current page on the projects page and on a case study', async ({ page }) => {
+  for (const path of ['/projects', '/work/skillmatch']) {
+    await page.goto(path)
+    const nav = page.getByRole('navigation', { name: 'Main navigation' })
+    await expect(nav.getByRole('link', { name: 'Work' })).toHaveAttribute('aria-current', 'page')
+  }
+})
+
 test('moving quickly between skills never leaves two tooltips open', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('networkidle')
