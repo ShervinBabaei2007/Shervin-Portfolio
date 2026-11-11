@@ -1,6 +1,6 @@
 /**
- * Two button colours carry the site's navigation: blue (the default button) for projects, and teal (`writeup`) for
- * writeups. `ink` is the neutral dark style, kept for the resume and the closing call to action.
+ * Three button colours: blue (the default button, for external actions such as Launch Live App), dark ink (`ink`,
+ * for navigation to projects and the resume) and teal (`writeup`, for writeups).
  * Do not add another colour anywhere (errors use ink, not red).
  */
 export const tone = {
