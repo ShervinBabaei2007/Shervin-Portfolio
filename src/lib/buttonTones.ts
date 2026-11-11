@@ -1,8 +1,9 @@
 /**
- * The whole site uses three colours at most: blue (the default button and accent) and the dark ink of the text.
- * `ink` is the one non-blue button style: navigation to projects, the resume and the writeups.
+ * Two button colours carry the site's navigation: blue (the default button) for projects, and teal (`writeup`) for
+ * writeups. `ink` is the neutral dark style, kept for the resume and the closing call to action.
  * Do not add another colour anywhere (errors use ink, not red).
  */
 export const tone = {
   ink: 'bg-foreground text-background hover:bg-foreground/90',
+  writeup: 'bg-[var(--writeup)] text-[var(--writeup-foreground)] hover:bg-[var(--writeup)]/90',
 }

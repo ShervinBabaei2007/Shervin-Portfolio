@@ -85,7 +85,7 @@ function WriteupsIndexPage() {
 
   return (
     <section className="section-wrap page-y" aria-labelledby="writeups-index-title">
-      <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
+      <Button asChild size="lg" className="font-semibold shadow-md">
         <Link to="/projects">
           <ArrowLeft size={16} aria-hidden="true" /> Back to projects
         </Link>
@@ -190,7 +190,7 @@ function WriteupsIndexPage() {
               <Button
                 type="button"
                 size="lg"
-                className={cn('font-semibold shadow-md', tone.ink)}
+                className={cn('font-semibold shadow-md', tone.writeup)}
                 onClick={() => setVisible((count) => count + PAGE_SIZE)}
               >
                 Show more writeups ({matches.length - shown.length} left)

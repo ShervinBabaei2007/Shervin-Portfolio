@@ -29,7 +29,7 @@ function ProjectsPage() {
         id="projects-title"
         title="Everything I've built"
         action={
-          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
+          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.writeup)}>
             <Link to="/writeups">
               <NotebookPen size={16} /> Writeups <ArrowRight size={15} />
             </Link>

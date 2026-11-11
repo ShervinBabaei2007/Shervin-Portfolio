@@ -68,12 +68,12 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
       )}
       {!activeSkill && (
         <div className="mt-[var(--space-block)] flex flex-wrap gap-3">
-          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
+          <Button asChild size="lg" className="font-semibold shadow-md">
             <Link to="/projects">
               View all projects <ArrowRight size={15} />
             </Link>
           </Button>
-          <Button asChild size="lg" variant="outline" className="font-semibold">
+          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.writeup)}>
             <Link to="/writeups">
               Read my writeups <ArrowUpRight size={15} />
             </Link>

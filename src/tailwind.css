@@ -56,6 +56,8 @@
   --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --display: var(--font-body);
   --accent-dark: #3340c0;
+  --writeup: #0f766e; /* writeups button: 5.5:1 under white text */
+  --writeup-foreground: #ffffff;
   --grid-line: rgba(12, 26, 51, 0.02);
   --ring-2: #c9d3e6; /* hero orbit, dashed */
   --ring-3: #dce3ef; /* hero orbit, outer */
@@ -92,6 +94,8 @@
 
 .dark {
   --accent-dark: #b0c1ff;
+  --writeup: #5eead4;
+  --writeup-foreground: #0a1122;
   --grid-line: rgba(148, 163, 192, 0.03);
   --ring-2: #2a3a5c;
   --ring-3: #22304d;
