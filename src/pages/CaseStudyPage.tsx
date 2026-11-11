@@ -158,12 +158,7 @@ function CaseStudyPage() {
           <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
             {project.stack.map((t) => (
               <li key={t}>
-                <Badge
-                  variant="outline"
-                  className="rounded-md border-primary/40 bg-primary/10 px-3 py-1 font-mono text-[.8125rem] font-medium text-foreground"
-                >
-                  {t}
-                </Badge>
+                <Badge className="rounded-md px-3 py-1 font-mono text-[.8125rem]">{t}</Badge>
               </li>
             ))}
           </ul>
