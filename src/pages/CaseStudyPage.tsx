@@ -81,7 +81,7 @@ function CaseStudyPage() {
 
       {/* Title block on the left, actions on the right (stacked above the phone breakpoint's wide layout), summary card below. */}
       <header className="mt-[18px]">
-        <div className="grid gap-6 min-[1024px]:grid-cols-[minmax(0,1fr)_16rem] min-[1024px]:items-end min-[1024px]:gap-12">
+        <div className="grid gap-6 min-[1024px]:grid-cols-[minmax(0,1fr)_23rem] min-[1024px]:items-start min-[1024px]:gap-12">
           <div>
             <p className="eyebrow">
               {project.category.toUpperCase()} <span className="text-muted-foreground">/</span>{' '}
@@ -96,9 +96,9 @@ function CaseStudyPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 min-[1024px]:flex-col min-[1024px]:items-stretch min-[1024px]:gap-2.5">
+          <div className="flex flex-wrap items-center gap-3 min-[1024px]:grid min-[1024px]:grid-cols-2 min-[1024px]:gap-2.5">
             {project.live && (
-              <Button asChild size="lg" className={actionButton}>
+              <Button asChild size="lg" className={cn(actionButton, 'min-[1024px]:col-span-2')}>
                 <a href={project.live} target="_blank" rel="noreferrer">
                   Live project <ArrowUpRight />
                 </a>
