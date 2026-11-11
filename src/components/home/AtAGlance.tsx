@@ -48,7 +48,7 @@ function AtAGlance() {
                 <Link
                   className="flex h-full flex-col px-8 py-8 no-underline transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring max-[620px]:px-5 max-[620px]:py-6"
                   to={to}
-                  aria-label={`${prefix ? `${prefix} ` : ''}${value} ${label}, ${detail}`}
+                  aria-label={`${prefix ? `${prefix} ` : ''}${value.toLocaleString('en-CA')} ${label}, ${detail}`}
                 >
                   <p className="text-[clamp(2.25rem,1.6rem+2vw,3.25rem)] leading-none font-semibold tracking-tight tabular-nums">
                     {prefix && (
