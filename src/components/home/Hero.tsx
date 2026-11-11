@@ -1,9 +1,12 @@
 import { ArrowDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { facts } from '@/data/facts'
+import { projects } from '@/data/projects'
 import { site } from '@/data/site'
 import { Button } from '@/components/ui/button'
 import RequestTrace from '@/components/home/RequestTrace'
+
+const liveCount = projects.filter((project) => project.live).length
 
 function Hero() {
   return (
@@ -24,8 +27,8 @@ function Hero() {
           Full-stack developer who goes <span>down the stack.</span>
         </h1>
         <p className="mt-6 measure text-[1.125rem] leading-[1.7] text-muted-foreground max-[620px]:text-base">
-          I&apos;m {site.name}. I build with React, TypeScript, Node.js and PostgreSQL, and I test what I ship:{' '}
-          {facts.tests.unit.toLocaleString('en-CA')} unit tests on my biggest solo project.
+          I&apos;m {site.name}, a BCIT student who builds complete web apps, from the screen to the database, and puts
+          them online. {liveCount} are live today, built with React, TypeScript, Node.js and PostgreSQL.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Button asChild size="lg" className="h-[46px] px-[17px] text-control font-semibold">
