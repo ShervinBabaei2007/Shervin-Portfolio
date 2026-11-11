@@ -160,7 +160,7 @@ function CaseStudyPage() {
               <li key={t}>
                 <Badge
                   variant="outline"
-                  className="rounded-md border-border bg-card px-3 py-1 font-mono text-[.8125rem] font-medium text-foreground shadow-sm"
+                  className="rounded-md border-primary/40 bg-primary/10 px-3 py-1 font-mono text-[.8125rem] font-medium text-foreground"
                 >
                   {t}
                 </Badge>
