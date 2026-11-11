@@ -153,12 +153,15 @@ function CaseStudyPage() {
           ))}
         </dl>
 
-        <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2">
+        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2.5">
           <h2 className="eyebrow uppercase">Built with</h2>
-          <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+          <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
             {project.stack.map((t) => (
               <li key={t}>
-                <Badge variant="outline" className="rounded-none font-mono font-normal">
+                <Badge
+                  variant="outline"
+                  className="rounded-md border-border bg-card px-3 py-1 font-mono text-[.8125rem] font-medium text-foreground shadow-sm"
+                >
                   {t}
                 </Badge>
               </li>
