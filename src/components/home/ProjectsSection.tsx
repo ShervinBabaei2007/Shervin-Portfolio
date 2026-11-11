@@ -47,24 +47,27 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
         </p>
       )}
       {shown.length > 0 && (
-        <Carousel
-          opts={{ align: 'start', breakpoints: { '(min-width: 768px)': { active: false } } }}
-          aria-label="Featured projects"
-          className="w-full"
-        >
-          <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:items-start md:gap-[var(--space-card)]">
-            {shown.map((project, index) => (
-              <CarouselItem
-                key={project.slug}
-                className="basis-[88%] sm:basis-[70%] md:basis-auto md:pl-0 [&>*]:h-full"
-              >
-                <ProjectCard project={project} revealDelay={(index % 2) * 0.08} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="hidden sm:inline-flex md:hidden" />
-          <CarouselNext className="hidden sm:inline-flex md:hidden" />
-        </Carousel>
+        // Keyed on the filter, so the cards fade in when a skill is picked instead of snapping (never on first load).
+        <div key={activeSkill ?? 'all'} className={activeSkill ? 'motion-safe:animate-page-in' : undefined}>
+          <Carousel
+            opts={{ align: 'start', breakpoints: { '(min-width: 768px)': { active: false } } }}
+            aria-label="Featured projects"
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4 md:ml-0 md:grid md:grid-cols-2 md:items-start md:gap-[var(--space-card)]">
+              {shown.map((project, index) => (
+                <CarouselItem
+                  key={project.slug}
+                  className="basis-[88%] sm:basis-[70%] md:basis-auto md:pl-0 [&>*]:h-full"
+                >
+                  <ProjectCard project={project} revealDelay={(index % 2) * 0.08} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden sm:inline-flex md:hidden" />
+            <CarouselNext className="hidden sm:inline-flex md:hidden" />
+          </Carousel>
+        </div>
       )}
       {!activeSkill && (
         <div className="mt-[var(--space-block)] flex flex-wrap gap-3">
