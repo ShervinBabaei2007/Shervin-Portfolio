@@ -602,7 +602,7 @@ test.describe('the end of a page', () => {
     const cta = page.getByRole('region', { name: 'Working on something like SkillMatch?' })
     await expect(cta.getByRole('link', { name: /Get in touch/ })).toHaveAttribute('href', '/#contact')
     await expect(cta.getByRole('link', { name: /View resume/ })).toHaveAttribute('href', '/resume')
-    await expect(cta.getByRole('link', { name: /All projects/ })).toHaveAttribute('href', '/#work')
+    await expect(cta.getByRole('link', { name: /All projects/ })).toHaveAttribute('href', '/projects')
     await cta.getByRole('link', { name: /Get in touch/ }).click()
     await expect(page).toHaveURL(/\/#contact$/)
     await expect(page.locator('#contact')).toBeInViewport()
@@ -1201,6 +1201,32 @@ test('the matching-projects message appears inside the group of the skill you cl
   await page.getByRole('button', { name: /using Vercel$/ }).click()
   await expect(tools).toContainText('matching')
   await expect(web).not.toContainText('matching')
+})
+
+test('the 404 page and the resume page offer a way onward', async ({ page }) => {
+  await page.goto('/no-such-page')
+  const onward = page.getByRole('navigation', { name: 'Where to go instead' })
+  await expect(onward.getByRole('link')).toHaveCount(4)
+  await expect(onward.getByRole('link', { name: 'Read the writeups' })).toHaveAttribute('href', '/writeups')
+
+  await page.goto('/resume')
+  await expect(page.getByRole('link', { name: 'See the work behind it' })).toHaveAttribute('href', '/projects')
+})
+
+test('on a tablet the skill groups sit two to a row', async ({ page }) => {
+  await page.setViewportSize({ width: 768, height: 1024 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const tops = await page
+    .locator('#skills [data-skill-group]')
+    .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top + window.scrollY)))
+  expect(new Set(tops).size).toBe(3)
+})
+
+test('a case study states its key result in plain words', async ({ page }) => {
+  await page.goto('/work/skillmatch')
+  const glance = page.getByLabel('At a glance')
+  await expect(glance).toContainText('I made 105 of the team’s 199 commits')
 })
 
 test('Work is marked as the current page on the projects page and on a case study', async ({ page }) => {

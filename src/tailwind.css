@@ -94,8 +94,8 @@
 
 .dark {
   --accent-dark: #b0c1ff;
-  --writeup: #5eead4;
-  --writeup-foreground: #0a1122;
+  --writeup: #0f766e;
+  --writeup-foreground: #ffffff;
   --grid-line: rgba(148, 163, 192, 0.03);
   --ring-2: #2a3a5c;
   --ring-3: #22304d;

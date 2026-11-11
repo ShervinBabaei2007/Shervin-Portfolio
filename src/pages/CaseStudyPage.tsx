@@ -44,7 +44,7 @@ function CaseStudyPage() {
     relatedNotes.length === 1 ? `/writeups/${relatedNotes[0].slug}` : `/writeups?project=${project.slug}`
   const glance: [string, string][] = [
     ['MY ROLE', project.role],
-    ['KEY RESULT', project.highlight],
+    ['KEY RESULT', project.result],
     ...(project.signal
       ? ([
           ['DECISION', project.signal.decision],
@@ -120,7 +120,7 @@ function CaseStudyPage() {
             )}
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               size="lg"
               className={actionButton}
               onClick={() => void copy(`${site.url}/work/${project.slug}`)}

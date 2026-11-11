@@ -41,7 +41,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
           aria-label="Skill groups"
           className="w-full"
         >
-          <CarouselContent className="-ml-4 min-[621px]:ml-0 min-[621px]:grid min-[621px]:items-stretch min-[621px]:gap-6 lg:grid-cols-3">
+          <CarouselContent className="-ml-4 min-[621px]:ml-0 min-[621px]:grid min-[621px]:grid-cols-2 min-[621px]:items-stretch min-[621px]:gap-6 lg:grid-cols-3">
             {groups.map((group, index) => (
               <CarouselItem key={group.id} className="basis-[88%] min-[621px]:basis-auto min-[621px]:pl-0 [&>*]:h-full">
                 <Reveal delay={index * 0.08}>

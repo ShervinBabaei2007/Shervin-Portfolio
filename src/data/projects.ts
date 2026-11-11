@@ -148,7 +148,7 @@ export const projects: Project[] = [
       'Wrote safe-fetch, the only path for fetching outside URLs: it refuses private and reserved addresses, pins the connection to the addresses it just checked, and follows redirects by hand.',
       'Built Discover, a research assistant over public sources that verifies each fact against the source page and drops any quote it cannot find, with scores computed by visible rules rather than a model.',
       'Built the Jobs search over employers’ own boards, where a posting gets an Apply button only after its link is verified.',
-      'Wrote 1,523 unit tests and 305 pgTAP database tests, and ran axe-core accessibility scans in the Playwright end-to-end suite, with CI on GitHub Actions.',
+      'Wrote 1,523 unit tests and 305 pgTAP tests (checks that run inside the database itself), and ran axe-core accessibility scans in the Playwright end-to-end suite, with CI on GitHub Actions.',
     ],
     outcome:
       'A deployed app on Vercel and Supabase that never scrapes LinkedIn, never sends anything for you, and shows progress that cannot be inflated by pending invitations.',
@@ -239,7 +239,8 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     result: hackathonLine,
     signal: {
       ownership: 'Sign-in, navigation, profile UI, and the Auth0-to-GitHub entry path.',
-      decision: 'Use managed OAuth in a 24-hour sprint and remove an unnecessary provider-selection step.',
+      decision:
+        'Use managed OAuth (a ready-made “sign in with GitHub” service) in a 24-hour sprint and remove an unnecessary provider-selection step.',
       evidence: `Working live demo; the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
     },
     overview: [
@@ -591,7 +592,8 @@ const ratelimiter = async (req, res, next) => {
     result: 'Fixed a bug that silenced the bot for everyone while the AI was thinking',
     signal: {
       ownership: 'Discord command flow, local LM Studio bridge, error handling, and the async fix.',
-      decision: 'Move the blocking request off the event loop before considering a full async-client rewrite.',
+      decision:
+        'Move the blocking request off the event loop (the part of a program that handles one task at a time) before considering a full async-client rewrite.',
       evidence: 'Source excerpt and an engineering note that explains the failure mode and trade-off.',
     },
     overview: [
@@ -1424,7 +1426,8 @@ app.post("/api/links", requireAuth, async (req, res) => {
     outcome: 'Two working scripts, one for structured output and one for asking questions about a document.',
     tradeoff:
       'Everything runs locally, so there is no API cost and no data leaves the machine, but answer quality is limited by the size of the model I can run.',
-    learned: 'Most of a RAG system’s quality comes from how the document is chunked and retrieved, not from the model.',
+    learned:
+      'Most of a RAG system’s quality (RAG means the AI looks up the relevant part of a document before it answers) comes from how the document is chunked and retrieved, not from the model.',
     next: 'Add citations that point to the retrieved chunk and a small set of test questions to compare chunk sizes.',
     architecture: [
       { label: 'PDF loader', detail: 'LangChain' },
