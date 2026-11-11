@@ -690,8 +690,8 @@ test.describe('tools cards', () => {
 
 test('every featured project card has the same size of picture area, on desktop and on a phone', async ({ page }) => {
   for (const [width, expected] of [
-    [1440, 240],
-    [390, 220],
+    [1440, 208],
+    [390, 190],
   ] as const) {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')

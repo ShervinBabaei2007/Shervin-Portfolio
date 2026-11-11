@@ -17,10 +17,10 @@ import WindowFrame from '@/components/shared/WindowFrame'
 import { cn } from '@/lib/utils'
 
 /**
- * The decorative thumbnail area: one fixed height for every card, so a row of cards lines up whatever it shows
- * (a screenshot, code or a terminal), on a dotted backdrop.
+ * The thumbnail area: one fixed height for every card, so a row of cards lines up whatever it shows
+ * (a screenshot, code or a terminal).
  */
-const mediaBase = cn('relative z-[1] h-[240px] overflow-hidden bg-muted max-[620px]:h-[220px]')
+const mediaBase = cn('relative z-[1] h-[208px] overflow-hidden bg-muted max-[620px]:h-[190px]')
 const visualClass = cn(mediaBase, 'grid place-items-center px-7 py-[19px] max-[620px]:p-4')
 
 const catalog = images as Record<string, { width: number; height: number }>
@@ -133,7 +133,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
     <Reveal delay={revealDelay}>
       <article className={card} data-project-card>
         <Link
-          className="flex w-full flex-1 flex-col text-left no-underline focus-visible:-outline-offset-3"
+          className="group flex w-full flex-1 flex-col text-left no-underline focus-visible:-outline-offset-3"
           to={`/work/${project.slug}`}
           aria-label={`${project.name} case study`}
         >
@@ -143,7 +143,14 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
               <span>{project.category}</span>
               <span>{project.date}</span>
             </div>
-            <h3 className="mt-4 text-h3 font-semibold">{project.name}</h3>
+            <h3 className="mt-4 flex items-center gap-2 text-h3 font-semibold">
+              {project.name}
+              <ArrowUpRight
+                size={18}
+                className="shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
+                aria-hidden="true"
+              />
+            </h3>
             <p className="mt-2 font-semibold">{project.tagline}</p>
             <p className="mt-3 line-clamp-2 leading-[1.7] text-muted-foreground">{project.nonTechnicalSummary}</p>
             <p className="mt-4 min-h-[2lh] text-sm leading-snug font-semibold" data-card-result>

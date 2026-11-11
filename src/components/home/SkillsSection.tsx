@@ -5,6 +5,7 @@ import Reveal from '@/components/shared/Reveal'
 import SectionHeading from '@/components/shared/SectionHeading'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { projects } from '@/data/projects'
 import { projectsUsing, skillTabs } from '@/data/skills'
 import { cn, textLinkClass } from '@/lib/utils'
 
@@ -12,6 +13,13 @@ type SkillsSectionProps = {
   activeSkill: string | null
   onSkillSelect: (skill: string, trigger: HTMLElement) => void
 }
+
+/** Each group's skills, most-used first, and how many different projects the group appears in. */
+const groups = skillTabs.map((group) => ({
+  ...group,
+  skills: [...group.skills].sort((a, b) => projectsUsing(b.name).length - projectsUsing(a.name).length),
+  projectCount: new Set(group.skills.flatMap((skill) => projectsUsing(skill.name).map((project) => project.slug))).size,
+}))
 
 function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
   const matches = activeSkill ? projectsUsing(activeSkill).length : 0
@@ -27,16 +35,19 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
       />
       <TooltipProvider delayDuration={120} skipDelayDuration={400} disableHoverableContent>
         <div className="grid items-stretch gap-6 lg:grid-cols-3">
-          {skillTabs.map((group, index) => (
+          {groups.map((group, index) => (
             <Reveal key={group.id} delay={index * 0.08}>
               <Card data-skill-group className="gap-5">
                 <CardHeader className="max-[620px]:px-4">
                   <CardTitle className="text-lg">{group.label}</CardTitle>
                   <CardDescription className="text-meta">{group.summary}</CardDescription>
+                  <p className="mt-1 font-mono text-label text-muted-foreground">
+                    Used in {group.projectCount} of {projects.length} projects
+                  </p>
                 </CardHeader>
                 {/* A container query, so tiles pair up when the card is wide enough rather than by screen width. */}
                 <CardContent className="@container max-[620px]:px-4">
-                  <ul className="grid grid-cols-1 gap-3 @[17.5rem]:grid-cols-2 @[42rem]:grid-cols-3">
+                  <ul className="grid grid-cols-1 gap-2.5 min-[621px]:gap-3 @[17.5rem]:grid-cols-2 @[42rem]:grid-cols-3">
                     {group.skills.map(({ name, note }) => {
                       const used = projectsUsing(name)
                       return (
@@ -46,7 +57,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                               <button
                                 type="button"
                                 className={cn(
-                                  'group flex w-full items-center gap-3 rounded-lg border bg-background/40 p-4 text-left transition-colors',
+                                  'group flex w-full items-center gap-2.5 rounded-lg border bg-background/40 p-3 text-left transition-colors min-[621px]:gap-3 min-[621px]:p-4',
                                   'hover:border-primary aria-pressed:border-primary aria-pressed:bg-primary/10',
                                 )}
                                 aria-pressed={activeSkill === name}
@@ -57,7 +68,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                                   name={name}
                                   className="text-muted-foreground transition-colors group-hover:text-primary group-aria-pressed:text-primary"
                                 />
-                                <span className="text-[.9375rem] font-medium">{name}</span>
+                                <span className="text-[.9375rem] font-medium max-[620px]:text-[.875rem]">{name}</span>
                               </button>
                             </TooltipTrigger>
                             <TooltipContent
