@@ -120,7 +120,7 @@ function CaseStudyPage() {
             )}
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               size="lg"
               className={actionButton}
               onClick={() => void copy(`${site.url}/work/${project.slug}`)}
