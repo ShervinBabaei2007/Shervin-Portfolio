@@ -38,7 +38,7 @@ function ClosingCta({ heading, body }: ClosingCtaProps) {
               View resume <FileText />
             </Link>
           </Button>
-          <Link className={`${textLinkClass} min-h-11 text-control text-primary`} to="/#work">
+          <Link className={`${textLinkClass} min-h-11 text-control text-primary`} to="/projects">
             All projects <ArrowUpRight size={15} />
           </Link>
         </div>

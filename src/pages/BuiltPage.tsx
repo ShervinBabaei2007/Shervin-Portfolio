@@ -1,4 +1,5 @@
 import { ArrowUpRight } from 'lucide-react'
+import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import PageIntro from '@/components/shared/PageIntro'
 import { textLinkClass } from '@/lib/utils'
 import { site } from '../data/site'
@@ -10,19 +11,19 @@ const sections = [
   },
   {
     title: 'Every page is real HTML',
-    body: 'At build time each route (home, resume, and one page per project) is rendered to static HTML, then React attaches to it in the browser. Pages load with content before any JavaScript runs, each has its own title, description, canonical URL, and share image, and search engines and link previews see the full text.',
+    body: 'At build time each route (home, resume, and one page per project) is rendered to static HTML, then React attaches to it in the browser. “Prerendered” just means the page arrives already written out, not assembled afterwards. Pages load with content before any JavaScript runs, each has its own title, description, canonical URL, and share image, and search engines and link previews see the full text.',
   },
   {
     title: 'Tested like a product',
-    body: 'Playwright drives a real browser through the site on desktop and mobile sizes: the skill filter, case-study pages, the resume, theme persistence, and the absence of horizontal scrolling. Each run also scans pages with axe-core and fails on any accessibility violation. The same checks, plus ESLint and Prettier, run in CI on every push.',
+    body: 'Playwright drives a real browser through the site on desktop and mobile sizes: the skill filter, case-study pages, the resume, theme persistence, and the absence of horizontal scrolling. Each run also scans pages with axe-core (an automatic accessibility checker) and fails on any accessibility violation. The same checks, plus ESLint and Prettier, run in CI on every push.',
   },
   {
     title: 'Accessibility',
-    body: 'Keyboard focus is always visible, interactive targets are at least 44 pixels, and the site respects reduced motion, increased contrast, and Windows high-contrast mode. Colour pairs are checked for WCAG AA contrast in both themes.',
+    body: 'Keyboard focus is always visible, interactive targets are at least 44 pixels, and the site respects reduced motion, increased contrast, and Windows high-contrast mode. Colour pairs are checked for WCAG AA contrast (the common accessibility standard) in both themes.',
   },
   {
     title: 'Performance',
-    body: 'Each page loads only its own JavaScript: pages are split into separate chunks, and the prerendered HTML preloads exactly the chunk it needs, then fetches the rest in the background so navigating is instant. Heavier pieces, such as the search dialog and the quick-look drawer, load the first time you open them. One hashed stylesheet is cached once and reused on every page. Fonts are self-hosted, subset to Latin, and the two used above the fold are preloaded. Screenshots carry their real width and height to avoid layout shift, and phones get a smaller copy through srcset.',
+    body: 'Each page loads only its own JavaScript: pages are split into separate chunks, and the prerendered HTML preloads exactly the chunk it needs, then fetches the rest in the background so navigating is instant. Heavier pieces, such as the search dialog and the quick-look drawer, load the first time you open them. One hashed stylesheet is cached once and reused on every page. Fonts are self-hosted, subset to Latin, and the two used above the fold are preloaded. Screenshots carry their real width and height to avoid layout shift (content jumping around as the page loads), and phones get a smaller copy of each image.',
   },
   {
     title: 'Honest content',
@@ -33,6 +34,7 @@ const sections = [
 function BuiltPage() {
   return (
     <article className="section-wrap page-y" aria-labelledby="built-title">
+      <PageBreadcrumb trail={[{ label: 'Home', to: '/' }]} current="How this site is built" />
       <PageIntro
         eyebrow="COLOPHON"
         id="built-title"

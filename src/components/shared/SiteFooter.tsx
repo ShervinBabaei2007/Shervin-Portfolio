@@ -5,6 +5,7 @@ const footerLinks = [
   { to: '/projects', label: 'All projects' },
   { to: '/writeups', label: 'All writeups' },
   { to: '/resume', label: 'Resume page' },
+  { to: '/lab', label: 'Rate-limiter lab' },
   { to: '/how-its-built', label: 'How this site is built' },
 ]
 

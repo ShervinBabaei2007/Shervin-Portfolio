@@ -1,4 +1,5 @@
-import { cn } from '@/lib/utils'
+import { Link } from 'react-router-dom'
+import { cn, textLinkClass } from '@/lib/utils'
 import { resume } from '../data/resume'
 import { Button } from '@/components/ui/button'
 import { tone } from '@/lib/buttonTones'
@@ -16,7 +17,7 @@ const link = cn(accent, 'font-semibold underline underline-offset-[3px]', tapTar
 const section = 'mt-8 print:mt-[5pt]'
 const sectionHeading = cn(
   accent,
-  'mb-3 border-b border-[var(--resume-accent)] pb-1 text-[.8125rem] leading-[normal] font-bold tracking-[.1em] uppercase print:mb-[4pt] print:pb-[1.5pt] print:text-[10pt] print:break-after-avoid',
+  'mb-3 border-b border-[var(--resume-accent)] pb-1 text-[.8125rem] leading-[normal] font-bold tracking-[.1em] uppercase print:mb-[4pt] print:break-after-avoid print:pb-[1.5pt] print:text-[10pt]',
 )
 // Plain strings, not cn: tailwind-merge would drop the leading-* when a text-* size follows it.
 const body = 'text-[.9375rem] leading-[1.55] print:text-[9.5pt] print:leading-[1.25]'
@@ -43,7 +44,10 @@ function ResumePage() {
 
       <div className="resume-sheet mt-6 rounded-xl border bg-card px-10 pt-9 pb-10 max-[620px]:px-[18px] max-[620px]:pt-[22px] max-[620px]:pb-[26px] print:m-0 print:rounded-none print:border-0 print:bg-transparent print:p-0 print:text-[10pt]">
         <header className="text-center">
-          <h1 id="resume-title" className={cn(accent, 'text-[2.75rem] leading-[1.05] font-bold tracking-tight print:text-[30pt]')}>
+          <h1
+            id="resume-title"
+            className={cn(accent, 'text-[2.75rem] leading-[1.05] font-bold tracking-tight print:text-[30pt]')}
+          >
             {resume.name}
           </h1>
           <p className="mt-1.5 text-[1.25rem] text-muted-foreground print:mt-[2pt] print:text-[12.5pt]">
@@ -113,7 +117,9 @@ function ResumePage() {
                   {project.detail && <span className="font-normal">, {project.detail}</span>}
                 </strong>
                 {project.links && (
-                  <p className={`${body} order-2 flex basis-full flex-wrap gap-x-2.5 gap-y-1 print:order-none print:basis-auto`}>
+                  <p
+                    className={`${body} order-2 flex basis-full flex-wrap gap-x-2.5 gap-y-1 print:order-none print:basis-auto`}
+                  >
                     {project.links.map((item) => (
                       <a
                         className={cn(link, 'inline-flex min-h-7 items-center print:min-h-0 pointer-coarse:min-h-11')}
@@ -150,6 +156,14 @@ function ResumePage() {
           ))}
         </section>
       </div>
+      <p className="mt-8 flex flex-wrap gap-x-6 gap-y-1 print:hidden">
+        <Link className={`${textLinkClass} min-h-11`} to="/projects">
+          See the work behind it
+        </Link>
+        <Link className={`${textLinkClass} min-h-11`} to="/#contact">
+          Get in touch
+        </Link>
+      </p>
     </article>
   )
 }

@@ -2,6 +2,7 @@ import { ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import PageIntro from '@/components/shared/PageIntro'
 import { Button } from '@/components/ui/button'
+import { textLinkClass } from '@/lib/utils'
 
 function NotFoundPage() {
   return (
@@ -17,6 +18,18 @@ function NotFoundPage() {
           <ArrowLeft /> Go to the home page
         </Link>
       </Button>
+      <nav className="mt-8 flex flex-wrap gap-x-6" aria-label="Where to go instead">
+        {[
+          { to: '/#work', label: 'See the work' },
+          { to: '/writeups', label: 'Read the writeups' },
+          { to: '/resume', label: 'View the resume' },
+          { to: '/#contact', label: 'Get in touch' },
+        ].map(({ to, label }) => (
+          <Link key={to} className={`${textLinkClass} min-h-11`} to={to}>
+            {label}
+          </Link>
+        ))}
+      </nav>
     </section>
   )
 }
