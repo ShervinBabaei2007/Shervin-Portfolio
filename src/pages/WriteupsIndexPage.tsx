@@ -85,7 +85,7 @@ function WriteupsIndexPage() {
 
   return (
     <section className="section-wrap page-y" aria-labelledby="writeups-index-title">
-      <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
+      <Button asChild size="lg" className={cn('mb-[var(--space-block)] font-semibold shadow-md', tone.ink)}>
         <Link to="/projects">
           <ArrowLeft size={16} aria-hidden="true" /> Back to projects
         </Link>
