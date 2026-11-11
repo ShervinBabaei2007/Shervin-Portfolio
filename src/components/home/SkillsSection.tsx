@@ -82,12 +82,24 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                     })}
                   </ul>
                   {group.skills.some((skill) => skill.name === activeSkill) && (
-                    <p className="mt-4 border-t pt-3 text-sm text-muted-foreground" aria-live="polite">
-                      {matches} matching {matches === 1 ? 'project' : 'projects'}.{' '}
-                      <a className="font-semibold text-primary underline-offset-4 hover:underline" href="#work">
-                        View matching work <ArrowUpRight className="inline size-3.5" />
-                      </a>
-                    </p>
+                    <div className="mt-4 border-t pt-3 text-sm text-muted-foreground" aria-live="polite">
+                      <p>
+                        {matches} matching {matches === 1 ? 'project' : 'projects'}.{' '}
+                        <a className="font-semibold text-primary underline-offset-4 hover:underline" href="#work">
+                          View matching work <ArrowUpRight className="inline size-3.5" />
+                        </a>
+                      </p>
+                      <p className="mt-2 leading-snug">
+                        {projectsUsing(activeSkill ?? '').map((project, position) => (
+                          <span key={project.slug}>
+                            {position > 0 && ' · '}
+                            <Link className={textLinkClass} to={`/work/${project.slug}`}>
+                              {project.name}
+                            </Link>
+                          </span>
+                        ))}
+                      </p>
+                    </div>
                   )}
                 </CardContent>
               </Card>

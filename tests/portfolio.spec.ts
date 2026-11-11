@@ -650,16 +650,16 @@ test('the case-study header puts the actions beside the title on desktop and bel
 })
 
 test.describe('tools cards', () => {
-  test('three cards sit side by side on desktop, every skill has a logo, and they stack on a phone', async ({
+  test('the six groups sit three to a row on desktop, every skill has a logo, and they stack on a phone', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto('/')
     await page.waitForLoadState('networkidle')
     const cards = page.locator('#skills [data-skill-group]')
-    await expect(cards).toHaveCount(3)
+    await expect(cards).toHaveCount(6)
     const tops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)))
-    expect(new Set(tops).size).toBe(1)
+    expect(new Set(tops).size).toBe(2)
     const tiles = page.locator('#skills button[aria-pressed]')
     const count = await tiles.count()
     expect(count).toBeGreaterThan(10)
@@ -670,7 +670,7 @@ test.describe('tools cards', () => {
 
     await page.setViewportSize({ width: 390, height: 844 })
     const phoneTops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)))
-    expect(new Set(phoneTops).size).toBe(3)
+    expect(new Set(phoneTops).size).toBe(6)
   })
 
   test('no skill tile is clipped at 360px, 390px or 1100px', async ({ page }) => {
@@ -1183,12 +1183,14 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
 test('the matching-projects message appears inside the group of the skill you clicked', async ({ page }) => {
   await page.goto('/')
   await page.waitForLoadState('networkidle')
-  const web = page.locator('#skills [data-skill-group]').filter({ hasText: 'Web & Full-Stack' })
-  const tools = page.locator('#skills [data-skill-group]').filter({ hasText: 'Tools & Infrastructure' })
+  const web = page.locator('#skills [data-skill-group]').filter({ hasText: 'Frontend' })
+  const tools = page.locator('#skills [data-skill-group]').filter({ hasText: 'Delivery & Testing' })
 
   await page.getByRole('button', { name: /using JavaScript$/ }).click()
   await expect(web).toContainText('matching')
   await expect(tools).not.toContainText('matching')
+  // The projects that use it are listed as links to their case studies.
+  await expect(web.getByRole('link', { name: 'Jinterest' })).toBeVisible()
 
   await page.getByRole('button', { name: /using Vercel$/ }).click()
   await expect(tools).toContainText('matching')
