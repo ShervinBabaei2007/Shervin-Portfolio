@@ -944,6 +944,9 @@ test('GitHub activity shows live recent commits, and hides itself when nothing i
   await expect(activity).toContainText('feat: live commit from the mock')
   await expect(activity).toContainText('2 days ago')
   await expect(activity).toContainText('Live from GitHub')
+  // The year grid stays folded until asked for.
+  await expect(activity.locator('[data-heatmap]')).toHaveCount(0)
+  await activity.getByRole('button', { name: 'Show full history' }).click()
   await expect(activity.locator('[data-heatmap]')).toBeVisible()
 
   const stale = await page.context().newPage()
@@ -972,6 +975,7 @@ test('the recent work list skips commits to this site, but the day view still sh
   await expect(panel).not.toContainText('chore: site-only commit')
   await expect(panel).toContainText('Nothing recent outside this site')
 
+  await activity.getByRole('button', { name: 'Show full history' }).click()
   await activity.locator(`[data-heatmap] [data-day="${recent.slice(0, 10)}"]`).click()
   await expect(panel).toContainText('chore: site-only commit')
 })
@@ -998,6 +1002,7 @@ test('commit history: select a day to list its commits, then go back to the late
   const activity = page.locator('[data-github]')
   await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
 
+  await activity.getByRole('button', { name: 'Show full history' }).click()
   const days = activity.locator('[data-heatmap] [data-day]')
   expect(await days.count()).toBeGreaterThan(10)
   await days.nth(3).click()

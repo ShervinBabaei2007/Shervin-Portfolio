@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { ArrowLeft, ArrowUpRight, Github } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, ChevronDown, Github } from 'lucide-react'
+import { Collapsible as CollapsiblePrimitive } from 'radix-ui'
 import snapshot from '@/data/github.json'
 import { site } from '@/data/site'
 import {
@@ -152,11 +153,13 @@ function GitHubActivity() {
     }
   }, [])
 
+  // The year grid and the day menu stay folded until asked for, so the card opens as stats plus recent work.
+  const [historyOpen, setHistoryOpen] = useState(false)
   const scroller = useRef<HTMLDivElement>(null)
   // On a narrow screen the grid scrolls sideways; start at the newest week.
   useEffect(() => {
     if (scroller.current) scroller.current.scrollLeft = scroller.current.scrollWidth
-  }, [data])
+  }, [data, historyOpen])
 
   if (!data) return null
 
@@ -207,8 +210,8 @@ function GitHubActivity() {
               <Github size={20} aria-hidden="true" /> Commit history
             </h3>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              The grid counts every commit to my public repositories over the last year. Select a day to see all of
-              them.
+              The numbers count every commit to my public repositories over the last year. Open the full history to see
+              them day by day.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -250,107 +253,124 @@ function GitHubActivity() {
           ))}
         </dl>
 
-        <div
-          ref={scroller}
-          className="mt-6 overflow-x-auto p-1 pb-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-          role="region"
-          aria-label="Commit activity by day. Scrolls sideways on small screens."
-          // A scrollable area must be reachable by keyboard (WCAG 2.1.1), or keyboard users cannot scroll it.
-          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-          tabIndex={0}
-        >
-          <div
-            className="grid min-w-[44rem] grid-cols-[auto_minmax(0,1fr)] gap-x-2.5 gap-y-1.5"
-            role="group"
-            aria-label={`Commit activity for the last year: ${stats.total} commits on ${stats.activeDays} days`}
-            data-heatmap
-          >
-            <span aria-hidden="true" />
-            <div className="grid gap-[3px] font-mono text-label text-muted-foreground" style={cols} aria-hidden="true">
-              {months.map(({ column, name }) => (
-                <span key={column} className="whitespace-nowrap" style={{ gridColumn: `${column + 1} / span 3` }}>
-                  {name}
-                </span>
-              ))}
-            </div>
-            <div className="grid grid-rows-7 gap-[3px] font-mono text-label text-muted-foreground" aria-hidden="true">
-              {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((day, index) => (
-                <span key={index} className="flex items-center leading-none">
-                  {day}
-                </span>
-              ))}
-            </div>
-            <div className="grid grid-flow-col grid-rows-7 gap-[3px]" style={cols}>
-              {weeks
-                .flatMap((week, column) => week.map((cell) => ({ ...cell, column })))
-                .map((cell) => {
-                  if (cell.future) return <span key={cell.day} aria-hidden="true" />
-                  const box = cn('aspect-square rounded-[3px]', levelClass[level(cell.count)])
-                  const stagger = { '--col': cell.column } as React.CSSProperties
-                  const noun = `commit${cell.count === 1 ? '' : 's'}`
-                  if (cell.count === 0) {
-                    return (
-                      <span
-                        key={cell.day}
-                        className={box}
-                        style={stagger}
-                        data-cell
-                        title={`No commits on ${cell.day}`}
-                        aria-hidden="true"
-                      />
-                    )
-                  }
-                  // The cells are 10px squares, too small to be touch targets of their own, so they are a pointer
-                  // shortcut only (hidden from assistive tech). The "Show commits for" menu below does the same for everyone.
-                  return (
-                    <span
-                      key={cell.day}
-                      className={cn(
-                        box,
-                        'cursor-pointer transition-shadow hover:ring-2 hover:ring-foreground/60',
-                        selectedDay === cell.day && 'ring-2 ring-foreground',
-                      )}
-                      title={`${cell.count} ${noun} on ${cell.day}`}
-                      style={stagger}
-                      data-cell
-                      data-day={cell.day}
-                      data-selected={selectedDay === cell.day}
-                      aria-hidden="true"
-                      onPointerEnter={() => void loadCommits()}
-                      onClick={() => selectDay(cell.day)}
-                    />
-                  )
-                })}
-            </div>
-          </div>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-          <label className="flex items-center gap-2.5 text-sm text-muted-foreground">
-            Show commits for
-            <select
-              className="h-10 max-w-[16rem] rounded-md border bg-card px-2.5 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-              value={selectedDay ?? ''}
-              onFocus={() => void loadCommits()}
-              onChange={(event) => chooseDay(event.target.value)}
+        <CollapsiblePrimitive.Root open={historyOpen} onOpenChange={setHistoryOpen}>
+          <CollapsiblePrimitive.Trigger asChild>
+            <Button type="button" variant="outline" size="sm" className="mt-6 gap-2">
+              {historyOpen ? 'Hide full history' : 'Show full history'}
+              <ChevronDown className={cn('transition-transform', historyOpen && 'rotate-180')} aria-hidden="true" />
+            </Button>
+          </CollapsiblePrimitive.Trigger>
+          <CollapsiblePrimitive.Content>
+            <div
+              ref={scroller}
+              className="mt-6 overflow-x-auto p-1 pb-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              role="region"
+              aria-label="Commit activity by day. Scrolls sideways on small screens."
+              // A scrollable area must be reachable by keyboard (WCAG 2.1.1), or keyboard users cannot scroll it.
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+              tabIndex={0}
             >
-              <option value="">Latest commits</option>
-              {activeDays.map(({ day, count }) => (
-                <option key={day} value={day}>
-                  {longDay(day)} ({count})
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="flex items-center gap-1.5 font-mono text-label text-muted-foreground" aria-hidden="true">
-            Less
-            {levelClass.map((name) => (
-              <span key={name} className={cn('size-3 rounded-[3px]', name)} />
-            ))}
-            More
-          </div>
-        </div>
+              <div
+                className="grid min-w-[44rem] grid-cols-[auto_minmax(0,1fr)] gap-x-2.5 gap-y-1.5"
+                role="group"
+                aria-label={`Commit activity for the last year: ${stats.total} commits on ${stats.activeDays} days`}
+                data-heatmap
+              >
+                <span aria-hidden="true" />
+                <div
+                  className="grid gap-[3px] font-mono text-label text-muted-foreground"
+                  style={cols}
+                  aria-hidden="true"
+                >
+                  {months.map(({ column, name }) => (
+                    <span key={column} className="whitespace-nowrap" style={{ gridColumn: `${column + 1} / span 3` }}>
+                      {name}
+                    </span>
+                  ))}
+                </div>
+                <div
+                  className="grid grid-rows-7 gap-[3px] font-mono text-label text-muted-foreground"
+                  aria-hidden="true"
+                >
+                  {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((day, index) => (
+                    <span key={index} className="flex items-center leading-none">
+                      {day}
+                    </span>
+                  ))}
+                </div>
+                <div className="grid grid-flow-col grid-rows-7 gap-[3px]" style={cols}>
+                  {weeks
+                    .flatMap((week, column) => week.map((cell) => ({ ...cell, column })))
+                    .map((cell) => {
+                      if (cell.future) return <span key={cell.day} aria-hidden="true" />
+                      const box = cn('aspect-square rounded-[3px]', levelClass[level(cell.count)])
+                      const stagger = { '--col': cell.column } as React.CSSProperties
+                      const noun = `commit${cell.count === 1 ? '' : 's'}`
+                      if (cell.count === 0) {
+                        return (
+                          <span
+                            key={cell.day}
+                            className={box}
+                            style={stagger}
+                            data-cell
+                            title={`No commits on ${cell.day}`}
+                            aria-hidden="true"
+                          />
+                        )
+                      }
+                      // The cells are 10px squares, too small to be touch targets of their own, so they are a pointer
+                      // shortcut only (hidden from assistive tech). The "Show commits for" menu below does the same for everyone.
+                      return (
+                        <span
+                          key={cell.day}
+                          className={cn(
+                            box,
+                            'cursor-pointer transition-shadow hover:ring-2 hover:ring-foreground/60',
+                            selectedDay === cell.day && 'ring-2 ring-foreground',
+                          )}
+                          title={`${cell.count} ${noun} on ${cell.day}`}
+                          style={stagger}
+                          data-cell
+                          data-day={cell.day}
+                          data-selected={selectedDay === cell.day}
+                          aria-hidden="true"
+                          onPointerEnter={() => void loadCommits()}
+                          onClick={() => selectDay(cell.day)}
+                        />
+                      )
+                    })}
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+              <label className="flex items-center gap-2.5 text-sm text-muted-foreground">
+                Show commits for
+                <select
+                  className="h-10 max-w-[16rem] rounded-md border bg-card px-2.5 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                  value={selectedDay ?? ''}
+                  onFocus={() => void loadCommits()}
+                  onChange={(event) => chooseDay(event.target.value)}
+                >
+                  <option value="">Latest commits</option>
+                  {activeDays.map(({ day, count }) => (
+                    <option key={day} value={day}>
+                      {longDay(day)} ({count})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div className="flex items-center gap-1.5 font-mono text-label text-muted-foreground" aria-hidden="true">
+                Less
+                {levelClass.map((name) => (
+                  <span key={name} className={cn('size-3 rounded-[3px]', name)} />
+                ))}
+                More
+              </div>
+            </div>
+          </CollapsiblePrimitive.Content>
+        </CollapsiblePrimitive.Root>
 
-        <div className="mt-8" aria-live="polite" data-commit-panel>
+        <div className="mt-6" aria-live="polite" data-commit-panel>
           {showDay && selectedDay ? (
             <>
               <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b pb-3">
@@ -381,7 +401,7 @@ function GitHubActivity() {
                 <CommitList commits={recent} now={now} className="max-md:[&>li:nth-child(n+4)]:hidden" />
               ) : (
                 <p className="pt-3 text-sm text-muted-foreground">
-                  Nothing recent outside this site. Select a day above to see every commit.
+                  Nothing recent outside this site. Open the full history and select a day to see every commit.
                 </p>
               )}
             </>
