@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#0a1122" />
+    <meta name="theme-color" content="#121214" />
     <script>
       // Apply the theme before first paint so there is no flash. Dark is the default. Mirrors src/hooks/useTheme.ts.
       try {
@@ -20,7 +20,7 @@
         var root = document.documentElement
         root.classList.toggle('dark', scheme === 'dark')
         document.querySelector('meta[name="color-scheme"]').content = scheme
-        document.querySelector('meta[name="theme-color"]').content = scheme === 'dark' ? '#0a1122' : '#f6f8fc'
+        document.querySelector('meta[name="theme-color"]').content = scheme === 'dark' ? '#121214' : '#fbfaf7'
       } catch (e) {
         document.documentElement.classList.add('dark')
       }

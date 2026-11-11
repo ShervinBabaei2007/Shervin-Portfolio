@@ -5,48 +5,49 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* shadcn tokens. Navy neutrals with a blue-indigo accent; dark is the default and :root holds the light variant. */
+/* shadcn tokens. "Paper & Ink": warm paper and near-black ink, a cobalt primary, with the light theme in :root and dark
+   (the default) in .dark. Every text pair is at least 4.5:1, field outlines (--input) at least 3:1. */
 :root {
   --radius: 0.625rem;
-  --background: #f6f8fc;
-  --foreground: #0c1a33;
+  --background: #fbfaf7;
+  --foreground: #17181c;
   --card: #ffffff;
-  --card-foreground: #0c1a33;
+  --card-foreground: #17181c;
   --popover: #ffffff;
-  --popover-foreground: #0c1a33;
-  --primary: #3f51e0; /* 5.7:1 on the page, 6.1:1 under white button text */
+  --popover-foreground: #17181c;
+  --primary: #1d4ed8; /* 6.4:1 on the page, 6.7:1 under white button text */
   --primary-foreground: #ffffff;
-  --secondary: #e9edfd;
-  --secondary-foreground: #0c1a33;
-  --muted: #eef2f9;
-  --muted-foreground: #475569;
-  --accent: #e9edfd;
-  --accent-foreground: #0c1a33;
-  --destructive: #b91c1c; /* errors: 6.0 on the page. Always shown with an icon or words, never by colour alone. */
-  --border: #dce3ef;
-  --input: #7b88a1; /* a field's outline is its only boundary, so it clears 3:1 (3.4 on the page, 3.6 on a card) */
-  --ring: #3f51e0;
+  --secondary: #f3f1ec;
+  --secondary-foreground: #17181c;
+  --muted: #f3f1ec;
+  --muted-foreground: #62646e; /* 5.2:1 on the quiet surface */
+  --accent: #e8eefc; /* hover and selected tint */
+  --accent-foreground: #17181c;
+  --destructive: #b91c1c; /* errors: 6.2:1 on the page. Always shown with an icon or words, never by colour alone. */
+  --border: #dad7cf; /* decorative edges */
+  --input: #8c8a82; /* a field's outline is its only boundary, so it clears 3:1 (3.3 on the page, 3.5 on a card) */
+  --ring: #1d4ed8;
 }
 
 .dark {
-  --background: #0a1122;
-  --foreground: #e6ecf8;
-  --card: #111a30;
-  --card-foreground: #e6ecf8;
-  --popover: #111a30;
-  --popover-foreground: #e6ecf8;
-  --primary: #8aa4ff; /* 7.9:1 on the page */
-  --primary-foreground: #0a1122;
-  --secondary: #18233f;
-  --secondary-foreground: #e6ecf8;
-  --muted: #18233f;
-  --muted-foreground: #94a3c0;
-  --accent: #18233f;
-  --accent-foreground: #e6ecf8;
-  --destructive: #f87171; /* errors: 7.5 on the page */
-  --border: #22304d;
-  --input: #5b6c92; /* 3.6 on the page, 3.3 on a card */
-  --ring: #8aa4ff;
+  --background: #121214;
+  --foreground: #f1efe9;
+  --card: #1f1f23;
+  --card-foreground: #f1efe9;
+  --popover: #1f1f23;
+  --popover-foreground: #f1efe9;
+  --primary: #93b4ff; /* 9.1:1 on the page */
+  --primary-foreground: #121214;
+  --secondary: #18181b;
+  --secondary-foreground: #f1efe9;
+  --muted: #18181b;
+  --muted-foreground: #9a978f; /* 6.1:1 on the quiet surface */
+  --accent: #1b2438;
+  --accent-foreground: #f1efe9;
+  --destructive: #f87171; /* errors: 5.9:1 on a card */
+  --border: #34343a;
+  --input: #6c6c75; /* 3.6 on the page, 3.2 on a card */
+  --ring: #93b4ff;
 }
 
 /* Site tokens (type, layout, accents). The colour tokens above follow shadcn; these are this site's own.
@@ -55,23 +56,23 @@
   --font-body: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --display: var(--font-body);
-  --writeup: #0f766e; /* writeups button: 5.5:1 under white text */
+  --writeup: #0f766e; /* writeups button: 5.5:1 under white text; also the teal text colour on the light page (5.2:1) */
   --writeup-foreground: #ffffff;
-  --grid-line: rgba(12, 26, 51, 0.02);
-  --section-dark: #0c1a33; /* About section background */
-  --on-dark: #e6ecf8;
-  --on-dark-muted: #b4c0da;
-  --on-dark-subtle: #93a3c4;
+  --grid-line: rgba(23, 24, 28, 0.02);
+  --section-dark: #0c0d10; /* About section background */
+  --on-dark: #f1efe9;
+  --on-dark-muted: #c4c1ba;
+  --on-dark-subtle: #a9a69e;
   /* The About band stays dark in both themes, so it pins the dark-theme accent (the light one is too dim on it). */
-  --primary-on-dark: #8aa4ff;
-  --primary-on-dark-foreground: #0a1122;
+  --primary-on-dark: #93b4ff;
+  --primary-on-dark-foreground: #121214;
   /* Code and terminal panels stay dark in both themes. */
-  --code-bg: #0f1a30;
-  --code-fg: #e2e8f6;
-  --code-muted: #9fb0cc;
-  --code-border: #22304d;
-  --code-accent: #a5b8ff;
-  --success: #10b981; /* status dots */
+  --code-bg: #15161a;
+  --code-fg: #e8e6df;
+  --code-muted: #a7a49c;
+  --code-border: #2a2b31;
+  --code-accent: #a9c0ff;
+  --success: #166534; /* status dots */
   --header-height: 78px;
   --gutter: 40px;
   --content-max: 1160px;
@@ -101,8 +102,9 @@
 }
 
 .dark {
-  --grid-line: rgba(148, 163, 192, 0.03);
-  --section-dark: #070d1b;
+  --grid-line: rgba(241, 239, 233, 0.03);
+  --success: #4ade80;
+  --section-dark: #0c0d10;
 }
 
 @media (min-width: 1280px) {
@@ -144,13 +146,15 @@
 /* Increased contrast. (This block used to sit in a layer that lost to the tokens above, so it never applied.) */
 @media (prefers-contrast: more) {
   :root {
-    --muted-foreground: #2f3b52;
-    --border: #6b7a96;
+    --muted-foreground: #3d3f46;
+    --border: #767469;
+    --input: #5f5d56;
   }
 
   .dark {
-    --muted-foreground: #cbd5e8;
-    --border: #5a6d92;
+    --muted-foreground: #cfccc4;
+    --border: #77757c;
+    --input: #8e8c94;
   }
 }
 

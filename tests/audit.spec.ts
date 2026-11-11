@@ -270,13 +270,13 @@ test.describe('theme colour', () => {
     const themeColor = () => page.locator('meta[name="theme-color"]').getAttribute('content')
     await page.goto('/')
     await hydrated(page)
-    expect(await themeColor()).toBe('#0a1122')
+    expect(await themeColor()).toBe('#121214')
     await page.getByRole('button', { name: 'Settings' }).click()
     await page.getByRole('menuitemradio', { name: 'Light' }).click()
-    expect(await themeColor()).toBe('#f6f8fc')
+    expect(await themeColor()).toBe('#fbfaf7')
     // And it is right from the first paint after a reload, before the app starts.
     await page.reload()
-    expect(await themeColor()).toBe('#f6f8fc')
+    expect(await themeColor()).toBe('#fbfaf7')
   })
 })
 
