@@ -756,15 +756,16 @@ test('theme is dark by default and remembers a manual choice', async ({ browser 
 
   await page.getByRole('button', { name: 'Settings' }).click()
   await page.getByRole('menuitemradio', { name: 'Light' }).click()
-  expect(await isDark()).toBe(false)
+  // The switch is a cross-fade, so the class changes a frame after the click.
+  await expect.poll(isDark).toBe(false)
   await page.reload()
   await page.waitForLoadState('networkidle')
   expect(await isDark()).toBe(false)
 
   await page.getByRole('button', { name: 'Settings' }).click()
   await page.getByRole('menuitemradio', { name: 'System' }).click()
-  expect(await page.evaluate(() => localStorage.getItem('color-scheme'))).toBe('system')
-  expect(await isDark()).toBe(true)
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('color-scheme'))).toBe('system')
+  await expect.poll(isDark).toBe(true)
   await context.close()
 })
 

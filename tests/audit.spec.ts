@@ -273,7 +273,7 @@ test.describe('theme colour', () => {
     expect(await themeColor()).toBe('#121214')
     await page.getByRole('button', { name: 'Settings' }).click()
     await page.getByRole('menuitemradio', { name: 'Light' }).click()
-    expect(await themeColor()).toBe('#fbfaf7')
+    await expect.poll(themeColor).toBe('#fbfaf7')
     // And it is right from the first paint after a reload, before the app starts.
     await page.reload()
     expect(await themeColor()).toBe('#fbfaf7')

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { flushSync } from 'react-dom'
 
 export type Scheme = 'light' | 'dark'
 export type Preference = Scheme | 'system'
@@ -33,6 +34,24 @@ function applyScheme(scheme: Scheme) {
 }
 
 /**
+ * Runs a theme change as one cross-fade of the whole page. Without it, each element's own colour transition runs at
+ * its own pace and the page flashes through the wrong background. Browsers without view transitions (and visitors
+ * who prefer reduced motion) get an instant switch.
+ */
+function withSmoothSwitch(change: () => void) {
+  const doc = document as Document & { startViewTransition?: (callback: () => void) => unknown }
+  if (!doc.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    change()
+    return
+  }
+  // Element transitions are paused so the live "new" page is already in its final colours while it fades in.
+  const root = document.documentElement
+  root.classList.add('theme-switching')
+  const transition = doc.startViewTransition(() => flushSync(change)) as { finished: Promise<unknown> }
+  void transition.finished.finally(() => root.classList.remove('theme-switching'))
+}
+
+/**
  * Dark by default, with Light / Dark / System choices remembered in localStorage.
  * The first render is always 'dark' so the server-rendered HTML and the
  * hydrated app match; the real value is read right after mount.
@@ -59,9 +78,11 @@ export function useTheme() {
 
   const setPreference = useCallback((next: Preference) => {
     const resolved = resolve(next)
-    setPreferenceState(next)
-    setScheme(resolved)
-    applyScheme(resolved)
+    withSmoothSwitch(() => {
+      setPreferenceState(next)
+      setScheme(resolved)
+      applyScheme(resolved)
+    })
     try {
       localStorage.setItem(STORAGE_KEY, next)
     } catch {

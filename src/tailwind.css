@@ -485,6 +485,19 @@
   letter-spacing: 0.08em;
 }
 
+/* Theme switch: the browser cross-fades old and new page snapshots (see withSmoothSwitch in useTheme). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
+  animation-timing-function: ease-in-out;
+}
+
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
+}
+
 /* Reduced motion: one consolidated block. !important is deliberate (it must beat every component rule). */
 @media (prefers-reduced-motion: reduce) {
   html {
