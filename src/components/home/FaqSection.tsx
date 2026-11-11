@@ -64,9 +64,10 @@ const faqs: Faq[] = [
     answer: (
       <>
         I write automated tests, so a change that breaks something gets caught straight away.{' '}
-        {link('/work/network-growth-assistant', 'Network Growth Assistant')}, my biggest solo project, has 1,523 unit
-        tests and 305 database tests, plus a browser test suite that also scans for accessibility problems. All of it
-        runs in CI on GitHub Actions. My Python projects use pytest.
+        {link('/work/network-growth-assistant', 'Network Growth Assistant')}, my biggest solo project, has{' '}
+        {facts.tests.unit.toLocaleString('en-CA')} unit tests and {facts.tests.database} database tests, plus a browser
+        test suite that also scans for accessibility problems. All of it runs in CI on GitHub Actions. My Python
+        projects use pytest.
       </>
     ),
   },

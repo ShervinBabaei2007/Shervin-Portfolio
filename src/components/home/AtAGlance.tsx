@@ -3,18 +3,27 @@ import CountUp from '@/components/shared/CountUp'
 import Reveal from '@/components/shared/Reveal'
 import { Card } from '@/components/ui/card'
 import { facts } from '@/data/facts'
-import { notes } from '@/data/notes'
 import { projects } from '@/data/projects'
-import { skillTabs } from '@/data/skills'
 
-// Every figure is counted from the site's own data, so it cannot drift from what the page shows below.
-const technologies = new Set(skillTabs.flatMap((group) => group.skills.map((skill) => skill.name))).size
+// Every figure comes from the site's own data (the project list and facts.ts), so it cannot drift from what the page shows.
 const placement = Number(facts.hackathon.placement.match(/\d+/)?.[0])
 
 const figures = [
   { value: projects.length, prefix: '', label: 'Projects built', detail: 'each with a case study', to: '/#work' },
-  { value: technologies, prefix: '', label: 'Technologies used', detail: 'across those projects', to: '/#skills' },
-  { value: notes.length, prefix: '', label: 'Writeups', detail: 'on bugs, fixes and design choices', to: '/writeups' },
+  {
+    value: facts.tests.unit,
+    prefix: '',
+    label: 'Unit tests',
+    detail: 'solo, on Network Growth Assistant',
+    to: '/work/network-growth-assistant',
+  },
+  {
+    value: facts.skillmatch.myCommits,
+    prefix: '',
+    label: `of ${facts.skillmatch.teamCommits} commits`,
+    detail: 'on SkillMatch, a team of three',
+    to: '/work/skillmatch',
+  },
   {
     value: placement,
     prefix: 'Top',

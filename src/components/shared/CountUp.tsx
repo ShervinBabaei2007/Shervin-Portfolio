@@ -45,7 +45,7 @@ function CountUp({ value }: { value: number }) {
 
   return (
     <span ref={ref} className="tabular-nums">
-      {shown}
+      {shown.toLocaleString('en-CA')}
     </span>
   )
 }

@@ -65,9 +65,9 @@ function AboutSection() {
               <p>
                 On a team, I take ownership and follow through. I led the front end at Hack the Break 2026, where we
                 placed Top 6 of 36 teams in 24 hours, and led backend and DevOps on SkillMatch with 105 of our 199
-                commits. Solo on Network Growth Assistant, I wrote 1,500+ unit tests, because I&apos;d rather prove
-                something works than assume it does. You can count on me to ship it, and to explain how it works
-                afterward.
+                commits. Solo on Network Growth Assistant, I wrote {facts.tests.unit.toLocaleString('en-CA')} unit
+                tests, because I&apos;d rather prove something works than assume it does. You can count on me to ship
+                it, and to explain how it works afterward.
               </p>
               <p>
                 I&apos;m a BCIT student ({facts.gpa} average, graduating May 2027) looking for a co-op or internship in
