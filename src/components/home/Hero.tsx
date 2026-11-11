@@ -24,7 +24,8 @@ function Hero() {
           Full-stack developer who goes <span>down the stack.</span>
         </h1>
         <p className="mt-6 measure text-[1.125rem] leading-[1.7] text-muted-foreground max-[620px]:text-base">
-          I&apos;m {site.name}. I follow the request from the interface through the API until everything makes sense.
+          I&apos;m {site.name}. I build with React, TypeScript, Node.js and PostgreSQL, and I test what I ship:{' '}
+          {facts.tests.unit.toLocaleString('en-CA')} unit tests on my biggest solo project.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Button asChild size="lg" className="h-[46px] px-[17px] text-control font-semibold">
