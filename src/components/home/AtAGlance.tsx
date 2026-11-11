@@ -6,22 +6,23 @@ import { facts } from '@/data/facts'
 import { projects } from '@/data/projects'
 
 // Every figure comes from the site's own data (the project list and facts.ts), so it cannot drift from what the page shows.
+const liveCount = projects.filter((project) => project.live).length
 const placement = Number(facts.hackathon.placement.match(/\d+/)?.[0])
 
 const figures = [
   { value: projects.length, prefix: '', label: 'Projects built', detail: 'each with a case study', to: '/#work' },
   {
-    value: facts.tests.unit,
+    value: liveCount,
     prefix: '',
-    label: 'Unit tests',
-    detail: 'solo, on Network Growth Assistant',
-    to: '/work/network-growth-assistant',
+    label: 'Live web apps',
+    detail: 'open one and try it',
+    to: '/#work',
   },
   {
     value: facts.skillmatch.myCommits,
     prefix: '',
-    label: `of ${facts.skillmatch.teamCommits} commits`,
-    detail: 'on SkillMatch, a team of three',
+    label: `of ${facts.skillmatch.teamCommits} team commits`,
+    detail: 'mine, on SkillMatch (a team of three)',
     to: '/work/skillmatch',
   },
   {

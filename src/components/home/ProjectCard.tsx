@@ -154,7 +154,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
             <p className="mt-2 font-semibold">{project.tagline}</p>
             <p className="mt-3 line-clamp-2 leading-[1.7] text-muted-foreground">{project.nonTechnicalSummary}</p>
             <p className="mt-4 min-h-[2lh] text-sm leading-snug font-semibold" data-card-result>
-              {project.highlight}
+              {project.result}
             </p>
           </div>
         </Link>

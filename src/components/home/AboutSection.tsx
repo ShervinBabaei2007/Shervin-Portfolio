@@ -45,7 +45,7 @@ function AboutSection() {
             </Reveal>
           </div>
           <Reveal delay={0.1}>
-            <div className="space-y-6 text-[1.0625rem] leading-[1.8] text-[#b4c0da] lg:pt-2">
+            <div className="space-y-6 text-[1.0625rem] leading-[1.8] text-[#b4c0da] max-[620px]:space-y-5 max-[620px]:text-base max-[620px]:leading-[1.75] lg:pt-2">
               <p>
                 I got into software to understand how things actually work, not just use them. That took me from
                 full-stack web (React, TypeScript, Node.js, PostgreSQL) into running local models like Qwen through LM
@@ -83,7 +83,7 @@ function AboutSection() {
           </Reveal>
         </div>
         <Reveal>
-          <dl className="mt-20 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-white/15 pt-10 max-[620px]:mt-14 max-[620px]:grid-cols-1 md:grid-cols-4">
+          <dl className="mt-20 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-white/15 pt-10 max-[620px]:mt-12 max-[620px]:gap-x-5 max-[620px]:gap-y-6 max-[620px]:pt-8 md:grid-cols-4">
             {quickFacts.map((fact) => (
               <div key={fact.label}>
                 <dt className="font-mono text-label tracking-[.08em] text-[#93a3c4]">{fact.label}</dt>

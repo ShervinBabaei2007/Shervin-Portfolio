@@ -650,7 +650,7 @@ test('the case-study header puts the actions beside the title on desktop and bel
 })
 
 test.describe('tools cards', () => {
-  test('the six groups sit three to a row on desktop, every skill has a logo, and they stack on a phone', async ({
+  test('the six groups sit three to a row on desktop, every skill has a logo, and on a phone they become one swipeable row', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
@@ -670,7 +670,8 @@ test.describe('tools cards', () => {
 
     await page.setViewportSize({ width: 390, height: 844 })
     const phoneTops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)))
-    expect(new Set(phoneTops).size).toBe(6)
+    // One row: every card starts at the same height, side by side, not stacked.
+    expect(new Set(phoneTops).size).toBe(1)
   })
 
   test('no skill tile is clipped at 360px, 390px or 1100px', async ({ page }) => {

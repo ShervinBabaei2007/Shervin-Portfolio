@@ -45,6 +45,8 @@ export type Project = {
   /** Team context, for example who else worked on it and how the work was split. */
   team: string
   highlight: string
+  /** The same proof as `highlight`, in plain words, for the card face (a hiring manager reads it too). */
+  result: string
   /** Recruiter/senior-engineer scan: what I owned, the decision I made, and evidence someone can inspect. */
   signal?: {
     ownership: string
@@ -94,6 +96,7 @@ export const projects: Project[] = [
     role: 'Solo project, design to deployment',
     team: 'Built on my own. All 256 commits in the repository are mine.',
     highlight: '1,523 unit tests, 305 database tests, 256 commits',
+    result: 'Built solo over 256 commits, with automated tests that run on every change',
     signal: {
       ownership:
         'The whole product: Next.js app, Supabase schema and row-level security, job crawler, and test suites.',
@@ -233,6 +236,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     role: 'UI/UX lead and front-end developer',
     team: 'Hack the Break 2026 team project. I built the sign-in, navigation, and profile screens; teammates built the FastAPI backend and the OpenAI generation pipeline.',
     highlight: hackathonLine,
+    result: hackathonLine,
     signal: {
       ownership: 'Sign-in, navigation, profile UI, and the Auth0-to-GitHub entry path.',
       decision: 'Use managed OAuth in a 24-hour sprint and remove an unnecessary provider-selection step.',
@@ -336,6 +340,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     role: 'Backend & DevOps lead, 3-person team',
     team: `BCIT team project with Clayton Liang and Ky Thai. I wrote ${commitsLine} and merged ${mergedPrsLine.replace(' merged PRs', '')} pull requests in the team repo.`,
     highlight: `${mergedPrsLine}, ${commitsLine}`,
+    result: `I made ${facts.skillmatch.myCommits} of the team’s ${facts.skillmatch.teamCommits} commits`,
     signal: {
       ownership: 'Attend, review, and host flows across React, Express, JWT, and MongoDB.',
       decision: 'Treat workshop capacity as a server invariant, not just a disabled-button concern.',
@@ -458,6 +463,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: '50 requests per 60 seconds, then HTTP 429',
+    result: 'Refuses extra requests after 50 a minute, so it cannot be overloaded',
     signal: {
       ownership: 'React UI, Express CRUD API, MongoDB model, and Redis rate-limit middleware.',
       decision: 'Use a sliding-window limiter, then question the shared key when fairness broke down.',
@@ -582,6 +588,7 @@ const ratelimiter = async (req, res, next) => {
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: 'Local inference moved off the event loop',
+    result: 'Fixed a bug that silenced the bot for everyone while the AI was thinking',
     signal: {
       ownership: 'Discord command flow, local LM Studio bridge, error handling, and the async fix.',
       decision: 'Move the blocking request off the event loop before considering a full async-client rewrite.',
@@ -684,6 +691,7 @@ except requests.exceptions.HTTPError as e:
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: 'JSON save and load, 3 passing pytest tests',
+    result: 'Saves and loads your game, checked by automated tests',
     overview: [
       'Warrior’s Path is a fighting game you play in the terminal, a text-only window. You choose actions from a menu, fight enemies and bosses, collect loot, level up, and save your game to continue later.',
       'Games are a good way to practise keeping many things in step: health, items, levels, and saves all have to agree with each other.',
@@ -818,6 +826,7 @@ $ cat playerSave.json
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: 'SQLite-backed, no dependencies',
+    result: 'Runs on your own computer with nothing else to install',
     overview: [
       'Job Application Tracker is a small program for keeping track of the jobs you have applied for. When you apply to many places, it is easy to forget where you applied, when, and what happened since.',
       'It keeps everything in one place on your own computer, with no account and nothing to install.',
@@ -939,6 +948,7 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
     role: 'Course project',
     team: 'BCIT course assignment, built on my own.',
     highlight: 'Undo/redo and session restore, no framework',
+    result: 'Undo, redo and picks up where you left off, built without a framework',
     overview: [
       'Jinterest is a mood board you build in your web browser. You add pictures, make them bigger or smaller, drag them around, and when you come back later the board is exactly as you left it. The page itself calls the board “Mood Jorts”.',
       'I built it without any helper libraries, using only plain HTML, CSS, and JavaScript, to understand how a web page really works underneath.',
@@ -1043,6 +1053,7 @@ function redo() {
     role: 'Course project',
     team: 'BCIT course assignment, built on my own.',
     highlight: 'Live WebSocket updates, API key kept server-side',
+    result: 'Answers appear live for everyone, with its API key kept private',
     overview: [
       'Jicnic is a website for planning a picnic with friends. Everyone says which days they can come, and everyone sees each other’s answers the moment they change, without refreshing the page.',
       'I built it to combine several things in one small app: signing in, live updates, and a weather forecast from another service.',
@@ -1142,6 +1153,7 @@ wss.on("connection", (ws) => {
     role: 'Application and authentication developer, 2-person team',
     team: 'BCIT course project with a teammate who set up the infrastructure. I made 15 of the 49 commits; they made 34.',
     highlight: 'Google OAuth with passport.js, live on Azure',
+    result: 'Sign in with Google, and live on Azure',
     overview: [
       'LinkLocker is a link shortener. You paste a long web address and get a short one. When someone opens the short link, they are sent to the original page.',
       'It was a two-person course project. I built the app and the sign-in, and my teammate set up the server it runs on, so it is really online.',
@@ -1251,6 +1263,7 @@ app.post("/api/links", requireAuth, async (req, res) => {
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: 'Never lost in 1,200 games against a random player',
+    result: 'Never lost in 1,200 games against a random player',
     overview: [
       'This is a Tic-Tac-Toe game for the terminal, with a computer player that never loses. It decides each move by trying out every way the rest of the game could go. That method is called Minimax.',
       'To check it works, I made it play against a computer that moves at random. Out of 1,200 games, the perfect player won 988, drew 212, and lost none.',
@@ -1376,6 +1389,7 @@ app.post("/api/links", requireAuth, async (req, res) => {
     role: 'Solo project',
     team: 'Built on my own.',
     highlight: 'Local RAG over a PDF with ChromaDB',
+    result: 'Runs on your own computer, so the PDF never leaves it',
     overview: [
       'These are two small experiments with AI models that run on my own computer. The first sorts a messy grocery list into sections. The second answers questions about a PDF.',
       'For the PDF, the AI does not just guess. The program first finds the few parts of the document most related to your question and hands only those to the AI, so the answer comes from the document.',
