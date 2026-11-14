@@ -5,16 +5,19 @@
  * minutes, so every visitor costs at most one GitHub request per window.
  * Optional env var: GITHUB_TOKEN (any token with no scopes) for a higher rate limit.
  */
-const USER = 'ShervinBabaei2007' // keep in sync with `site.github` in src/data/site.ts
+const USER = 'ShervinBabaei2007' // a Vercel function may not import from src/, so tests/github-api.spec.ts checks this against `site.github`
 
+/** The parts of a GitHub commit search result this function keeps. */
 type Item = {
   sha: string
   commit: { message: string; author: { date: string } }
   repository: { full_name: string; private: boolean }
 }
 
+/** Returns the newest 100 public commits, trimmed to what the page shows. */
 export async function GET() {
-  const url = `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${USER}`)}&sort=author-date&order=desc&per_page=100`
+  // Must equal commitSearchUrl(USER) in src/lib/githubCommits.ts; tests/github-api.spec.ts checks it.
+  const url = `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${USER}`)}&sort=author-date&order=desc&per_page=100&page=1`
   const response = await fetch(url, {
     headers: {
       Accept: 'application/vnd.github+json',
@@ -31,6 +34,7 @@ export async function GET() {
     commit: { message: item.commit.message.split('\n')[0], author: { date: item.commit.author.date } },
     repository: { full_name: item.repository.full_name, private: item.repository.private },
   }))
+  // Vercel's edge cache keeps it for 15 minutes, then serves the old copy for up to an hour while it refreshes.
   return new Response(JSON.stringify({ items: slim }), {
     headers: {
       'Content-Type': 'application/json',

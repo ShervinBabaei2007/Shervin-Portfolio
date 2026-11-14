@@ -3,7 +3,9 @@ import { useLocation } from 'react-router-dom'
 import { site } from '@/data/site'
 import { cn } from '@/lib/utils'
 
+// Pages that never show the tag.
 const HIDDEN_ON = ['/resume']
+// Formats a time like "3:05 PM PST" in Vancouver's time zone.
 const format = new Intl.DateTimeFormat('en-US', {
   hour: 'numeric',
   minute: '2-digit',
@@ -21,6 +23,7 @@ function LocalTime() {
   const [time, setTime] = useState<string | null>(null)
   const [scrolled, setScrolled] = useState(false)
 
+  // Refresh the time every 30 seconds and show the tag once the visitor has scrolled 1.5 screens.
   useEffect(() => {
     const tick = () => setTime(format.format(new Date()))
     tick()

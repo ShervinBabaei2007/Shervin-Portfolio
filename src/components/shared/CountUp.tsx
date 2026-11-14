@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
+// Length of the count in milliseconds.
 const DURATION = 1100
 
 /**
@@ -17,7 +18,7 @@ function CountUp({ value }: { value: number }) {
     const element = ref.current
     if (!element || typeof IntersectionObserver === 'undefined') return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    if (element.getBoundingClientRect().top < window.innerHeight) return
+    if (element.getBoundingClientRect().top < window.innerHeight) return // already on screen
 
     let frame = 0
     setShown(0)
@@ -28,6 +29,7 @@ function CountUp({ value }: { value: number }) {
         const start = performance.now()
         const tick = (now: number) => {
           const t = Math.min(1, (now - start) / DURATION)
+          // Ease-out: fast at first, slowing as it reaches the value.
           setShown(Math.round(value * (1 - (1 - t) ** 3)))
           if (t < 1) frame = requestAnimationFrame(tick)
         }

@@ -2,6 +2,7 @@ import { findNote, notes } from './data/notes'
 import { findProject, projects } from './data/projects'
 import { site } from './data/site'
 
+/** Everything a page needs in its <head>: title, share card and structured data. */
 export type PageMeta = {
   title: string
   description: string
@@ -13,6 +14,7 @@ export type PageMeta = {
   noindex?: boolean
 }
 
+// Structured data describing the site owner, for search engines.
 const person = {
   '@type': 'Person',
   '@id': `${site.url}/#person`,
@@ -26,8 +28,10 @@ const person = {
   knowsAbout: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'Redis', 'Python'],
 }
 
+// Adds the schema.org header every standalone JSON-LD block needs.
 const withContext = (node: Record<string, unknown>) => ({ '@context': 'https://schema.org', ...node })
 
+/** Every URL that gets prerendered and listed in the sitemap. */
 export const staticRoutes = [
   '/',
   '/resume',
@@ -39,8 +43,11 @@ export const staticRoutes = [
   ...notes.map((note) => `/writeups/${note.slug}`),
 ]
 
+/** The title, description, share image and structured data for a URL (unknown URLs get the 404 meta). */
 export function getPageMeta(pathname: string): PageMeta {
+  // Drop trailing slashes so /resume/ and /resume share one entry; the home page stays '/'.
   const path = pathname.replace(/\/+$/, '') || '/'
+  // Share images are generated into public/og by `npm run og:images`.
   const image = (name: string) => `${site.url}/og/${name}.png`
 
   if (path === '/') {
@@ -168,12 +175,13 @@ export function getPageMeta(pathname: string): PageMeta {
   }
 }
 
+// Escapes text so it is safe inside an HTML attribute or the <title>.
 const escapeAttr = (value: string) =>
   value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 /** Serialised <head> tags, written into each prerendered HTML file. */
 export function renderHeadTags(meta: PageMeta): string {
-  const url = `${site.url}${meta.path === '/' ? '/' : meta.path}`
+  const url = `${site.url}${meta.path}`
   const tags = [
     `<title>${escapeAttr(meta.title)}</title>`,
     `<meta name="description" content="${escapeAttr(meta.description)}" />`,
@@ -193,6 +201,7 @@ export function renderHeadTags(meta: PageMeta): string {
     `<meta name="twitter:title" content="${escapeAttr(meta.title)}" />`,
     `<meta name="twitter:description" content="${escapeAttr(meta.description)}" />`,
     `<meta name="twitter:image" content="${meta.image}" />`,
+    // Escaping `<` stops a "</script>" inside the data from closing the tag early.
     ...meta.jsonLd.map(
       (node) => `<script type="application/ld+json">${JSON.stringify(node).replace(/</g, '\\u003c')}</script>`,
     ),

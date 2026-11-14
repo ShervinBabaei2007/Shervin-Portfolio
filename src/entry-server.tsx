@@ -5,6 +5,7 @@ import App from './App'
 import { pageForPath, preloadAllPages } from './routes'
 import { getPageMeta, renderHeadTags, staticRoutes } from './seo'
 
+// Re-exported so scripts/prerender.mjs gets the route list and site facts from the same SSR bundle.
 export { staticRoutes }
 export { site } from './data/site'
 

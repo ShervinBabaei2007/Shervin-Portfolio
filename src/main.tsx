@@ -9,7 +9,9 @@ import { pageForPath, preloadAllPages } from './routes'
 import './fonts.css'
 import './tailwind.css'
 
+// The element index.html (and every prerendered page) renders the app into.
 const container = document.getElementById('root')!
+// The same tree entry-server.tsx renders, but with the browser router.
 const app = (
   <React.StrictMode>
     {/* Navigations run as transitions: the current page stays on screen until the next page's code has loaded. */}
@@ -23,7 +25,7 @@ const app = (
 
 // Once the page is interactive, fetch the other page chunks in the background
 // so clicking through the site never waits on the network.
-const warmOtherPages = () => {
+function warmOtherPages() {
   const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 1500))
   // A chunk that fails here is retried when someone navigates to that page.
   idle(() => void preloadAllPages().catch(() => {}))

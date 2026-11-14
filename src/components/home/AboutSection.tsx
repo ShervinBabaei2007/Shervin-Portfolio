@@ -9,6 +9,7 @@ import { cn, textLinkClass } from '@/lib/utils'
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+// The four short facts in the strip at the bottom of the section.
 const quickFacts = [
   { label: 'BASED IN', value: 'Vancouver' },
   { label: 'FOCUSED ON', value: 'Full-stack + systems curiosity' },
@@ -16,6 +17,7 @@ const quickFacts = [
   { label: 'OPEN TO', value: site.availability.roles },
 ]
 
+/** The home page "Why I keep digging" section: the story, photos and quick facts. */
 function AboutSection() {
   return (
     <section

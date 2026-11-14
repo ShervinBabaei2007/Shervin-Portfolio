@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 import { otherRepos } from '@/data/repos'
 
+// A month and year such as "Nov 2026" for when the repo was last pushed to.
 const updated = (iso: string) =>
   new Date(iso).toLocaleDateString('en-CA', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 

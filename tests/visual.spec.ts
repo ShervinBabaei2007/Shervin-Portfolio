@@ -13,6 +13,7 @@ const hydrated = (page: Page) =>
     Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')),
   )
 
+// The pages and widths captured by the loop below.
 const pages = [
   '/',
   '/work/network-growth-assistant',

@@ -5,9 +5,10 @@
  * Optional: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN make the rate limit
  * shared across every function instance. Without them each warm instance counts alone.
  */
+// Must match contactTopics in src/data/contact.ts (a test compares them).
 const topics = ['Job Opportunity', 'Project Collaboration', 'General Inquiry']
 
-// 5 messages per IP per 10 minutes.
+// 5 messages per IP per 10 minutes. `hits` holds each IP's recent send times for the in-memory fallback.
 const hits = new Map<string, number[]>()
 const WINDOW_MS = 10 * 60 * 1000
 const MAX_HITS = 5
@@ -44,13 +45,18 @@ function limitedInMemory(ip: string) {
   return recent.length >= MAX_HITS
 }
 
+/** Builds a JSON response with the given status and any extra headers. */
 const json = (body: unknown, status = 200, headers: Record<string, string> = {}) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json', ...headers } })
 
+/** Trims a form value and cuts it to `max` characters; anything that is not a string becomes ''. */
 const clean = (value: unknown, max: number) => (typeof value === 'string' ? value.trim().slice(0, max) : '')
+/** Turns the characters that mean something in HTML into numeric entities, so visitor text cannot inject markup. */
 const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
 
+/** Checks the rate limit and the fields, then emails the message through Resend. */
 export async function POST(request: Request) {
+  // The first address in x-forwarded-for is the visitor; the rest are proxies.
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
   const limited = (await limitedByRedis(ip)) ?? limitedInMemory(ip)
   if (limited)
@@ -72,6 +78,7 @@ export async function POST(request: Request) {
   const email = clean(data.email, 200)
   const topic = clean(data.topic, 50)
   const message = clean(data.message, 5000)
+  // The email check is the same pattern as emailPattern in src/data/contact.ts: something@something.something.
   if (!name || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !topics.includes(topic)) {
     return json({ error: 'Please fill in every field with a valid email.' }, 400)
   }

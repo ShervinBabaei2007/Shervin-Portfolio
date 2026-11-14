@@ -5,8 +5,10 @@ import { projects } from './projects'
  * Only list a skill if a project in projects.ts uses it: the project count
  * and project names shown on the site are computed from `stack`, never typed.
  */
+/** The group a skill belongs to. */
 export type SkillCategory = 'Frontend' | 'Backend' | 'Data' | 'Systems' | 'AI' | 'Delivery'
 
+/** One tab of the tools section: a titled group of skills. */
 export type SkillGroup = {
   id: 'frontend' | 'backend' | 'data' | 'systems' | 'ai' | 'delivery'
   label: string
@@ -15,6 +17,7 @@ export type SkillGroup = {
   skills: { name: string; category: SkillCategory; note: string }[]
 }
 
+/** Every skill group, in the order the tabs appear. */
 export const skillTabs: SkillGroup[] = [
   {
     id: 'frontend',
@@ -92,6 +95,7 @@ export const skillTabs: SkillGroup[] = [
   },
 ]
 
+/** The projects whose stack includes this skill. */
 export const projectsUsing = (skill: string) => projects.filter((project) => project.stack.includes(skill))
 
 /** What this site itself is built and checked with (shown beside the project skills). */

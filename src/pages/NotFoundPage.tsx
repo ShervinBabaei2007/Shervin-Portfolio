@@ -4,6 +4,7 @@ import PageIntro from '@/components/shared/PageIntro'
 import { Button } from '@/components/ui/button'
 import { textLinkClass } from '@/lib/utils'
 
+/** The 404 page, with links to the main parts of the site. */
 function NotFoundPage() {
   return (
     <section className="section-wrap page-y" aria-labelledby="not-found-title">

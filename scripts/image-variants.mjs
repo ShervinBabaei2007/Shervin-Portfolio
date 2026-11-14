@@ -11,13 +11,16 @@ import { root } from './lib.mjs'
 const SMALL = 480
 // Narrow phone screenshots are drawn at 75 to 150px wide on the project cards, so they get a 240px copy instead.
 const NARROW = 240
+// Screenshots no wider than this count as narrow phone shots.
 const NARROW_MAX = 600
 const dir = resolve(root, 'public/projects')
 const images = {}
 
+/** The AVIF file name that sits beside a WebP file. */
 const toAvif = (file) => file.replace(/\.webp$/, '.avif')
 
 for (const file of readdirSync(dir).sort()) {
+  // Skip non-WebP files and the small copies this script made earlier.
   if (!file.endsWith('.webp') || file.endsWith(`-${SMALL}.webp`) || file.endsWith(`-${NARROW}.webp`)) continue
   const { width, height } = await sharp(resolve(dir, file)).metadata()
   const entry = { width, height, avif: true }
@@ -25,6 +28,7 @@ for (const file of readdirSync(dir).sort()) {
     .avif({ quality: 55, effort: 6 })
     .toFile(resolve(dir, toAvif(file)))
   const smallWidth = width > NARROW_MAX ? SMALL : NARROW
+  // Only make a small copy when it saves real bytes (the original is over 25% wider).
   if (width > smallWidth * 1.25) {
     const small = file.replace(/\.webp$/, `-${smallWidth}.webp`)
     await sharp(resolve(dir, file)).resize({ width: smallWidth }).webp({ quality: 80 }).toFile(resolve(dir, small))

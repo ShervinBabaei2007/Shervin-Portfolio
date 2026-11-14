@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom'
 import type { Preference } from '@/hooks/useTheme'
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 
+/** A page link in the menu; `current` becomes its aria-current. */
 export type MobileNavLink = { to: string; label: string; current: 'page' | 'location' | undefined }
+/** A contact link; `external` ones open in a new tab. */
 export type MobileNavSocial = { label: string; href: string; Icon: LucideIcon; external: boolean }
 
+// The three buttons of the theme switch.
 const themes = [
   { value: 'light', label: 'Light', Icon: Sun },
   { value: 'dark', label: 'Dark', Icon: Moon },

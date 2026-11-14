@@ -40,6 +40,7 @@ function CaseStudySheet({ project, open, onOpenChange }: Props) {
             )}
             <section>
               <h3 className="mb-2 text-sm font-semibold">System architecture</h3>
+              {/* Each step is numbered 01, 02, and so on. */}
               <ol className="space-y-2 text-sm">
                 {project.architecture.map((step, index) => (
                   <li key={step.label} className="flex gap-3">

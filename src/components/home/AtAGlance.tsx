@@ -7,17 +7,12 @@ import { projects } from '@/data/projects'
 
 // Every figure comes from the site's own data (the project list and facts.ts), so it cannot drift from what the page shows.
 const liveCount = projects.filter((project) => project.live).length
+// Pulls the first number out of the placement text, e.g. "Top 6" gives 6.
 const placement = Number(facts.hackathon.placement.match(/\d+/)?.[0])
 
 const figures = [
   { value: projects.length, prefix: '', label: 'Projects built', detail: 'each with a case study', to: '/#work' },
-  {
-    value: liveCount,
-    prefix: '',
-    label: 'Live web apps',
-    detail: 'open one and try it',
-    to: '/#work',
-  },
+  { value: liveCount, prefix: '', label: 'Live web apps', detail: 'open one and try it', to: '/#work' },
   {
     value: facts.skillmatch.myCommits,
     prefix: '',

@@ -12,6 +12,7 @@ export default defineConfig({
     headless: true,
     launchOptions: process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : {},
   },
+  // Builds the site and serves dist/ on port 4174; locally an already running server is reused.
   webServer: {
     command: 'npm run build && npx vite preview --host 127.0.0.1 --port 4174 --strictPort',
     url: 'http://127.0.0.1:4174',

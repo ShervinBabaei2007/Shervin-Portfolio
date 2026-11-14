@@ -5,8 +5,10 @@ import type { COBEOptions } from 'cobe'
 // The globe library and the animation code are only downloaded when the globe is about to scroll into view.
 const Globe = lazy(() => import('@/components/ui/globe').then((module) => ({ default: module.Globe })))
 
+// Latitude and longitude of downtown Vancouver.
 const VANCOUVER: [number, number] = [49.2827, -123.1207]
 
+// Globe colours for each theme, as red/green/blue values from 0 to 1.
 const palette = {
   dark: {
     dark: 1,
@@ -26,6 +28,7 @@ const palette = {
   },
 } as const
 
+// Formats a time such as "3:05 p.m." in Vancouver's time zone.
 const clock = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Vancouver' })
 
 /** A slowly turning globe pinned on Vancouver, with the local time there. It is decoration, so it is hidden from assistive tech. */
@@ -35,6 +38,7 @@ function VancouverGlobe() {
   const [isDark, setIsDark] = useState(true)
   const [time, setTime] = useState<string | null>(null)
 
+  // After mount: follow theme changes, keep the clock current, and load the globe when it nears the screen.
   useEffect(() => {
     const root = document.documentElement
     const sync = () => setIsDark(root.classList.contains('dark'))
@@ -44,8 +48,9 @@ function VancouverGlobe() {
 
     const tick = () => setTime(clock.format(new Date()))
     tick()
-    const timer = window.setInterval(tick, 20_000)
+    const timer = window.setInterval(tick, 20_000) // every 20 seconds, so the minute is never far behind
 
+    // Skipped entirely for people who asked for less motion, so the globe never loads for them.
     let viewWatcher: IntersectionObserver | undefined
     if (frame.current && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       viewWatcher = new IntersectionObserver(
@@ -65,6 +70,7 @@ function VancouverGlobe() {
     }
   }, [])
 
+  // Globe settings, rebuilt only when the theme changes.
   const config = useMemo(
     () =>
       ({

@@ -21,8 +21,10 @@ export type Repo = {
   score: number
 }
 
+/** Every saved public repo, best score first. */
 export const repos = snapshot.repos as Repo[]
 
+/** Lowercases a URL and drops trailing slashes, so two spellings of the same repo link match. */
 const key = (url: string | undefined) => url?.toLowerCase().replace(/\/+$/, '')
 const curated = new Set(projects.flatMap((project) => [key(project.github), key(project.teamRepo)]))
 

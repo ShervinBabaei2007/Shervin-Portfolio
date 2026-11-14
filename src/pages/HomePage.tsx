@@ -11,6 +11,7 @@ import SkillsSection from '@/components/home/SkillsSection'
 // useLayoutEffect warns during prerendering; the scroll fix only matters in the browser.
 const useBrowserLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
+/** The home page; it owns the skill filter shared by the projects and skills sections. */
 function HomePage() {
   const [activeSkill, setActiveSkill] = useState<string | null>(null)
   const location = useLocation()
@@ -31,11 +32,13 @@ function HomePage() {
   // and put it back in the same place once React has re-rendered.
   const scrollAnchor = useRef<{ el: HTMLElement; top: number } | null>(null)
 
+  // Toggles the skill (clicking the active one clears it) and records where its chip was on screen.
   const selectSkill = (skill: string, trigger: HTMLElement) => {
     scrollAnchor.current = { el: trigger, top: trigger.getBoundingClientRect().top }
     setActiveSkill((current) => (current === skill ? null : skill))
   }
 
+  // Runs before the browser paints, so the scroll correction is never visible as a jump.
   useBrowserLayoutEffect(() => {
     const anchor = scrollAnchor.current
     if (!anchor) return

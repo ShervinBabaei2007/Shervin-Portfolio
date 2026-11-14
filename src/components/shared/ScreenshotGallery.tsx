@@ -27,16 +27,20 @@ function ScreenshotGallery({ shots, projectName, layout = 'stack' }: ScreenshotG
     setIndex(next)
     setScale(1)
   }
+  // Opens the viewer on one screenshot.
   const openAt = (next: number) => {
     showAt(next)
     setOpen(true)
   }
+  // Steps to the next or previous screenshot, wrapping around at either end.
   const move = (step: number) => showAt((index + step + shots.length) % shots.length)
 
+  // Keyboard controls while the viewer is open: arrows change picture (or pan when zoomed), + - 0 zoom.
   useEffect(() => {
     if (!open) return
     const onKeyDown = (event: KeyboardEvent) => {
       const zoom = zoomRef.current
+      // 1.01 rather than 1 so a tiny leftover zoom still counts as fitted.
       const zoomed = scale > 1.01
       const pan = (dx: number, dy: number) => zoom?.panBy(dx, dy)
       if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
@@ -103,6 +107,7 @@ function ScreenshotGallery({ shots, projectName, layout = 'stack' }: ScreenshotG
           <div className="grid max-h-[92vh] min-h-0 md:grid-cols-[minmax(0,1fr)_13rem]">
             <div className="flex min-h-0 flex-col">
               <div className="relative h-[62vh] min-h-[40vh] flex-1 bg-muted md:h-[68vh]">
+                {/* Keyed by picture so each screenshot gets a fresh zoom state; 5x is the maximum zoom. */}
                 <TransformWrapper
                   key={shot.src}
                   ref={zoomRef}

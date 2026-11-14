@@ -6,6 +6,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { chromium } from '@playwright/test'
 
+/** The repository's root folder. */
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
 /** Imports a TypeScript module from src/ by bundling it with esbuild (ships with Vite). */

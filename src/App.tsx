@@ -13,6 +13,7 @@ import { useTheme, type Scheme } from './hooks/useTheme'
 import { pages } from './routes'
 import { Button } from '@/components/ui/button'
 
+// The toast container from shadcn's sonner wrapper, split into its own chunk.
 const Toaster = lazy(() => import('@/components/ui/sonner').then((module) => ({ default: module.Toaster })))
 
 /**
@@ -22,6 +23,7 @@ const Toaster = lazy(() => import('@/components/ui/sonner').then((module) => ({ 
 function LazyToaster({ scheme }: { scheme: Scheme }) {
   const [ready, setReady] = useState(false)
   useEffect(() => {
+    // Safari has no requestIdleCallback, so it waits a fixed 1.5 s instead.
     const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 1500))
     idle(() => setReady(true))
   }, [])
@@ -66,6 +68,7 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
     void reportError(error).catch(() => {})
   }
 
+  // Clear the error once the visitor navigates somewhere else.
   componentDidUpdate(previous: { pathname: string }) {
     if (this.state.failed && previous.pathname !== this.props.pathname) this.setState({ failed: false })
   }
@@ -91,6 +94,7 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
   }
 }
 
+/** The site shell: skip link, header, the current page, footer and the floating corner widgets. */
 function App() {
   const { pathname } = useLocation()
   const { scheme, preference, setPreference } = useTheme()

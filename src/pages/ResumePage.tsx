@@ -10,6 +10,7 @@ import { tone } from '@/lib/buttonTones'
  * page). Type is 10pt in print and the PDF may run to two pages; do not shrink it to force one. The @page
  * margins and the navy accent colour (--resume-accent) live in tailwind.css. Change these with the PDF in view.
  */
+// On phones, an invisible box around each link makes it big enough to tap.
 const tapTarget =
   "max-[620px]:relative max-[620px]:after:absolute max-[620px]:after:inset-y-[-12px] max-[620px]:after:inset-x-[-4px] max-[620px]:after:content-['']"
 const accent = 'text-[var(--resume-accent)]'
@@ -27,6 +28,7 @@ const rowSplit = 'flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.
 const rowTitle = 'text-[1rem] font-bold print:text-[10pt]'
 const rowDate = 'text-[.875rem] whitespace-nowrap text-muted-foreground print:text-[9.5pt]'
 
+/** The /resume page, which is also printed to make the downloadable PDF. */
 function ResumePage() {
   return (
     <article

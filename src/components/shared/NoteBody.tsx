@@ -3,6 +3,7 @@ import CodeBlock from '@/components/shared/CodeBlock'
 import RichText from '@/components/shared/RichText'
 import { headingId } from '@/lib/utils'
 
+/** A writeup's text, drawn block by block: headings, paragraphs, lists and code. */
 function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
   return (
     // The first block starts level with the top of the rail beside it.

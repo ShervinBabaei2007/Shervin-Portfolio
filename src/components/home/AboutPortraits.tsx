@@ -37,6 +37,7 @@ const supporting: Photo[] = [
   },
 ]
 
+/** One framed photo; the featured one loads eagerly and gets the glowing border. */
 function Card({ photo, featured = false }: { photo: Photo; featured?: boolean }) {
   const {
     name,
@@ -45,6 +46,12 @@ function Card({ photo, featured = false }: { photo: Photo; featured?: boolean })
     sizes,
     className,
   } = photo
+
+  // Lists both generated widths of the photo in the given file format.
+  function srcSet(extension: string): string {
+    return `/about/${name}-${small}.${extension} ${small}w, /about/${name}-${large}.${extension} ${large}w`
+  }
+
   return (
     <figure
       className={cn(
@@ -55,21 +62,14 @@ function Card({ photo, featured = false }: { photo: Photo; featured?: boolean })
       )}
     >
       <picture>
-        <source
-          type="image/avif"
-          srcSet={`/about/${name}-${small}.avif ${small}w, /about/${name}-${large}.avif ${large}w`}
-          sizes={sizes}
-        />
-        <source
-          type="image/webp"
-          srcSet={`/about/${name}-${small}.webp ${small}w, /about/${name}-${large}.webp ${large}w`}
-          sizes={sizes}
-        />
+        <source type="image/avif" srcSet={srcSet('avif')} sizes={sizes} />
+        <source type="image/webp" srcSet={srcSet('webp')} sizes={sizes} />
         <img
           src={`/about/${name}-${large}.jpg`}
-          srcSet={`/about/${name}-${small}.jpg ${small}w, /about/${name}-${large}.jpg ${large}w`}
+          srcSet={srcSet('jpg')}
           sizes={sizes}
           width={large}
+          // Every photo is 4:5, so the height is 1.25 times the width.
           height={Math.round(large * 1.25)}
           alt={alt}
           loading={featured ? 'eager' : 'lazy'}
@@ -84,6 +84,7 @@ function Card({ photo, featured = false }: { photo: Photo; featured?: boolean })
   )
 }
 
+/** The photo grid in the About section: one large photo with two smaller ones beside it. */
 function AboutPortraits() {
   return (
     <div role="group" aria-label="Photos of Shervin" className="mt-8 grid max-w-[520px] grid-cols-3 gap-4 pb-6">

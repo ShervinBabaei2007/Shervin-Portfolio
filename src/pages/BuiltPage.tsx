@@ -4,6 +4,7 @@ import PageIntro from '@/components/shared/PageIntro'
 import { textLinkClass } from '@/lib/utils'
 import { site } from '../data/site'
 
+// Each entry becomes one titled block on the page.
 const sections = [
   {
     title: 'Stack',
@@ -31,6 +32,7 @@ const sections = [
   },
 ]
 
+/** The "How this site is built" page at /how-its-built. */
 function BuiltPage() {
   return (
     <article className="section-wrap page-y" aria-labelledby="built-title">
@@ -49,7 +51,7 @@ function BuiltPage() {
           </section>
         ))}
       </div>
-      <a className={textLinkClass} href={`${site.github}`} target="_blank" rel="noreferrer">
+      <a className={textLinkClass} href={site.github} target="_blank" rel="noreferrer">
         See my GitHub <ArrowUpRight size={15} />
       </a>
     </article>

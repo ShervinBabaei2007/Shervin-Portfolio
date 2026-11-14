@@ -1,6 +1,7 @@
 import images from '@/data/images.json'
 
 type ImageInfo = { width: number; height: number; avif?: boolean; small?: { src: string; width: number } }
+// Size and variant info for every image, keyed by its path.
 const catalog = images as Record<string, ImageInfo>
 
 type ResponsiveImageProps = {
@@ -12,6 +13,7 @@ type ResponsiveImageProps = {
   priority?: boolean
 }
 
+// The AVIF copy sits next to each WebP file under the same name.
 const toAvif = (path: string) => path.replace(/\.webp$/, '.avif')
 
 /**
@@ -23,6 +25,8 @@ const toAvif = (path: string) => path.replace(/\.webp$/, '.avif')
 function ResponsiveImage({ src, alt, sizes, priority = false }: ResponsiveImageProps) {
   const info = catalog[src]
   const srcSet = info?.small ? `${info.small.src} ${info.small.width}w, ${src} ${info.width}w` : undefined
+  // `sizes` only matters when there is a choice of files.
+  const sizesAttr = info?.small ? sizes : undefined
   return (
     // display: contents keeps the <picture> wrapper from affecting layout; the <img> stays the layout box.
     <picture className="contents">
@@ -32,7 +36,7 @@ function ResponsiveImage({ src, alt, sizes, priority = false }: ResponsiveImageP
           srcSet={
             info.small ? `${toAvif(info.small.src)} ${info.small.width}w, ${toAvif(src)} ${info.width}w` : toAvif(src)
           }
-          sizes={info.small ? sizes : undefined}
+          sizes={sizesAttr}
         />
       )}
       <img
@@ -41,7 +45,7 @@ function ResponsiveImage({ src, alt, sizes, priority = false }: ResponsiveImageP
         width={info?.width}
         height={info?.height}
         srcSet={srcSet}
-        sizes={info?.small ? sizes : undefined}
+        sizes={sizesAttr}
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : undefined}
         decoding="async"

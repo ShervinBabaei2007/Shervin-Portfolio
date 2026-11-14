@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
  */
 export function useActiveSection(ids: readonly string[], enabled: boolean): string | null {
   const [active, setActive] = useState<string | null>(null)
+  // A string stands in for the array, so a new array with the same ids does not restart the effect.
   const key = ids.join(',')
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export function useActiveSection(ids: readonly string[], enabled: boolean): stri
       .map((id) => document.getElementById(id))
       .filter((element): element is HTMLElement => Boolean(element))
 
+    // Of the sections that just entered the band, the one closest to the top of the screen wins.
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -30,7 +32,7 @@ export function useActiveSection(ids: readonly string[], enabled: boolean): stri
     )
     elements.forEach((element) => observer.observe(element))
 
-    // Back above the first tracked section (the hero): nothing is current.
+    // Back above the first tracked section (the hero): nothing is current (its top is low, past 72% of the screen).
     const onScroll = () => {
       const first = elements[0]
       if (first && first.getBoundingClientRect().top > window.innerHeight * 0.72) setActive(null)

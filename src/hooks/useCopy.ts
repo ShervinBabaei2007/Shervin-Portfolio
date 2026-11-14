@@ -8,6 +8,7 @@ export function useCopy(resetMs = 2000) {
   const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle')
   const timer = useRef<number | undefined>(undefined)
 
+  // Cancel a pending reset when the component unmounts.
   useEffect(() => () => window.clearTimeout(timer.current), [])
 
   const copy = useCallback(

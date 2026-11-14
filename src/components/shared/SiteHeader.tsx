@@ -20,10 +20,13 @@ type SiteHeaderProps = {
 // Started early (focus, touch) so the menu is usually ready by the time it is opened.
 const loadMobileNav = () => import('./MobileNavSheet')
 const MobileNavSheet = lazy(loadMobileNav)
+// Early downloads ignore failures; LazyBoundary handles them if the menu is actually opened.
+const preloadMobileNav = () => void loadMobileNav().catch(() => {})
 
 // The Settings menu pulls in the dropdown menu code, so it downloads on first hover, focus, touch or click.
 const loadUtilityMenu = () => import('./UtilityMenu')
 const UtilityMenu = lazy(loadUtilityMenu)
+const preloadUtilityMenu = () => void loadUtilityMenu().catch(() => {})
 
 // The header shows only the section links and the Settings menu; the phone menu also lists the extra pages and socials.
 const navLinks = [
@@ -32,6 +35,7 @@ const navLinks = [
   { to: '/#contact', label: 'Contact', section: 'contact' },
 ] as const
 
+// Extra pages that appear only in the phone menu.
 const moreLinks = [
   { to: '/writeups', label: 'Writeups', page: '/writeups' },
   { to: '/resume', label: 'Resume', page: '/resume' },
@@ -45,12 +49,14 @@ const sectionOwner: Record<string, string> = {
   contact: 'contact',
 }
 
+// Contact links at the bottom of the phone menu.
 const socials = [
   { label: 'GitHub', href: site.github, Icon: Github, external: true },
   { label: 'LinkedIn', href: site.linkedin, Icon: Linkedin, external: true },
   { label: 'Email', href: `mailto:${site.email}`, Icon: Mail, external: false },
 ]
 
+/** The sticky header: logo, section links, search, the Settings menu and, on phones, the menu button. */
 function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -69,13 +75,14 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
     return undefined
   }
 
+  // A plain look-alike of the Settings button, shown until the real menu's code has loaded.
   const moreButton = (
     <Button
       variant="ghost"
       size="sm"
       className={`${hitArea} cursor-pointer gap-1 text-muted-foreground max-[959px]:hidden`}
-      onPointerEnter={() => void loadUtilityMenu().catch(() => {})}
-      onFocus={() => void loadUtilityMenu().catch(() => {})}
+      onPointerEnter={preloadUtilityMenu}
+      onFocus={preloadUtilityMenu}
       onClick={() => setMoreMenuWanted(true)}
     >
       Settings <ChevronDown />
@@ -127,8 +134,8 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
           aria-label="Open menu"
           aria-haspopup="dialog"
           aria-busy={menuLoading}
-          onFocus={() => void loadMobileNav().catch(() => {})}
-          onTouchStart={() => void loadMobileNav().catch(() => {})}
+          onFocus={preloadMobileNav}
+          onTouchStart={preloadMobileNav}
           onClick={() => {
             setMenuEverOpened(true)
             setMenuOpen(true)

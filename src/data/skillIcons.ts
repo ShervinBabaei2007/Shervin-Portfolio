@@ -32,9 +32,12 @@ import { Cable, Cloud, Database, Globe, Workflow, type LucideIcon } from 'lucide
  */
 export type SkillIcon = { kind: 'brand'; path: string } | { kind: 'lucide'; Icon: LucideIcon }
 
+/** Wraps a Simple Icons logo. */
 const brand = (icon: { path: string }): SkillIcon => ({ kind: 'brand', path: icon.path })
+/** Wraps a lucide icon. */
 const lucide = (Icon: LucideIcon): SkillIcon => ({ kind: 'lucide', Icon })
 
+/** Skill name (exactly as written in skills.ts) to its icon. */
 export const skillIcons: Record<string, SkillIcon> = {
   React: brand(siReact),
   TypeScript: brand(siTypescript),

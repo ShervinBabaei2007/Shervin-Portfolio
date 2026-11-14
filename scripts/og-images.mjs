@@ -13,12 +13,24 @@ const outDir = resolve(root, 'public/og')
 mkdirSync(outDir, { recursive: true })
 
 const logoUrl = `data:image/svg+xml;base64,${readFileSync(resolve(root, 'public/logo.svg')).toString('base64')}`
+const dmSansUrl = fontUrl('@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2')
+const dmMonoUrl = fontUrl('@fontsource/dm-mono/files/dm-mono-latin-400-normal.woff2')
+
+/** Escapes the two characters that could break the HTML of a card. */
 const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;')
 
+/** Font size for the title: smaller as the title gets longer, so it always fits. */
+function titleSize(title) {
+  if (title.length > 40) return 60
+  if (title.length > 18) return 84
+  return 104
+}
+
+/** The full HTML page for one share image. */
 const card = ({ kicker, title, subtitle, result }) => `<!doctype html><html><head><style>
-@font-face { font-family: Display; src: url('${fontUrl('@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2')}'); font-weight: 100 1000; }
-@font-face { font-family: Body; src: url('${fontUrl('@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2')}'); font-weight: 100 1000; }
-@font-face { font-family: Mono; src: url('${fontUrl('@fontsource/dm-mono/files/dm-mono-latin-400-normal.woff2')}'); }
+@font-face { font-family: Display; src: url('${dmSansUrl}'); font-weight: 100 1000; }
+@font-face { font-family: Body; src: url('${dmSansUrl}'); font-weight: 100 1000; }
+@font-face { font-family: Mono; src: url('${dmMonoUrl}'); }
 * { box-sizing: border-box; margin: 0; }
 body { width: 1200px; height: 630px; padding: 72px 84px; display: flex; flex-direction: column;
   color: #e6ecf8; font-family: Body, sans-serif;
@@ -29,7 +41,7 @@ body { width: 1200px; height: 630px; padding: 72px 84px; display: flex; flex-dir
 .mark { display: flex; align-items: center; gap: 10px; }
 .mark img { width: 56px; height: 56px; border-radius: 13px; }
 .kicker { color: #94a3c0; font: 22px Mono; }
-h1 { margin-top: auto; max-width: 960px; font: 600 ${title.length > 40 ? 60 : title.length > 18 ? 84 : 104}px/1.04 Display; letter-spacing: -.02em; }
+h1 { margin-top: auto; max-width: 960px; font: 600 ${titleSize(title)}px/1.04 Display; letter-spacing: -.02em; }
 p { margin-top: 22px; max-width: 960px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #94a3c0; font-size: 30px; line-height: 1.35; }
 .result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #8aa4ff; background: #111a30; font: 600 26px Body; }
 .foot { display: flex; justify-content: space-between; margin-top: 40px; color: #94a3c0; font: 20px Mono; }
@@ -41,6 +53,7 @@ ${result ? `<div><span class="result">${escape(result)}</span></div>` : ''}
 <div class="foot"><span>${escape(site.name)}</span><span>${escape(site.url.replace(/^https?:\/\//, ''))}</span></div>
 </body></html>`
 
+// Every share image: home, one per case study, the projects and writeups lists, and one per writeup.
 const cards = [
   {
     name: 'home',

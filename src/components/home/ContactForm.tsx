@@ -26,6 +26,7 @@ type Errors = Partial<Record<keyof Values, string>>
 
 const emptyValues: Values = { name: '', email: '', topic: '', message: '' }
 
+// Returns an error message for each field that is missing or wrong; an empty object means the form is valid.
 function validate({ name, email, topic, message }: Values): Errors {
   const errors: Errors = {}
   if (!name.trim()) errors.name = 'Enter your name.'
@@ -36,6 +37,7 @@ function validate({ name, email, topic, message }: Values): Errors {
   return errors
 }
 
+// Fields in the order they appear on screen, so focus goes to the topmost problem.
 const fieldOrder: (keyof Values)[] = ['name', 'email', 'topic', 'message']
 // The id to focus for the first invalid field (for the topic, its first radio button).
 const focusId: Record<keyof Values, string> = {
@@ -48,6 +50,15 @@ const focusId: Record<keyof Values, string> = {
 // Loaded only after a message is sent, so the confetti library stays out of the page's first download.
 const Confetti = lazy(() => import('@/components/ui/confetti').then((module) => ({ default: module.Confetti })))
 
+// Turns a failed send into a message a visitor can understand.
+function sendErrorMessage(caught: unknown): string {
+  // A network failure surfaces as a TypeError ("Failed to fetch"), which means nothing to a visitor.
+  if (caught instanceof TypeError) return "I couldn't reach the server. Check your connection and try again."
+  if (caught instanceof Error) return caught.message
+  return 'Something went wrong.'
+}
+
+/** The contact form: checks the fields, posts to /api/contact, then shows a thank-you message. */
 function ContactForm() {
   const [values, setValues] = useState<Values>(emptyValues)
   const [errors, setErrors] = useState<Errors>({})
@@ -64,12 +75,14 @@ function ContactForm() {
     confirmation.current?.focus()
   }, [status])
 
+  // Stores a field's new value as the visitor types.
   const update = (field: keyof Values, value: string) => {
     setValues((current) => ({ ...current, [field]: value }))
     // Once a field has been flagged, re-check it as it is edited so the message goes away when it is fixed.
     if (errors[field]) setErrors((current) => ({ ...current, [field]: validate({ ...values, [field]: value })[field] }))
   }
 
+  // Validates, focuses the first bad field if any, otherwise sends the message.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const found = validate(values)
@@ -96,14 +109,7 @@ function ContactForm() {
       setValues(emptyValues)
       setStatus('sent')
     } catch (caught) {
-      // A network failure surfaces as a TypeError ("Failed to fetch"), which means nothing to a visitor.
-      setServerError(
-        caught instanceof TypeError
-          ? "I couldn't reach the server. Check your connection and try again."
-          : caught instanceof Error
-            ? caught.message
-            : 'Something went wrong.',
-      )
+      setServerError(sendErrorMessage(caught))
       setStatus('idle')
     }
   }
@@ -134,6 +140,7 @@ function ContactForm() {
             onClick={() => {
               setStatus('idle')
               setErrors({})
+              // Wait a tick so the form is back on screen before focusing its first field.
               window.setTimeout(() => document.getElementById(focusId.name)?.focus(), 0)
             }}
           >
@@ -144,6 +151,7 @@ function ContactForm() {
     )
   }
 
+  // Links a field to its error message for screen readers, only while it has one.
   const describedBy = (field: keyof Values) => (errors[field] ? `contact-${field}-error` : undefined)
 
   return (

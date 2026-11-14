@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 function BackToTop() {
   const [visible, setVisible] = useState(false)
 
+  // Show the button once the visitor is more than 1.5 screens down.
   useEffect(() => {
     const update = () => setVisible(window.scrollY > window.innerHeight * 1.5)
     update()
@@ -14,6 +15,7 @@ function BackToTop() {
     return () => window.removeEventListener('scroll', update)
   }, [])
 
+  // Scroll up, then move keyboard focus to the main content so the next Tab starts from the top.
   const toTop = () => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
@@ -30,7 +32,7 @@ function BackToTop() {
       tabIndex={visible ? 0 : -1}
       aria-hidden={!visible}
       className={cn(
-        'fixed right-4 bottom-4 z-30 size-11 rounded-full bg-card shadow-md transition-[opacity,translate] duration-200 motion-reduce:transition-none print:hidden max-[620px]:right-3 max-[620px]:bottom-3',
+        'fixed right-4 bottom-4 z-30 size-11 rounded-full bg-card shadow-md transition-[opacity,translate] duration-200 motion-reduce:transition-none max-[620px]:right-3 max-[620px]:bottom-3 print:hidden',
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0',
       )}
     >

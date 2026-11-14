@@ -30,7 +30,7 @@ Stack: React Router 6, Tailwind CSS 4, shadcn/ui (new-york, zinc) + Radix, Motio
 - Add a project or writeup by editing `src/data/projects.ts` or `notes.ts`; routes, SEO, sitemap and prerender pick it up through `staticRoutes`. A new page needs an entry in `routes.ts` and a case in `getPageMeta` in `seo.ts`.
 - Keep the first render identical to the server render. Do not read `window` or localStorage during render; read after mount (see `useTheme`, `GitHubActivity`). Use the guarded `useLayoutEffect` pattern from `HomePage`.
 - Do not hand-edit the generated JSON in `src/data/` (`github*.json`, `repos.json`).
-- The GitHub username is duplicated in `src/data/site.ts` and `api/github-commits.ts`; change both.
+- The GitHub username is duplicated in `src/data/site.ts` and `api/github-commits.ts` (a Vercel function can't import from `src/`); change both. `tests/github-api.spec.ts` fails if they drift.
 - `src/components/ui/**` is shadcn output and is excluded from lint. Use the `@/` alias for imports from `src`.
 - Accessibility lint and axe tests are enforced; keep scrollable regions focusable and controls touch-sized.
 - Claims in `projects.ts` and `notes.ts` must be verifiable from a repo, commit or live demo. Do not invent metrics.

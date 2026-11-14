@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress'
 function ScrollProgress() {
   const [value, setValue] = useState(0)
 
+  // Recalculate at most once per animation frame, however many scroll events arrive.
   useEffect(() => {
     let frame = 0
     const update = () => {

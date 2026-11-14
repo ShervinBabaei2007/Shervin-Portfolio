@@ -10,15 +10,20 @@ import { projects } from '../data/projects'
 import { tone } from '@/lib/buttonTones'
 import { cn } from '@/lib/utils'
 
+// The animation features are downloaded separately, only when this page needs them.
 const loadMotion = () => import('../lib/motionFeatures').then((module) => module.default)
 
+// "All" plus each project category once, in the order they first appear.
 const categories = ['All', ...Array.from(new Set(projects.map((p) => p.category)))]
 
+// Flagship projects first, then the rest in their data order.
+const ordered = [...projects.filter((p) => p.flagship), ...projects.filter((p) => !p.flagship)]
+
+/** The /projects page: every project, filterable by category. */
 function ProjectsPage() {
-  // Flagship projects first, then the rest in their data order.
-  const ordered = [...projects.filter((p) => p.flagship), ...projects.filter((p) => !p.flagship)]
   const [category, setCategory] = useState('All')
   const shown = category === 'All' ? ordered : ordered.filter((p) => p.category === category)
+  // How many projects a filter button would show.
   const count = (name: string) =>
     name === 'All' ? projects.length : projects.filter((p) => p.category === name).length
 

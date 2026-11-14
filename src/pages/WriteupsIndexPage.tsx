@@ -6,7 +6,7 @@ import PageIntro from '@/components/shared/PageIntro'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 import { Input } from '@/components/ui/input'
-import { formatMonth, notes, type Note } from '../data/notes'
+import { formatMonth, notes, type Note, type NoteBlock } from '../data/notes'
 import { findProject } from '../data/projects'
 import { tone } from '@/lib/buttonTones'
 import { cn } from '@/lib/utils'
@@ -14,22 +14,21 @@ import { cn } from '@/lib/utils'
 /** How many writeups show before "Show more". Newest first, so the latest are always on screen. */
 const PAGE_SIZE = 8
 
+// The project's display name, or the slug itself if no project matches.
 const projectName = (slug: string) => findProject(slug)?.name ?? slug
+
+// The searchable text inside one block of a writeup's body.
+function blockText(block: NoteBlock): string[] {
+  if (block.type === 'p' || block.type === 'h2') return [block.text]
+  if (block.type === 'list') return block.items
+  return []
+}
 
 /** Everything a search can match for one writeup, lowercased once. */
 const searchText = new Map(
   notes.map((note) => [
     note.slug,
-    [
-      note.title,
-      note.summary,
-      projectName(note.project),
-      ...note.body.flatMap((block) =>
-        block.type === 'p' || block.type === 'h2' ? [block.text] : block.type === 'list' ? block.items : [],
-      ),
-    ]
-      .join(' ')
-      .toLowerCase(),
+    [note.title, note.summary, projectName(note.project), ...note.body.flatMap(blockText)].join(' ').toLowerCase(),
   ]),
 )
 
@@ -53,6 +52,10 @@ function byMonth(list: Note[]) {
   return groups
 }
 
+// The heading id for a month group, e.g. "Nov 2026" becomes "month-nov-2026".
+const monthId = (month: string) => `month-${month.replace(/\s+/g, '-').toLowerCase()}`
+
+/** The /writeups page: every writeup grouped by month, with search and a project filter. */
 function WriteupsIndexPage() {
   const [query, setQuery] = useState('')
   // A link from a case study can open the list already filtered to its project (?project=slug).
@@ -63,6 +66,7 @@ function WriteupsIndexPage() {
   )
   const [visible, setVisible] = useState(PAGE_SIZE)
 
+  // A writeup matches when it is in the chosen project and contains every word typed, in any order.
   const matches = useMemo(() => {
     const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
     return notes.filter(
@@ -73,14 +77,18 @@ function WriteupsIndexPage() {
 
   const shown = matches.slice(0, visible)
   const filtering = Boolean(query.trim() || project)
-  const clear = () => {
-    setQuery('')
-    setProject(null)
+  // Each change to the search or filter starts the list again from the first page.
+  const search = (value: string) => {
+    setQuery(value)
     setVisible(PAGE_SIZE)
   }
   const choose = (next: string | null) => {
     setProject(next)
     setVisible(PAGE_SIZE)
+  }
+  const clear = () => {
+    search('')
+    choose(null)
   }
 
   return (
@@ -112,10 +120,7 @@ function WriteupsIndexPage() {
             placeholder="Search writeups"
             autoComplete="off"
             value={query}
-            onChange={(event) => {
-              setQuery(event.target.value)
-              setVisible(PAGE_SIZE)
-            }}
+            onChange={(event) => search(event.target.value)}
             className="h-12 rounded-xl border-foreground/20 bg-card pr-12 pl-11 shadow-sm hover:border-primary/60 focus-visible:border-primary md:text-base dark:bg-card [&::-webkit-search-cancel-button]:hidden"
           />
           {query && (
@@ -125,10 +130,7 @@ function WriteupsIndexPage() {
               size="icon-sm"
               aria-label="Clear search"
               className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground"
-              onClick={() => {
-                setQuery('')
-                setVisible(PAGE_SIZE)
-              }}
+              onClick={() => search('')}
             >
               <X />
             </Button>
@@ -167,9 +169,9 @@ function WriteupsIndexPage() {
       {matches.length > 0 ? (
         <div className="mt-8 grid gap-12">
           {byMonth(shown).map((group) => (
-            <section key={group.month} aria-labelledby={`month-${group.month.replace(/\s+/g, '-').toLowerCase()}`}>
+            <section key={group.month} aria-labelledby={monthId(group.month)}>
               <h2
-                id={`month-${group.month.replace(/\s+/g, '-').toLowerCase()}`}
+                id={monthId(group.month)}
                 className="mb-4 flex items-center gap-3 font-mono text-sm font-medium tracking-wide text-foreground uppercase"
               >
                 {group.month}

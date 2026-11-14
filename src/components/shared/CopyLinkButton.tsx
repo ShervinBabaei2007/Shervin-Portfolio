@@ -5,6 +5,10 @@ import { useCopy } from '@/hooks/useCopy'
 /** Copies the current page address, and says so on the button for a couple of seconds. */
 function CopyLinkButton() {
   const { copied, failed, copy } = useCopy()
+  let label = 'Copy link'
+  if (copied) label = 'Link copied'
+  else if (failed) label = 'Copy blocked'
+
   return (
     <Button
       type="button"
@@ -14,7 +18,7 @@ function CopyLinkButton() {
       className="print:hidden"
     >
       {copied ? <Check /> : <Link2 />}
-      <span aria-live="polite">{copied ? 'Link copied' : failed ? 'Copy blocked' : 'Copy link'}</span>
+      <span aria-live="polite">{label}</span>
     </Button>
   )
 }

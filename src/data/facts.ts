@@ -11,6 +11,7 @@ export const facts = {
   skillmatch: { myCommits: 105, teamCommits: '199', myMergedPrs: 28, teamMergedPrs: 64, teamSize: 3 },
 } as const
 
+// Ready-made phrases built from the facts above, so every page words them the same way.
 export const hackathonLine = `${facts.hackathon.placement} teams at ${facts.hackathon.name}`
 export const mergedPrsLine = `${facts.skillmatch.myMergedPrs} of ${facts.skillmatch.teamMergedPrs} merged PRs`
 export const unitTestsLine = `${facts.tests.unit.toLocaleString('en-CA')} unit tests`

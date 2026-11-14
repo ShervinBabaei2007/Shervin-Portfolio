@@ -14,6 +14,7 @@ function TableOfContents({ items }: { items: ContentsItem[] }) {
     items.map((item) => item.id),
     true,
   )
+  // Short pages with fewer than three sections get no contents list.
   if (items.length < 3) return null
   return (
     <nav aria-label="On this page" className="print:hidden">

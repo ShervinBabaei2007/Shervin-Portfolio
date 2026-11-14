@@ -15,6 +15,7 @@ type ProjectsSectionProps = {
   onClearSkill: () => void
 }
 
+/** The home page "Selected work" section, which can be filtered by a skill picked in the skills section. */
 function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
   const matches = (stack: string[]) => !activeSkill || stack.includes(activeSkill)
   // The home page shows at most four flagships. With a skill filter on, every project that uses it is shown.
@@ -69,31 +70,30 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
           </Carousel>
         </div>
       )}
+      {/* The links, commit history and lab link only show when no skill filter is on. */}
       {!activeSkill && (
-        <div className="mt-[var(--space-block)] flex flex-wrap gap-3">
-          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
-            <Link to="/projects">
-              View all projects <ArrowRight size={15} />
+        <>
+          <div className="mt-[var(--space-block)] flex flex-wrap gap-3">
+            <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.ink)}>
+              <Link to="/projects">
+                View all projects <ArrowRight size={15} />
+              </Link>
+            </Button>
+            <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.writeup)}>
+              <Link to="/writeups">
+                Read my writeups <ArrowUpRight size={15} />
+              </Link>
+            </Button>
+          </div>
+          <div className="mt-[var(--space-section)] empty:hidden">
+            <GitHubActivity />
+          </div>
+          <p className="mt-[var(--space-block)]">
+            <Link className={cn(textLinkClass, 'text-primary')} to="/lab">
+              Try the rate-limiter lab <ArrowUpRight size={15} />
             </Link>
-          </Button>
-          <Button asChild size="lg" className={cn('font-semibold shadow-md', tone.writeup)}>
-            <Link to="/writeups">
-              Read my writeups <ArrowUpRight size={15} />
-            </Link>
-          </Button>
-        </div>
-      )}
-      {!activeSkill && (
-        <div className="mt-[var(--space-section)] empty:hidden">
-          <GitHubActivity />
-        </div>
-      )}
-      {!activeSkill && (
-        <p className="mt-[var(--space-block)]">
-          <Link className={cn(textLinkClass, 'text-primary')} to="/lab">
-            Try the rate-limiter lab <ArrowUpRight size={15} />
-          </Link>
-        </p>
+          </p>
+        </>
       )}
       {shown.length === 0 && (
         <Empty className="mt-8 border">

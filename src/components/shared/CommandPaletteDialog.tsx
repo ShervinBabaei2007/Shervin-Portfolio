@@ -24,15 +24,18 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
   const [query, setQuery] = useState('')
   const allSkills = skillTabs.flatMap((tab) => tab.skills.map((skill) => skill.name))
 
+  // Clears the search box whenever the dialog closes.
   const close = (next: boolean) => {
     if (!next) setQuery('')
     onOpenChange(next)
   }
+  // Closes the palette, then performs the chosen item's action.
   const run = (action: () => void) => {
     close(false)
     action()
   }
 
+  // Copies the email address and confirms (or explains the failure) with a toast.
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(site.email)

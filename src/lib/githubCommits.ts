@@ -10,17 +10,20 @@ export type Commit = { sha: string; repo: string; message: string; date: string 
 
 /** The compact form stored per day in src/data/github-commits.json: [sha, owner/repo, message, date]. */
 export type CommitTuple = [string, string, string, string]
+/** That file's shape: the commits of each `YYYY-MM-DD` day. */
 export type CommitsByDay = Record<string, CommitTuple[]>
 
 /** Commits per calendar day, keyed `YYYY-MM-DD` in the author's own time zone. */
 export type DayCounts = Record<string, number>
 
+// The fields used from one result of GitHub's commit search.
 type SearchItem = {
   sha: string
   commit: { message: string; author: { date: string } }
   repository: { full_name: string; private: boolean }
 }
 
+/** Search URL for one page (100 commits) of the user's commits, newest first. */
 export const commitSearchUrl = (user: string, page = 1) =>
   `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${user}`)}&sort=author-date&order=desc&per_page=100&page=${page}`
 
@@ -28,6 +31,7 @@ export const commitSearchUrl = (user: string, page = 1) =>
 export const mergedPrsUrl = (user: string, since: string) =>
   `https://api.github.com/search/issues?q=${encodeURIComponent(`author:${user} type:pr is:public is:merged merged:>=${since}`)}&per_page=1`
 
+/** Turns search results into commits, dropping private repositories and keeping only each message's first line. */
 export function parseCommits(items: SearchItem[]): Commit[] {
   return items
     .filter((item) => !item.repository.private)
@@ -39,16 +43,25 @@ export function parseCommits(items: SearchItem[]): Commit[] {
     }))
 }
 
+/** The commit's page on GitHub. */
 export const commitUrl = (commit: Commit) => `https://github.com/${commit.repo}/commit/${commit.sha}`
+/** The repository name without its owner. */
 export const repoName = (commit: Commit) => commit.repo.split('/')[1] ?? commit.repo
+/** Packs a commit into the compact JSON form. */
 export const toTuple = (commit: Commit): CommitTuple => [commit.sha, commit.repo, commit.message, commit.date]
+/** Unpacks a commit from the compact JSON form. */
 export const fromTuple = ([sha, repo, message, date]: CommitTuple): Commit => ({ sha, repo, message, date })
 
+/** The `YYYY-MM-DD` part of an ISO date. */
 export const dayOf = (iso: string) => iso.slice(0, 10)
 
+/** How many commits fall on each day. */
 export function countByDay(commits: Commit[]): DayCounts {
   const days: DayCounts = {}
-  for (const commit of commits) days[dayOf(commit.date)] = (days[dayOf(commit.date)] ?? 0) + 1
+  for (const commit of commits) {
+    const day = dayOf(commit.date)
+    days[day] = (days[day] ?? 0) + 1
+  }
   return days
 }
 
@@ -67,7 +80,9 @@ export function mergeDays(snapshot: DayCounts, live: DayCounts, liveCommits: Com
   return merged
 }
 
+// One day in milliseconds.
 const DAY = 86_400_000
+// A timestamp as a `YYYY-MM-DD` day in UTC.
 const toDay = (time: number) => new Date(time).toISOString().slice(0, 10)
 
 /** Columns of 7 days (Sunday first), the last column being the week that contains `end`. */
@@ -88,7 +103,13 @@ export function buildWeeks(days: DayCounts, end: string, weeks: number) {
 }
 
 /** 0 for no commits, then four steps of increasing activity. */
-export const level = (count: number) => (count === 0 ? 0 : count < 3 ? 1 : count < 6 ? 2 : count < 10 ? 3 : 4)
+export function level(count: number) {
+  if (count === 0) return 0
+  if (count < 3) return 1
+  if (count < 6) return 2
+  if (count < 10) return 3
+  return 4
+}
 
 /** Totals for the cells in view (future cells are ignored). */
 export function summarize(weeks: ReturnType<typeof buildWeeks>) {
@@ -101,6 +122,7 @@ export function summarize(weeks: ReturnType<typeof buildWeeks>) {
   }
 }
 
+// Short month names, indexed 0 (January) to 11.
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 /** The month name for the first column of each month, so it can be printed above that column. */

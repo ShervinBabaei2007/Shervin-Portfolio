@@ -49,6 +49,7 @@ export const pages = {
 
 export type PageKey = keyof typeof pages
 
+/** The page whose path matches a URL, or the 404 page when none does. */
 export function pageForPath(pathname: string) {
   const match = (Object.values(pages) as (typeof pages)[PageKey][]).find(
     (page) => page.path !== '*' && matchPath(page.path, pathname),

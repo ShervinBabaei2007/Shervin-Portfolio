@@ -10,11 +10,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { availabilityLine, site } from '@/data/site'
 import { highlightColor } from '@/lib/colors'
 
+// External profile links shown above the resume link.
 const links = [
   { label: 'LinkedIn', detail: 'Connect professionally', href: site.linkedin, Icon: Linkedin },
   { label: 'GitHub', detail: "See what I'm building", href: site.github, Icon: Github },
 ]
 
+/** The home page contact section: availability, globe, links and the contact form. */
 function ContactSection() {
   return (
     <section className="border-t section-y" id="contact" aria-labelledby="contact-title">

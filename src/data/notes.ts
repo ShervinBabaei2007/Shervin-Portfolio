@@ -8,12 +8,14 @@
  * may ask you to explain any sentence here.
  */
 
+/** One piece of a writeup's body: a paragraph, a heading, a bullet list or a code block. */
 export type NoteBlock =
   | { type: 'p'; text: string }
   | { type: 'h2'; text: string }
   | { type: 'list'; items: string[] }
   | { type: 'code'; language: 'js' | 'ts' | 'python'; file: string; code: string; caption?: string }
 
+/** One writeup and its page details. */
 export type Note = {
   slug: string
   title: string
@@ -609,6 +611,7 @@ const linkCreationLimiter = rateLimit({
  */
 export const notes: Note[] = entries
   .map((note, index) => ({ note, index }))
+  // The original position breaks the last tie, so later entries in the list come first.
   .sort(
     (a, b) =>
       b.note.date.slice(0, 7).localeCompare(a.note.date.slice(0, 7)) ||
@@ -618,21 +621,20 @@ export const notes: Note[] = entries
   )
   .map(({ note }) => note)
 
+/** The writeup with this slug, or undefined if there is none. */
 export const findNote = (slug: string | undefined) => notes.find((note) => note.slug === slug)
+/** The writeups about one case study, in site order. */
 export const notesForProject = (slug: string) => notes.filter((note) => note.project === slug)
 
-export const formatDate = (iso: string) =>
-  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    timeZone: 'UTC',
-  })
+/** Formats a `YYYY-MM-DD` day at noon UTC, so it reads as the same day in every time zone and on the server. */
+const formatIso = (iso: string, options: Intl.DateTimeFormatOptions) =>
+  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', { ...options, timeZone: 'UTC' })
+
+/** "November 7, 2026": the full date. */
+export const formatDate = (iso: string) => formatIso(iso, { year: 'numeric', month: 'long', day: 'numeric' })
 
 /** "Nov 7": the day, for a row that already sits under its month heading. */
-export const formatDay = (iso: string) =>
-  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', timeZone: 'UTC' })
+export const formatDay = (iso: string) => formatIso(iso, { month: 'short', day: 'numeric' })
 
 /** "November 2026": the heading that groups writeups by month. */
-export const formatMonth = (iso: string) =>
-  new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+export const formatMonth = (iso: string) => formatIso(iso, { month: 'long', year: 'numeric' })

@@ -20,16 +20,23 @@ const WINDOW_MS = 10_000
 type Client = 'you' | 'other'
 type Mode = 'shared' | 'per-client'
 type LogEntry = { id: number; client: Client; status: 200 | 429; remaining: number }
+// Request counts per rate-limit key, then per window number.
 type Buckets = Map<string, Map<number, number>>
 
+// Shared class names for the radio labels, action buttons and meters.
 const modeLabel = 'inline-flex min-h-11 cursor-pointer items-center gap-2 font-semibold'
 const modeInput = 'size-[18px] accent-primary'
 const actionClass = 'h-[46px] border px-[17px] text-control font-semibold'
 const meterTrack = 'mt-2 h-3 overflow-hidden rounded-full border bg-background'
 const meterFill = 'block h-full transition-[width] duration-200 ease-linear'
 
+// How each simulated client is named in the log.
 const label: Record<Client, string> = { you: 'You', other: 'Another visitor' }
 
+// The text shown for a response status.
+const statusText = (status: 200 | 429) => (status === 200 ? '200 OK' : '429 Too Many Requests')
+
+/** The sliding-window count for a key at a moment, with the pieces of the formula for display. */
 function estimate(buckets: Buckets, key: string, now: number) {
   const counts = buckets.get(key) ?? new Map<number, number>()
   const index = Math.floor(now / WINDOW_MS)
@@ -40,6 +47,7 @@ function estimate(buckets: Buckets, key: string, now: number) {
   return { counts, index, elapsed, current, previous, weighted, total: weighted + current }
 }
 
+/** The interactive demo: send requests as yourself or another visitor and watch the shared key lock everyone out. */
 function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
   const [mode, setMode] = useState<Mode>('shared')
   const [now, setNow] = useState<number | null>(null)
@@ -48,7 +56,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
   const nextId = useRef(0)
   const timers = useRef<number[]>([])
 
-  // Clock for the progress bars. Starts after mount so server and client HTML match.
+  // Clock for the progress bars, ticking every 200 ms. Starts after mount so server and client HTML match.
   useEffect(() => {
     setNow(Date.now())
     const tick = window.setInterval(() => setNow(Date.now()), 200)
@@ -58,8 +66,10 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
     }
   }, [])
 
+  // The bug: in shared mode every client is counted under the same key.
   const keyFor = useCallback((client: Client) => (mode === 'shared' ? 'my-rate-limit' : `ip:${client}`), [mode])
 
+  // Simulates one request: counts it if under the limit, and logs the response (keeping the newest 8).
   const send = useCallback(
     (client: Client) => {
       const at = Date.now()
@@ -79,10 +89,12 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
     [keyFor],
   )
 
+  // Sends `count` requests from you, 70 ms apart.
   const burst = (count: number) => {
     for (let i = 0; i < count; i += 1) timers.current.push(window.setTimeout(() => send('you'), i * 70))
   }
 
+  // Cancels pending burst requests and clears all counts and the log, optionally switching mode.
   const reset = (nextMode: Mode = mode) => {
     timers.current.forEach((timer) => window.clearTimeout(timer))
     timers.current = []
@@ -91,6 +103,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
     setMode(nextMode)
   }
 
+  // One meter per key in use: one shared key, or one for each visitor.
   const meters: { key: string; title: string }[] =
     mode === 'shared'
       ? [{ key: 'my-rate-limit', title: 'Key "my-rate-limit" (everyone)' }]
@@ -232,7 +245,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
       </div>
 
       <p className="sr-only" aria-live="polite">
-        {latest ? `${label[latest.client]}: ${latest.status === 200 ? '200 OK' : '429 Too Many Requests'}` : ''}
+        {latest ? `${label[latest.client]}: ${statusText(latest.status)}` : ''}
       </p>
       <ol
         className="mt-[22px] grid list-none border-t p-0 text-[.875rem]"
@@ -251,7 +264,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
             <span className="max-[620px]:col-span-full max-[620px]:text-muted-foreground">{label[entry.client]}</span>
             {/* DM Mono ships only weight 400. */}
             <b className="font-mono text-[.875rem] leading-[normal] font-normal text-primary">
-              {entry.status === 200 ? '200 OK' : '429 Too Many Requests'}
+              {statusText(entry.status)}
             </b>
             <span className="text-right text-muted-foreground">
               {entry.status === 200 ? `${entry.remaining} left` : 'blocked'}

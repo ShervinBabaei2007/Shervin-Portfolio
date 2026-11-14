@@ -12,6 +12,7 @@ import { Slot } from 'radix-ui'
 function Reveal({ children, delay = 0 }: { children: ReactElement; delay?: number }) {
   const ref = useRef<HTMLElement>(null)
 
+  // Hide below-the-fold elements after mount, then reveal each once it is 8% into the screen.
   useEffect(() => {
     const element = ref.current
     if (!element || typeof IntersectionObserver === 'undefined') return

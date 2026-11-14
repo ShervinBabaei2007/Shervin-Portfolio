@@ -10,6 +10,7 @@ const hydrated = (page: Page) =>
     Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')),
   )
 
+/** Starts recording console errors and uncaught page errors; returns the list it fills. */
 const collectErrors = (page: Page) => {
   const errors: string[] = []
   page.on('console', (message) => {
@@ -19,6 +20,7 @@ const collectErrors = (page: Page) => {
   return errors
 }
 
+/** Runs axe against WCAG 2.2 A and AA rules and lists each failing rule with how many elements break it. */
 const wcag = ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']
 const violations = async (page: Page) =>
   (await new AxeBuilder({ page }).withTags(wcag).analyze()).violations.map((v) => `${v.id} (${v.nodes.length})`)
@@ -100,6 +102,7 @@ test.describe('the whole site', () => {
     expect(broken).toEqual([])
   })
 
+  // api/contact.ts cannot import src/data/contact.ts, so this reads its source text and checks the copies match.
   test('the server and the form agree on the contact rules', () => {
     const server = readFileSync('api/contact.ts', 'utf8')
     const topics = [...server.match(/const topics = \[(.*?)\]/)![1].matchAll(/'([^']+)'/g)].map((match) => match[1])

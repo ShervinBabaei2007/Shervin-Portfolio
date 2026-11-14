@@ -6,6 +6,7 @@ export type Preference = Scheme | 'system'
 const STORAGE_KEY = 'color-scheme'
 const query = '(prefers-color-scheme: dark)'
 
+// The operating system's light or dark setting (light when there is no window, as on the server).
 const systemScheme = (): Scheme =>
   typeof window !== 'undefined' && window.matchMedia(query).matches ? 'dark' : 'light'
 
@@ -19,6 +20,7 @@ const storedPreference = (): Preference => {
   }
 }
 
+// Turns a preference into the scheme to show, looking up the system setting for 'system'.
 const resolve = (preference: Preference): Scheme => (preference === 'system' ? systemScheme() : preference)
 
 /** Pins the resolved scheme on <html> (the `dark` class drives Tailwind and shadcn). Mirrors index.html. */
@@ -60,22 +62,25 @@ export function useTheme() {
   const [preference, setPreferenceState] = useState<Preference>('dark')
   const [scheme, setScheme] = useState<Scheme>('dark')
 
+  // After mount: apply the saved choice, then follow the system setting while 'system' is chosen.
   useEffect(() => {
     const initial = storedPreference()
+    const initialScheme = resolve(initial)
     setPreferenceState(initial)
-    setScheme(resolve(initial))
-    applyScheme(resolve(initial))
+    setScheme(initialScheme)
+    applyScheme(initialScheme)
     const media = window.matchMedia(query)
     const onChange = () => {
-      if (storedPreference() === 'system') {
-        setScheme(systemScheme())
-        applyScheme(systemScheme())
-      }
+      if (storedPreference() !== 'system') return
+      const next = systemScheme()
+      setScheme(next)
+      applyScheme(next)
     }
     media.addEventListener('change', onChange)
     return () => media.removeEventListener('change', onChange)
   }, [])
 
+  // Switches the theme with a cross-fade and remembers the choice.
   const setPreference = useCallback((next: Preference) => {
     const resolved = resolve(next)
     withSmoothSwitch(() => {
@@ -90,6 +95,7 @@ export function useTheme() {
     }
   }, [])
 
+  // Flips between light and dark.
   const toggle = useCallback(() => setPreference(scheme === 'dark' ? 'light' : 'dark'), [scheme, setPreference])
 
   return { scheme, preference, setPreference, toggle }

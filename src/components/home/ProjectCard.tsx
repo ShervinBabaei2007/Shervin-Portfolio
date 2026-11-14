@@ -23,13 +23,15 @@ import { cn } from '@/lib/utils'
 const mediaBase = cn('relative z-[1] h-[208px] overflow-hidden bg-muted max-[620px]:h-[190px]')
 const visualClass = cn(mediaBase, 'grid place-items-center px-7 py-[19px] max-[620px]:p-4')
 
+// Pixel sizes of every generated image, keyed by its path.
 const catalog = images as Record<string, { width: number; height: number }>
-/** Tall phone screenshots get the "phones peeking up" treatment; wide ones get a browser window. */
+/** Phone screenshots (over 1.2 times taller than wide) get the "phones peeking up" look; wide ones get a browser window. */
 const isPortrait = (src: string) => {
   const info = catalog[src]
   return Boolean(info) && info.height / info.width > 1.2
 }
 
+/** The card's thumbnail: screenshots, then code or a terminal, then the stack as a last resort. */
 function CardMedia({ project }: { project: Project }) {
   if (project.screenshots?.length) {
     const shots = project.screenshots
@@ -43,6 +45,7 @@ function CardMedia({ project }: { project: Project }) {
         data-card-media
       >
         {isPortrait(shots[0].src) ? (
+          // Up to three phones side by side, the middle one standing taller.
           <div className="flex h-full w-full items-end justify-center gap-3 max-[620px]:gap-2">
             {shots.slice(0, 3).map((shot, index) => (
               <figure
@@ -107,6 +110,8 @@ function CardMedia({ project }: { project: Project }) {
 // Started early (hover, focus, touch) so the panel is usually ready by the time it is opened.
 const loadSheet = () => import('./CaseStudySheet')
 const CaseStudySheet = lazy(loadSheet)
+// Fire-and-forget preload; a failure here is ignored and shows up properly when the sheet is opened.
+const preloadSheet = () => void loadSheet().catch(() => {})
 
 const cardLink =
   'hit-area inline-flex items-center gap-[7px] text-control font-semibold whitespace-nowrap no-underline hover:text-primary'
@@ -123,9 +128,11 @@ function primaryAction(project: Project): PrimaryAction | null {
   return null
 }
 
+/** A project card on the home page: thumbnail, summary, links, a "Quick look" sheet and a technical details panel. */
 function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDelay?: number }) {
   const primary = primaryAction(project)
   const [sheetOpen, setSheetOpen] = useState(false)
+  // The sheet's code is only mounted after the first click, then stays mounted.
   const [sheetRequested, setSheetRequested] = useState(false)
   const [sheetLoading, setSheetLoading] = useState(false)
 
@@ -175,9 +182,9 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
             size="sm"
             className="max-[620px]:h-11"
             aria-busy={sheetLoading}
-            onPointerEnter={() => void loadSheet().catch(() => {})}
-            onFocus={() => void loadSheet().catch(() => {})}
-            onTouchStart={() => void loadSheet().catch(() => {})}
+            onPointerEnter={preloadSheet}
+            onFocus={preloadSheet}
+            onTouchStart={preloadSheet}
             onClick={() => {
               setSheetRequested(true)
               setSheetOpen(true)
@@ -189,6 +196,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
           {sheetRequested && (
             <LazyBoundary
               label="Quick look"
+              // If the sheet's code fails to load, reset so the next click tries again.
               onFail={() => {
                 setSheetRequested(false)
                 setSheetOpen(false)

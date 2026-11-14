@@ -33,6 +33,16 @@ function CodeBlock({
   const { copied, failed, copy } = useCopy()
   const code = useRef<HTMLElement>(null)
 
+  let buttonLabel = 'Copy'
+  let status = ''
+  if (copied) {
+    buttonLabel = 'Copied'
+    status = 'Code copied to clipboard.'
+  } else if (failed) {
+    buttonLabel = 'Press Ctrl+C'
+    status = 'Copying was blocked. The code is selected; press Ctrl+C.'
+  }
+
   const copyCode = async () => {
     // Copy the whole snippet, not just the lines a card preview would show.
     if (await copy(snippet.code)) return
@@ -59,14 +69,10 @@ function CodeBlock({
               onClick={() => void copyCode()}
             >
               {copied ? <Check size={14} /> : <Copy size={14} />}
-              {copied ? 'Copied' : failed ? 'Press Ctrl+C' : 'Copy'}
+              {buttonLabel}
             </button>
             <span className="sr-only" role="status">
-              {copied
-                ? 'Code copied to clipboard.'
-                : failed
-                  ? 'Copying was blocked. The code is selected; press Ctrl+C.'
-                  : ''}
+              {status}
             </span>
             {snippet.href && (
               <a

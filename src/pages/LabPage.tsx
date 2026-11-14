@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import PageIntro from '@/components/shared/PageIntro'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
 
+// Shared styles for the two "assumption" and "what changed" columns.
 const storyLabel = 'font-mono text-label leading-[normal] tracking-[.04em] text-primary'
 const storyBody = 'mt-[7px] max-w-[44ch] leading-[1.62]'
 
+/** The /lab page: the ThinkBoard rate-limit mistake and a demo you can break yourself. */
 function LabPage() {
   return (
     <section className="section-wrap page-y print:hidden" aria-labelledby="lab-title">

@@ -23,13 +23,16 @@ const HIDE = []
 
 const summaryFile = resolve(root, 'src/data/repos.json')
 const thumbDir = resolve(root, 'public/repos')
+// The username is read from the `github:` profile link in site.ts, so it lives in one place.
 const siteSource = readFileSync(resolve(root, 'src/data/site.ts'), 'utf8')
 const user = siteSource.match(/github:\s*'https:\/\/github\.com\/([^'/]+)'/)?.[1]
 
+// Sent with every GitHub request; the token, when set, raises the rate limit.
 const headers = {
   Accept: 'application/vnd.github+json',
   ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
 }
+/** Calls a GitHub API path and throws on any non-OK answer. `extra` adds or overrides headers. */
 const api = async (path, extra = {}) => {
   const response = await fetch(`https://api.github.com${path}`, {
     headers: { ...headers, ...extra },
@@ -44,6 +47,7 @@ const BOILERPLATE = /viewing purposes|all rights reserved|licen[sc]e|copyright|p
 
 /** First plain paragraph of a README: no headings, badges, images, tables, HTML or code. */
 function readmeSummary(markdown) {
+  // Drops images, keeps link text without the URL, then strips emphasis/quote marks and HTML tags.
   const clean = (line) =>
     line
       .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
@@ -57,6 +61,7 @@ function readmeSummary(markdown) {
     if (raw.trim().startsWith('```')) inCode = !inCode
     if (inCode) continue
     const line = raw.trim()
+    // Blank lines, headings, tables, HTML, rules, list items and legal notices end the paragraph (or are skipped before it).
     const skip = !line || /^(#|\||<|---|===|- |\* |\d+\.)/.test(line) || !clean(line) || BOILERPLATE.test(line)
     if (skip) {
       if (paragraph.length) break
@@ -65,6 +70,7 @@ function readmeSummary(markdown) {
     paragraph.push(clean(line))
   }
   const text = paragraph.join(' ').replace(/\s+/g, ' ')
+  // Cap at 220 characters, ending with "..." when cut.
   return text.length > 220 ? `${text.slice(0, 217).trimEnd()}...` : text
 }
 
@@ -92,6 +98,7 @@ function scoreRepo({ homepage, commits, pushedAt, stars, size }) {
   )
 }
 
+/** Saves GitHub's social preview image as a 640px WebP (once per repo). Returns whether a thumbnail exists. */
 async function saveThumbnail(repo) {
   const file = resolve(thumbDir, `${repo}.webp`)
   if (existsSync(file)) return true
@@ -131,10 +138,12 @@ try {
   const repos = []
   for (const repo of candidates) {
     const cached = before.get(repo.name)
+    // Reuse the saved commit count and description when nothing was pushed since the last snapshot.
     const unchanged = cached && cached.pushedAt === repo.pushed_at
     let { commits = null, description = repo.description ?? '' } = unchanged ? cached : {}
     if (!unchanged) {
       commits = await commitCount(repo.name).catch(() => cached?.commits ?? null)
+      // A description under 15 characters says too little, so try the README instead.
       if ((repo.description ?? '').trim().length < 15) {
         const markdown = await api(`/repos/${user}/${repo.name}/readme`, { Accept: 'application/vnd.github.raw+json' })
           .then((response) => response.text())
@@ -160,6 +169,7 @@ try {
   }
   if (repos.length === 0) throw new Error('no public repositories found')
 
+  // Best score first, most recently pushed breaking ties. The file is only rewritten when something changed.
   repos.sort((a, b) => b.score - a.score || b.pushedAt.localeCompare(a.pushedAt))
   const next = `${JSON.stringify({ repos }, null, 2)}\n`
   if (!existsSync(summaryFile) || readFileSync(summaryFile, 'utf8') !== next) {

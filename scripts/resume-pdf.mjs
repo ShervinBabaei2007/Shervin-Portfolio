@@ -10,14 +10,17 @@ if (!existsSync(resolve(root, 'dist/resume.html'))) {
   process.exit(1)
 }
 
+// Serve the built site on its own port so it does not clash with the dev server or the test server.
 const server = await preview({ root, preview: { port: 4317, strictPort: true }, logLevel: 'silent' })
 const browser = await launchBrowser()
 try {
   const page = await browser.newPage()
   await page.goto('http://localhost:4317/resume', { waitUntil: 'networkidle' })
+  // Use the print stylesheet in light colours, the same look as printing from a browser.
   await page.emulateMedia({ media: 'print', colorScheme: 'light' })
   const target = resolve(root, 'public/Shervin-Babaei-Resume.pdf')
   await page.pdf({ path: target, format: 'Letter', printBackground: false, preferCSSPageSize: true })
+  // Also update the built copy, so a deploy of the current dist/ serves the new PDF.
   copyFileSync(target, resolve(root, 'dist/Shervin-Babaei-Resume.pdf'))
   console.log('Wrote public/Shervin-Babaei-Resume.pdf')
 } finally {

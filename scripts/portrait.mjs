@@ -46,6 +46,7 @@ function upscale(png) {
   }
 }
 
+// Per photo: output widths, height-to-width ratio, the crop in source pixels, and where to even the skin (see skin-tone.mjs).
 const photos = [
   {
     name: 'portrait-a',
@@ -79,6 +80,7 @@ const photos = [
 ]
 
 for (const { name, file, widths, ratio, crop, skin } of photos) {
+  // Raw RGB pixels (rotated upright from the camera's EXIF) so the skin pass can edit them directly.
   const { data, info } = await sharp(resolve(root, file))
     .rotate()
     .removeAlpha()
@@ -91,6 +93,7 @@ for (const { name, file, widths, ratio, crop, skin } of photos) {
     .toBuffer()
   const source = upscale(cropped)
   for (const width of widths) {
+    // A fresh pipeline per format: resize, a slight brightness and colour lift, then a light sharpen.
     const base = () =>
       sharp(source)
         .resize({ width, height: Math.round(width * ratio), kernel: 'lanczos3' })

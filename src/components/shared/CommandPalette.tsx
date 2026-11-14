@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Kbd } from '@/components/ui/kbd'
 import { hitArea } from '@/lib/hitArea'
 
+// The dialog and its search list are a separate chunk, downloaded on first open.
 const CommandPaletteDialog = lazy(() => import('./CommandPaletteDialog'))
 
 /** Opens from anywhere with Ctrl/⌘ + K, or from the header trigger. The dialog loads on first open. */
@@ -20,6 +21,7 @@ function CommandPalette() {
   const rememberOpener = () => {
     opener.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
   }
+  // On close, focus returns to the opener on the next tick, once the dialog has let go of it.
   useEffect(() => {
     if (open) wasOpen.current = true
     else if (wasOpen.current) {
@@ -29,6 +31,7 @@ function CommandPalette() {
     }
   }, [open])
 
+  // After mount: pick the right shortcut label and listen for Ctrl/⌘ + K, which toggles the palette.
   useEffect(() => {
     setIsMac(/Mac|iPhone|iPad/i.test(navigator.platform))
     const onKeyDown = (event: KeyboardEvent) => {
@@ -43,6 +46,7 @@ function CommandPalette() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [])
 
+  // The header button's click handler.
   const openPalette = () => {
     rememberOpener()
     setEverOpened(true)

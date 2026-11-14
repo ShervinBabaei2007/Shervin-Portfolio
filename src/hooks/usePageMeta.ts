@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { site } from '../data/site'
 
+// Updates the content of an existing <meta> tag, if the page has it.
 const setMeta = (selector: string, value: string) => {
   document.querySelector<HTMLMetaElement>(selector)?.setAttribute('content', value)
 }
@@ -26,13 +27,14 @@ export function usePageMeta() {
     import('../seo').then(({ getPageMeta }) => {
       if (cancelled) return
       const meta = getPageMeta(pathname)
+      const url = `${site.url}${meta.path}`
       document.title = meta.title
       setMeta('meta[name="description"]', meta.description)
       setMeta('meta[property="og:title"]', meta.title)
       setMeta('meta[property="og:description"]', meta.description)
       setMeta('meta[property="og:image"]', meta.image)
-      setMeta('meta[property="og:url"]', `${site.url}${meta.path}`)
-      document.querySelector('link[rel="canonical"]')?.setAttribute('href', `${site.url}${meta.path}`)
+      setMeta('meta[property="og:url"]', url)
+      document.querySelector('link[rel="canonical"]')?.setAttribute('href', url)
     })
     return () => {
       cancelled = true

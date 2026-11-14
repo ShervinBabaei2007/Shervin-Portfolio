@@ -22,8 +22,10 @@ const groups = skillTabs.map((group) => ({
   projectCount: new Set(group.skills.flatMap((skill) => projectsUsing(skill.name).map((project) => project.slug))).size,
 }))
 
+/** The home page "What I work with" section; clicking a skill filters the projects above. */
 function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
-  const matches = activeSkill ? projectsUsing(activeSkill).length : 0
+  const matchingProjects = activeSkill ? projectsUsing(activeSkill) : []
+  const matches = matchingProjects.length
 
   return (
     <section className="section-wrap section-y" id="skills" aria-labelledby="skills-title">
@@ -102,6 +104,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                           )
                         })}
                       </ul>
+                      {/* Under the group that holds the selected skill: how many projects use it, with links. */}
                       {group.skills.some((skill) => skill.name === activeSkill) && (
                         <div className="mt-4 border-t pt-3 text-sm text-muted-foreground" aria-live="polite">
                           <p>
@@ -111,7 +114,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                             </a>
                           </p>
                           <p className="mt-2 leading-snug">
-                            {projectsUsing(activeSkill ?? '').map((project, position) => (
+                            {matchingProjects.map((project, position) => (
                               <span key={project.slug}>
                                 {position > 0 && ' · '}
                                 <Link className={textLinkClass} to={`/work/${project.slug}`}>

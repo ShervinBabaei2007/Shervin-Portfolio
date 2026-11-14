@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import Reveal from '@/components/shared/Reveal'
 import { availabilityLine } from '@/data/site'
-import { textLinkClass } from '@/lib/utils'
 import { tone } from '@/lib/buttonTones'
-import { cn } from '@/lib/utils'
+import { cn, textLinkClass } from '@/lib/utils'
 
 type ClosingCtaProps = { heading: string; body: string }
 

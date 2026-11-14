@@ -4,23 +4,28 @@
 //
 // It reads src/data/repos.json (refresh it with `npm run repos`) and src/data/projects.ts. A repo is a
 // candidate when it has no case study and scores at least as high as your lowest-scoring flagship.
-import { writeFileSync } from 'node:fs'
-import { readFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { importTs, root } from './lib.mjs'
 
 const { projects } = await importTs('src/data/projects.ts')
 const { repos } = JSON.parse(readFileSync(resolve(root, 'src/data/repos.json'), 'utf8'))
 
+/** Lowercases a URL and drops trailing slashes, so two spellings of the same repo link match. */
 const key = (url) => url?.toLowerCase().replace(/\/+$/, '')
 const byUrl = new Map(repos.map((repo) => [key(repo.url), repo]))
 const curated = new Set(projects.flatMap((project) => [key(project.github), key(project.teamRepo)]))
 
+/** The saved repo (with its score) behind a case study, from its own repo or its team repo. */
 const scored = (project) => byUrl.get(key(project.github)) ?? byUrl.get(key(project.teamRepo))
-const flagships = projects.filter((project) => project.flagship)
-const flagshipScores = flagships.map((project) => scored(project)?.score).filter((score) => score !== undefined)
+const flagshipScores = projects
+  .filter((project) => project.flagship)
+  .map((project) => scored(project)?.score)
+  .filter((score) => score !== undefined)
+// The lowest flagship score is the bar a repo must reach to be suggested.
 const bar = flagshipScores.length ? Math.min(...flagshipScores) : 0
 
+/** One aligned line of the printed table: score, name, commits, live demo and a tag. */
 const row = (name, repo, tag) =>
   `${String(repo?.score ?? '-').padStart(5)}  ${name.padEnd(30)} ${String(repo?.commits ?? '-').padStart(4)} commits  ${repo?.homepage ? 'live' : '    '}  ${tag}`
 
@@ -33,6 +38,7 @@ console.log(`\nNo case study yet, scoring at or above your lowest flagship (${ba
 if (candidates.length === 0) console.log('  none: nothing is waiting to be featured')
 for (const repo of candidates) console.log(row(repo.name, repo, repo.url))
 
+// With `--out <file>`, also write the candidates as a Markdown note (the weekly workflow posts it to an issue).
 const outIndex = process.argv.indexOf('--out')
 if (outIndex !== -1 && candidates.length) {
   const lines = candidates.map(

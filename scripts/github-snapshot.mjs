@@ -11,35 +11,41 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { importTs, root } from './lib.mjs'
 
-const { commitSearchUrl, countByDay, dayOf, mergedPrsUrl, parseCommits, toTuple } = await importTs('src/lib/githubCommits.ts')
+const { commitSearchUrl, countByDay, dayOf, mergedPrsUrl, parseCommits, toTuple } =
+  await importTs('src/lib/githubCommits.ts')
 
+// One year of history; at most 10 pages of 100 commits (GitHub search stops at 1,000 results anyway).
 const WEEKS = 52
 const MAX_PAGES = 10
+// When rate limited, retry a page up to 3 times, waiting at most 65 seconds each time.
 const MAX_RETRIES = 3
 const MAX_WAIT_MS = 65_000
 
 const summaryFile = resolve(root, 'src/data/github.json')
 const commitsFile = resolve(root, 'src/data/github-commits.json')
+// The username is read from the `github:` profile link in site.ts, so it lives in one place.
 const siteSource = readFileSync(resolve(root, 'src/data/site.ts'), 'utf8')
 const user = siteSource.match(/github:\s*'https:\/\/github\.com\/([^'/]+)'/)?.[1]
 
+// Sent with every GitHub request; the token, when set, raises the rate limit.
+const headers = {
+  Accept: 'application/vnd.github+json',
+  ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
+}
+
+/** Waits `ms` milliseconds. */
 const sleep = (ms) => new Promise((done) => setTimeout(done, ms))
 
 /** Fetches one search page, waiting out the rate limit (403/429) a few times before giving up. */
 async function fetchPage(page) {
   for (let attempt = 0; ; attempt++) {
-    const response = await fetch(commitSearchUrl(user, page), {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
-      },
-      signal: AbortSignal.timeout(8000),
-    })
+    const response = await fetch(commitSearchUrl(user, page), { headers, signal: AbortSignal.timeout(8000) })
     if (response.ok) return (await response.json()).items ?? []
     const limited = response.status === 403 || response.status === 429
     if (!limited || attempt >= MAX_RETRIES) throw new Error(`GitHub responded ${response.status} (page ${page})`)
     const retryAfter = Number(response.headers.get('retry-after'))
     const reset = Number(response.headers.get('x-ratelimit-reset')) * 1000 - Date.now()
+    // Wait as long as GitHub asks (at least 15s), but never more than MAX_WAIT_MS.
     const wait = Math.min(MAX_WAIT_MS, Math.max(retryAfter * 1000 || 0, reset || 0, 15_000))
     console.log(`github snapshot: rate limited on page ${page}, waiting ${Math.round(wait / 1000)}s`)
     await sleep(wait)
@@ -49,13 +55,7 @@ async function fetchPage(page) {
 /** Merged pull requests over the same window as the commits. A failure here keeps the previous number. */
 async function fetchMergedPrs(since) {
   try {
-    const response = await fetch(mergedPrsUrl(user, since), {
-      headers: {
-        Accept: 'application/vnd.github+json',
-        ...(process.env.GITHUB_TOKEN ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}),
-      },
-      signal: AbortSignal.timeout(8000),
-    })
+    const response = await fetch(mergedPrsUrl(user, since), { headers, signal: AbortSignal.timeout(8000) })
     if (!response.ok) throw new Error(`GitHub responded ${response.status}`)
     const count = (await response.json()).total_count
     return Number.isInteger(count) ? count : null
@@ -67,6 +67,7 @@ async function fetchMergedPrs(since) {
 
 try {
   if (!user) throw new Error('could not read the GitHub username from src/data/site.ts')
+  // The first day of the window, as YYYY-MM-DD.
   const since = new Date(Date.now() - WEEKS * 7 * 86_400_000).toISOString().slice(0, 10)
   const commits = []
   let finished = false
@@ -80,6 +81,7 @@ try {
       break
     }
     commits.push(...parseCommits(items))
+    // Done when a page comes back short (no more results) or the oldest commit so far is older than the window.
     finished = items.length < 100 || (commits.length > 0 && dayOf(commits[commits.length - 1].date) < since)
   }
   if (commits.length === 0) throw new Error('no public commits found')
@@ -93,13 +95,16 @@ try {
 
   const inWindow = commits.filter((commit) => dayOf(commit.date) >= since)
   const days = countByDay(inWindow)
+  // Commits grouped by day as compact tuples, for the clicked-day list.
   const byDay = {}
   for (const commit of inWindow) (byDay[dayOf(commit.date)] ??= []).push(toTuple(commit))
   const mergedPrs = (await fetchMergedPrs(since)) ?? existing.mergedPrs ?? null
   const summary = { fetchedAt: new Date().toISOString(), mergedPrs, days, commits: commits.slice(0, 8) }
   writeFileSync(summaryFile, `${JSON.stringify(summary, null, 2)}\n`)
   writeFileSync(commitsFile, `${JSON.stringify(byDay)}\n`)
-  console.log(`github snapshot: ${inWindow.length} commits over ${Object.keys(days).length} days, ${mergedPrs ?? 'unknown'} merged PRs`)
+  console.log(
+    `github snapshot: ${inWindow.length} commits over ${Object.keys(days).length} days, ${mergedPrs ?? 'unknown'} merged PRs`,
+  )
 } catch (error) {
   console.warn(`github snapshot skipped (${error.message}); keeping the existing src/data/github*.json`)
 }

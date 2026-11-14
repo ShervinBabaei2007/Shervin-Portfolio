@@ -1,7 +1,9 @@
 import { createElement, lazy, type ComponentType } from 'react'
 
+// A dynamic import() of a page module.
 type Loader<P> = () => Promise<{ default: ComponentType<P> }>
 
+/** A page component that can also be loaded ahead of time. */
 export type LazyPage<P = object> = ComponentType<P> & {
   /** Loads the page's chunk. Resolves immediately if it is already loaded. */
   preload: () => Promise<unknown>
@@ -17,6 +19,7 @@ let waiting = 0
 const listeners = new Set<() => void>()
 const notify = () => listeners.forEach((listener) => listener())
 
+/** A tiny store in the shape useSyncExternalStore expects. */
 export const pageLoadStore = {
   subscribe(listener: () => void) {
     listeners.add(listener)
@@ -39,6 +42,7 @@ export function lazyPage<P extends object>(loader: Loader<P>): LazyPage<P> {
   let loaded: ComponentType<P> | null = null
   let pending: Promise<{ default: ComponentType<P> }> | null = null
 
+  // Starts the download once and shares the same promise with every later caller.
   const preload = () => {
     pending ??= loader().then(
       (module) => {
@@ -54,6 +58,7 @@ export function lazyPage<P extends object>(loader: Loader<P>): LazyPage<P> {
     return pending
   }
 
+  // The fallback for a page that was not preloaded; it counts itself as waiting while it downloads.
   const Lazy = lazy(() => {
     queueMicrotask(() => {
       waiting += 1
@@ -64,6 +69,7 @@ export function lazyPage<P extends object>(loader: Loader<P>): LazyPage<P> {
       notify()
     })
   })
+  // Renders the real page directly once loaded, so it never suspends after a preload.
   const Page = ((props: P) => createElement((loaded ?? Lazy) as ComponentType<P>, props)) as LazyPage<P>
   Page.preload = preload
   return Page

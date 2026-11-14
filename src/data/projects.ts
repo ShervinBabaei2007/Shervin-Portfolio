@@ -6,11 +6,13 @@
 
 import { commitsLine, facts, hackathonLine, mergedPrsLine } from './facts'
 
+/** A real screenshot of the project, shown on its case study. */
 export type Screenshot = { src: string; alt: string; caption: string }
 
 /** A drawn mock-up for projects with no real screenshots. It is labelled as an illustration on the page. */
 export type Illustration = { src: string; alt: string; caption: string }
 
+/** A short piece of real code from the repo, shown on the case study. */
 export type Snippet = {
   /** Path inside the repo, shown as the code block's title. */
   file: string
@@ -22,6 +24,7 @@ export type Snippet = {
   caption: string
 }
 
+/** Everything one case study page and its cards show. */
 export type Project = {
   slug: string
   name: string
@@ -80,6 +83,7 @@ export type Project = {
   demo?: 'rate-limiter'
 }
 
+/** All case studies, in the order the site lists them. */
 export const projects: Project[] = [
   {
     slug: 'signaldesk',
@@ -1612,9 +1616,12 @@ Question:
   },
 ]
 
+/** Projects with a large card on the home page. */
 export const flagshipProjects = projects.filter((project) => project.flagship)
+/** The rest, listed compactly. */
 export const moreProjects = projects.filter((project) => !project.flagship)
 
+/** The project with this slug, or undefined if there is none. */
 export function findProject(slug: string | undefined): Project | undefined {
   return projects.find((project) => project.slug === slug)
 }

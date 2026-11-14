@@ -1,64 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowUpRight, ChevronDown, Github } from 'lucide-react'
 import { Collapsible as CollapsiblePrimitive } from 'radix-ui'
-import snapshot from '@/data/github.json'
 import { site } from '@/data/site'
-import {
-  buildWeeks,
-  commitSearchUrl,
-  commitsForDay,
-  commitUrl,
-  countByDay,
-  dayOf,
-  level,
-  mergeDays,
-  monthLabels,
-  parseCommits,
-  repoName,
-  summarize,
-  type Commit,
-  type CommitsByDay,
-  type DayCounts,
-} from '@/lib/githubCommits'
+import { useCommitHistory } from '@/hooks/useCommitHistory'
+import { buildWeeks, commitUrl, level, monthLabels, repoName, summarize, type Commit } from '@/lib/githubCommits'
 import Reveal from '@/components/shared/Reveal'
 import { Button } from '@/components/ui/button'
 import { BorderBeam } from '@/components/ui/border-beam'
 import { Spinner } from '@/components/ui/spinner'
 import { cn } from '@/lib/utils'
 
-// Every commit grouped by day is about 100 KB, so it is a separate chunk, fetched when a day is first used.
-const loadCommits = () => import('@/data/github-commits.json')
-
-const user = site.github.split('/').pop() as string
-const CACHE_KEY = 'github-commits-v2'
-const CACHE_MS = 15 * 60 * 1000
-const FRESH_DAYS = 90
+// A year of weeks in the grid, and how many recent commits the default list shows.
 const WEEKS = 52
 const SHOWN = 6
 
-type Data = { days: DayCounts; commits: Commit[]; asOf: string }
-
-/**
- * A history that stopped months ago signals the opposite of what this section is
- * for, so it only shows when the newest commit is recent. For the build snapshot,
- * "recent" is measured from when the snapshot was taken, which keeps the server
- * and browser markup identical; live data is checked against now.
- */
-const isFresh = (commits: Commit[], reference: number) =>
-  commits.some((commit) => reference - new Date(commit.date).getTime() < FRESH_DAYS * 86_400_000)
-
-/** Merged pull requests over the last year, counted at build time (see scripts/github-snapshot.mjs). */
-const mergedPrs = (snapshot as { mergedPrs?: number | null }).mergedPrs ?? null
-
-const snapshotData: Data | null = snapshot.fetchedAt
-  ? {
-      days: snapshot.days as DayCounts,
-      commits: snapshot.commits as Commit[],
-      asOf: dayOf(snapshot.fetchedAt),
-    }
-  : null
-const snapshotIsFresh = snapshotData !== null && isFresh(snapshotData.commits, Date.parse(snapshot.fetchedAt as string))
-
+// A full date such as "Nov 14, 2026", used until the browser knows the current time.
 const absolute = (iso: string) =>
   new Date(iso).toLocaleDateString('en-CA', {
     year: 'numeric',
@@ -67,8 +23,9 @@ const absolute = (iso: string) =>
     timeZone: 'America/Vancouver',
   })
 
+// A rough "time ago" label such as "3 hr ago" or "2 months ago".
 function relative(iso: string, now: number) {
-  const minutes = Math.floor((now - new Date(iso).getTime()) / 60_000)
+  const minutes = Math.floor((now - new Date(iso).getTime()) / 60_000) // 60,000 ms in a minute
   if (minutes < 60) return `${Math.max(minutes, 1)} min ago`
   const hours = Math.floor(minutes / 60)
   if (hours < 24) return `${hours} hr ago`
@@ -79,79 +36,16 @@ function relative(iso: string, now: number) {
   return months === 1 ? 'a month ago' : `${months} months ago`
 }
 
+// Cell colours from no commits (index 0) to the busiest days (index 4).
 const levelClass = ['bg-muted', 'bg-primary/25', 'bg-primary/45', 'bg-primary/70', 'bg-primary']
-
-const getJson = (url: string, init?: RequestInit) =>
-  fetch(url, init).then((response) =>
-    response.ok ? response.json() : Promise.reject(new Error(String(response.status))),
-  )
-
-async function loadSearchPage(): Promise<{ items: Parameters<typeof parseCommits>[0] }> {
-  try {
-    const body = await getJson('/api/github-commits')
-    if (Array.isArray(body?.items)) return body
-  } catch {
-    /* no function here (or it failed): ask GitHub directly */
-  }
-  return getJson(commitSearchUrl(user), { headers: { Accept: 'application/vnd.github+json' } })
-}
 
 /**
  * Commit history for every public repository: a contribution grid plus the latest
- * commits. The build-time snapshot is in the prerendered HTML; after load, the
- * browser asks the GitHub API for the newest commits (cached for 15 minutes),
- * merges them into the snapshot, and quietly keeps the snapshot if that fails.
+ * commits. Where the data comes from (build snapshot, then live GitHub) is `useCommitHistory`'s job.
  */
 function GitHubActivity() {
-  const [data, setData] = useState<Data | null>(snapshotIsFresh ? snapshotData : null)
-  const [live, setLive] = useState(false)
-  const [now, setNow] = useState<number | null>(null)
-  /** The newest commits from the live request (empty until it succeeds). */
-  const [liveCommits, setLiveCommits] = useState<Commit[]>([])
+  const { data, live, now, user, mergedPrs, loadDays, commitsOn, daysLoaded, dayStatus } = useCommitHistory()
   const [selectedDay, setSelectedDay] = useState<string | null>(null)
-  const [byDay, setByDay] = useState<CommitsByDay | null>(null)
-  const [dayStatus, setDayStatus] = useState<'idle' | 'loading' | 'error'>('idle')
-
-  useEffect(() => {
-    setNow(Date.now())
-    let cancelled = false
-    // `complete` is true when the search returned fewer than a full page, so it already holds every commit.
-    const apply = (commits: Commit[], complete: boolean) => {
-      if (cancelled || !isFresh(commits, Date.now())) return
-      const days = mergeDays(snapshotData?.days ?? {}, countByDay(commits), commits, complete)
-      setData({ days, commits, asOf: new Date().toISOString().slice(0, 10) })
-      setLiveCommits(commits)
-      setLive(true)
-    }
-    try {
-      const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) ?? 'null') as {
-        at: number
-        commits: Commit[]
-        complete: boolean
-      } | null
-      if (cached && Date.now() - cached.at < CACHE_MS) return apply(cached.commits, cached.complete)
-    } catch {
-      /* storage unavailable */
-    }
-    // The site's own function first (shared and cached); GitHub directly when it is not available, such as in local development.
-    loadSearchPage()
-      .then((body: { items: Parameters<typeof parseCommits>[0] }) => {
-        const commits = parseCommits(body.items)
-        const complete = body.items.length < 100 // counted before private repositories are filtered out
-        try {
-          sessionStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), commits, complete }))
-        } catch {
-          /* storage unavailable */
-        }
-        apply(commits, complete)
-      })
-      .catch(() => {
-        /* rate-limited or offline: keep the snapshot */
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   // The year grid and the day menu stay folded until asked for, so the card opens as stats plus recent work.
   const [historyOpen, setHistoryOpen] = useState(false)
@@ -166,20 +60,14 @@ function GitHubActivity() {
   const weeks = buildWeeks(data.days, data.asOf, WEEKS)
   const stats = summarize(weeks)
   const months = monthLabels(weeks)
+  // One grid column per week, shared by the month labels and the cells so they line up.
   const cols = { gridTemplateColumns: `repeat(${WEEKS}, minmax(0, 1fr))` }
 
+  // Clicking a day shows its commits; clicking the same day again goes back to the latest commits.
   const selectDay = (day: string) => {
     if (selectedDay === day) return setSelectedDay(null)
     setSelectedDay(day)
-    if (byDay || dayStatus === 'loading') return
-    setDayStatus('loading')
-    loadCommits().then(
-      (module) => {
-        setByDay(module.default as unknown as CommitsByDay)
-        setDayStatus('idle')
-      },
-      () => setDayStatus('error'),
-    )
+    loadDays()
   }
 
   /** The menu's way to pick a day (or go back to the latest commits with an empty value). */
@@ -197,8 +85,7 @@ function GitHubActivity() {
   /** The default list highlights other projects; this site's own commits are still in the grid and the day view. */
   const recent = data.commits.filter((commit) => commit.repo !== site.siteRepo).slice(0, SHOWN)
   const showDay = selectedDay !== null && dayStatus !== 'error'
-  const dayCommits = selectedDay && byDay ? commitsForDay(selectedDay, byDay, liveCommits) : []
-  const dayTitle = selectedDay ? longDay(selectedDay) : ''
+  const dayCommits = selectedDay ? commitsOn(selectedDay) : []
 
   return (
     <Reveal>
@@ -234,6 +121,7 @@ function GitHubActivity() {
         </div>
 
         <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border md:grid-cols-4">
+          {/* [label, value] pairs; the PR count is left out when the snapshot has none. */}
           {[
             ['Commits', stats.total.toLocaleString('en-CA')],
             ...(mergedPrs === null ? [] : [['PRs merged', mergedPrs.toLocaleString('en-CA')]]),
@@ -292,6 +180,7 @@ function GitHubActivity() {
                   className="grid grid-rows-7 gap-[3px] font-mono text-label text-muted-foreground"
                   aria-hidden="true"
                 >
+                  {/* Row labels Sunday to Saturday, with only every other day named. */}
                   {['', 'Mon', '', 'Wed', '', 'Fri', ''].map((day, index) => (
                     <span key={index} className="flex items-center leading-none">
                       {day}
@@ -304,6 +193,7 @@ function GitHubActivity() {
                     .map((cell) => {
                       if (cell.future) return <span key={cell.day} aria-hidden="true" />
                       const box = cn('aspect-square rounded-[3px]', levelClass[level(cell.count)])
+                      // The column number lets the CSS animate the cells in week by week.
                       const stagger = { '--col': cell.column } as React.CSSProperties
                       const noun = `commit${cell.count === 1 ? '' : 's'}`
                       if (cell.count === 0) {
@@ -334,7 +224,7 @@ function GitHubActivity() {
                           data-day={cell.day}
                           data-selected={selectedDay === cell.day}
                           aria-hidden="true"
-                          onPointerEnter={() => void loadCommits()}
+                          onPointerEnter={loadDays}
                           onClick={() => selectDay(cell.day)}
                         />
                       )
@@ -348,7 +238,7 @@ function GitHubActivity() {
                 <select
                   className="h-10 max-w-[16rem] rounded-md border border-input bg-card px-2.5 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                   value={selectedDay ?? ''}
-                  onFocus={() => void loadCommits()}
+                  onFocus={loadDays}
                   onChange={(event) => chooseDay(event.target.value)}
                 >
                   <option value="">Latest commits</option>
@@ -375,13 +265,13 @@ function GitHubActivity() {
             <>
               <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b pb-3">
                 <h4 className="font-mono text-label tracking-wide text-muted-foreground uppercase">
-                  Commits on {dayTitle} · {data.days[selectedDay] ?? dayCommits.length}
+                  Commits on {longDay(selectedDay)} ·{data.days[selectedDay] ?? dayCommits.length}
                 </h4>
                 <Button type="button" variant="outline" size="sm" onClick={() => setSelectedDay(null)}>
                   <ArrowLeft aria-hidden="true" /> Show latest commits
                 </Button>
               </div>
-              {dayStatus === 'loading' && !byDay ? (
+              {dayStatus === 'loading' && !daysLoaded ? (
                 <p className="flex items-center gap-2.5 py-6 text-sm text-muted-foreground">
                   <Spinner aria-hidden="true" role="presentation" /> Loading commits…
                 </p>
@@ -412,6 +302,7 @@ function GitHubActivity() {
   )
 }
 
+// A day such as "Sat, Nov 14, 2026"; midday UTC keeps the date from shifting in any time zone.
 const longDay = (day: string) =>
   new Date(`${day}T12:00:00Z`).toLocaleDateString('en-CA', {
     weekday: 'short',
@@ -422,6 +313,13 @@ const longDay = (day: string) =>
   })
 
 type CommitListProps = { commits: Commit[]; now: number | null; showTime?: boolean; className?: string }
+
+// The time label for one commit: "HH:MM" in the day view, otherwise a full date or "x ago".
+function commitTime(date: string, now: number | null, showTime: boolean): string {
+  if (showTime) return date.slice(11, 16) // the HH:MM part of the ISO date
+  if (now === null) return absolute(date)
+  return relative(date, now)
+}
 
 /** Commits as links to GitHub. `showTime` prints the author's local time of day instead of "x ago". */
 function CommitList({ commits, now, showTime = false, className }: CommitListProps) {
@@ -437,11 +335,7 @@ function CommitList({ commits, now, showTime = false, className }: CommitListPro
             <span className="flex flex-wrap gap-x-3 font-mono text-label text-muted-foreground">
               <span>{repoName(commit)}</span>
               <span>{commit.sha}</span>
-              {showTime ? (
-                <time dateTime={commit.date}>{commit.date.slice(11, 16)}</time>
-              ) : (
-                <time dateTime={commit.date}>{now === null ? absolute(commit.date) : relative(commit.date, now)}</time>
-              )}
+              <time dateTime={commit.date}>{commitTime(commit.date, now, showTime)}</time>
             </span>
           </a>
         </li>

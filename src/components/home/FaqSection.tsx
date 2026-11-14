@@ -12,6 +12,7 @@ type Faq = { id: string; question: string; answer: ReactNode }
 const linkClass =
   'font-semibold text-primary underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-primary'
 
+// An in-site link styled for use inside an answer.
 const link = (to: string, label: string) => (
   <Link className={linkClass} to={to}>
     {label}
@@ -20,6 +21,7 @@ const link = (to: string, label: string) => (
 
 const { skillmatch, hackathon } = facts
 const { availability } = site
+// Opening sentence of the availability answer, left out when no start date is set.
 const start = availability.from
   ? `I am available from ${availability.from}${availability.term ? ` for ${availability.term}` : ''}. `
   : ''

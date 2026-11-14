@@ -1,8 +1,10 @@
 import { site } from './site'
 import { facts } from './facts'
 
+/** A labelled link on the resume. */
 export type ResumeLink = { label: string; href: string }
 
+/** One project entry in the resume's projects section. */
 export type ResumeProject = {
   name: string
   detail?: string

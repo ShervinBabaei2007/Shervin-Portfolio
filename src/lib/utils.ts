@@ -6,6 +6,7 @@ const twMerge = extendTailwindMerge({
   extend: { classGroups: { 'font-size': [{ text: ['label', 'meta', 'control'] }] } },
 })
 
+/** Joins class names, letting a later Tailwind class override a clashing earlier one. */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

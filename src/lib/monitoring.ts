@@ -16,7 +16,9 @@ export async function startMonitoring() {
   const dsn = import.meta.env.VITE_SENTRY_DSN
   if (!dsn) return
   const Sentry = await import('@sentry/react')
-  Sentry.init({ dsn, tracesSampleRate: 0.1, environment: import.meta.env.MODE })}
+  // Records performance traces for 10% of page loads.
+  Sentry.init({ dsn, tracesSampleRate: 0.1, environment: import.meta.env.MODE })
+}
 
 /** Reports an error caught by a React error boundary. Does nothing unless Sentry was started. */
 export async function reportError(error: unknown) {

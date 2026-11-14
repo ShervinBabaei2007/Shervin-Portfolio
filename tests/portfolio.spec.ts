@@ -1,7 +1,15 @@
 import { readFileSync } from 'node:fs'
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
+import { notes } from '../src/data/notes'
+import { flagshipProjects, projects } from '../src/data/projects'
+import { caseStudySections } from '../src/lib/caseStudySections'
 
+/** The slug of the project `step` places after (or before, when negative) another in the case-study order. */
+const neighbour = (slug: string, step: number) =>
+  projects[projects.findIndex((project) => project.slug === slug) + step].slug
+
+/** Starts recording console errors and uncaught page errors; returns the list it fills. */
 const collectErrors = (page: Page) => {
   const errors: string[] = []
   page.on('console', (message) => {
@@ -71,13 +79,15 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
 
 test('home shows four flagships and links to the full projects page', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(4)
+  await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(
+    Math.min(4, flagshipProjects.length),
+  )
   await expect(page.getByRole('heading', { name: 'More projects' })).toHaveCount(0)
   await expect(page.getByText('Illustrative interface preview')).toHaveCount(0)
   await page.getByRole('link', { name: /View all projects/ }).click()
   await expect(page).toHaveURL(/\/projects$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Everything')
-  await expect(page.locator('[data-project-card]')).toHaveCount(13)
+  await expect(page.locator('[data-project-card]')).toHaveCount(projects.length)
 })
 
 test('project cards hide the technical stack in a drawer and only live projects say Launch Live App', async ({
@@ -86,7 +96,9 @@ test('project cards hide the technical stack in a drawer and only live projects 
   await page.goto('/projects')
   await page.waitForLoadState('networkidle')
   const cards = page.locator('[data-project-card]')
-  await expect(cards.filter({ has: page.getByRole('link', { name: 'Launch Live App' }) })).toHaveCount(6)
+  await expect(cards.filter({ has: page.getByRole('link', { name: 'Launch Live App' }) })).toHaveCount(
+    projects.filter((project) => project.live).length,
+  )
   const first = cards.first()
   const trigger = first.getByRole('button', { name: 'Technical Architecture & Stack' })
   await expect(trigger).toHaveAttribute('aria-expanded', 'false')
@@ -180,7 +192,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
   await expect.poll(() => screenshot.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
 
   await page.getByRole('link', { name: /Next/ }).click()
-  await expect(page).toHaveURL(/\/work\/gitscribe$/)
+  await expect(page).toHaveURL(new RegExp(`/work/${neighbour('skillmatch', 1)}$`))
   await page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: 'Work' }).click()
   await expect(page).toHaveURL(/\/#work$/)
 })
@@ -243,6 +255,7 @@ test('toasts still appear even though the toast container loads after idle', asy
 // The header also has an "Email" link, so look inside the form.
 const contactForm = (page: Page) => page.locator('#contact form')
 
+/** Fills every contact field with valid values; pass 'topic' to leave the topic unchosen. */
 const fillContact = async (page: Page, skip?: 'topic') => {
   await contactForm(page).getByLabel('Name', { exact: true }).fill('Ada Lovelace')
   await contactForm(page).getByLabel('Email', { exact: true }).fill('ada@example.com')
@@ -617,14 +630,17 @@ test.describe('the end of a page', () => {
   test('the project pager does not wrap around', async ({ page }) => {
     const pager = () => page.getByRole('navigation', { name: 'More case studies' })
     // First project: nothing before it, so the left slot goes back to the work list.
-    await page.goto('/work/signaldesk')
+    await page.goto(`/work/${projects[0].slug}`)
     await expect(pager().getByRole('link', { name: /Previous/ })).toHaveCount(0)
     await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
-    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', '/work/network-growth-assistant')
+    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', `/work/${projects[1].slug}`)
     // Last project: nothing after it, so the right slot goes back to the work list.
-    await page.goto('/work/ollama-rag')
+    await page.goto(`/work/${projects.at(-1)!.slug}`)
     await expect(pager().getByRole('link', { name: /Next/ })).toHaveCount(0)
-    await expect(pager().getByRole('link', { name: /Previous/ })).toHaveAttribute('href', '/work/tic-tac-toe-minimax')
+    await expect(pager().getByRole('link', { name: /Previous/ })).toHaveAttribute(
+      'href',
+      `/work/${projects.at(-2)!.slug}`,
+    )
     await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
   })
 })
@@ -733,7 +749,9 @@ test('skill chips filter projects and can be cleared', async ({ page }) => {
   await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(1)
   await expect(page.getByRole('heading', { name: 'More projects' })).toHaveCount(0)
   await page.getByRole('button', { name: 'Clear skill filter' }).click()
-  await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(4)
+  await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(
+    Math.min(4, flagshipProjects.length),
+  )
 })
 
 test('every listed skill is backed by at least one project', async ({ page }) => {
@@ -886,7 +904,7 @@ test('writeups: listed on the writeups page, own pages, linked from case studies
   await page.goto('/')
   await page.getByRole('link', { name: /Read my writeups/ }).click()
   await expect(page).toHaveURL(/\/writeups$/)
-  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })).toHaveCount(7)
+  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })).toHaveCount(notes.length)
   await page
     .getByRole('link', { name: /The race condition in SkillMatch/ })
     .first()
@@ -918,6 +936,36 @@ test('a case study opens with what it is, and the screenshots come after how it 
   expect(writeup.y).toBeGreaterThanOrEqual(copy.y)
 })
 
+test('every case study lists a table-of-contents entry for each of its sections, and the reverse', async ({
+  request,
+}) => {
+  for (const project of projects) {
+    const html = await (await request.get(`/work/${project.slug}`)).text()
+    const sections = caseStudySections(project)
+    for (const { id } of sections) {
+      expect(html, `${project.slug} section #${id}`).toContain(`id="${id}"`)
+      expect(html, `${project.slug} contents link #${id}`).toContain(`href="#${id}"`)
+    }
+    // Nothing is rendered that the list does not know about.
+    const rendered = [
+      'what',
+      'does',
+      'works',
+      'media',
+      'why',
+      'built',
+      'code',
+      'run',
+      'outcome',
+      'tradeoff',
+      'learned',
+      'next',
+    ]
+    const present = rendered.filter((id) => html.includes(`<section id="${id}"`))
+    expect(present.sort(), project.slug).toEqual(sections.map((section) => section.id).sort())
+  }
+})
+
 test('the writeup button spans the same row as the live project button on wide screens', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto('/work/signaldesk')
@@ -926,9 +974,9 @@ test('the writeup button spans the same row as the live project button on wide s
   expect(Math.abs(writeup.width - live.width)).toBeLessThan(2)
 })
 
-test('SignalDesk is the first project on the projects page', async ({ page }) => {
+test('the projects page lists the first project first', async ({ page }) => {
   await page.goto('/projects')
-  await expect(page.locator('[data-project-card]').first()).toContainText('SignalDesk')
+  await expect(page.locator('[data-project-card]').first()).toContainText(projects[0].name)
 })
 
 test('a project with several writeups links to the list filtered to it', async ({ page }) => {
@@ -1107,9 +1155,9 @@ test('project carousel can be moved with the arrow keys on a phone', async ({ pa
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
   await page.waitForLoadState('networkidle')
-  await page.getByRole('link', { name: 'SignalDesk case study', exact: true }).focus()
+  await page.getByRole('link', { name: `${flagshipProjects[0].name} case study`, exact: true }).focus()
   await page.keyboard.press('ArrowRight')
-  await expect(page.getByRole('link', { name: 'Network Growth Assistant case study', exact: true })).toBeInViewport({
+  await expect(page.getByRole('link', { name: `${flagshipProjects[1].name} case study`, exact: true })).toBeInViewport({
     ratio: 0.9,
   })
 })
@@ -1178,6 +1226,7 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
 }) => {
   let popups = 0
   page.on('popup', () => (popups += 1))
+  const shots = projects.find((project) => project.slug === 'skillmatch')!.screenshots!.length
   await page.goto('/work/skillmatch')
   await page.waitForLoadState('networkidle')
   await page
@@ -1189,8 +1238,8 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
   await expect(viewer).toBeVisible()
   await expect(page).toHaveURL(/\/work\/skillmatch$/)
   expect(popups).toBe(0)
-  await expect(viewer.getByRole('list', { name: 'All screenshots' }).getByRole('button')).toHaveCount(3)
-  await expect(viewer.getByText(/^1 of 3/)).toBeVisible()
+  await expect(viewer.getByRole('list', { name: 'All screenshots' }).getByRole('button')).toHaveCount(shots)
+  await expect(viewer.getByText(new RegExp(`^1 of ${shots}`))).toBeVisible()
 
   // The magnifier: buttons, a percentage, and keys. Zoom out and fit are disabled until the picture is magnified.
   const readout = viewer.getByRole('status')
@@ -1207,9 +1256,9 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
   await expect(readout).toHaveText('100%')
 
   await viewer.getByRole('button', { name: /Show screenshot 2/ }).click()
-  await expect(viewer.getByText(/^2 of 3/)).toBeVisible()
+  await expect(viewer.getByText(new RegExp(`^2 of ${shots}`))).toBeVisible()
   await page.keyboard.press('ArrowRight')
-  await expect(viewer.getByText(/^3 of 3/)).toBeVisible()
+  await expect(viewer.getByText(new RegExp(`^3 of ${shots}`))).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(viewer).toBeHidden()
 })
@@ -1425,33 +1474,31 @@ test('writeups are listed newest first, grouped by month, and can be searched an
   // Wait for hydration, otherwise typing can land before React attaches its handlers.
   await page.waitForLoadState('networkidle')
   const rows = page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })
-  // The newest month comes first, and inside it the best writeup first and LinkLocker's last.
-  await expect(rows.first().getByRole('link')).toHaveAttribute('href', '/writeups/fetching-links-you-dont-trust')
-  await expect(rows.nth(1).getByRole('link')).toHaveAttribute(
-    'href',
-    '/writeups/when-two-outlets-give-different-numbers',
-  )
-  await expect(rows.nth(3).getByRole('link')).toHaveAttribute('href', '/writeups/sign-in-behind-a-proxy')
-  await expect(rows.nth(4).getByRole('link')).toHaveAttribute('href', '/writeups/skillmatch-attend-race-condition')
+  // The page lists the writeups in the data's order, and that order puts the newest month first.
+  const months = notes.map((note) => note.date.slice(0, 7))
+  expect(months).toEqual([...months].sort().reverse())
+  for (const [index, note] of notes.entries()) {
+    await expect(rows.nth(index).getByRole('link')).toHaveAttribute('href', `/writeups/${note.slug}`)
+  }
   await expect(page.locator('main h2')).toHaveText([/November 2026/, /October 2026/])
-  await expect(page.locator('[data-writeup-count]')).toContainText('7 writeups, newest month first')
+  await expect(page.locator('[data-writeup-count]')).toContainText(`${notes.length} writeups, newest month first`)
   await expect(page.getByText('Featured', { exact: true })).toHaveCount(2)
 
   await page.getByLabel('Search writeups').fill('rebinding')
   await expect(rows).toHaveCount(1)
   await expect(rows.first()).toContainText('fetches links it doesn’t trust')
-  await expect(page.locator('[data-writeup-count]')).toContainText('1 of 7 writeups')
+  await expect(page.locator('[data-writeup-count]')).toContainText(`1 of ${notes.length} writeups`)
 
   await page.getByLabel('Search writeups').fill('zzzzzz')
   await expect(page.getByText('No writeups match')).toBeVisible()
   await page.getByRole('button', { name: 'Clear filters' }).click()
-  await expect(rows).toHaveCount(7)
+  await expect(rows).toHaveCount(notes.length)
 
   await page.getByRole('button', { name: /^LinkLocker/ }).click()
   await expect(page.getByRole('button', { name: /^LinkLocker/ })).toHaveAttribute('aria-pressed', 'true')
   await expect(rows).toHaveCount(1)
   await page.getByRole('button', { name: /^All/ }).click()
-  await expect(rows).toHaveCount(7)
+  await expect(rows).toHaveCount(notes.length)
 })
 
 test('writeups have a table of contents that jumps to a heading', async ({ page }) => {

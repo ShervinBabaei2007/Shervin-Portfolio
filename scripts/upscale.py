@@ -19,6 +19,8 @@ pixels = np.asarray(Image.open(source).convert("RGB"), dtype=np.float32) / 255.0
 height, width, _ = pixels.shape
 # The model works in windows of 8 pixels, so pad (by reflection) to a multiple of 8, then crop the result back.
 padded = np.pad(pixels, ((0, (-height) % 8), (0, (-width) % 8), (0, 0)), mode="reflect")
+# The model wants channels first with a batch dimension (1, 3, H, W); turn the answer back into H x W x 3.
 result = session.run(None, {"pixel_values": padded.transpose(2, 0, 1)[None]})[0][0]
 result = np.clip(result.transpose(1, 2, 0), 0, 1)[: height * 2, : width * 2]
+# Back to 0-255 bytes, rounding to the nearest value.
 Image.fromarray((result * 255.0 + 0.5).astype(np.uint8)).save(target)

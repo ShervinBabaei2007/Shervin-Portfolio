@@ -37,6 +37,7 @@ const layers = [
 
 type LayerId = (typeof layers)[number]['id']
 
+// Shared style for the small monospace labels in the diagram.
 const monoLabel = 'font-mono text-label leading-[normal]'
 
 /**
@@ -73,6 +74,7 @@ function RequestTrace() {
               >
                 {layer.number}
               </span>
+              {/* Every step but the last draws the connecting line. */}
               {index < layers.length - 1 && (
                 <span
                   className="absolute top-[calc(0.875rem+1.75rem)] -bottom-3.5 left-[calc(1rem+0.8125rem)] z-0 w-px bg-border"

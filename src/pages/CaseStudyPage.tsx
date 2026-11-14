@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Github, Link2, NotebookPen, Users } from 'lucide-react'
 import ArticleLayout from '@/components/shared/ArticleLayout'
 import TableOfContents from '@/components/shared/TableOfContents'
+import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
@@ -12,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useCopy } from '@/hooks/useCopy'
 import { tone } from '@/lib/buttonTones'
+import { caseStudySections, type CaseStudySection, type SectionId } from '@/lib/caseStudySections'
 import { cn } from '@/lib/utils'
 import { notesForProject } from '../data/notes'
 import { findProject, projects } from '../data/projects'
@@ -28,6 +30,21 @@ const pagerLink =
   'grid gap-1.5 rounded-xl border bg-card px-5 py-[18px] no-underline hover:border-primary [&:hover_b]:text-primary'
 const pagerLabel = 'flex items-center gap-1.5 text-sm text-muted-foreground'
 
+/** A list of steps numbered 01, 02, and so on. */
+function StepList({ steps }: { steps: string[] }) {
+  return (
+    <ol className="mt-2.5 grid list-none gap-3 p-0">
+      {steps.map((step, i) => (
+        <li key={step} className="grid grid-cols-[30px_1fr] items-start gap-2.5">
+          <span className="pt-1 font-mono text-sm text-primary">{String(i + 1).padStart(2, '0')}</span>
+          <p className={cn(bodyClass, 'm-0')}>{step}</p>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
+/** One project's case study page at /work/:slug, or the 404 page when the slug is unknown. */
 function CaseStudyPage() {
   const { slug } = useParams()
   const project = findProject(slug)
@@ -42,6 +59,7 @@ function CaseStudyPage() {
   // One writeup opens directly; several open the writeups list filtered to this project.
   const writeupHref =
     relatedNotes.length === 1 ? `/writeups/${relatedNotes[0].slug}` : `/writeups?project=${project.slug}`
+  // The summary card under the title; the decision and evidence rows only appear for projects that have them.
   const glance: [string, string][] = [
     ['MY ROLE', project.role],
     ['KEY RESULT', project.result],
@@ -52,22 +70,147 @@ function CaseStudyPage() {
         ] as [string, string][])
       : []),
   ]
-  const sections: [string, string][] = [
-    ...(project.overview ? ([['what', 'What it is']] as [string, string][]) : []),
-    ...(project.features ? ([['does', 'What it can do']] as [string, string][]) : []),
-    ...(project.howItWorks ? ([['works', 'How it works']] as [string, string][]) : []),
-    ...(project.video || project.screenshots || project.illustration
-      ? ([['media', project.video || project.screenshots ? 'Screenshots' : 'Illustration']] as [string, string][])
-      : []),
-    ['why', 'Why'],
-    ['built', 'What I built'],
-    ...(project.snippet ? ([['code', 'The code']] as [string, string][]) : []),
-    ...(project.terminal ? ([['run', 'See it run']] as [string, string][]) : []),
-    ['outcome', 'Outcome'],
-    ['tradeoff', 'The trade-off'],
-    ['learned', 'What I learned'],
-    ['next', 'Fix next'],
-  ]
+  const sections = caseStudySections(project)
+  // A section only renders when `sections` lists it, so these empty defaults are never shown.
+  const { overview = [], features = [], howItWorks = [] } = project
+  // Renders the listed sections for one part of the page, in order.
+  const render = (placement: CaseStudySection['placement']) =>
+    sections.filter((section) => section.placement === placement).map((section) => views[section.id]())
+
+  let copyLabel = 'Copy link'
+  if (copied) copyLabel = 'Link copied'
+  else if (failed) copyLabel = 'Copy it from the address bar'
+
+  // One renderer per section id; `render` above picks which ones run.
+  const views: Record<SectionId, () => ReactNode> = {
+    what: () => (
+      <section key="what" id="what" className="border-b py-10">
+        <h2 className={h2Class}>What it is</h2>
+        {overview.map((paragraph) => (
+          <p key={paragraph} className={bodyClass}>
+            {paragraph}
+          </p>
+        ))}
+      </section>
+    ),
+    does: () => (
+      <section key="does" id="does" className="border-b py-10">
+        <h2 className={h2Class}>What it can do</h2>
+        <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
+          {features.map((feature) => (
+            <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
+              <h3 className="text-base font-semibold">{feature.title}</h3>
+              <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ),
+    works: () => (
+      <section key="works" id="works">
+        <h2 className={h2Class}>How it works</h2>
+        <StepList steps={howItWorks} />
+      </section>
+    ),
+    media: () => (
+      <section key="media" id="media">
+        <h2 className={h2Class}>{project.video || project.screenshots ? 'Screenshots' : 'Illustration'}</h2>
+        {project.video && (
+          <figure className="mt-4">
+            <video
+              className="block h-auto w-full rounded-xl border bg-code"
+              controls
+              muted
+              playsInline
+              preload="none"
+              poster={project.video.poster}
+              width={1280}
+              height={800}
+            >
+              <source src={project.video.src} type={project.video.type ?? 'video/mp4'} />
+            </video>
+            <figcaption className="mt-2 text-sm text-muted-foreground">{project.video.caption}</figcaption>
+          </figure>
+        )}
+        {project.screenshots && (
+          <div className="mt-4" aria-label={`${project.name} screenshots`} role="group">
+            <ScreenshotGallery shots={project.screenshots} projectName={project.name} layout="strip" />
+          </div>
+        )}
+        {project.illustration && !project.video && !project.screenshots && (
+          <figure className="m-0 mt-4">
+            <img
+              className="block h-auto w-full rounded-xl border"
+              src={project.illustration.src}
+              alt={project.illustration.alt}
+              width={960}
+              height={540}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption className="mt-2 text-sm text-muted-foreground">
+              Illustration, not a real screenshot. {project.illustration.caption} It is a sketch, so the real app may
+              look different.
+            </figcaption>
+          </figure>
+        )}
+      </section>
+    ),
+    why: () => (
+      <section key="why" id="why">
+        <h2 className={h2Class}>Why</h2>
+        <p className={bodyClass}>{project.why}</p>
+      </section>
+    ),
+    built: () => (
+      <section key="built" id="built">
+        <h2 className={h2Class}>What I built</h2>
+        <StepList steps={project.mine} />
+      </section>
+    ),
+    code: () =>
+      project.snippet && (
+        <section key="code" id="code">
+          <h2 className={h2Class}>The code</h2>
+          <CodeBlock snippet={project.snippet} />
+        </section>
+      ),
+    run: () =>
+      project.terminal && (
+        <section key="run" id="run">
+          <h2 className={h2Class}>See it run</h2>
+          <TerminalBlock title={project.terminal.title} transcript={project.terminal.transcript} />
+        </section>
+      ),
+    outcome: () => (
+      <section key="outcome" id="outcome">
+        <h2 className={h2Class}>Outcome</h2>
+        <p className={bodyClass}>{project.outcome}</p>
+      </section>
+    ),
+    tradeoff: () => (
+      <section
+        key="tradeoff"
+        id="tradeoff"
+        className="mt-1 rounded-r-lg !border-b-0 border-l-[3px] border-l-primary bg-card px-5"
+      >
+        <h2 className={h2Class}>The trade-off</h2>
+        <p className={bodyClass}>{project.tradeoff}</p>
+      </section>
+    ),
+    learned: () => (
+      <section key="learned" id="learned">
+        <h2 className={h2Class}>What I learned</h2>
+        <p className={bodyClass}>{project.learned}</p>
+      </section>
+    ),
+    next: () => (
+      <section key="next" id="next">
+        <h2 className={h2Class}>What I&apos;d fix next</h2>
+        <p className={bodyClass}>{project.next}</p>
+      </section>
+    ),
+  }
 
   return (
     <article className="section-wrap page-y" aria-labelledby="case-study-title">
@@ -125,7 +268,7 @@ function CaseStudyPage() {
               className={actionButton}
               onClick={() => void copy(`${site.url}/work/${project.slug}`)}
             >
-              {copied ? 'Link copied' : failed ? 'Copy it from the address bar' : 'Copy link'}
+              {copyLabel}
               {copied ? <Check /> : <Link2 />}
             </Button>
             {relatedNotes.length > 0 && (
@@ -170,36 +313,14 @@ function CaseStudyPage() {
         </div>
       </header>
 
-      {project.overview && (
-        <section id="what" className="border-b py-10">
-          <h2 className={h2Class}>What it is</h2>
-          {project.overview.map((paragraph) => (
-            <p key={paragraph} className={bodyClass}>
-              {paragraph}
-            </p>
-          ))}
-        </section>
-      )}
-      {project.features && (
-        <section id="does" className="border-b py-10">
-          <h2 className={h2Class}>What it can do</h2>
-          <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
-            {project.features.map((feature) => (
-              <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
-                <h3 className="text-base font-semibold">{feature.title}</h3>
-                <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
+      {render('intro')}
       <section className="mt-9 border-t pt-[22px] pb-1.5" aria-labelledby="architecture-title">
         <h2 id="architecture-title" className={h2Class}>
           How a request flows
         </h2>
         <ol className="mt-[18px] grid list-none grid-cols-4 gap-7 p-0 max-[1100px]:grid-cols-2 max-[620px]:grid-cols-1 max-[620px]:gap-[22px]">
           {project.architecture.map((node) => (
+            // An arrow after each step points to the next one: sideways in rows, turned downward on phones.
             <li
               key={node.label}
               className={cn(
@@ -220,113 +341,10 @@ function CaseStudyPage() {
 
       <ArticleLayout
         className="mt-[18px] max-[620px]:mt-5"
-        rail={
-          <>
-            <TableOfContents items={sections.map(([id, label]) => ({ id, label }))} />
-          </>
-        }
+        rail={<TableOfContents items={sections.map(({ id, label }) => ({ id, label }))} />}
       >
         <div className="grid grid-cols-[minmax(0,1fr)] [&>section]:border-b [&>section]:py-[26px]">
-          {project.howItWorks && (
-            <section id="works">
-              <h2 className={h2Class}>How it works</h2>
-              <ol className="mt-2.5 grid list-none gap-3 p-0">
-                {project.howItWorks.map((step, i) => (
-                  <li key={step} className="grid grid-cols-[30px_1fr] items-start gap-2.5">
-                    <span className="pt-1 font-mono text-sm text-primary">{String(i + 1).padStart(2, '0')}</span>
-                    <p className={cn(bodyClass, 'm-0')}>{step}</p>
-                  </li>
-                ))}
-              </ol>
-            </section>
-          )}
-          {(project.video || project.screenshots || project.illustration) && (
-            <section id="media">
-              <h2 className={h2Class}>{project.video || project.screenshots ? 'Screenshots' : 'Illustration'}</h2>
-              {project.video && (
-                <figure className="mt-4">
-                  <video
-                    className="block h-auto w-full rounded-xl border bg-code"
-                    controls
-                    muted
-                    playsInline
-                    preload="none"
-                    poster={project.video.poster}
-                    width={1280}
-                    height={800}
-                  >
-                    <source src={project.video.src} type={project.video.type ?? 'video/mp4'} />
-                  </video>
-                  <figcaption className="mt-2 text-sm text-muted-foreground">{project.video.caption}</figcaption>
-                </figure>
-              )}
-              {project.screenshots && (
-                <div className="mt-4" aria-label={`${project.name} screenshots`} role="group">
-                  <ScreenshotGallery shots={project.screenshots} projectName={project.name} layout="strip" />
-                </div>
-              )}
-              {project.illustration && !project.video && !project.screenshots && (
-                <figure className="m-0 mt-4">
-                  <img
-                    className="block h-auto w-full rounded-xl border"
-                    src={project.illustration.src}
-                    alt={project.illustration.alt}
-                    width={960}
-                    height={540}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <figcaption className="mt-2 text-sm text-muted-foreground">
-                    Illustration, not a real screenshot. {project.illustration.caption} It is a sketch, so the real app
-                    may look different.
-                  </figcaption>
-                </figure>
-              )}
-            </section>
-          )}
-          <section id="why">
-            <h2 className={h2Class}>Why</h2>
-            <p className={bodyClass}>{project.why}</p>
-          </section>
-          <section id="built">
-            <h2 className={h2Class}>What I built</h2>
-            <ol className="mt-2.5 grid list-none gap-3 p-0">
-              {project.mine.map((step, i) => (
-                <li key={step} className="grid grid-cols-[30px_1fr] items-start gap-2.5">
-                  <span className="pt-1 font-mono text-sm text-primary">{String(i + 1).padStart(2, '0')}</span>
-                  <p className={cn(bodyClass, 'm-0')}>{step}</p>
-                </li>
-              ))}
-            </ol>
-          </section>
-          {project.snippet && (
-            <section id="code">
-              <h2 className={h2Class}>The code</h2>
-              <CodeBlock snippet={project.snippet} />
-            </section>
-          )}
-          {project.terminal && (
-            <section id="run">
-              <h2 className={h2Class}>See it run</h2>
-              <TerminalBlock title={project.terminal.title} transcript={project.terminal.transcript} />
-            </section>
-          )}
-          <section id="outcome">
-            <h2 className={h2Class}>Outcome</h2>
-            <p className={bodyClass}>{project.outcome}</p>
-          </section>
-          <section id="tradeoff" className="mt-1 rounded-r-lg !border-b-0 border-l-[3px] border-l-primary bg-card px-5">
-            <h2 className={h2Class}>The trade-off</h2>
-            <p className={bodyClass}>{project.tradeoff}</p>
-          </section>
-          <section id="learned">
-            <h2 className={h2Class}>What I learned</h2>
-            <p className={bodyClass}>{project.learned}</p>
-          </section>
-          <section id="next">
-            <h2 className={h2Class}>What I&apos;d fix next</h2>
-            <p className={bodyClass}>{project.next}</p>
-          </section>
+          {render('article')}
         </div>
       </ArticleLayout>
 
@@ -335,6 +353,7 @@ function CaseStudyPage() {
         body="Tell me what you're building and I'll reply within two business days."
       />
 
+      {/* Previous and next case studies; at either end of the list the slot links back to the work section. */}
       <nav className="mt-6 grid grid-cols-2 gap-4 max-[620px]:grid-cols-1" aria-label="More case studies">
         {previous ? (
           <Link className={pagerLink} to={`/work/${previous.slug}`}>

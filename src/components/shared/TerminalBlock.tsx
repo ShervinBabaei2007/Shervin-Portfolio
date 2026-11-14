@@ -12,6 +12,7 @@ type TerminalBlockProps = {
   preClassName?: string
 }
 
+// One of the three window dots in the title bar.
 const dot = 'size-[9px] rounded-full bg-code-muted/40'
 
 /** A recorded session from the real program, not a mock-up. */

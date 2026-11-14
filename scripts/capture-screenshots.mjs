@@ -10,6 +10,7 @@ import { resolve } from 'node:path'
 import sharp from 'sharp'
 import { launchBrowser, root } from './lib.mjs'
 
+// Each entry is saved as public/projects/<name>.webp.
 const shots = [
   { name: 'skillmatch-home', url: 'https://skillmatch-web.vercel.app/' },
   { name: 'gitscribe-sign-in', url: 'https://git-scribe-aybm.vercel.app/' },
@@ -22,6 +23,7 @@ const outDir = resolve(root, 'public/projects')
 mkdirSync(outDir, { recursive: true })
 
 const browser = await launchBrowser()
+// A 1440x900 window at 2x pixel density, then scaled down to 1600px wide for a sharp result.
 const desktop = await browser.newContext({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
 const page = await desktop.newPage()
 for (const shot of shots.filter((shot) => !only || shot.name.includes(only))) {

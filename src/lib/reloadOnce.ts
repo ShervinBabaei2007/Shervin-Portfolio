@@ -1,3 +1,4 @@
+// sessionStorage key holding the time of the last automatic reload.
 const KEY = 'chunk-reload-at'
 const COOLDOWN_MS = 30_000
 

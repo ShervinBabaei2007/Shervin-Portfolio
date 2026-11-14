@@ -1,6 +1,7 @@
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+// The site's other pages, listed in the footer.
 const footerLinks = [
   { to: '/projects', label: 'All projects' },
   { to: '/writeups', label: 'All writeups' },
@@ -9,6 +10,7 @@ const footerLinks = [
   { to: '/how-its-built', label: 'How this site is built' },
 ]
 
+/** The footer on every page: logo, a Vancouver tag, links to the other pages and a back-to-top link. */
 function SiteFooter() {
   return (
     <footer className="section-wrap flex min-h-24 flex-wrap items-center justify-between gap-x-8 gap-y-1 py-4 font-mono text-label max-[620px]:min-h-20 print:hidden">

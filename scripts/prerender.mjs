@@ -1,18 +1,19 @@
 // Renders every route to static HTML after `vite build`.
 // Run through `npm run build`; it expects dist/ (client) and dist-ssr/ (server bundle).
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
+// Not imported from lib.mjs: that file loads esbuild and Playwright, which this build step does not need.
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const dist = resolve(root, 'dist')
 const template = readFileSync(resolve(dist, 'index.html'), 'utf8')
-const manifestPath = resolve(dist, '.vite/manifest.json')
-const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+const manifest = JSON.parse(readFileSync(resolve(dist, '.vite/manifest.json'), 'utf8'))
 const { render, staticRoutes, site } = await import(pathToFileURL(resolve(root, 'dist-ssr/entry-server.js')).href)
 
 // Chunks the entry script already loads; no need to preload them again.
 const entryChunks = new Set()
+/** Adds a manifest entry's file and, recursively, every chunk it imports to the `into` set. */
 const collect = (key, into) => {
   const chunk = manifest[key]
   if (!chunk || into.has(chunk.file)) return
@@ -31,6 +32,7 @@ const modulePreloads = (pageSource) => {
     .join('\n    ')
 }
 
+/** Writes a file into dist/, creating its folder first. */
 const write = (file, html) => {
   const target = resolve(dist, file)
   mkdirSync(dirname(target), { recursive: true })
@@ -47,6 +49,7 @@ const write = (file, html) => {
 const deferScripts = (html) => {
   const preloads = []
   let entry = ''
+  // Pull out every <link rel="modulepreload"> (keeping its href), then the one <script type="module"> (keeping its src).
   html = html.replace(/\s*<link rel="modulepreload"[^>]*?href="([^"]+)"[^>]*>/g, (_match, href) => {
     preloads.push(href)
     return ''
@@ -56,10 +59,12 @@ const deferScripts = (html) => {
     return ''
   })
   if (!entry) return html
+  // Minified by hand to keep every page small; it adds the preloads and the entry script once, whichever trigger fires first.
   const loader = `<script>(function(){var d=0,p=${JSON.stringify(preloads)},e=${JSON.stringify(entry)};function go(){if(d)return;d=1;for(var i=0;i<p.length;i++){var l=document.createElement('link');l.rel='modulepreload';l.crossOrigin='';l.href=p[i];document.head.appendChild(l)}var s=document.createElement('script');s.type='module';s.crossOrigin='';s.src=e;document.head.appendChild(s)}function later(){setTimeout(go,60)}try{new PerformanceObserver(function(l,o){if(l.getEntries().length){o.disconnect();later()}}).observe({type:'largest-contentful-paint',buffered:true})}catch(x){addEventListener('load',later)}['pointerdown','keydown','touchstart'].forEach(function(n){addEventListener(n,go,{once:true,passive:true})});setTimeout(go,2500)})()</script>`
   return html.replace('</head>', `    ${loader}\n  </head>`)
 }
 
+/** Renders one route into the HTML template, with its head tags and preloads. */
 const page = async (url) => {
   const { html, head, pageSource } = await render(url)
   return deferScripts(
@@ -75,12 +80,13 @@ for (const url of staticRoutes) {
 }
 write('404.html', await page('/404'))
 
-const urls = staticRoutes.map((url) => `  <url><loc>${site.url}${url === '/' ? '/' : url}</loc></url>`).join('\n')
+const urls = staticRoutes.map((url) => `  <url><loc>${site.url}${url}</loc></url>`).join('\n')
 write(
   'sitemap.xml',
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
 )
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`)
 
+// The server bundle and the manifest were only needed for this step, so they are not deployed.
 rmSync(resolve(root, 'dist-ssr'), { recursive: true, force: true })
-if (existsSync(resolve(dist, '.vite'))) rmSync(resolve(dist, '.vite'), { recursive: true, force: true })
+rmSync(resolve(dist, '.vite'), { recursive: true, force: true })

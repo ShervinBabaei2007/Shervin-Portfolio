@@ -9,6 +9,7 @@ import RequestTrace from '@/components/home/RequestTrace'
 // Counted from the project list, so the line cannot drift from what the page shows below.
 const liveCount = projects.filter((project) => project.live).length
 
+/** The top of the home page: headline, intro, call to action and the request trace. */
 function Hero() {
   return (
     <section

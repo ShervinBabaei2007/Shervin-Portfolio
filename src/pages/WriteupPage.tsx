@@ -17,6 +17,7 @@ import NotFoundPage from './NotFoundPage'
 const footerLink = 'grid gap-1.5 rounded-xl border bg-card px-[18px] py-4 no-underline hover:border-primary'
 const footerLabel = 'inline-flex items-center gap-1.5 text-meta text-muted-foreground'
 
+/** One writeup at /writeups/:slug, or the 404 page when the slug is unknown. */
 function WriteupPage() {
   const { slug } = useParams()
   const note = findNote(slug)
@@ -27,6 +28,7 @@ function WriteupPage() {
   const contents = note.body.flatMap((block) =>
     block.type === 'h2' ? [{ id: headingId(block.text), label: block.text }] : [],
   )
+  // Wraps around, so the last writeup links to the first; the link is hidden when there is only one.
   const next = notes[(notes.indexOf(note) + 1) % notes.length]
 
   return (

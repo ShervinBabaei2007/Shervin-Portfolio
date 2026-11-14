@@ -14,6 +14,7 @@ import { resolve } from 'node:path'
 import sharp from 'sharp'
 import { launchBrowser, root } from './lib.mjs'
 
+// Step keys: pause (ms), scroll (px), scrollTo (selector), clickText (visible text), hover (selector), optional (skip on failure).
 const demos = {
   skillmatch: {
     url: 'https://skillmatch-web.vercel.app/',
@@ -64,6 +65,7 @@ const context = await browser.newContext({ viewport: size, recordVideo: { dir: t
 const page = await context.newPage()
 
 await page.goto(demo.url, { waitUntil: 'networkidle', timeout: 60_000 })
+// The first frame, before any step runs, becomes the video's poster image.
 const poster = await page.screenshot()
 
 for (const step of demo.steps) {
@@ -79,6 +81,7 @@ for (const step of demo.steps) {
   }
 }
 
+// Playwright only finishes writing the video file once the context closes.
 const video = page.video()
 await context.close()
 await browser.close()
@@ -95,6 +98,7 @@ console.log(`public/projects/${name}-demo.webm`)
 // MP4 (H.264) plays everywhere, including older iPhones. Needs ffmpeg on your PATH.
 try {
   const mp4 = resolve(outDir, `${name}-demo.mp4`)
+  // H.264 at quality 28, a pixel format every player supports, playback that can start before the download ends, no audio.
   execFileSync('ffmpeg', [
     '-y',
     '-loglevel',

@@ -35,6 +35,7 @@ export const site = {
   },
 }
 
+/** The one-line availability sentence shown on the site. */
 export function availabilityLine(): string {
   const { from, term, roles, area } = site.availability
   if (from) return `Available from ${from}${term ? ` for ${term}` : ''}. ${area}.`
