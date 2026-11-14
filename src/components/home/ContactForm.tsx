@@ -18,8 +18,11 @@ import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { contactLimits, contactTopics, emailPattern } from '@/data/contact'
 import { site } from '@/data/site'
+import { cn } from '@/lib/utils'
 
 const MESSAGE_MAX = contactLimits.message
+// A field marked invalid turns its inherited text red; typed text stays the normal colour, because red on the dark field is only 4.3:1.
+const FIELD_TEXT = 'text-foreground'
 
 type Values = { name: string; email: string; topic: string; message: string }
 type Errors = Partial<Record<keyof Values, string>>
@@ -167,6 +170,7 @@ function ContactForm() {
               onChange={(event) => update('name', event.target.value)}
               maxLength={contactLimits.name}
               autoComplete="name"
+              className={FIELD_TEXT}
               aria-invalid={Boolean(errors.name)}
               aria-describedby={describedBy('name')}
               aria-required="true"
@@ -185,6 +189,7 @@ function ContactForm() {
               onChange={(event) => update('email', event.target.value)}
               maxLength={contactLimits.email}
               autoComplete="email"
+              className={FIELD_TEXT}
               aria-invalid={Boolean(errors.email)}
               aria-describedby={describedBy('email')}
               aria-required="true"
@@ -222,7 +227,7 @@ function ContactForm() {
             name="message"
             value={values.message}
             onChange={(event) => update('message', event.target.value)}
-            className="field-sizing-fixed min-h-24 flex-1"
+            className={cn(FIELD_TEXT, 'field-sizing-fixed min-h-24 flex-1')}
             placeholder="Tell me what you're building"
             maxLength={MESSAGE_MAX}
             rows={4}
