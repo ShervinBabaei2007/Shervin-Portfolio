@@ -71,6 +71,33 @@
       "width": 480
     }
   },
+  "/projects/signaldesk-dashboard.webp": {
+    "width": 1388,
+    "height": 868,
+    "avif": true,
+    "small": {
+      "src": "/projects/signaldesk-dashboard-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/signaldesk-mobile.webp": {
+    "width": 392,
+    "height": 845,
+    "avif": true,
+    "small": {
+      "src": "/projects/signaldesk-mobile-240.webp",
+      "width": 240
+    }
+  },
+  "/projects/signaldesk-story.webp": {
+    "width": 1388,
+    "height": 868,
+    "avif": true,
+    "small": {
+      "src": "/projects/signaldesk-story-480.webp",
+      "width": 480
+    }
+  },
   "/projects/skillmatch-dashboard.webp": {
     "width": 477,
     "height": 1287,

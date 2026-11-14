@@ -77,7 +77,7 @@ test('home shows four flagships and links to the full projects page', async ({ p
   await page.getByRole('link', { name: /View all projects/ }).click()
   await expect(page).toHaveURL(/\/projects$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Everything')
-  await expect(page.locator('[data-project-card]')).toHaveCount(12)
+  await expect(page.locator('[data-project-card]')).toHaveCount(13)
 })
 
 test('project cards hide the technical stack in a drawer and only live projects say Launch Live App', async ({
@@ -86,7 +86,7 @@ test('project cards hide the technical stack in a drawer and only live projects 
   await page.goto('/projects')
   await page.waitForLoadState('networkidle')
   const cards = page.locator('[data-project-card]')
-  await expect(cards.filter({ has: page.getByRole('link', { name: 'Launch Live App' }) })).toHaveCount(5)
+  await expect(cards.filter({ has: page.getByRole('link', { name: 'Launch Live App' }) })).toHaveCount(6)
   const first = cards.first()
   const trigger = first.getByRole('button', { name: 'Technical Architecture & Stack' })
   await expect(trigger).toHaveAttribute('aria-expanded', 'false')
@@ -180,7 +180,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
   await expect.poll(() => screenshot.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
 
   await page.getByRole('link', { name: /Next/ }).click()
-  await expect(page).toHaveURL(/\/work\/thinkboard$/)
+  await expect(page).toHaveURL(/\/work\/gitscribe$/)
   await page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: 'Work' }).click()
   await expect(page).toHaveURL(/\/#work$/)
 })
@@ -617,10 +617,10 @@ test.describe('the end of a page', () => {
   test('the project pager does not wrap around', async ({ page }) => {
     const pager = () => page.getByRole('navigation', { name: 'More case studies' })
     // First project: nothing before it, so the left slot goes back to the work list.
-    await page.goto('/work/network-growth-assistant')
+    await page.goto('/work/signaldesk')
     await expect(pager().getByRole('link', { name: /Previous/ })).toHaveCount(0)
     await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
-    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', '/work/gitscribe')
+    await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', '/work/network-growth-assistant')
     // Last project: nothing after it, so the right slot goes back to the work list.
     await page.goto('/work/ollama-rag')
     await expect(pager().getByRole('link', { name: /Next/ })).toHaveCount(0)
@@ -886,7 +886,7 @@ test('writeups: listed on the writeups page, own pages, linked from case studies
   await page.goto('/')
   await page.getByRole('link', { name: /Read my writeups/ }).click()
   await expect(page).toHaveURL(/\/writeups$/)
-  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })).toHaveCount(6)
+  await expect(page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })).toHaveCount(7)
   await page
     .getByRole('link', { name: /The race condition in SkillMatch/ })
     .first()
@@ -916,6 +916,19 @@ test('a case study opens with what it is, and the screenshots come after how it 
   const copy = (await page.getByRole('button', { name: 'Copy link' }).boundingBox())!
   const writeup = (await page.getByRole('link', { name: /Read the writeup/ }).boundingBox())!
   expect(writeup.y).toBeGreaterThanOrEqual(copy.y)
+})
+
+test('the writeup button spans the same row as the live project button on wide screens', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/work/signaldesk')
+  const live = (await page.getByRole('link', { name: /Live project/ }).boundingBox())!
+  const writeup = (await page.getByRole('link', { name: /Read the writeup/ }).boundingBox())!
+  expect(Math.abs(writeup.width - live.width)).toBeLessThan(2)
+})
+
+test('SignalDesk is the first project on the projects page', async ({ page }) => {
+  await page.goto('/projects')
+  await expect(page.locator('[data-project-card]').first()).toContainText('SignalDesk')
 })
 
 test('a project with several writeups links to the list filtered to it', async ({ page }) => {
@@ -1094,9 +1107,11 @@ test('project carousel can be moved with the arrow keys on a phone', async ({ pa
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/')
   await page.waitForLoadState('networkidle')
-  await page.getByRole('link', { name: 'Network Growth Assistant case study', exact: true }).focus()
+  await page.getByRole('link', { name: 'SignalDesk case study', exact: true }).focus()
   await page.keyboard.press('ArrowRight')
-  await expect(page.getByRole('link', { name: 'GitScribe case study', exact: true })).toBeInViewport({ ratio: 0.9 })
+  await expect(page.getByRole('link', { name: 'Network Growth Assistant case study', exact: true })).toBeInViewport({
+    ratio: 0.9,
+  })
 })
 
 test('screenshots are served as AVIF to browsers that support it', async ({ page }) => {
@@ -1177,7 +1192,19 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
   await expect(viewer.getByRole('list', { name: 'All screenshots' }).getByRole('button')).toHaveCount(3)
   await expect(viewer.getByText(/^1 of 3/)).toBeVisible()
 
-  await expect(viewer.getByRole('button', { name: /Zoom/ })).toHaveCount(0)
+  // The magnifier: buttons, a percentage, and keys. Zoom out and fit are disabled until the picture is magnified.
+  const readout = viewer.getByRole('status')
+  await expect(readout).toHaveText('100%')
+  await expect(viewer.getByRole('button', { name: 'Zoom out' })).toBeDisabled()
+  await viewer.getByRole('button', { name: 'Zoom in' }).click()
+  await expect(readout).not.toHaveText('100%')
+  await expect(viewer.getByRole('button', { name: 'Zoom out' })).toBeEnabled()
+  await viewer.getByRole('button', { name: 'Fit to window' }).click()
+  await expect(readout).toHaveText('100%')
+  await page.keyboard.press('+')
+  await expect(readout).not.toHaveText('100%')
+  await page.keyboard.press('0')
+  await expect(readout).toHaveText('100%')
 
   await viewer.getByRole('button', { name: /Show screenshot 2/ }).click()
   await expect(viewer.getByText(/^2 of 3/)).toBeVisible()
@@ -1400,27 +1427,31 @@ test('writeups are listed newest first, grouped by month, and can be searched an
   const rows = page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })
   // The newest month comes first, and inside it the best writeup first and LinkLocker's last.
   await expect(rows.first().getByRole('link')).toHaveAttribute('href', '/writeups/fetching-links-you-dont-trust')
-  await expect(rows.nth(2).getByRole('link')).toHaveAttribute('href', '/writeups/sign-in-behind-a-proxy')
-  await expect(rows.nth(3).getByRole('link')).toHaveAttribute('href', '/writeups/skillmatch-attend-race-condition')
+  await expect(rows.nth(1).getByRole('link')).toHaveAttribute(
+    'href',
+    '/writeups/when-two-outlets-give-different-numbers',
+  )
+  await expect(rows.nth(3).getByRole('link')).toHaveAttribute('href', '/writeups/sign-in-behind-a-proxy')
+  await expect(rows.nth(4).getByRole('link')).toHaveAttribute('href', '/writeups/skillmatch-attend-race-condition')
   await expect(page.locator('main h2')).toHaveText([/November 2026/, /October 2026/])
-  await expect(page.locator('[data-writeup-count]')).toContainText('6 writeups, newest month first')
+  await expect(page.locator('[data-writeup-count]')).toContainText('7 writeups, newest month first')
   await expect(page.getByText('Featured', { exact: true })).toHaveCount(2)
 
   await page.getByLabel('Search writeups').fill('rebinding')
   await expect(rows).toHaveCount(1)
   await expect(rows.first()).toContainText('fetches links it doesn’t trust')
-  await expect(page.locator('[data-writeup-count]')).toContainText('1 of 6 writeups')
+  await expect(page.locator('[data-writeup-count]')).toContainText('1 of 7 writeups')
 
   await page.getByLabel('Search writeups').fill('zzzzzz')
   await expect(page.getByText('No writeups match')).toBeVisible()
   await page.getByRole('button', { name: 'Clear filters' }).click()
-  await expect(rows).toHaveCount(6)
+  await expect(rows).toHaveCount(7)
 
   await page.getByRole('button', { name: /^LinkLocker/ }).click()
   await expect(page.getByRole('button', { name: /^LinkLocker/ })).toHaveAttribute('aria-pressed', 'true')
   await expect(rows).toHaveCount(1)
   await page.getByRole('button', { name: /^All/ }).click()
-  await expect(rows).toHaveCount(6)
+  await expect(rows).toHaveCount(7)
 })
 
 test('writeups have a table of contents that jumps to a heading', async ({ page }) => {

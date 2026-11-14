@@ -23,7 +23,7 @@ const layers = [
     title: 'API',
     caption: 'HOW IT CONNECTS',
     detail: 'Connect interfaces to routes, authentication, and stored data.',
-    projects: ['thinkboard', 'skillmatch', 'linklocker'],
+    projects: ['signaldesk', 'skillmatch', 'linklocker'],
   },
   {
     id: 'core',
@@ -31,7 +31,7 @@ const layers = [
     title: 'CORE',
     caption: 'WHY IT WORKS',
     detail: 'Understand the rules, asynchronous work, and state behind a feature.',
-    projects: ['network-growth-assistant', 'discord-ai-bridge', 'mini-rpg-battle'],
+    projects: ['signaldesk', 'network-growth-assistant', 'discord-ai-bridge'],
   },
 ] as const
 

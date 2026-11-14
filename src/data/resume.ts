@@ -57,6 +57,7 @@ export const resume = {
       links: [
         { label: 'Live App', href: 'https://signaldesk-lemon.vercel.app' },
         { label: 'Repo', href: 'https://github.com/ShervinBabaei2007/SignalDesk' },
+        { label: 'Case Study', href: `${site.url}/work/signaldesk` },
       ],
       date: 'Oct 2026 – Nov 2026',
       stack: 'Python, FastAPI, React, TypeScript, PostgreSQL, SQLite, Docker, GitHub Actions',

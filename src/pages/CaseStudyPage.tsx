@@ -129,7 +129,7 @@ function CaseStudyPage() {
               {copied ? <Check /> : <Link2 />}
             </Button>
             {relatedNotes.length > 0 && (
-              <Button asChild size="lg" className={cn(actionButton, 'shadow-md', tone.writeup)}>
+              <Button asChild size="lg" className={cn(actionButton, 'shadow-md min-[1024px]:col-span-2', tone.writeup)}>
                 <Link to={writeupHref}>
                   {relatedNotes.length === 1 ? 'Read the writeup' : 'Read the writeups'} <NotebookPen />
                 </Link>

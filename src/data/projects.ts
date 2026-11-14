@@ -82,6 +82,135 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: 'signaldesk',
+    name: 'SignalDesk',
+    category: 'Full-stack',
+    flagship: true,
+    date: 'Nov 2026',
+    subtitle: 'A news dashboard that groups reports of one event and shows where outlets agree and disagree.',
+    tagline: 'See what news outlets agree on, and where their numbers differ, for the same event.',
+    nonTechnicalSummary:
+      'One event is covered by many outlets in different words, so it is hard to tell what they all say and what only one claims. SignalDesk reads their feeds, puts reports of the same event together, and lists the claims they agree on and the figures they dispute.',
+    summary:
+      'A FastAPI and React app that reads RSS feeds, clusters reports into stories by headline wording (and by meaning when embeddings are on), compares claims across outlets, and tracks the health of its own pipeline.',
+    role: 'Solo project, design to deployment',
+    team: 'Built on my own. All 65 commits in the repository are mine.',
+    highlight: '229 backend and 81 frontend tests, 65 commits, works with no API keys',
+    result: 'Built solo in nine days, with 310 automated tests and a dashboard of its own pipeline health',
+    signal: {
+      ownership:
+        'The whole product: FastAPI backend, React dashboard, database models, CI, and the Docker and Vercel setup.',
+      decision:
+        'Show disagreement between outlets instead of a verdict, and withhold a source score when the evidence is thin.',
+      evidence: 'A live app, a public repository with CI, and the safe-fetch source shown below.',
+    },
+    overview: [
+      'SignalDesk is a website that reads dozens of news feeds and does the comparing for you. It puts the reports about one event into a single story, then shows what the outlets agree on and where they give different figures.',
+      'It works with no keys or paid services. A language model and an embeddings service are optional upgrades, and each one falls back cleanly when it is missing or fails.',
+    ],
+    features: [
+      {
+        title: 'Stories, not a pile of articles',
+        text: 'Reports of the same event are grouped by the words in their headlines and, when embeddings are on, by meaning. With embeddings on, a guard splits groups that grew too large.',
+      },
+      {
+        title: 'Claim by claim',
+        text: 'For each story it lists claims that two or more outlets make, claims where outlets give different figures, and figure claims only one outlet makes.',
+      },
+      {
+        title: 'Coverage over time',
+        text: 'A story keeps its identity across days, so you can see reports per day, which outlets joined when, and who was first.',
+      },
+      {
+        title: 'Outlet profiles that show their working',
+        text: 'Each outlet gets a profile from bylines, dates, linked sources and corrections. It describes how an outlet publishes, not whether it is right, and it withholds a score when there is too little evidence.',
+      },
+      {
+        title: 'Its own health page',
+        text: 'Every fetch cycle and feed is recorded: failures, response times, throughput and backlog. A dead feed counts as a failure, not as “0 new articles”.',
+      },
+      {
+        title: 'Private workspaces',
+        text: 'A visitor can add their own feeds and watchlist in a workspace nobody else can see, or take a one-click tour of the shared data.',
+      },
+    ],
+    howItWorks: [
+      'The server fetches the RSS feeds on a schedule, drops duplicates and analyses each article.',
+      'It reads each article’s page for the text, image and signs of transparency such as a byline.',
+      'If embeddings are on, it adds a meaning vector for each headline.',
+      'Headlines are grouped into stories by shared words and, when available, by meaning.',
+      'For each story it compares claims across outlets and writes a brief, with a model if one is set up, or by rules if not.',
+      'The dashboard shows the stories, the claims, the outlet profiles, and a page with the health of the pipeline.',
+    ],
+    why: 'Reading five outlets about one event to see who says what is slow. I wanted a tool that does that comparison and is honest about its limits, so every claim and score shows how it was reached.',
+    mine: [
+      'Built the FastAPI backend: feed ingestion, page enrichment, a scheduler, SQLite by default and PostgreSQL through one variable, and automatic migrations.',
+      'Wrote story clustering with Jaccard and overlap rules over stemmed headline words, a 48-hour gap limit, and optional embedding similarity with a stricter split for groups over 25 reports.',
+      'Wrote the claim comparison: it picks sentences with figures, quotes or attributed statements, matches them across outlets by wording, and marks two outlets’ figures as disputed when they differ by more than 5%.',
+      'Built private workspaces with signed, stateless tokens, per-visitor limits, and an SSRF guard (a check that stops the server fetching private addresses) on every feed a stranger adds.',
+      'Added pipeline observability: run history, per-feed failures, p50 and p95 latency, and the page-read rate.',
+      'Built the React 19, Tailwind and shadcn/ui dashboard, wrote 229 backend and 81 frontend tests with fakes for the network and the model, and set up Docker and GitHub Actions CI.',
+    ],
+    outcome:
+      'A live app on Vercel that anyone can open, with a one-click tour of the shared data and a private workspace for their own feeds.',
+    tradeoff:
+      'Claim matching is by wording, not by meaning. It catches conflicting numbers well, but it misses two outlets saying the same thing in different words. Matching by meaning would be better, but it would need an embedding for every sentence, and I wanted the app to work offline.',
+    learned:
+      'When a tool compares sources, the honest part is what it refuses to say. Withholding a score on thin evidence and calling a claim “single” instead of “agreed” made the results smaller but more believable.',
+    next: 'Embed sentences instead of headlines so claims match by meaning, and make the rate limits shared across instances. Today they are kept in memory, so on serverless they are best-effort.',
+    architecture: [
+      { label: 'RSS feeds', detail: 'Fetch, dedupe, analyse' },
+      { label: 'Enrich + embed', detail: 'Page text, optional vectors' },
+      { label: 'Cluster + compare', detail: 'Stories, claims, events' },
+      { label: 'FastAPI + React', detail: 'Dashboard, API, pipeline page' },
+    ],
+    stack: ['Python', 'FastAPI', 'React', 'TypeScript', 'PostgreSQL', 'SQLite', 'Docker', 'GitHub Actions', 'Vercel'],
+    github: 'https://github.com/ShervinBabaei2007/SignalDesk',
+    live: 'https://signaldesk-lemon.vercel.app',
+    screenshots: [
+      {
+        src: '/projects/signaldesk-dashboard.webp',
+        alt: 'SignalDesk dashboard with article totals, a sentiment trend, a daily brief and a feed of grouped stories.',
+        caption: 'Dashboard',
+      },
+      {
+        src: '/projects/signaldesk-story.webp',
+        alt: 'A story page about a Microsoft outage with a brief, what outlets agree on, and a claim-by-claim list.',
+        caption: 'One story, compared across outlets',
+      },
+      {
+        src: '/projects/signaldesk-mobile.webp',
+        alt: 'SignalDesk dashboard on a phone.',
+        caption: 'On a phone',
+      },
+    ],
+    snippet: {
+      file: 'backend/app/netguard.py',
+      href: 'https://github.com/ShervinBabaei2007/SignalDesk/blob/main/backend/app/netguard.py',
+      language: 'python',
+      caption:
+        'Strangers can add feed URLs, so the server checks every address before it fetches. A name that resolves to a private address is refused, and so is any redirect to one.',
+      code: `def check_url(url: str) -> None:
+    """Raise UnsafeURL unless \`url\` is http(s) on a normal port and every address it resolves to is public."""
+    parsed = urlparse(url)
+    if parsed.scheme not in ("http", "https") or not parsed.hostname:
+        raise UnsafeURL("Only public http(s) URLs are allowed")
+    try:
+        port = parsed.port
+    except ValueError:
+        raise UnsafeURL("Invalid port") from None
+    if port not in ALLOWED_PORTS:
+        raise UnsafeURL("That port is not allowed")
+    try:
+        infos = socket.getaddrinfo(parsed.hostname, port or 443, proto=socket.IPPROTO_TCP)
+    except OSError:
+        raise UnsafeURL("That host could not be resolved") from None
+    addresses = {info[4][0].split("%")[0] for info in infos}
+    if not addresses or not all(ipaddress.ip_address(a).is_global for a in addresses):
+        raise UnsafeURL("That address is not public")`,
+    },
+  },
+  {
     slug: 'network-growth-assistant',
     name: 'Network Growth Assistant',
     category: 'Full-stack',
@@ -223,110 +352,6 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     },
   },
   {
-    slug: 'gitscribe',
-    name: 'GitScribe',
-    category: 'Hackathon',
-    flagship: true,
-    date: 'March 2026',
-    subtitle: 'AI commit-message suggestions, built in 24 hours.',
-    tagline: 'Upload two versions of a file and get a suggested description of what changed.',
-    nonTechnicalSummary:
-      'Programmers write a short note whenever they save a change, and it is easy to rush. GitScribe suggests that note for them, and it was built by a team of students in 24 hours.',
-    summary: `Compare two versions of your code and get a suggested commit message. Built at ${facts.hackathon.name}, where the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
-    role: 'UI/UX lead and front-end developer',
-    team: 'Hack the Break 2026 team project. I built the sign-in, navigation, and profile screens; teammates built the FastAPI backend and the OpenAI generation pipeline.',
-    highlight: hackathonLine,
-    result: hackathonLine,
-    signal: {
-      ownership: 'Sign-in, navigation, profile UI, and the Auth0-to-GitHub entry path.',
-      decision:
-        'Use managed OAuth (a ready-made “sign in with GitHub” service) in a 24-hour sprint and remove an unnecessary provider-selection step.',
-      evidence: `Working live demo; the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
-    },
-    overview: [
-      'GitScribe suggests commit messages. A commit message is the short note a programmer writes when saving a change to their code, like “Fix the login bug”. Good ones help everyone understand what changed, but they are easy to rush.',
-      'You can use GitScribe on a website, or as a command in the terminal. It was built in 24 hours at Hack the Break 2026, where our team placed in the top 6 of 36. I built the website’s sign-in, navigation bar, and profile screens.',
-    ],
-    features: [
-      {
-        title: 'Compare two versions',
-        text: 'Upload the old version of a file and the new one. GitScribe looks at what changed.',
-      },
-      {
-        title: 'Suggested messages',
-        text: 'You choose how many suggestions you want, and each one comes with a copy button.',
-      },
-      {
-        title: 'Sign in with GitHub',
-        text: 'One click takes you straight to GitHub to sign in, so there is no new account to create.',
-      },
-      {
-        title: 'A terminal version',
-        text: 'Typing gs generate in a project folder does the same job without opening the website.',
-      },
-    ],
-    howItWorks: [
-      'You sign in with your GitHub account.',
-      'You upload the old version of your file, then the new version.',
-      'You choose how many message suggestions you want.',
-      'The site sends both versions to the team’s server, which asks an AI model to describe the change in a short message.',
-      'The suggestions appear on screen, and you copy the one you like.',
-    ],
-    why: 'Writing a clear commit message is a small task people rush. GitScribe takes the before and after of a change and suggests one.',
-    mine: [
-      'Built the sign-in card, navigation bar, and profile layout from the team’s Figma designs.',
-      'Passed Auth0’s connection option so “Continue with GitHub” goes straight to GitHub instead of stopping at Auth0’s choose-a-provider screen, one fewer screen between a visitor and the app.',
-      'Kept the front end merging cleanly in a shared repo with several teammates pushing during a 24-hour sprint.',
-    ],
-    outcome:
-      'A working demo, live today, that signs you in with GitHub and turns two file versions into a suggested commit message. The team placed in the top 6 of 36.',
-    tradeoff:
-      'We used Auth0’s GitHub connection instead of writing our own OAuth flow. Auth0 handled tokens, refresh, and session storage, which we could not have built safely in 24 hours. The cost is a third-party dependency and less control over the redirect and the look of the sign-in step.',
-    learned:
-      'In a 24-hour build, the useful contribution is often removing friction at the edges, like the first screen someone sees, so the core feature gets used.',
-    next: 'Replace the hotlinked GitHub logo with a local SVG, move the inline styles into the component stylesheet, and add a loading state while the suggestion is generated.',
-    architecture: [
-      { label: 'React + Chakra UI', detail: 'TypeScript front end' },
-      { label: 'Auth0', detail: 'GitHub connection' },
-      { label: 'FastAPI', detail: 'Upload and compare endpoint' },
-      { label: 'OpenAI + Redis', detail: 'Generation, cached messages' },
-    ],
-    stack: ['React', 'TypeScript', 'Auth0', 'GitHub OAuth', 'Figma'],
-    github: 'https://github.com/adriencyr/GitScribe',
-    live: 'https://git-scribe-aybm.vercel.app/',
-    screenshots: [
-      {
-        src: '/projects/gitscribe-sign-in.webp',
-        alt: 'GitScribe sign-in card with a Continue with GitHub button on a dark background.',
-        caption: 'Sign-in screen I built',
-      },
-    ],
-    snippet: {
-      file: 'src/components/LoginpageCard.tsx',
-      href: 'https://github.com/adriencyr/GitScribe/blob/main/src/components/LoginpageCard.tsx',
-      language: 'tsx',
-      caption:
-        'Because the button names GitHub directly, people skip an extra “choose how to sign in” screen and go straight to GitHub.',
-      code: `const LoginPageCard = () => {
-  const { loginWithRedirect } = useAuth0();
-
-  return (
-    <div style={cardStyle}>
-      <h1>GitScribe</h1>
-      <p>Please sign in with your GitHub account to continue.</p>
-      <button
-        onClick={() =>
-          loginWithRedirect({ authorizationParams: { connection: "github" } })
-        }
-      >
-        Continue with GitHub
-      </button>
-    </div>
-  );
-};`,
-    },
-  },
-  {
     slug: 'skillmatch',
     name: 'SkillMatch',
     category: 'Full-stack',
@@ -450,10 +475,114 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     },
   },
   {
+    slug: 'gitscribe',
+    name: 'GitScribe',
+    category: 'Hackathon',
+    flagship: true,
+    date: 'March 2026',
+    subtitle: 'AI commit-message suggestions, built in 24 hours.',
+    tagline: 'Upload two versions of a file and get a suggested description of what changed.',
+    nonTechnicalSummary:
+      'Programmers write a short note whenever they save a change, and it is easy to rush. GitScribe suggests that note for them, and it was built by a team of students in 24 hours.',
+    summary: `Compare two versions of your code and get a suggested commit message. Built at ${facts.hackathon.name}, where the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
+    role: 'UI/UX lead and front-end developer',
+    team: 'Hack the Break 2026 team project. I built the sign-in, navigation, and profile screens; teammates built the FastAPI backend and the OpenAI generation pipeline.',
+    highlight: hackathonLine,
+    result: hackathonLine,
+    signal: {
+      ownership: 'Sign-in, navigation, profile UI, and the Auth0-to-GitHub entry path.',
+      decision:
+        'Use managed OAuth (a ready-made “sign in with GitHub” service) in a 24-hour sprint and remove an unnecessary provider-selection step.',
+      evidence: `Working live demo; the team placed in the ${facts.hackathon.placement.toLowerCase()}.`,
+    },
+    overview: [
+      'GitScribe suggests commit messages. A commit message is the short note a programmer writes when saving a change to their code, like “Fix the login bug”. Good ones help everyone understand what changed, but they are easy to rush.',
+      'You can use GitScribe on a website, or as a command in the terminal. It was built in 24 hours at Hack the Break 2026, where our team placed in the top 6 of 36. I built the website’s sign-in, navigation bar, and profile screens.',
+    ],
+    features: [
+      {
+        title: 'Compare two versions',
+        text: 'Upload the old version of a file and the new one. GitScribe looks at what changed.',
+      },
+      {
+        title: 'Suggested messages',
+        text: 'You choose how many suggestions you want, and each one comes with a copy button.',
+      },
+      {
+        title: 'Sign in with GitHub',
+        text: 'One click takes you straight to GitHub to sign in, so there is no new account to create.',
+      },
+      {
+        title: 'A terminal version',
+        text: 'Typing gs generate in a project folder does the same job without opening the website.',
+      },
+    ],
+    howItWorks: [
+      'You sign in with your GitHub account.',
+      'You upload the old version of your file, then the new version.',
+      'You choose how many message suggestions you want.',
+      'The site sends both versions to the team’s server, which asks an AI model to describe the change in a short message.',
+      'The suggestions appear on screen, and you copy the one you like.',
+    ],
+    why: 'Writing a clear commit message is a small task people rush. GitScribe takes the before and after of a change and suggests one.',
+    mine: [
+      'Built the sign-in card, navigation bar, and profile layout from the team’s Figma designs.',
+      'Passed Auth0’s connection option so “Continue with GitHub” goes straight to GitHub instead of stopping at Auth0’s choose-a-provider screen, one fewer screen between a visitor and the app.',
+      'Kept the front end merging cleanly in a shared repo with several teammates pushing during a 24-hour sprint.',
+    ],
+    outcome:
+      'A working demo, live today, that signs you in with GitHub and turns two file versions into a suggested commit message. The team placed in the top 6 of 36.',
+    tradeoff:
+      'We used Auth0’s GitHub connection instead of writing our own OAuth flow. Auth0 handled tokens, refresh, and session storage, which we could not have built safely in 24 hours. The cost is a third-party dependency and less control over the redirect and the look of the sign-in step.',
+    learned:
+      'In a 24-hour build, the useful contribution is often removing friction at the edges, like the first screen someone sees, so the core feature gets used.',
+    next: 'Replace the hotlinked GitHub logo with a local SVG, move the inline styles into the component stylesheet, and add a loading state while the suggestion is generated.',
+    architecture: [
+      { label: 'React + Chakra UI', detail: 'TypeScript front end' },
+      { label: 'Auth0', detail: 'GitHub connection' },
+      { label: 'FastAPI', detail: 'Upload and compare endpoint' },
+      { label: 'OpenAI + Redis', detail: 'Generation, cached messages' },
+    ],
+    stack: ['React', 'TypeScript', 'Auth0', 'GitHub OAuth', 'Figma'],
+    github: 'https://github.com/adriencyr/GitScribe',
+    live: 'https://git-scribe-aybm.vercel.app/',
+    screenshots: [
+      {
+        src: '/projects/gitscribe-sign-in.webp',
+        alt: 'GitScribe sign-in card with a Continue with GitHub button on a dark background.',
+        caption: 'Sign-in screen I built',
+      },
+    ],
+    snippet: {
+      file: 'src/components/LoginpageCard.tsx',
+      href: 'https://github.com/adriencyr/GitScribe/blob/main/src/components/LoginpageCard.tsx',
+      language: 'tsx',
+      caption:
+        'Because the button names GitHub directly, people skip an extra “choose how to sign in” screen and go straight to GitHub.',
+      code: `const LoginPageCard = () => {
+  const { loginWithRedirect } = useAuth0();
+
+  return (
+    <div style={cardStyle}>
+      <h1>GitScribe</h1>
+      <p>Please sign in with your GitHub account to continue.</p>
+      <button
+        onClick={() =>
+          loginWithRedirect({ authorizationParams: { connection: "github" } })
+        }
+      >
+        Continue with GitHub
+      </button>
+    </div>
+  );
+};`,
+    },
+  },
+  {
     slug: 'thinkboard',
     name: 'ThinkBoard',
     category: 'Full-stack',
-    flagship: true,
+    flagship: false,
     date: 'March – April 2026',
     subtitle: 'A notes app with a rate-limited Express API.',
     tagline: 'A calm notes app that protects itself from being overloaded.',

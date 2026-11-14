@@ -18,6 +18,7 @@ const pages = [
   '/work/network-growth-assistant',
   '/work/skillmatch',
   '/work/mini-rpg-battle',
+  '/work/signaldesk',
   '/work/thinkboard',
   '/work/discord-ai-bridge',
   '/writeups/skillmatch-attend-race-condition',

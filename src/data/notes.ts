@@ -548,6 +548,58 @@ const linkCreationLimiter = rateLimit({
       },
     ],
   },
+  {
+    slug: 'when-two-outlets-give-different-numbers',
+    title: 'How SignalDesk tells a real disagreement from a rewording',
+    summary:
+      'Two outlets report the same event with different figures. SignalDesk has to decide whether that is a dispute or just two ways of saying the same thing. Here is the rule it uses and what that rule cannot do.',
+    date: '2026-11-14',
+    minutes: 5,
+    project: 'signaldesk',
+    rank: 2,
+    body: [
+      {
+        type: 'p',
+        text: 'SignalDesk groups reports of one event into a story, then lists the claims in it. Each claim ends up as one of three things: agreed (two or more outlets make it), disputed (outlets give different figures for it), or single (one outlet makes it, and it carries a figure). The disputed ones are the most useful, and the easiest to get wrong.',
+      },
+      { type: 'h2', text: 'Step one: find the same claim' },
+      {
+        type: 'p',
+        text: 'From each outlet’s best report it keeps only sentences worth comparing: ones with a figure, a quotation, or a statement attributed to a named party. Then it matches sentences across outlets by wording. The trick is that it removes the numbers before comparing. That way “the outage affected 5 million users” and “the outage affected 4 million users” count as the same claim, and the difference in the figure is what gets examined next.',
+      },
+      { type: 'h2', text: 'Step two: compare the figures' },
+      {
+        type: 'p',
+        text: 'A figure is turned into a unit class and a size: money, a percentage, or a plain number, with words like “million” and “billion” applied. Only figures of the same class are compared. Two figures count as the same if they are within 5% of each other, so “$4.2 billion” and “$4.3 billion” do not start a dispute. A claim is disputed only when every pair of outlets differs by more than that.',
+      },
+      {
+        type: 'code',
+        language: 'python',
+        file: 'backend/app/claims.py',
+        code: `for by_outlet in parsed.values():
+    if len(by_outlet) < 2:
+        continue
+    values = list(by_outlet.values())
+    if all(abs(a[1] - b[1]) > FIGURE_TOLERANCE * max(abs(a[1]), abs(b[1]), 1e-9)
+           for i, a in enumerate(values) for b in values[i + 1:]):
+        return {outlet: raw for outlet, (raw, _) in by_outlet.items()}`,
+        caption: 'Disputed means every pair of outlets differs by more than 5%, not just one pair.',
+      },
+      { type: 'h2', text: 'What this rule cannot do' },
+      {
+        type: 'list',
+        items: [
+          'It matches by wording, so two outlets saying the same thing in different words are not linked. The claim then shows as single, or is missed.',
+          'It cannot tell which outlet is right. A dispute only says the figures differ, and the page tells you to check the source reports.',
+          'Figures from different time points can look like a dispute, for example a death toll reported at 9am and at noon.',
+        ],
+      },
+      {
+        type: 'p',
+        text: 'I kept it this way on purpose. A rule that only flags clear numeric conflicts is easy to explain and to test, and it can run with no model and no API key. A language model can write the claims instead when one is configured, and the app falls back to this rule when it is not. Matching by meaning would catch more, but it needs an embedding for every sentence. That is the next thing I would build.',
+      },
+    ],
+  },
 ]
 
 /**
