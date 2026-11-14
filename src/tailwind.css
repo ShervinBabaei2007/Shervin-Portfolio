@@ -344,7 +344,7 @@
 /* The resume prints on US Letter (see ResumePage.tsx); @page cannot be a utility. */
 @page {
   size: letter;
-  margin: 0.35in 0.5in;
+  margin: 0.35in 0.45in;
 }
 
 /* Resume colours: a navy accent for headings and links, and ink that always prints dark on white paper. */

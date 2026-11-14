@@ -14,13 +14,13 @@ const tapTarget =
   "max-[620px]:relative max-[620px]:after:absolute max-[620px]:after:inset-y-[-12px] max-[620px]:after:inset-x-[-4px] max-[620px]:after:content-['']"
 const accent = 'text-[var(--resume-accent)]'
 const link = cn(accent, 'font-semibold underline underline-offset-[3px]', tapTarget)
-const section = 'mt-8 print:mt-[5pt]'
+const section = 'mt-8 print:mt-[4pt]'
 const sectionHeading = cn(
   accent,
   'mb-3 border-b border-[var(--resume-accent)] pb-1 text-[.8125rem] leading-[normal] font-bold tracking-[.1em] uppercase print:mb-[4pt] print:break-after-avoid print:pb-[1.5pt] print:text-[10pt]',
 )
 // Plain strings, not cn: tailwind-merge would drop the leading-* when a text-* size follows it.
-const body = 'text-[.9375rem] leading-[1.55] print:text-[9.5pt] print:leading-[1.25]'
+const body = 'text-[.9375rem] leading-[1.55] print:text-[9pt] print:leading-[1.22]'
 const bodyRow = `mt-1 print:mt-0 ${body}`
 const mutedRow = `${bodyRow} text-muted-foreground`
 const rowSplit = 'flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5'
@@ -30,23 +30,23 @@ const rowDate = 'text-[.875rem] whitespace-nowrap text-muted-foreground print:te
 function ResumePage() {
   return (
     <article
-      className="section-wrap max-w-[780px] pt-10 pb-[100px] print:m-0 print:w-full print:max-w-none print:p-0"
+      className="section-wrap max-w-[880px] pt-10 pb-[100px] print:m-0 print:w-full print:max-w-none print:p-0"
       aria-labelledby="resume-title"
     >
       <div className="flex items-center justify-between gap-3.5 print:hidden">
         <p className="eyebrow">RESUME</p>
         <Button asChild size="lg" className={cn('h-11 px-[17px] text-control font-semibold shadow-md', tone.ink)}>
-          <a href="/Shervin_Babaei_Resume.pdf" download="Shervin_Babaei_Resume.pdf">
+          <a href="/Shervin-Babaei-Resume.pdf" download="Shervin-Babaei-Resume.pdf">
             Download PDF
           </a>
         </Button>
       </div>
 
-      <div className="resume-sheet mt-6 rounded-xl border bg-card px-10 pt-9 pb-10 max-[620px]:px-[18px] max-[620px]:pt-[22px] max-[620px]:pb-[26px] print:m-0 print:rounded-none print:border-0 print:bg-transparent print:p-0 print:text-[10pt]">
+      <div className="resume-sheet mt-6 rounded-xl border bg-card px-12 pt-10 pb-11 max-[620px]:px-[18px] max-[620px]:pt-[22px] max-[620px]:pb-[26px] print:m-0 print:rounded-none print:border-0 print:bg-transparent print:p-0 print:text-[10pt]">
         <header className="text-center">
           <h1
             id="resume-title"
-            className={cn(accent, 'text-[2.75rem] leading-[1.05] font-bold tracking-tight print:text-[30pt]')}
+            className={cn(accent, 'text-[2.75rem] leading-[1.05] font-bold tracking-tight print:text-[26pt]')}
           >
             {resume.name}
           </h1>
@@ -89,17 +89,17 @@ function ResumePage() {
           <h2 id="resume-skills" className={sectionHeading}>
             Skills
           </h2>
-          <dl className="grid gap-2 print:gap-[2pt]">
+          <dl className="grid gap-2 print:gap-[1pt]">
             {resume.skills.map(([label, value]) => (
               <div
                 key={label}
                 className={cn(
                   body,
-                  'grid grid-cols-[7rem_1fr] gap-x-2 gap-y-0.5 max-[620px]:grid-cols-1 print:grid-cols-[0.9in_1fr]',
+                  'grid grid-cols-[11.5rem_1fr] gap-x-2 gap-y-0.5 max-[620px]:grid-cols-1 print:block',
                 )}
               >
-                <dt className="font-bold">{label}:</dt>
-                <dd className="text-muted-foreground">{value}</dd>
+                <dt className="print:after:content-[' '] font-bold print:inline">{label}:</dt>
+                <dd className="text-muted-foreground print:inline">{value}</dd>
               </div>
             ))}
           </dl>
@@ -110,7 +110,7 @@ function ResumePage() {
             Projects
           </h2>
           {resume.projects.map((project, index) => (
-            <div className={cn(index > 0 && 'mt-6 print:mt-[4pt]', 'print:break-inside-avoid')} key={project.name}>
+            <div className={cn(index > 0 && 'mt-6 print:mt-[3pt]', 'print:break-inside-avoid')} key={project.name}>
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
                 <strong className={rowTitle}>
                   {project.name}
@@ -147,7 +147,7 @@ function ResumePage() {
               </div>
               <ul className="mt-2 list-disc pl-5 print:mt-[2pt] print:pl-[13pt]">
                 {project.bullets.map((bullet) => (
-                  <li key={bullet} className={cn(body, 'my-1 print:my-[0.75pt] print:leading-[1.3]')}>
+                  <li key={bullet} className={cn(body, 'my-1 print:my-[0.25pt] print:leading-[1.25]')}>
                     {bullet}
                   </li>
                 ))}

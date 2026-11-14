@@ -1,4 +1,4 @@
-// Prints the /resume page to public/Shervin_Babaei_Resume.pdf so the PDF never
+// Prints the /resume page to public/Shervin-Babaei-Resume.pdf so the PDF never
 // drifts from the website. Usage: npm run build && npm run resume:pdf
 import { copyFileSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -16,10 +16,10 @@ try {
   const page = await browser.newPage()
   await page.goto('http://localhost:4317/resume', { waitUntil: 'networkidle' })
   await page.emulateMedia({ media: 'print', colorScheme: 'light' })
-  const target = resolve(root, 'public/Shervin_Babaei_Resume.pdf')
+  const target = resolve(root, 'public/Shervin-Babaei-Resume.pdf')
   await page.pdf({ path: target, format: 'Letter', printBackground: false, preferCSSPageSize: true })
-  copyFileSync(target, resolve(root, 'dist/Shervin_Babaei_Resume.pdf'))
-  console.log('Wrote public/Shervin_Babaei_Resume.pdf')
+  copyFileSync(target, resolve(root, 'dist/Shervin-Babaei-Resume.pdf'))
+  console.log('Wrote public/Shervin-Babaei-Resume.pdf')
 } finally {
   await browser.close()
   await new Promise((done) => server.httpServer.close(done))

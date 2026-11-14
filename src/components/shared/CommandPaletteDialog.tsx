@@ -124,7 +124,7 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Actions">
-          <CommandItem onSelect={() => run(() => window.open('/Shervin_Babaei_Resume.pdf', '_blank'))}>
+          <CommandItem onSelect={() => run(() => window.open('/Shervin-Babaei-Resume.pdf', '_blank'))}>
             <Download /> Download resume (PDF)
           </CommandItem>
           <CommandItem onSelect={() => run(() => void copyEmail())}>
