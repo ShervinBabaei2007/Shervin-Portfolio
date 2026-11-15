@@ -15,44 +15,81 @@ const palette = {
     diffuse: 1.4,
     mapBrightness: 5,
     baseColor: [0.22, 0.27, 0.5],
-    markerColor: [0.54, 0.64, 1],
-    glowColor: [0.12, 0.17, 0.4],
+    markerColor: [0.55, 0.64, 1],
+    glowColor: [0.12, 0.14, 0.3],
   },
   light: {
     dark: 0,
     diffuse: 1.1,
     mapBrightness: 1.4,
-    baseColor: [1, 1, 1],
-    markerColor: [0.25, 0.32, 0.88],
-    glowColor: [0.85, 0.89, 1],
+    baseColor: [1, 0.98, 0.94],
+    markerColor: [0.17, 0.29, 0.8],
+    glowColor: [0.95, 0.93, 0.88],
   },
 } as const
 
 // Formats a time such as "3:05 p.m." in Vancouver's time zone.
 const clock = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Vancouver' })
 
+/** The still picture shown instead of the turning globe when the visitor prefers reduced motion. Colours come from the theme tokens. */
+function StillGlobe() {
+  const meridians = [0.34, 0.68, 1]
+  const parallels = [-110, -55, 0, 55, 110]
+  return (
+    <svg
+      className="absolute top-[18px] left-1/2 w-[440px] max-w-none -translate-x-1/2 max-[620px]:w-[340px]"
+      viewBox="0 0 400 400"
+      fill="none"
+      aria-hidden="true"
+      data-globe-still
+    >
+      <defs>
+        <radialGradient id="still-globe-fill" cx="42%" cy="35%" r="75%">
+          <stop offset="0" stopColor="var(--color-surface)" />
+          <stop offset="1" stopColor="var(--color-surface-hover)" />
+        </radialGradient>
+      </defs>
+      <circle cx="200" cy="200" r="170" fill="url(#still-globe-fill)" stroke="var(--color-border)" strokeWidth="2" />
+      <g stroke="var(--color-border)" strokeWidth="1.5">
+        {meridians.map((k) => (
+          <ellipse key={k} cx="200" cy="200" rx={170 * k} ry="170" />
+        ))}
+        {parallels.map((dy) => {
+          const half = Math.sqrt(170 * 170 - dy * dy)
+          return <ellipse key={dy} cx="200" cy={200 + dy} rx={half} ry={half * 0.12} />
+        })}
+      </g>
+      <circle cx="176" cy="120" r="16" fill="var(--color-primary)" opacity="0.18" />
+      <circle cx="176" cy="120" r="6" fill="var(--color-primary)" />
+    </svg>
+  )
+}
+
 /** A slowly turning globe pinned on Vancouver, with the local time there. It is decoration, so it is hidden from assistive tech. */
 function VancouverGlobe() {
   const frame = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
   const [isDark, setIsDark] = useState(true)
+  const [still, setStill] = useState(false)
   const [time, setTime] = useState<string | null>(null)
 
   // After mount: follow theme changes, keep the clock current, and load the globe when it nears the screen.
   useEffect(() => {
     const root = document.documentElement
-    const sync = () => setIsDark(root.classList.contains('dark'))
+    const sync = () => setIsDark(root.dataset.theme !== 'light')
     sync()
     const themeWatcher = new MutationObserver(sync)
-    themeWatcher.observe(root, { attributes: true, attributeFilter: ['class'] })
+    themeWatcher.observe(root, { attributes: true, attributeFilter: ['data-theme'] })
 
     const tick = () => setTime(clock.format(new Date()))
     tick()
     const timer = window.setInterval(tick, 20_000) // every 20 seconds, so the minute is never far behind
 
-    // Skipped entirely for people who asked for less motion, so the globe never loads for them.
+    // For people who asked for less motion the turning globe never loads; a still picture takes its place.
     let viewWatcher: IntersectionObserver | undefined
-    if (frame.current && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    setStill(reduceMotion)
+    if (frame.current && !reduceMotion) {
       viewWatcher = new IntersectionObserver(
         ([entry]) => {
           if (!entry.isIntersecting) return
@@ -95,6 +132,7 @@ function VancouverGlobe() {
       aria-hidden="true"
       data-globe
     >
+      {still && <StillGlobe />}
       {visible && (
         <Suspense fallback={null}>
           <Globe config={config} className="top-[18px] max-w-[460px] max-[620px]:max-w-[360px]" />

@@ -5,7 +5,6 @@ import NavigationProgress from '@/components/shared/NavigationProgress'
 import SiteFooter from '@/components/shared/SiteFooter'
 import SiteHeader from '@/components/shared/SiteHeader'
 import BackToTop from '@/components/shared/BackToTop'
-import LocalTime from '@/components/shared/LocalTime'
 import PageTransition from '@/components/shared/PageTransition'
 import { reportError } from './lib/monitoring'
 import { usePageMeta } from './hooks/usePageMeta'
@@ -101,7 +100,7 @@ function App() {
   usePageMeta()
 
   return (
-    <div className="min-h-dvh overflow-clip bg-background bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[length:38px_38px] text-foreground transition-[background-color,color] duration-[250ms] ease-[ease] print:min-h-0 print:bg-none">
+    <div className="min-h-dvh overflow-clip bg-background bg-[linear-gradient(var(--color-grid)_1px,transparent_1px),linear-gradient(90deg,var(--color-grid)_1px,transparent_1px)] bg-[length:38px_38px] text-foreground transition-[background-color,color] duration-[250ms] ease-[ease] print:min-h-0 print:bg-none">
       <a
         className="fixed top-3 left-3 z-[100] -translate-y-[160%] bg-foreground px-3.5 py-2.5 text-background focus:translate-y-0 print:hidden"
         href="#main"
@@ -139,7 +138,6 @@ function App() {
       </main>
       <SiteFooter />
       <BackToTop />
-      <LocalTime />
       <LazyToaster scheme={scheme} />
     </div>
   )
