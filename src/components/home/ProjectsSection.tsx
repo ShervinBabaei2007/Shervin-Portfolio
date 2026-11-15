@@ -1,6 +1,7 @@
 import { ArrowRight, ArrowUpRight, SearchX } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { flagshipProjects, projects } from '@/data/projects'
+import { projectsUsing } from '@/data/skills'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import GitHubActivity from '@/components/home/GitHubActivity'
 import ProjectCard from '@/components/home/ProjectCard'
@@ -17,9 +18,11 @@ type ProjectsSectionProps = {
 
 /** The home page "Selected work" section, which can be filtered by a skill picked in the skills section. */
 function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
-  const matches = (stack: string[]) => !activeSkill || stack.includes(activeSkill)
+  const using = activeSkill ? projectsUsing(activeSkill) : null
   // The home page shows at most four flagships. With a skill filter on, every project that uses it is shown.
-  const shown = (activeSkill ? projects : flagshipProjects.slice(0, 4)).filter((project) => matches(project.stack))
+  const shown = (activeSkill ? projects : flagshipProjects.slice(0, 4)).filter(
+    (project) => !using || using.includes(project),
+  )
 
   return (
     <section className="section-wrap section-y" id="work" aria-labelledby="work-title">

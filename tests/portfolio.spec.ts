@@ -1269,7 +1269,7 @@ test('the matching-projects message appears inside the group of the skill you cl
   const web = page.locator('#skills [data-skill-group]').filter({ hasText: 'Frontend' })
   const tools = page.locator('#skills [data-skill-group]').filter({ hasText: 'Delivery & Testing' })
 
-  await page.getByRole('button', { name: /using JavaScript$/ }).click()
+  await page.getByRole('button', { name: /using HTML5$/ }).click()
   await expect(web).toContainText('matching')
   await expect(tools).not.toContainText('matching')
   // The projects that use it are listed as links to their case studies.
@@ -1533,4 +1533,16 @@ test('the writeups index heading and intro use the full width of the page', asyn
   expect(lead.width).toBeGreaterThan(section.width * 0.95)
   // The heading fits on one line instead of wrapping early.
   expect(title.height).toBeLessThan(90)
+})
+
+test('a tile that covers several tools, like JWT & OAuth, filters to every project that uses any of them', async ({
+  page,
+}) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  await page.getByRole('button', { name: /using JWT & OAuth$/ }).click()
+  const expected = projects.filter((project) =>
+    project.stack.some((item) => ['JWT', 'OAuth', 'Auth0', 'GitHub OAuth', 'Google OAuth'].includes(item)),
+  )
+  await expect(page.locator('#work [data-project-card]')).toHaveCount(expected.length)
 })
