@@ -45,7 +45,7 @@ function LocalTime() {
       inert={!scrolled}
       aria-hidden={!scrolled}
       className={cn(
-        'fixed bottom-4 left-4 z-30 m-0 flex items-center gap-2 rounded-full border bg-card/90 px-3.5 py-2 font-mono text-label text-muted-foreground shadow-sm backdrop-blur-sm transition-[opacity,translate] duration-300 motion-reduce:transition-none max-[620px]:bottom-3 max-[620px]:left-3 print:hidden',
+        'fixed bottom-4 left-4 z-30 m-0 flex items-center gap-2 rounded-full border bg-card/90 px-3.5 py-2 font-mono text-label text-muted-foreground shadow-sm backdrop-blur-sm transition-[opacity,translate] duration-300 motion-reduce:transition-none max-[620px]:hidden print:hidden',
         scrolled ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0',
       )}
     >

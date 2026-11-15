@@ -1,9 +1,10 @@
+import { useEffect, useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import SkillLogo from '@/components/home/SkillLogo'
 import Reveal from '@/components/shared/Reveal'
 import SectionHeading from '@/components/shared/SectionHeading'
-import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel'
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from '@/components/ui/carousel'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { projects } from '@/data/projects'
@@ -22,8 +23,40 @@ const groups = skillTabs.map((group) => ({
   projectCount: new Set(group.skills.flatMap((skill) => projectsUsing(skill.name).map((project) => project.slug))).size,
 }))
 
+/**
+ * On a phone the groups are a carousel, which is as tall as its tallest card and leaves empty space under the shorter
+ * ones. This keeps it as tall as the card on screen, and follows that card if it grows (for example when a skill
+ * is picked and its matching-projects line appears). Wider screens show a grid, so it clears the height there.
+ */
+function useFitActiveSlide(api: CarouselApi | undefined) {
+  useEffect(() => {
+    if (!api) return
+    const root = api.rootNode()
+    const phone = window.matchMedia('(max-width: 620px)')
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) root.style.transition = 'height 200ms ease'
+    const fit = () => {
+      const slide = api.slideNodes()[api.selectedScrollSnap()]
+      root.style.height = phone.matches && slide ? `${slide.offsetHeight}px` : ''
+    }
+    const observer = new ResizeObserver(fit)
+    api.slideNodes().forEach((slide) => observer.observe(slide))
+    api.on('select', fit).on('reInit', fit)
+    phone.addEventListener('change', fit)
+    fit()
+    return () => {
+      observer.disconnect()
+      api.off('select', fit).off('reInit', fit)
+      phone.removeEventListener('change', fit)
+      root.style.height = ''
+      root.style.transition = ''
+    }
+  }, [api])
+}
+
 /** The home page "What I work with" section; clicking a skill filters the projects above. */
 function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>()
+  useFitActiveSlide(carouselApi)
   const matchingProjects = activeSkill ? projectsUsing(activeSkill) : []
   const matches = matchingProjects.length
 
@@ -39,11 +72,12 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
       <TooltipProvider delayDuration={120} skipDelayDuration={400} disableHoverableContent>
         {/* On a phone the six groups are one swipeable row (one card on screen, the next peeking in), not a 2,400px stack. */}
         <Carousel
+          setApi={setCarouselApi}
           opts={{ align: 'start', breakpoints: { '(min-width: 621px)': { active: false } } }}
           aria-label="Skill groups"
           className="w-full"
         >
-          <CarouselContent className="-ml-4 min-[621px]:ml-0 min-[621px]:grid min-[621px]:grid-cols-2 min-[621px]:items-stretch min-[621px]:gap-6 lg:grid-cols-3">
+          <CarouselContent className="-ml-4 max-[620px]:items-start min-[621px]:ml-0 min-[621px]:grid min-[621px]:grid-cols-2 min-[621px]:items-stretch min-[621px]:gap-6 lg:grid-cols-3">
             {groups.map((group, index) => (
               <CarouselItem key={group.id} className="basis-[88%] min-[621px]:basis-auto min-[621px]:pl-0 [&>*]:h-full">
                 <Reveal delay={index * 0.08}>
@@ -57,7 +91,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                     </CardHeader>
                     {/* A container query, so tiles pair up when the card is wide enough rather than by screen width. */}
                     <CardContent className="@container max-[620px]:px-4">
-                      <ul className="grid grid-cols-1 gap-2.5 min-[621px]:gap-3 @[17.5rem]:grid-cols-2 @[42rem]:grid-cols-3">
+                      <ul className="grid grid-cols-1 gap-2 max-[620px]:flex max-[620px]:flex-wrap min-[621px]:gap-2.5 min-[621px]:@[17.5rem]:grid-cols-2 @[42rem]:grid-cols-3">
                         {group.skills.map(({ name, note }) => {
                           const used = projectsUsing(name)
                           return (
@@ -67,7 +101,7 @@ function SkillsSection({ activeSkill, onSkillSelect }: SkillsSectionProps) {
                                   <button
                                     type="button"
                                     className={cn(
-                                      'group flex w-full items-center gap-2.5 rounded-lg border bg-background/40 p-3 text-left transition-colors min-[621px]:gap-3 min-[621px]:p-4',
+                                      'group flex w-full items-center gap-2.5 rounded-lg border bg-background/40 p-2.5 text-left transition-colors max-[620px]:min-h-11 max-[620px]:w-auto max-[620px]:px-3 min-[621px]:gap-3 min-[621px]:p-3',
                                       'hover:border-primary aria-pressed:border-primary aria-pressed:bg-primary/10',
                                     )}
                                     aria-pressed={activeSkill === name}
