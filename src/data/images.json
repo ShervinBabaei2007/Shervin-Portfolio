@@ -35,6 +35,24 @@
       "width": 480
     }
   },
+  "/projects/nga-applications.webp": {
+    "width": 1600,
+    "height": 1067,
+    "avif": true,
+    "small": {
+      "src": "/projects/nga-applications-480.webp",
+      "width": 480
+    }
+  },
+  "/projects/nga-candidates.webp": {
+    "width": 1600,
+    "height": 1067,
+    "avif": true,
+    "small": {
+      "src": "/projects/nga-candidates-480.webp",
+      "width": 480
+    }
+  },
   "/projects/nga-discover.webp": {
     "width": 1600,
     "height": 1075,
@@ -46,16 +64,34 @@
   },
   "/projects/nga-jobs.webp": {
     "width": 1600,
-    "height": 1075,
+    "height": 1280,
     "avif": true,
     "small": {
       "src": "/projects/nga-jobs-480.webp",
       "width": 480
     }
   },
+  "/projects/nga-mobile-applications.webp": {
+    "width": 600,
+    "height": 1239,
+    "avif": true,
+    "small": {
+      "src": "/projects/nga-mobile-applications-240.webp",
+      "width": 240
+    }
+  },
+  "/projects/nga-mobile-overview.webp": {
+    "width": 600,
+    "height": 1239,
+    "avif": true,
+    "small": {
+      "src": "/projects/nga-mobile-overview-240.webp",
+      "width": 240
+    }
+  },
   "/projects/nga-overview.webp": {
     "width": 1600,
-    "height": 1075,
+    "height": 1067,
     "avif": true,
     "small": {
       "src": "/projects/nga-overview-480.webp",
@@ -72,26 +108,44 @@
     }
   },
   "/projects/signaldesk-dashboard.webp": {
-    "width": 1388,
-    "height": 868,
+    "width": 1228,
+    "height": 778,
     "avif": true,
     "small": {
       "src": "/projects/signaldesk-dashboard-480.webp",
       "width": 480
     }
   },
+  "/projects/signaldesk-landing.webp": {
+    "width": 1552,
+    "height": 778,
+    "avif": true,
+    "small": {
+      "src": "/projects/signaldesk-landing-480.webp",
+      "width": 480
+    }
+  },
   "/projects/signaldesk-mobile.webp": {
-    "width": 392,
-    "height": 845,
+    "width": 600,
+    "height": 1298,
     "avif": true,
     "small": {
       "src": "/projects/signaldesk-mobile-240.webp",
       "width": 240
     }
   },
+  "/projects/signaldesk-reader.webp": {
+    "width": 1552,
+    "height": 778,
+    "avif": true,
+    "small": {
+      "src": "/projects/signaldesk-reader-480.webp",
+      "width": 480
+    }
+  },
   "/projects/signaldesk-story.webp": {
-    "width": 1388,
-    "height": 868,
+    "width": 1552,
+    "height": 778,
     "avif": true,
     "small": {
       "src": "/projects/signaldesk-story-480.webp",

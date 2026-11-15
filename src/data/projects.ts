@@ -183,6 +183,16 @@ export const projects: Project[] = [
         caption: 'One story, compared across outlets',
       },
       {
+        src: '/projects/signaldesk-reader.webp',
+        alt: 'An article page with a plain summary, key points, and a list of the other outlets that covered the same event.',
+        caption: 'One article, with a summary and key points',
+      },
+      {
+        src: '/projects/signaldesk-landing.webp',
+        alt: 'The SignalDesk home page with buttons to open a private workspace or take a demo tour, above a preview of the dashboard.',
+        caption: 'Home page',
+      },
+      {
         src: '/projects/signaldesk-mobile.webp',
         alt: 'SignalDesk dashboard on a phone.',
         caption: 'On a phone',
@@ -313,22 +323,42 @@ export const projects: Project[] = [
       {
         src: '/projects/nga-overview.webp',
         alt: 'Network Growth Assistant overview: a connection total against a goal, pipeline tiles, and progress per discipline.',
-        caption: 'Overview (example data)',
+        caption: 'Overview',
       },
       {
         src: '/projects/nga-quick-capture.webp',
         alt: 'Quick capture turning a pasted search results page into rows with school and program already matched.',
-        caption: 'Quick capture (example data)',
+        caption: 'Quick capture',
       },
       {
         src: '/projects/nga-discover.webp',
         alt: 'Discover results listing verified matches with a visible score and the reasons each person matches.',
-        caption: 'Discover (example data)',
+        caption: 'Discover',
       },
       {
         src: '/projects/nga-jobs.webp',
         alt: 'Jobs page with verified postings, a fit score, and the matching requirements on each card.',
-        caption: 'Jobs (example data)',
+        caption: 'Jobs',
+      },
+      {
+        src: '/projects/nga-candidates.webp',
+        alt: 'Candidates table with several rows selected for a bulk action, and a side panel showing the next step and a school and discipline to confirm.',
+        caption: 'Candidates',
+      },
+      {
+        src: '/projects/nga-applications.webp',
+        alt: 'Applications board in the dark theme with columns from Saved to Closed, each holding job cards.',
+        caption: 'Applications board, dark theme',
+      },
+      {
+        src: '/projects/nga-mobile-overview.webp',
+        alt: 'The overview on a phone: a connection total against a goal, a progress ring, and pipeline tiles.',
+        caption: 'Overview on a phone',
+      },
+      {
+        src: '/projects/nga-mobile-applications.webp',
+        alt: 'The applications board on a phone in French and the dark theme, showing one stage at a time.',
+        caption: 'Applications on a phone, in French',
       },
     ],
     snippet: {
