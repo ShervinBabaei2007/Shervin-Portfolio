@@ -33,18 +33,18 @@ const card = ({ kicker, title, subtitle, result }) => `<!doctype html><html><hea
 @font-face { font-family: Mono; src: url('${dmMonoUrl}'); }
 * { box-sizing: border-box; margin: 0; }
 body { width: 1200px; height: 630px; padding: 72px 84px; display: flex; flex-direction: column;
-  color: #e6ecf8; font-family: Body, sans-serif;
-  background-color: #0a1122;
-  background-image: linear-gradient(rgba(148,163,192,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,192,.07) 1px, transparent 1px);
+  color: #f4efe4; font-family: Body, sans-serif;
+  background-color: #1b1a18;
+  background-image: linear-gradient(rgba(244,239,228,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(244,239,228,.05) 1px, transparent 1px);
   background-size: 38px 38px; }
 .top { display: flex; align-items: center; justify-content: space-between; }
 .mark { display: flex; align-items: center; gap: 10px; }
 .mark img { width: 56px; height: 56px; border-radius: 13px; }
-.kicker { color: #94a3c0; font: 22px Mono; }
+.kicker { color: #a59e91; font: 22px Mono; }
 h1 { margin-top: auto; max-width: 960px; font: 600 ${titleSize(title)}px/1.04 Display; letter-spacing: -.02em; }
-p { margin-top: 22px; max-width: 960px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #94a3c0; font-size: 30px; line-height: 1.35; }
-.result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #8aa4ff; background: #111a30; font: 600 26px Body; }
-.foot { display: flex; justify-content: space-between; margin-top: 40px; color: #94a3c0; font: 20px Mono; }
+p { margin-top: 22px; max-width: 960px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #a59e91; font-size: 30px; line-height: 1.35; }
+.result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #8ca3ff; background: #242220; font: 600 26px Body; }
+.foot { display: flex; justify-content: space-between; margin-top: 40px; color: #a59e91; font: 20px Mono; }
 </style></head><body>
 <div class="top"><div class="mark"><img src="${logoUrl}" alt="" /></div><span class="kicker">${escape(kicker)}</span></div>
 <h1>${escape(title)}</h1>
