@@ -42,14 +42,11 @@ export const resume = {
     ['Languages & Core', 'TypeScript, JavaScript (ES6+), Python, SQL, C++, HTML5, CSS3'],
     ['Frontend', 'React, Next.js, Vite, Tailwind CSS, shadcn/ui, Chakra UI'],
     ['Backend & Cloud', 'Node.js, Express.js, FastAPI, RESTful APIs, WebSockets, Python asyncio'],
-    ['Databases', 'PostgreSQL, MongoDB, Supabase, Redis, SQLite, Drizzle ORM, Mongoose, Sequelize'],
-    [
-      'DevOps & Security',
-      'Docker, Docker Compose, Git, GitHub Actions, AWS (EC2, S3), Vercel, Nginx, OAuth 2.0/JWT, RBAC',
-    ],
+    ['Databases', 'PostgreSQL, MongoDB, Supabase, Redis, SQLite, Mongoose'],
+    ['DevOps & Security', 'Docker, Git, GitHub Actions, Azure, Vercel, Nginx, OAuth 2.0/JWT, RBAC'],
     [
       'Testing & Applied AI',
-      'Vitest, Playwright, pytest, Integration Testing, Claude Code, Cursor, OpenRouter, Ollama, LangChain',
+      'Vitest, Playwright, axe-core, pytest, Integration Testing, Claude Code, OpenRouter, Ollama, LangChain',
     ],
   ] as [string, string][],
   projects: [
@@ -84,7 +81,7 @@ export const resume = {
       bullets: [
         'Built a full-stack outreach and job-application tracker featuring verified contact discovery, live link health checks, and detailed networking metrics.',
         'Enforced tenant data isolation via PostgreSQL RLS and maintained production reliability with 1,500+ automated unit and E2E tests.',
-        'Integrated automated background job processing for contact verification and rate-limited API retries using exponential backoff retry routines.',
+        'Built a background alert pipeline that retries failed deliveries with growing delays (15 minutes, 1 hour, 6 hours) before marking them failed, and shipped every signed-in page in English and Canadian French.',
       ],
     },
     {
@@ -100,8 +97,8 @@ export const resume = {
       role: 'Backend & DevOps Lead',
       bullets: [
         'Delivered end-to-end workshop registration, QR ticketing, and review systems equipped with secure login and role-based access for students and instructors.',
-        'Reduced initial page-load latency by 18% via route preloading, React bundle code-splitting, and background server pings to eliminate database delays.',
-        'Designed advanced database indexing strategies utilizing compound geospatial and text search indexes to instantly filter categories during high traffic.',
+        'Sped up first load by preloading key routes, splitting React and UI libraries into separately cached chunks, and keeping the MongoDB Atlas connection warm with a scheduled ping.',
+        'Wrote the Express routes for attending, reviewing, and hosting a workshop, behind the JWT middleware that protects them.',
       ],
     },
     {
@@ -117,7 +114,7 @@ export const resume = {
       role: 'UI/UX & Frontend Lead',
       bullets: [
         'Built responsive user sign-in, navigation, and profile interface screens from Figma mockups during a fast-paced 24-hour team hackathon sprint.',
-        'Reduced onboarding friction by ~30% by bypassing manual forms and routing users straight to GitHub single sign-on (SSO) via Auth0 authentication.',
+        'Sent users straight to GitHub sign-in by passing Auth0\u2019s connection option, removing the choose-a-provider screen between a visitor and the app.',
         'Developed an AI tool that compares code file versions to generate standardized commit descriptions, securing Top 6 of 36 teams at Hack the Break.',
       ],
     },
