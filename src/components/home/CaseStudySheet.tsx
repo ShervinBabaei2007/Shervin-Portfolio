@@ -2,7 +2,6 @@ import { ArrowUpRight, Github } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import type { Project } from '@/data/projects'
@@ -19,8 +18,18 @@ function CaseStudySheet({ project, open, onOpenChange }: Props) {
           <SheetTitle>{project.name}</SheetTitle>
           <SheetDescription>{project.subtitle}</SheetDescription>
         </SheetHeader>
-        <ScrollArea className="min-h-0 flex-1 px-4">
-          <div className="space-y-6 pb-8">
+        {/* A plain scroller, not Radix ScrollArea: its inner table wrapper grows to fit the widest line of code, which pushed
+            the text out of the frame. A focusable region keeps it usable by keyboard. */}
+        <div
+          className="min-h-0 flex-1 overflow-y-auto px-4 focus-visible:outline-2 focus-visible:-outline-offset-2"
+          // A scrolling region must be reachable by keyboard (axe: scrollable-region-focusable).
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+          tabIndex={0}
+          role="region"
+          aria-label={`${project.name} details`}
+        >
+          <div className="space-y-6 pb-8 [overflow-wrap:anywhere]">
+            <p className="text-sm leading-[1.7] text-muted-foreground">{project.nonTechnicalSummary}</p>
             <div className="flex flex-wrap gap-1.5">
               {project.mainStack.map((item) => (
                 <Badge key={item} variant="secondary">
@@ -72,7 +81,7 @@ function CaseStudySheet({ project, open, onOpenChange }: Props) {
                 <Separator />
                 <section>
                   <h3 className="mb-2 text-sm font-semibold">Code</h3>
-                  <CodeBlock snippet={project.snippet} maxLines={16} />
+                  <CodeBlock snippet={project.snippet} maxLines={16} focusable />
                 </section>
               </>
             )}
@@ -99,7 +108,7 @@ function CaseStudySheet({ project, open, onOpenChange }: Props) {
               )}
             </div>
           </div>
-        </ScrollArea>
+        </div>
       </SheetContent>
     </Sheet>
   )

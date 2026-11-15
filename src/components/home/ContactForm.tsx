@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'react'
-import { CircleAlert, CircleCheck } from 'lucide-react'
+import { CircleAlert, CircleCheck, Send } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
@@ -85,6 +85,12 @@ function ContactForm() {
     if (errors[field]) setErrors((current) => ({ ...current, [field]: validate({ ...values, [field]: value })[field] }))
   }
 
+  // Checks a field when the visitor leaves it, but only if something was typed, so tabbing past a field stays quiet.
+  const check = (field: keyof Values) => {
+    if (!values[field]) return
+    setErrors((current) => ({ ...current, [field]: validate(values)[field] }))
+  }
+
   // Validates, focuses the first bad field if any, otherwise sends the message.
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -168,9 +174,10 @@ function ContactForm() {
               name="name"
               value={values.name}
               onChange={(event) => update('name', event.target.value)}
+              onBlur={() => check('name')}
               maxLength={contactLimits.name}
               autoComplete="name"
-              className={FIELD_TEXT}
+              className={cn(FIELD_TEXT, 'h-11')}
               aria-invalid={Boolean(errors.name)}
               aria-describedby={describedBy('name')}
               aria-required="true"
@@ -187,9 +194,10 @@ function ContactForm() {
               placeholder="you@company.com"
               value={values.email}
               onChange={(event) => update('email', event.target.value)}
+              onBlur={() => check('email')}
               maxLength={contactLimits.email}
               autoComplete="email"
-              className={FIELD_TEXT}
+              className={cn(FIELD_TEXT, 'h-11')}
               aria-invalid={Boolean(errors.email)}
               aria-describedby={describedBy('email')}
               aria-required="true"
@@ -227,7 +235,8 @@ function ContactForm() {
             name="message"
             value={values.message}
             onChange={(event) => update('message', event.target.value)}
-            className={cn(FIELD_TEXT, 'field-sizing-fixed min-h-24 flex-1')}
+            onBlur={() => check('message')}
+            className={cn(FIELD_TEXT, 'field-sizing-fixed min-h-32 flex-1')}
             placeholder="Tell me what you're building"
             maxLength={MESSAGE_MAX}
             rows={4}
@@ -260,15 +269,23 @@ function ContactForm() {
           </Alert>
         )}
 
-        <Button type="submit" disabled={status === 'sending'} aria-busy={status === 'sending'} className="h-10 px-5">
+        <Button
+          type="submit"
+          disabled={status === 'sending'}
+          aria-busy={status === 'sending'}
+          className="h-12 w-full text-base font-semibold"
+        >
           {status === 'sending' ? (
             <>
               <Spinner aria-hidden="true" role="presentation" /> Sending…
             </>
           ) : (
-            'Send message'
+            <>
+              Send message <Send aria-hidden="true" />
+            </>
           )}
         </Button>
+        <p className="-mt-1 text-center text-sm text-muted-foreground">I reply within two business days.</p>
       </FieldGroup>
     </form>
   )

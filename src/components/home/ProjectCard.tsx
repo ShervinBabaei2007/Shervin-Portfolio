@@ -8,28 +8,24 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { Link } from 'react-router-dom'
 import type { Project } from '@/data/projects'
-import images from '@/data/images.json'
 import CodeBlock from '@/components/shared/CodeBlock'
 import ResponsiveImage from '@/components/shared/ResponsiveImage'
 import TerminalBlock from '@/components/shared/TerminalBlock'
 import Reveal from '@/components/shared/Reveal'
 import WindowFrame from '@/components/shared/WindowFrame'
+import { screenshotShape } from '@/lib/images'
+import { softShadow } from '@/lib/surfaces'
 import { cn } from '@/lib/utils'
 
 /**
  * The thumbnail area: one fixed height for every card, so a row of cards lines up whatever it shows
  * (a screenshot, code or a terminal).
  */
-const mediaBase = cn('relative z-[1] h-[184px] overflow-hidden bg-muted max-[620px]:h-[170px]')
+const mediaBase = cn(
+  'card-stage relative z-[1] h-[216px] overflow-hidden max-[620px]:h-[190px]',
+  '[&>*]:transition-transform [&>*]:duration-500 motion-safe:pointer-fine:group-hover:[&>*]:scale-[1.03]',
+)
 const visualClass = cn(mediaBase, 'grid place-items-center px-7 py-[19px] max-[620px]:p-4')
-
-// Pixel sizes of every generated image, keyed by its path.
-const catalog = images as Record<string, { width: number; height: number }>
-/** Phone screenshots (over 1.2 times taller than wide) get the "phones peeking up" look; wide ones get a browser window. */
-const isPortrait = (src: string) => {
-  const info = catalog[src]
-  return Boolean(info) && info.height / info.width > 1.2
-}
 
 /** The card's thumbnail: screenshots, then code or a terminal, then the stack as a last resort. */
 function CardMedia({ project }: { project: Project }) {
@@ -44,8 +40,8 @@ function CardMedia({ project }: { project: Project }) {
         aria-hidden="true"
         data-card-media
       >
-        {isPortrait(shots[0].src) ? (
-          // Up to three phones side by side, the middle one standing taller.
+        {screenshotShape(shots[0].src) === 'portrait' ? (
+          // Phone shots stand side by side (up to three, the middle one taller); wide ones get a browser window.
           <div className="flex h-full w-full items-end justify-center gap-3 max-[620px]:gap-2">
             {shots.slice(0, 3).map((shot, index) => (
               <figure
@@ -69,27 +65,36 @@ function CardMedia({ project }: { project: Project }) {
       </div>
     )
   }
-  // The card shows a short preview: no outer margin, full width, a smaller font and no scrolling.
-  const preview = { className: 'm-0 w-full', preClassName: 'overflow-hidden text-[.75rem] leading-[1.55]' }
+  // The card shows a short preview: no outer margin, full width, a smaller font and no scrolling. The bottom fades out,
+  // so a cut-off line looks intended. The panel is always the dark theme, so it stands out from the cream card.
+  const preview = {
+    // max-h-full keeps the panel inside the picture area instead of overflowing it and being clipped.
+    className: 'm-0 max-h-full w-full',
+    preClassName: 'overflow-hidden text-[.75rem] leading-[1.55] [mask-image:linear-gradient(#000_70%,transparent)]',
+  }
   // A recorded terminal session says more about a command-line project than code does, unless it is only a line or two.
   const terminalFirst = project.terminal && project.terminal.transcript.split(/\r?\n/).length >= 3
   if (project.snippet && !terminalFirst) {
     return (
       <div className={visualClass} aria-hidden="true" data-card-media>
-        <CodeBlock snippet={project.snippet} maxLines={11} showCaption={false} {...preview} />
+        <div data-theme="dark" className="contents">
+          <CodeBlock snippet={project.snippet} maxLines={11} showCaption={false} {...preview} />
+        </div>
       </div>
     )
   }
   if (project.terminal) {
     return (
       <div className={visualClass} aria-hidden="true" data-card-media>
-        <TerminalBlock
-          title={project.terminal.title}
-          transcript={project.terminal.transcript}
-          maxLines={11}
-          showCaption={false}
-          {...preview}
-        />
+        <div data-theme="dark" className="contents">
+          <TerminalBlock
+            title={project.terminal.title}
+            transcript={project.terminal.transcript}
+            maxLines={11}
+            showCaption={false}
+            {...preview}
+          />
+        </div>
       </div>
     )
   }
@@ -116,8 +121,7 @@ const preloadSheet = () => void loadSheet().catch(() => {})
 const cardLink =
   'hit-area inline-flex items-center gap-[7px] text-control font-semibold whitespace-nowrap no-underline hover:text-primary'
 
-const card =
-  'relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-[12px] border bg-card transition-[border-color] duration-200 ease-in-out has-[:focus-visible]:border-primary pointer-fine:hover:border-primary pointer-fine:focus-within:border-primary print:break-inside-avoid'
+const card = `relative isolate flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border bg-card ${softShadow} transition-[border-color,transform,box-shadow] duration-200 ease-in-out has-[:focus-visible]:border-primary pointer-fine:hover:border-primary motion-safe:pointer-fine:hover:-translate-y-1 motion-safe:pointer-fine:hover:shadow-[0_22px_44px_-24px_var(--color-shadow)] pointer-fine:focus-within:border-primary print:break-inside-avoid`
 
 type PrimaryAction = { label: string; href: string; github?: boolean }
 
@@ -158,8 +162,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
                 aria-hidden="true"
               />
             </h3>
-            <p className="mt-2 font-semibold">{project.tagline}</p>
-            <p className="mt-3 line-clamp-2 leading-[1.7] text-muted-foreground">{project.nonTechnicalSummary}</p>
+            <p className="mt-2 min-h-[2lh] font-semibold">{project.tagline}</p>
             <p className="mt-4 min-h-[2lh] text-sm leading-snug font-semibold" data-card-result>
               {project.result}
             </p>
@@ -178,7 +181,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
           )}
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             className="max-[620px]:h-11"
             aria-busy={sheetLoading}

@@ -60,7 +60,7 @@ function RequestTrace() {
             <TabsTrigger
               key={layer.id}
               value={layer.id}
-              className="group relative flex h-auto w-full items-center gap-3.5 rounded-none px-4 py-3.5 whitespace-normal hover:bg-muted/40 data-[state=active]:bg-muted/60"
+              className="group relative flex h-auto w-full items-center gap-3.5 rounded-none px-4 py-3.5 whitespace-normal transition-[background-color,color] duration-300 hover:bg-muted/40 data-[state=active]:bg-muted/60 motion-reduce:transition-none"
             >
               {/* The step number, with a line running down to the next step so the order reads as a path. */}
               <span
@@ -68,7 +68,7 @@ function RequestTrace() {
                   monoLabel,
                   'relative z-[1] grid size-7 shrink-0 place-items-center rounded-full border bg-background font-medium text-muted-foreground transition-colors duration-200 motion-reduce:transition-none',
                   'group-hover:border-primary group-hover:text-primary',
-                  'group-data-[state=active]:border-primary group-data-[state=active]:bg-primary group-data-[state=active]:text-primary-foreground',
+                  'group-data-[state=active]:border-primary group-data-[state=active]:bg-primary-fill group-data-[state=active]:text-primary-foreground',
                 )}
                 aria-hidden="true"
               >
@@ -99,7 +99,7 @@ function RequestTrace() {
           <TabsContent
             key={layer.id}
             value={layer.id}
-            className="animate-in border-t px-4 py-4 duration-200 fade-in-0 motion-reduce:animate-none"
+            className="animate-in border-t px-4 py-4 duration-300 fade-in-0 slide-in-from-bottom-1 motion-reduce:animate-none"
           >
             <p className="text-[.875rem] leading-[1.55] text-muted-foreground">{layer.detail}</p>
             {/* A full-width list, one project per row, so the links line up and nothing wraps into a ragged gap. */}

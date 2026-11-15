@@ -18,7 +18,7 @@ function MoreOnGitHub() {
         {otherRepos.map((repo) => (
           <li
             key={repo.name}
-            className="relative flex flex-col overflow-hidden rounded-[12px] border bg-card transition-colors focus-within:border-primary pointer-fine:hover:border-primary"
+            className="relative flex flex-col overflow-hidden rounded-2xl border border-foreground/15 bg-card shadow-[0_2px_4px_var(--color-shadow),0_24px_48px_-26px_var(--color-shadow)] transition-colors focus-within:border-primary pointer-fine:hover:border-primary"
           >
             {repo.thumbnail && (
               <img
