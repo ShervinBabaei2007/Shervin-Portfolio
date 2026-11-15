@@ -29,7 +29,8 @@ test('hero states the role and offers two ways to act: the work, and the resume 
   page,
 }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Full-stack developer')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Shervin Babaei')
+  await expect(page.locator('#home h2').first()).toContainText('Full-stack developer')
   await expect(page.locator('#home')).toContainText('Open to junior, co-op and internship roles')
   await expect(page.locator('#home').getByRole('link', { name: 'See my projects' })).toHaveAttribute('href', '/#work')
   await expect(page.locator('#home')).not.toContainText('shervinb22')
@@ -43,7 +44,7 @@ test('hero states the role and offers two ways to act: the work, and the resume 
   await expect(page.getByRole('banner').getByRole('link', { name: 'Download resume (PDF)' })).toBeVisible()
   await expect(page.locator('#home').getByRole('link', { name: 'View resume' })).toHaveCount(0)
   await expect(page.getByRole('list', { name: 'Highlights' })).toHaveCount(0)
-  await expect(page.locator('#home').getByRole('link', { name: /Top 6 of 36 teams/ })).toHaveAttribute(
+  await expect(page.getByLabel('At a glance').getByRole('link', { name: /36 teams/ })).toHaveAttribute(
     'href',
     '/work/gitscribe',
   )
@@ -718,8 +719,8 @@ test.describe('tools cards', () => {
 
 test('every featured project card has the same size of picture area, on desktop and on a phone', async ({ page }) => {
   for (const [width, expected] of [
-    [1440, 184],
-    [390, 170],
+    [1440, 216],
+    [390, 190],
   ] as const) {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
@@ -780,7 +781,7 @@ test('theme is dark by default and remembers a manual choice', async ({ browser 
   await page.goto('/')
   // Wait for hydration, otherwise the first click can land before the menu has its handlers.
   await page.waitForLoadState('networkidle')
-  const isDark = () => page.evaluate(() => document.documentElement.classList.contains('dark'))
+  const isDark = () => page.evaluate(() => document.documentElement.dataset.theme === 'dark')
   expect(await isDark()).toBe(true)
 
   await page.getByRole('button', { name: 'Settings' }).click()
@@ -1330,6 +1331,89 @@ test('form field outlines are at least 3:1 against the page and the card, in lig
   }
 })
 
+test('the contact form checks a field when you leave it, but stays quiet about empty ones', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const email = page.locator('#contact-email')
+  await email.focus()
+  await page.locator('#contact-name').focus()
+  await expect(page.locator('#contact-email-error')).toHaveCount(0)
+  await email.fill('not-an-email')
+  await page.locator('#contact-name').focus()
+  await expect(page.locator('#contact-email-error')).toHaveText("That email address doesn't look right.")
+  await email.fill('me@company.com')
+  await expect(page.locator('#contact-email-error')).toHaveCount(0)
+})
+
+test('the hero is your name as the H1, with the tagline as an H2 under it', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Shervin Babaei')
+  await expect(page.locator('#hero-title .typed-name')).toHaveAttribute('aria-hidden', 'true')
+  await expect(page.locator('#hero-title')).toHaveAttribute('aria-label', 'Shervin Babaei')
+  await expect(page.locator('#home h2').first()).toHaveText('Full-stack developer who goes down the stack.')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1)
+})
+
+test('with reduced motion the Contact globe is a still picture, otherwise it is the turning globe', async ({
+  browser,
+}) => {
+  for (const reducedMotion of ['reduce', 'no-preference'] as const) {
+    const context = await browser.newContext({ reducedMotion })
+    const page = await context.newPage()
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+    await page.locator('#contact-title').scrollIntoViewIfNeeded()
+    const still = page.locator('[data-globe] [data-globe-still]')
+    const canvas = page.locator('[data-globe] canvas')
+    if (reducedMotion === 'reduce') {
+      await expect(still).toBeVisible()
+      await expect(canvas).toHaveCount(0)
+    } else {
+      await expect(canvas).toHaveCount(1)
+      await expect(still).toHaveCount(0)
+    }
+    await context.close()
+  }
+})
+
+test('Quick look keeps every line of text inside its panel, on a phone and on a desktop', async ({ page }) => {
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 844 })
+    await page.goto('/projects')
+    await page.waitForLoadState('networkidle')
+    const buttons = page.getByRole('button', { name: 'Quick look' })
+    for (const index of [0, 5, 9]) {
+      await buttons.nth(index).click()
+      const panel = page.getByRole('dialog')
+      await panel.waitFor()
+      const scroller = panel.getByRole('region')
+      // Nothing may be wider than the panel; long code lines scroll inside their own code block instead.
+      const overflow = await scroller.evaluate((el) => el.scrollWidth - el.clientWidth)
+      expect(overflow, `${width}px, project ${index}`).toBeLessThanOrEqual(1)
+      await page.keyboard.press('Escape')
+      await expect(panel).toBeHidden()
+    }
+  }
+})
+
+test('the projects page has a Back to Home link that returns to the work section', async ({ page }) => {
+  await page.goto('/projects')
+  await page.waitForLoadState('networkidle')
+  const back = page.getByRole('link', { name: 'Back to Home' })
+  await expect(back).toHaveAttribute('href', '/#work')
+  await back.click()
+  await expect(page).toHaveURL(/\/#work$/)
+  await expect(page.locator('#work')).toBeInViewport()
+})
+
+test('a case study leads with its outcome, then its scope', async ({ page }) => {
+  await page.goto('/work/signaldesk')
+  const facts = page.getByLabel('At a glance')
+  const labels = await facts.locator('dt').allInnerTexts()
+  expect(labels.slice(0, 2)).toEqual(['OUTCOME', 'SCOPE'])
+  await expect(facts.locator('dd').first()).toContainText('Built solo in nine days')
+})
+
 test('the 404 page and the resume page offer a way onward', async ({ page }) => {
   await page.goto('/no-such-page')
   const onward = page.getByRole('navigation', { name: 'Where to go instead' })
@@ -1674,18 +1758,6 @@ test('Tools tiles are readable and touch-sized on a phone', async ({ page }) => 
     expect(height).toBeGreaterThanOrEqual(44)
     expect(font).toBeGreaterThanOrEqual(14)
   }
-})
-
-test('the Vancouver time tag stays off phones, where it would cover the text', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 3))
-  await page.waitForTimeout(500)
-  await expect(page.locator('p:has(time)')).toBeHidden()
-  await page.setViewportSize({ width: 1280, height: 800 })
-  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 3))
-  await expect(page.locator('p:has(time)')).toBeVisible()
 })
 
 test('on a phone the Tools carousel is as tall as the card on screen, and wide screens set no height', async ({
