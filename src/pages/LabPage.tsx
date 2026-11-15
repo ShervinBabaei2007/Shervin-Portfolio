@@ -20,7 +20,7 @@ function LabPage() {
 
       <div className="mt-[42px] grid grid-cols-[54px_minmax(0,1fr)_minmax(0,1fr)] gap-x-7 border-y py-[22px] max-[900px]:grid-cols-[44px_minmax(0,1fr)] max-[900px]:gap-5 max-[620px]:mt-7 max-[620px]:grid-cols-1">
         <div
-          className="grid size-11 place-items-center rounded-full bg-primary text-primary-foreground max-[620px]:mb-3.5"
+          className="grid size-11 place-items-center rounded-full bg-primary-fill text-primary-foreground max-[620px]:mb-3.5"
           aria-hidden="true"
         >
           <FlaskConical size={22} />
@@ -47,7 +47,7 @@ function LabPage() {
         The interesting part isn&apos;t the mistake. It&apos;s being able to reproduce it, explain the system behind it,
         and name the better design.{' '}
         <Link
-          className="inline-flex items-center gap-1 font-semibold text-primary no-underline hover:underline hover:underline-offset-[3px]"
+          className="inline-flex items-center gap-1 font-semibold text-text-link no-underline hover:underline hover:underline-offset-[3px]"
           to="/work/thinkboard"
         >
           Read the ThinkBoard case study <ArrowUpRight size={15} />

@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { useActiveSection } from '@/hooks/useActiveSection'
+import { raised } from '@/lib/surfaces'
 import { cn } from '@/lib/utils'
 
 export type ContentsItem = { id: string; label: string }
@@ -18,7 +19,7 @@ function TableOfContents({ items }: { items: ContentsItem[] }) {
   if (items.length < 3) return null
   return (
     <nav aria-label="On this page" className="print:hidden">
-      <Card className="gap-2 py-5">
+      <Card className={cn('gap-2 rounded-2xl py-5', raised)}>
         <CardHeader className="px-5">
           <p className="eyebrow">ON THIS PAGE</p>
         </CardHeader>

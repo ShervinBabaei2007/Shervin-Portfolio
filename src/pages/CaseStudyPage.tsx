@@ -7,13 +7,17 @@ import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import CodeBlock from '@/components/shared/CodeBlock'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
+import ResponsiveImage from '@/components/shared/ResponsiveImage'
 import ScreenshotGallery from '@/components/shared/ScreenshotGallery'
+import WindowFrame from '@/components/shared/WindowFrame'
 import TerminalBlock from '@/components/shared/TerminalBlock'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useCopy } from '@/hooks/useCopy'
 import { tone } from '@/lib/buttonTones'
 import { caseStudySections, type CaseStudySection, type SectionId } from '@/lib/caseStudySections'
+import { screenshotShape } from '@/lib/images'
+import { raised, raisedShadow } from '@/lib/surfaces'
 import { cn } from '@/lib/utils'
 import { notesForProject } from '../data/notes'
 import { findProject, projects } from '../data/projects'
@@ -21,6 +25,12 @@ import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
 const h2Class = 'text-h2 font-semibold'
+// Every part of a case study is a raised card, the same look as the cards on the home page.
+const card = `rounded-2xl border bg-card p-8 max-[620px]:p-5 ${raised}`
+// The same look for the sections the article layout renders, which do not carry their own classes.
+const articleCards =
+  'grid grid-cols-[minmax(0,1fr)] gap-6 [&>section]:rounded-2xl [&>section]:border [&>section]:border-foreground/15 [&>section]:bg-card [&>section]:p-8 [&>section]:shadow-[0_2px_4px_var(--color-shadow),0_30px_60px_-26px_var(--color-shadow)] max-[620px]:[&>section]:p-5'
+
 const bodyClass = 'mt-2.5 text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
 const factDt = 'font-mono text-label text-muted-foreground'
 // Header action buttons: a row that wraps on small screens, and a stack of equal-width buttons beside the title on wide ones.
@@ -61,8 +71,8 @@ function CaseStudyPage() {
     relatedNotes.length === 1 ? `/writeups/${relatedNotes[0].slug}` : `/writeups?project=${project.slug}`
   // The summary card under the title; the decision and evidence rows only appear for projects that have them.
   const glance: [string, string][] = [
-    ['MY ROLE', project.role],
-    ['KEY RESULT', project.result],
+    ['OUTCOME', project.result],
+    ['SCOPE', project.role],
     ...(project.signal
       ? ([
           ['DECISION', project.signal.decision],
@@ -70,6 +80,11 @@ function CaseStudyPage() {
         ] as [string, string][])
       : []),
   ]
+  // The header's action buttons sit two to a row. Copy link takes the whole row unless it has to pair with a lone
+  // source button above it (one repository link and no team repository).
+  const copyFillsRow = Boolean(project.github) === Boolean(project.teamRepo)
+  // A wide screenshot makes a good opening picture; a phone shot does not.
+  const heroShot = project.screenshots?.find((shot) => screenshotShape(shot.src) === 'wide')
   const sections = caseStudySections(project)
   // A section only renders when `sections` lists it, so these empty defaults are never shown.
   const { overview = [], features = [], howItWorks = [] } = project
@@ -84,7 +99,7 @@ function CaseStudyPage() {
   // One renderer per section id; `render` above picks which ones run.
   const views: Record<SectionId, () => ReactNode> = {
     what: () => (
-      <section key="what" id="what" className="border-b py-10">
+      <section key="what" id="what" className={card}>
         <h2 className={h2Class}>What it is</h2>
         {overview.map((paragraph) => (
           <p key={paragraph} className={bodyClass}>
@@ -94,7 +109,7 @@ function CaseStudyPage() {
       </section>
     ),
     does: () => (
-      <section key="does" id="does" className="border-b py-10">
+      <section key="does" id="does" className={card}>
         <h2 className={h2Class}>What it can do</h2>
         <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
           {features.map((feature) => (
@@ -213,179 +228,202 @@ function CaseStudyPage() {
   }
 
   return (
-    <article className="section-wrap page-y" aria-labelledby="case-study-title">
-      <PageBreadcrumb
-        trail={[
-          { label: 'Home', to: '/' },
-          { label: 'Work', to: '/#work' },
-        ]}
-        current={project.name}
-      />
+    <article aria-labelledby="case-study-title">
+      {/* The top of the page sits on a tinted band: title, actions, the outcome, then a big look at the real app. */}
+      <div className="section-band border-t-0">
+        <div className="section-wrap pt-[clamp(1.25rem,3.5svh,2.25rem)] pb-[var(--space-block)]">
+          <PageBreadcrumb
+            trail={[
+              { label: 'Home', to: '/' },
+              { label: 'Work', to: '/#work' },
+            ]}
+            current={project.name}
+          />
 
-      {/* Title block on the left, actions on the right (stacked above the phone breakpoint's wide layout), summary card below. */}
-      <header className="mt-[18px]">
-        <div className="grid gap-6 min-[1024px]:grid-cols-[minmax(0,1fr)_23rem] min-[1024px]:items-start min-[1024px]:gap-12">
-          <div>
-            <p className="eyebrow">
-              {project.category.toUpperCase()} <span className="text-muted-foreground">/</span>{' '}
-              {project.date.toUpperCase()}
-            </p>
-            <h1 id="case-study-title" className="mt-3.5 text-title font-semibold">
-              {project.name}
-            </h1>
-            <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground">{project.subtitle}</p>
-            <p className="mt-3.5 flex max-w-[70ch] items-baseline gap-2 text-sm leading-normal text-muted-foreground">
-              <Users className="flex-none translate-y-0.5 text-primary" size={15} aria-hidden="true" /> {project.team}
-            </p>
-          </div>
+          {/* Title block on the left, actions on the right (stacked above the phone breakpoint's wide layout), summary card below. */}
+          <header className="mt-[18px]">
+            <div className="grid gap-6 min-[1024px]:grid-cols-[minmax(0,1fr)_23rem] min-[1024px]:items-start min-[1024px]:gap-12">
+              <div>
+                <p className="eyebrow">
+                  {project.category.toUpperCase()} <span className="text-muted-foreground">/</span>{' '}
+                  {project.date.toUpperCase()}
+                </p>
+                <h1 id="case-study-title" className="mt-3.5 text-title font-semibold">
+                  {project.name}
+                </h1>
+                <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground">
+                  {project.subtitle}
+                </p>
+                <p className="mt-3.5 flex max-w-[70ch] items-baseline gap-2 text-sm leading-normal text-muted-foreground">
+                  <Users className="flex-none translate-y-0.5 text-primary" size={15} aria-hidden="true" />{' '}
+                  {project.team}
+                </p>
+              </div>
 
-          <div className="flex flex-wrap items-center gap-3 min-[1024px]:grid min-[1024px]:grid-cols-2 min-[1024px]:gap-2.5">
-            {project.live && (
-              <Button asChild size="lg" className={cn(actionButton, 'min-[1024px]:col-span-2')}>
-                <a href={project.live} target="_blank" rel="noreferrer">
-                  Live project <ArrowUpRight />
-                </a>
-              </Button>
-            )}
-            {project.github && (
-              <Button asChild variant="outline" size="lg" className={actionButton}>
-                <a href={project.github} target="_blank" rel="noreferrer">
-                  {project.teamRepo ? 'My fork' : 'Source code'} <Github />
-                </a>
-              </Button>
-            )}
-            {project.teamRepo && (
-              <Button asChild variant="outline" size="lg" className={actionButton}>
-                <a href={project.teamRepo} target="_blank" rel="noreferrer">
-                  Team repository <Github />
-                </a>
-              </Button>
-            )}
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              className={actionButton}
-              onClick={() => void copy(`${site.url}/work/${project.slug}`)}
-            >
-              {copyLabel}
-              {copied ? <Check /> : <Link2 />}
-            </Button>
-            {relatedNotes.length > 0 && (
-              <Button asChild size="lg" className={cn(actionButton, 'shadow-md min-[1024px]:col-span-2', tone.writeup)}>
-                <Link to={writeupHref}>
-                  {relatedNotes.length === 1 ? 'Read the writeup' : 'Read the writeups'} <NotebookPen />
-                </Link>
-              </Button>
-            )}
-            <span className="sr-only" role="status">
-              {copied ? 'Link copied to clipboard.' : ''}
-            </span>
-          </div>
-        </div>
-
-        <dl
-          className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-8 gap-y-4 rounded-r-lg border-l-[3px] border-primary bg-card px-5 py-[18px] max-[620px]:mt-6 max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5 min-[621px]:max-[1099px]:grid-cols-2"
-          aria-label="At a glance"
-        >
-          {glance.map(([label, value]) => (
-            <div key={label} className="min-w-0">
-              <dt className={factDt}>{label}</dt>
-              <dd className={factDd}>{value}</dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2.5">
-          <h2 className="eyebrow uppercase">Built with</h2>
-          <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-            {project.mainStack.map((t) => (
-              <li key={t}>
-                <Badge
-                  variant="secondary"
-                  className="rounded-md border-foreground/25 bg-foreground/10 px-3 py-1 font-mono text-[.8125rem] text-foreground"
+              <div className="flex flex-wrap items-center gap-3 min-[1024px]:grid min-[1024px]:grid-cols-2 min-[1024px]:gap-2.5">
+                {project.live && (
+                  <Button asChild size="lg" className={cn(actionButton, 'min-[1024px]:col-span-2')}>
+                    <a href={project.live} target="_blank" rel="noreferrer">
+                      Live project <ArrowUpRight />
+                    </a>
+                  </Button>
+                )}
+                {project.github && (
+                  <Button asChild variant="outline" size="lg" className={actionButton}>
+                    <a href={project.github} target="_blank" rel="noreferrer">
+                      {project.teamRepo ? 'My fork' : 'Source code'} <Github />
+                    </a>
+                  </Button>
+                )}
+                {project.teamRepo && (
+                  <Button asChild variant="outline" size="lg" className={actionButton}>
+                    <a href={project.teamRepo} target="_blank" rel="noreferrer">
+                      Team repository <Github />
+                    </a>
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  className={cn(actionButton, copyFillsRow && 'min-[1024px]:col-span-2')}
+                  onClick={() => void copy(`${site.url}/work/${project.slug}`)}
                 >
-                  {t}
-                </Badge>
+                  {copyLabel}
+                  {copied ? <Check /> : <Link2 />}
+                </Button>
+                {relatedNotes.length > 0 && (
+                  <Button
+                    asChild
+                    size="lg"
+                    className={cn(actionButton, 'shadow-md min-[1024px]:col-span-2', tone.writeup)}
+                  >
+                    <Link to={writeupHref}>
+                      {relatedNotes.length === 1 ? 'Read the writeup' : 'Read the writeups'} <NotebookPen />
+                    </Link>
+                  </Button>
+                )}
+                <span className="sr-only" role="status">
+                  {copied ? 'Link copied to clipboard.' : ''}
+                </span>
+              </div>
+            </div>
+
+            <dl
+              className={`mt-8 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-8 gap-y-4 rounded-2xl border bg-card px-6 py-5 max-[620px]:mt-6 max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5 min-[621px]:max-[1099px]:grid-cols-2 ${raised}`}
+              aria-label="At a glance"
+            >
+              {glance.map(([label, value], index) => (
+                // The outcome leads: it spans the whole card and reads bigger than the facts under it.
+                <div key={label} className={cn('min-w-0', index === 0 && 'col-span-full')}>
+                  <dt className={factDt}>{label}</dt>
+                  <dd className={index === 0 ? 'mt-1 text-[1.25rem] leading-snug font-semibold' : factDd}>{value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2.5">
+              <h2 className="eyebrow uppercase">Built with</h2>
+              <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+                {project.mainStack.map((t) => (
+                  <li key={t}>
+                    <Badge variant="secondary" className="rounded-md px-3 py-1 font-mono text-[.8125rem]">
+                      {t}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </header>
+          {heroShot && (
+            // The same screenshot is in the gallery below with its description, so this copy is decoration.
+            <div className="mt-8 h-[clamp(220px,40vw,540px)]" aria-hidden="true" data-case-hero>
+              <WindowFrame label={heroShot.caption} className={`max-w-none rounded-xl border-b ${raisedShadow}`}>
+                <ResponsiveImage src={heroShot.src} alt="" sizes="(max-width: 1100px) 94vw, 1180px" priority />
+              </WindowFrame>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="section-wrap pt-[var(--space-block)] pb-[var(--space-block)]">
+        <div className="grid gap-6">{render('intro')}</div>
+        <section className={`mt-6 ${card}`} aria-labelledby="architecture-title">
+          <h2 id="architecture-title" className={h2Class}>
+            How a request flows
+          </h2>
+          <ol className="mt-[18px] grid list-none grid-cols-4 gap-7 p-0 max-[1100px]:grid-cols-2 max-[620px]:grid-cols-1 max-[620px]:gap-[22px]">
+            {project.architecture.map((node) => (
+              // An arrow after each step points to the next one: sideways in rows, turned downward on phones.
+              <li
+                key={node.label}
+                className={cn(
+                  'relative grid gap-1 rounded-lg border bg-card px-4 py-3.5',
+                  'after:absolute after:top-1/2 after:-right-[22px] after:-translate-y-1/2 after:font-mono after:text-lg after:text-primary',
+                  'not-last:after:content-["→"] max-[1100px]:nth-2:after:content-none',
+                  'max-[620px]:after:top-auto max-[620px]:after:right-auto max-[620px]:after:-bottom-6 max-[620px]:after:left-[18px] max-[620px]:after:translate-y-0 max-[620px]:after:rotate-90 max-[620px]:nth-2:not-last:after:content-["→"]',
+                )}
+              >
+                <b className="text-base font-semibold">{node.label}</b>
+                <span className="text-meta leading-[1.45] text-muted-foreground">{node.detail}</span>
               </li>
             ))}
-          </ul>
+          </ol>
+        </section>
+
+        {project.demo === 'rate-limiter' && <RateLimiterDemo />}
+
+        <ArticleLayout
+          className="mt-[18px] max-[620px]:mt-5"
+          rail={<TableOfContents items={sections.map(({ id, label }) => ({ id, label }))} />}
+        >
+          <div className={articleCards}>{render('article')}</div>
+        </ArticleLayout>
+      </div>
+
+      {/* The ending sits on the tinted band used across the site: the call to action, then the neighbouring projects. */}
+      <div className="section-band">
+        <div className="section-wrap grid gap-6 py-[var(--space-page)]">
+          <ClosingCta
+            heading={`Working on something like ${project.name}?`}
+            body="Tell me what you're building and I'll reply within two business days."
+          />
+
+          {/* Previous and next case studies; at either end of the list the slot links back to the work section. */}
+          <nav className="grid grid-cols-2 gap-4 max-[620px]:grid-cols-1" aria-label="More case studies">
+            {previous ? (
+              <Link className={pagerLink} to={`/work/${previous.slug}`}>
+                <span className={pagerLabel}>
+                  <ArrowLeft size={15} /> Previous
+                </span>
+                <b className="text-xl font-semibold">{previous.name}</b>
+              </Link>
+            ) : (
+              <Link className={pagerLink} to="/#work">
+                <span className={pagerLabel}>
+                  <ArrowLeft size={15} /> Back to work
+                </span>
+                <b className="text-xl font-semibold">All projects</b>
+              </Link>
+            )}
+            {next ? (
+              <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to={`/work/${next.slug}`}>
+                <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
+                  Next <ArrowRight size={15} />
+                </span>
+                <b className="text-xl font-semibold">{next.name}</b>
+              </Link>
+            ) : (
+              <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to="/#work">
+                <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
+                  Back to work <ArrowUpRight size={15} />
+                </span>
+                <b className="text-xl font-semibold">All projects</b>
+              </Link>
+            )}
+          </nav>
         </div>
-      </header>
-
-      {render('intro')}
-      <section className="mt-9 border-t pt-[22px] pb-1.5" aria-labelledby="architecture-title">
-        <h2 id="architecture-title" className={h2Class}>
-          How a request flows
-        </h2>
-        <ol className="mt-[18px] grid list-none grid-cols-4 gap-7 p-0 max-[1100px]:grid-cols-2 max-[620px]:grid-cols-1 max-[620px]:gap-[22px]">
-          {project.architecture.map((node) => (
-            // An arrow after each step points to the next one: sideways in rows, turned downward on phones.
-            <li
-              key={node.label}
-              className={cn(
-                'relative grid gap-1 rounded-lg border bg-card px-4 py-3.5',
-                'after:absolute after:top-1/2 after:-right-[22px] after:-translate-y-1/2 after:font-mono after:text-lg after:text-primary',
-                'not-last:after:content-["→"] max-[1100px]:nth-2:after:content-none',
-                'max-[620px]:after:top-auto max-[620px]:after:right-auto max-[620px]:after:-bottom-6 max-[620px]:after:left-[18px] max-[620px]:after:translate-y-0 max-[620px]:after:rotate-90 max-[620px]:nth-2:not-last:after:content-["→"]',
-              )}
-            >
-              <b className="text-base font-semibold">{node.label}</b>
-              <span className="text-meta leading-[1.45] text-muted-foreground">{node.detail}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {project.demo === 'rate-limiter' && <RateLimiterDemo />}
-
-      <ArticleLayout
-        className="mt-[18px] max-[620px]:mt-5"
-        rail={<TableOfContents items={sections.map(({ id, label }) => ({ id, label }))} />}
-      >
-        <div className="grid grid-cols-[minmax(0,1fr)] [&>section]:border-b [&>section]:py-[26px]">
-          {render('article')}
-        </div>
-      </ArticleLayout>
-
-      <ClosingCta
-        heading={`Working on something like ${project.name}?`}
-        body="Tell me what you're building and I'll reply within two business days."
-      />
-
-      {/* Previous and next case studies; at either end of the list the slot links back to the work section. */}
-      <nav className="mt-6 grid grid-cols-2 gap-4 max-[620px]:grid-cols-1" aria-label="More case studies">
-        {previous ? (
-          <Link className={pagerLink} to={`/work/${previous.slug}`}>
-            <span className={pagerLabel}>
-              <ArrowLeft size={15} /> Previous
-            </span>
-            <b className="text-xl font-semibold">{previous.name}</b>
-          </Link>
-        ) : (
-          <Link className={pagerLink} to="/#work">
-            <span className={pagerLabel}>
-              <ArrowLeft size={15} /> Back to work
-            </span>
-            <b className="text-xl font-semibold">All projects</b>
-          </Link>
-        )}
-        {next ? (
-          <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to={`/work/${next.slug}`}>
-            <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
-              Next <ArrowRight size={15} />
-            </span>
-            <b className="text-xl font-semibold">{next.name}</b>
-          </Link>
-        ) : (
-          <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to="/#work">
-            <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
-              Back to work <ArrowUpRight size={15} />
-            </span>
-            <b className="text-xl font-semibold">All projects</b>
-          </Link>
-        )}
-      </nav>
+      </div>
     </article>
   )
 }

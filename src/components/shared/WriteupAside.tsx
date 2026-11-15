@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import type { Project } from '@/data/projects'
+import { raised } from '@/lib/surfaces'
+import { cn } from '@/lib/utils'
 
 /**
  * The "From the project" card in the rail beside a writeup: which project it comes from, with a screenshot when
@@ -15,7 +17,7 @@ function WriteupAside({ project }: { project: Project }) {
   const shot = project.screenshots?.[0]
   return (
     <section aria-label="About this writeup" className="print:hidden">
-      <Card className="gap-0 overflow-hidden py-0">
+      <Card className={cn('gap-0 overflow-hidden rounded-2xl py-0', raised)}>
         <CardHeader className="gap-3 px-5 pt-5">
           <p className="eyebrow">FROM THE PROJECT</p>
           <div className="flex items-start gap-3.5">
@@ -42,7 +44,7 @@ function WriteupAside({ project }: { project: Project }) {
               </Badge>
             ))}
           </div>
-          <p className="border-l-[3px] border-primary bg-muted px-3 py-2 text-sm font-semibold">{project.highlight}</p>
+          <p className="rounded-lg bg-muted px-3 py-2.5 text-sm font-semibold">{project.highlight}</p>
         </CardContent>
         <Separator className="mt-5" />
         <CardFooter className="flex flex-wrap gap-2 px-5 py-3.5">

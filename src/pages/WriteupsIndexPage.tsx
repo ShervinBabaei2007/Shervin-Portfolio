@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { ArrowLeft, Search, SearchX, X } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router-dom'
 import NoteRow from '@/components/shared/NoteRow'
+import FilterBar from '@/components/shared/FilterBar'
 import PageIntro from '@/components/shared/PageIntro'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
@@ -9,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { formatMonth, notes, type Note, type NoteBlock } from '../data/notes'
 import { findProject } from '../data/projects'
 import { tone } from '@/lib/buttonTones'
+import { pill } from '@/lib/surfaces'
 import { cn } from '@/lib/utils'
 
 /** How many writeups show before "Show more". Newest first, so the latest are always on screen. */
@@ -39,6 +41,9 @@ const projectFilters = notes.reduce<{ slug: string; name: string; count: number 
   else list.push({ slug: note.project, name: projectName(note.project), count: 1 })
   return list
 }, [])
+
+/** Total reading time of every writeup, for the summary line at the top. */
+const totalMinutes = notes.reduce((sum, note) => sum + note.minutes, 0)
 
 /** Splits a newest-first list into month groups, keeping the order. */
 function byMonth(list: Note[]) {
@@ -92,130 +97,140 @@ function WriteupsIndexPage() {
   }
 
   return (
-    <section className="section-wrap page-y" aria-labelledby="writeups-index-title">
-      <Button asChild size="lg" className={cn('mb-[var(--space-block)] font-semibold shadow-md', tone.ink)}>
-        <Link to="/projects">
-          <ArrowLeft size={16} aria-hidden="true" /> Back to projects
-        </Link>
-      </Button>
-      <PageIntro
-        wide
-        eyebrow="WRITEUPS"
-        id="writeups-index-title"
-        title="Writeups on things I built"
-        lead="Each writeup starts from real code in one of my projects, explains what it actually does, and ends with what I would change."
-      />
-
-      <div className="mt-2 grid gap-4">
-        {/* A card-coloured field with a border and soft shadow, so it stands out from the page, with a search icon
-            and a clear button. The browser's own clear button is hidden so there is only one. */}
-        <div className="relative w-full max-w-[34rem]">
-          <Search
-            className="pointer-events-none absolute top-1/2 left-3.5 size-[18px] -translate-y-1/2 text-muted-foreground"
-            aria-hidden="true"
-          />
-          <Input
-            type="search"
-            aria-label="Search writeups"
-            placeholder="Search writeups"
-            autoComplete="off"
-            value={query}
-            onChange={(event) => search(event.target.value)}
-            className="h-12 rounded-xl border-foreground/20 bg-card pr-12 pl-11 shadow-sm hover:border-primary/60 focus-visible:border-primary md:text-base dark:bg-card [&::-webkit-search-cancel-button]:hidden"
-          />
-          {query && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Clear search"
-              className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground"
-              onClick={() => search('')}
-            >
-              <X />
-            </Button>
-          )}
-        </div>
-        <div role="group" aria-label="Filter writeups by project" className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            size="sm"
-            variant={project === null ? 'default' : 'outline'}
-            aria-pressed={project === null}
-            onClick={() => choose(null)}
-          >
-            All <span className="tabular-nums opacity-90">{notes.length}</span>
+    <section aria-labelledby="writeups-index-title">
+      {/* The header sits on the tinted band used across the site; the cards below sit on the page. */}
+      <div className="section-band">
+        <div className="section-wrap page-y">
+          <Button asChild size="lg" className={cn('mb-[var(--space-block)] font-semibold shadow-md', tone.ink)}>
+            <Link to="/projects">
+              <ArrowLeft size={16} aria-hidden="true" /> Back to projects
+            </Link>
           </Button>
-          {projectFilters.map((entry) => (
-            <Button
-              key={entry.slug}
-              type="button"
-              size="sm"
-              variant={project === entry.slug ? 'default' : 'outline'}
-              aria-pressed={project === entry.slug}
-              onClick={() => choose(entry.slug)}
-            >
-              {entry.name} <span className="tabular-nums opacity-90">{entry.count}</span>
-            </Button>
-          ))}
-        </div>
-        <p className="font-mono text-label text-muted-foreground" aria-live="polite" data-writeup-count>
-          {filtering
-            ? `${matches.length} of ${notes.length} writeups`
-            : `${notes.length} ${notes.length === 1 ? 'writeup' : 'writeups'}, newest month first, best first within each month`}
-        </p>
-      </div>
+          <PageIntro
+            wide
+            eyebrow="WRITEUPS"
+            id="writeups-index-title"
+            title="Writeups on things I built"
+            lead="Each writeup starts from real code in one of my projects, explains what it actually does, and ends with what I would change."
+          />
 
-      {matches.length > 0 ? (
-        <div className="mt-8 grid gap-12">
-          {byMonth(shown).map((group) => (
-            <section key={group.month} aria-labelledby={monthId(group.month)}>
-              <h2
-                id={monthId(group.month)}
-                className="mb-4 flex items-center gap-3 font-mono text-sm font-medium tracking-wide text-foreground uppercase"
-              >
-                {group.month}
-                <span className="rounded-full border bg-card px-2 py-0.5 text-label font-normal text-muted-foreground tabular-nums">
-                  {group.notes.length}
-                </span>
-                <span className="h-px flex-1 bg-border" aria-hidden="true" />
-              </h2>
-              <ul className="m-0 grid list-none gap-4 p-0">
-                {group.notes.map((note) => (
-                  <NoteRow key={note.slug} note={note} project={projectName(note.project)} />
-                ))}
-              </ul>
-            </section>
-          ))}
-          {matches.length > shown.length && (
-            <div>
-              <Button
-                type="button"
-                size="lg"
-                className={cn('font-semibold shadow-md', tone.writeup)}
-                onClick={() => setVisible((count) => count + PAGE_SIZE)}
-              >
-                Show more writeups ({matches.length - shown.length} left)
-              </Button>
+          <ul
+            className="m-0 mb-6 flex list-none flex-wrap gap-2.5 p-0 font-mono text-label"
+            aria-label="The writeups at a glance"
+          >
+            {[
+              `${notes.length} writeups`,
+              `${projectFilters.length} projects`,
+              `${totalMinutes} minutes of reading`,
+            ].map((text) => (
+              <li key={text} className={pill}>
+                {text}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-2 grid gap-4">
+            {/* A card-coloured field with a border and soft shadow, so it stands out from the page, with a search icon
+            and a clear button. The browser's own clear button is hidden so there is only one. */}
+            <div className="relative w-full max-w-[34rem]">
+              <Search
+                className="pointer-events-none absolute top-1/2 left-3.5 size-[18px] -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
+              <Input
+                type="search"
+                aria-label="Search writeups"
+                placeholder="Search writeups"
+                autoComplete="off"
+                value={query}
+                onChange={(event) => search(event.target.value)}
+                className="h-12 rounded-xl border-foreground/20 bg-card pr-12 pl-11 shadow-sm hover:border-primary/60 focus-visible:border-primary md:text-base dark:bg-card [&::-webkit-search-cancel-button]:hidden"
+              />
+              {query && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label="Clear search"
+                  className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground"
+                  onClick={() => search('')}
+                >
+                  <X />
+                </Button>
+              )}
             </div>
-          )}
+            <FilterBar
+              label="Filter writeups by project"
+              value={project ?? 'all'}
+              onChange={(value) => choose(value === 'all' ? null : value)}
+              options={[
+                { value: 'all', label: 'All', count: notes.length },
+                ...projectFilters.map((entry) => ({ value: entry.slug, label: entry.name, count: entry.count })),
+              ]}
+              className="w-fit max-w-full"
+            />
+            <p className="font-mono text-label text-muted-foreground" aria-live="polite" data-writeup-count>
+              {filtering
+                ? `${matches.length} of ${notes.length} writeups`
+                : `${notes.length} ${notes.length === 1 ? 'writeup' : 'writeups'}, newest month first, best first within each month`}
+            </p>
+          </div>
         </div>
-      ) : (
-        <Empty className="mt-8 border">
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <SearchX />
-            </EmptyMedia>
-            <EmptyTitle>No writeups match</EmptyTitle>
-            <EmptyDescription>Try a different word, or clear the filters to see everything.</EmptyDescription>
-          </EmptyHeader>
-          <EmptyContent>
-            <Button type="button" variant="outline" onClick={clear}>
-              Clear filters
-            </Button>
-          </EmptyContent>
-        </Empty>
-      )}
+      </div>
+      <div className="section-wrap pt-[var(--space-block)] pb-[var(--space-page)]">
+        {matches.length > 0 ? (
+          <div
+            key={project ?? 'all'}
+            className="mt-8 grid gap-12 motion-safe:animate-in motion-safe:duration-500 motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-3"
+          >
+            {byMonth(shown).map((group) => (
+              <section key={group.month} aria-labelledby={monthId(group.month)}>
+                <h2
+                  id={monthId(group.month)}
+                  className="mb-4 flex items-center gap-3 font-mono text-sm font-medium tracking-wide text-foreground uppercase"
+                >
+                  {group.month}
+                  <span className="rounded-full border bg-card px-2 py-0.5 text-label font-normal text-muted-foreground tabular-nums">
+                    {group.notes.length}
+                  </span>
+                  <span className="h-px flex-1 bg-border" aria-hidden="true" />
+                </h2>
+                <ul className="m-0 grid list-none gap-4 p-0">
+                  {group.notes.map((note) => (
+                    <NoteRow key={note.slug} note={note} project={projectName(note.project)} />
+                  ))}
+                </ul>
+              </section>
+            ))}
+            {matches.length > shown.length && (
+              <div>
+                <Button
+                  type="button"
+                  size="lg"
+                  className={cn('font-semibold shadow-md', tone.writeup)}
+                  onClick={() => setVisible((count) => count + PAGE_SIZE)}
+                >
+                  Show more writeups ({matches.length - shown.length} left)
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Empty className="mt-8 border">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <SearchX />
+              </EmptyMedia>
+              <EmptyTitle>No writeups match</EmptyTitle>
+              <EmptyDescription>Try a different word, or clear the filters to see everything.</EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button type="button" variant="outline" onClick={clear}>
+                Clear filters
+              </Button>
+            </EmptyContent>
+          </Empty>
+        )}
+      </div>
     </section>
   )
 }
