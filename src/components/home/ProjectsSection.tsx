@@ -28,7 +28,7 @@ function ProjectsSection({ activeSkill, onClearSkill }: ProjectsSectionProps) {
     <section className="section-wrap section-y" id="work" aria-labelledby="work-title">
       <SectionHeading
         id="work-title"
-        number="02"
+        number="01"
         eyebrow="SELECTED WORK"
         title="Built, broken, understood"
         aside={

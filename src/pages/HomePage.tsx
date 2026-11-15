@@ -52,9 +52,9 @@ function HomePage() {
       <Hero />
       <AtAGlance />
       <ProjectsSection activeSkill={activeSkill} onClearSkill={() => setActiveSkill(null)} />
+      <FaqSection />
       <AboutSection />
       <SkillsSection activeSkill={activeSkill} onSkillSelect={selectSkill} />
-      <FaqSection />
       <ContactSection />
     </>
   )
