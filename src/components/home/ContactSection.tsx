@@ -1,5 +1,4 @@
-import { ArrowUpRight, FileText, Github, Linkedin } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { ArrowUpRight, Download, Github, Linkedin } from 'lucide-react'
 import ContactForm from '@/components/home/ContactForm'
 import VancouverGlobe from '@/components/home/VancouverGlobe'
 import CopyEmailButton from '@/components/shared/CopyEmailButton'
@@ -20,11 +19,11 @@ const links = [
 function ContactSection() {
   return (
     <section className="border-t section-y" id="contact" aria-labelledby="contact-title">
-      <div className="section-wrap grid items-stretch gap-16 lg:grid-cols-2 lg:gap-24">
+      <div className="section-wrap grid items-stretch gap-10 lg:grid-cols-2 lg:gap-24">
         <div className="flex flex-col">
           <SectionHeading
             id="contact-title"
-            number="06"
+            number="05"
             eyebrow="NEXT STEP"
             title={
               <>
@@ -66,13 +65,13 @@ function ContactSection() {
             ))}
             <li>
               <Button asChild variant="outline" className="h-12 w-full justify-between px-4">
-                <Link to="/resume">
+                <a href="/Shervin-Babaei-Resume.pdf" download="Shervin-Babaei-Resume.pdf">
                   <span className="inline-flex items-center gap-3">
-                    <FileText /> Resume
-                    <span className="font-normal text-muted-foreground">View resume</span>
+                    <Download /> Resume
+                    <span className="font-normal text-muted-foreground">Download PDF</span>
                   </span>
                   <ArrowUpRight />
-                </Link>
+                </a>
               </Button>
             </li>
           </ul>

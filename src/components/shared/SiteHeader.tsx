@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef, useState } from 'react'
-import { ChevronDown, Github, Linkedin, Mail, Menu } from 'lucide-react'
+import { ChevronDown, Download, Github, Linkedin, Mail, Menu } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import CommandPalette from '@/components/shared/CommandPalette'
@@ -46,6 +46,7 @@ const sectionOwner: Record<string, string> = {
   work: 'work',
   about: 'about',
   skills: 'about',
+  faq: 'about',
   contact: 'contact',
 }
 
@@ -126,6 +127,11 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
             moreButton
           )}
         </div>
+        <Button asChild size="sm" className="ml-1 font-semibold max-[959px]:hidden">
+          <a href="/Shervin-Babaei-Resume.pdf" download="Shervin-Babaei-Resume.pdf" aria-label="Download resume (PDF)">
+            Resume <Download aria-hidden="true" />
+          </a>
+        </Button>
         <Button
           ref={menuButton}
           variant="ghost"

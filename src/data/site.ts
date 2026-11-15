@@ -30,7 +30,7 @@ export const site = {
   availability: {
     from: '' as string,
     term: '' as string,
-    roles: 'co-op, internship and software roles',
+    roles: 'junior full-stack, co-op and internship roles',
     area: 'Vancouver, on-site or hybrid',
   },
 }
