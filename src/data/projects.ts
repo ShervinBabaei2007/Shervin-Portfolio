@@ -65,7 +65,10 @@ export type Project = {
   next: string
   /** Request path through the system, left to right. */
   architecture: { label: string; detail: string }[]
+  /** Every tool the project uses. Feeds the Tools section counts and the page keywords, and is not shown on the page. */
   stack: string[]
+  /** The 4 to 6 most important tools, the only ones shown as badges. Each must also be in `stack`. */
+  mainStack: string[]
   github?: string
   teamRepo?: string
   live?: string
@@ -183,6 +186,7 @@ export const projects: Project[] = [
       'GitHub Actions',
       'Vercel',
     ],
+    mainStack: ['Python', 'FastAPI', 'React', 'TypeScript', 'PostgreSQL', 'Docker'],
     github: 'https://github.com/ShervinBabaei2007/SignalDesk',
     live: 'https://signaldesk-lemon.vercel.app',
     screenshots: [
@@ -337,6 +341,7 @@ export const projects: Project[] = [
       'GitHub Actions',
       'Claude Code',
     ],
+    mainStack: ['Next.js', 'React', 'TypeScript', 'Supabase', 'PostgreSQL', 'Playwright'],
     github: 'https://github.com/ShervinBabaei2007/Network-Growth-Assistance',
     live: 'https://linkedin-network-growth-assistance.vercel.app',
     screenshots: [
@@ -486,6 +491,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
       { label: 'MongoDB Atlas', detail: 'Mongoose models, keepalive ping' },
     ],
     stack: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'JWT', 'Git', 'Vercel'],
+    mainStack: ['React', 'TypeScript', 'Node.js', 'Express', 'MongoDB', 'JWT'],
     github: 'https://github.com/ShervinBabaei2007/SkillMatch',
     teamRepo: 'https://github.com/ClaisaZ/IDSP-MarketPlace-FSWD',
     live: 'https://skillmatch-web.vercel.app/',
@@ -598,6 +604,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
       { label: 'OpenAI + Redis', detail: 'Generation, cached messages' },
     ],
     stack: ['React', 'TypeScript', 'Auth0', 'GitHub OAuth', 'Git', 'Figma'],
+    mainStack: ['React', 'TypeScript', 'Auth0', 'GitHub OAuth', 'Figma'],
     github: 'https://github.com/adriencyr/GitScribe',
     live: 'https://git-scribe-aybm.vercel.app/',
     screenshots: [
@@ -704,6 +711,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
       { label: 'MongoDB', detail: 'Mongoose schema, timestamps' },
     ],
     stack: ['React', 'JavaScript', 'Node.js', 'Express', 'MongoDB', 'Redis'],
+    mainStack: ['React', 'Node.js', 'Express', 'MongoDB', 'Redis'],
     github: 'https://github.com/ShervinBabaei2007/MERN-thinkBoard',
     live: 'https://mern-thinkboard-plum.vercel.app/',
     demo: 'rate-limiter',
@@ -839,6 +847,7 @@ const ratelimiter = async (req, res, next) => {
         'A drawing of the bot in a Discord channel: an answer to a question, then an error message when LM Studio is off.',
     },
     stack: ['Python', 'discord.py', 'LM Studio', 'REST API', 'asyncio'],
+    mainStack: ['Python', 'discord.py', 'asyncio', 'LM Studio', 'REST API'],
     github: 'https://github.com/ShervinBabaei2007/Discord-ai-bridge',
     snippet: {
       file: 'discord_ai_bridge/main.py',
@@ -935,6 +944,7 @@ except requests.exceptions.HTTPError as e:
       caption: 'A drawing of a fight in the terminal: health bars, an enraged boss, a pity reward and the menu.',
     },
     stack: ['Python', 'Object-oriented design', 'pytest', 'JSON'],
+    mainStack: ['Python', 'Object-oriented design', 'pytest', 'JSON'],
     snippet: {
       file: 'main.py',
       href: 'https://github.com/ShervinBabaei2007/Mini-RPG-Battle/blob/main/main.py',
@@ -1065,6 +1075,7 @@ $ cat playerSave.json
       caption: 'A drawing of the tracker in the terminal: a list of applications and the menu.',
     },
     stack: ['Python', 'SQL', 'SQLite', 'CLI design', 'CRUD'],
+    mainStack: ['Python', 'SQL', 'SQLite', 'CLI design'],
     snippet: {
       file: 'main.py',
       href: 'https://github.com/ShervinBabaei2007/Job-Application-Tracker/blob/main/main.py',
@@ -1183,6 +1194,7 @@ Status (Applied, Interview, Rejected, Offer, Accepted): Interview
       { label: 'localStorage', detail: 'Restore on load' },
     ],
     stack: ['HTML5', 'CSS3', 'JavaScript', 'localStorage'],
+    mainStack: ['HTML5', 'CSS3', 'JavaScript', 'localStorage'],
     snippet: {
       file: 'static/spa.js',
       href: 'https://github.com/ShervinBabaei2007/Jinterest/blob/main/static/spa.js',
@@ -1296,6 +1308,7 @@ function redo() {
       { label: 'OpenWeatherMap', detail: 'Key stays server-side' },
     ],
     stack: ['Node.js', 'Express', 'WebSockets', 'OpenWeatherMap API', 'bcrypt', 'JavaScript'],
+    mainStack: ['Node.js', 'Express', 'WebSockets', 'JavaScript', 'OpenWeatherMap API'],
     snippet: {
       file: 'server.js',
       href: 'https://github.com/ShervinBabaei2007/Jicnic/blob/main/server.js',
@@ -1382,6 +1395,7 @@ wss.on("connection", (ws) => {
       { label: 'MongoDB', detail: 'Links and users' },
     ],
     stack: ['Node.js', 'Express', 'MongoDB', 'JavaScript', 'Google OAuth', 'Git', 'Azure', 'Nginx'],
+    mainStack: ['Node.js', 'Express', 'MongoDB', 'Google OAuth', 'Azure', 'Nginx'],
     snippet: {
       file: 'src/app.js',
       href: 'https://github.com/ShervinBabaei2007/Web-adminProject/blob/main/src/app.js',
@@ -1499,6 +1513,7 @@ app.post("/api/links", requireAuth, async (req, res) => {
       caption: 'A drawing of a game in progress, where the AI picks the best move.',
     },
     stack: ['Python', 'Minimax', 'Recursion'],
+    mainStack: ['Python', 'Minimax', 'Recursion'],
     snippet: {
       file: 'player.py',
       href: 'https://github.com/ShervinBabaei2007/tic-tac-toe-minimax-ai/blob/main/player.py',
@@ -1624,6 +1639,7 @@ app.post("/api/links", requireAuth, async (req, res) => {
       caption: 'A drawing of the steps from PDF to answer.',
     },
     stack: ['Python', 'Ollama', 'LangChain', 'ChromaDB'],
+    mainStack: ['Python', 'Ollama', 'LangChain', 'ChromaDB'],
     github: 'https://github.com/ShervinBabaei2007/Ollama',
     snippet: {
       file: 'pdf-rag.py',

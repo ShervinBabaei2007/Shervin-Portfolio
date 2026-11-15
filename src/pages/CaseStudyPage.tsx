@@ -299,7 +299,7 @@ function CaseStudyPage() {
         <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2.5">
           <h2 className="eyebrow uppercase">Built with</h2>
           <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-            {project.stack.map((t) => (
+            {project.mainStack.map((t) => (
               <li key={t}>
                 <Badge
                   variant="secondary"

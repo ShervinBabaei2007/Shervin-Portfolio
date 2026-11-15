@@ -22,7 +22,7 @@ function CaseStudySheet({ project, open, onOpenChange }: Props) {
         <ScrollArea className="min-h-0 flex-1 px-4">
           <div className="space-y-6 pb-8">
             <div className="flex flex-wrap gap-1.5">
-              {project.stack.map((item) => (
+              {project.mainStack.map((item) => (
                 <Badge key={item} variant="secondary">
                   {item}
                 </Badge>

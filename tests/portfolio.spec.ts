@@ -1535,6 +1535,14 @@ test('the writeups index heading and intro use the full width of the page', asyn
   expect(title.height).toBeLessThan(90)
 })
 
+test('each project shows only its few main tools, all of which are in the full stack', () => {
+  for (const project of projects) {
+    expect(project.mainStack.length, project.slug).toBeLessThanOrEqual(6)
+    expect(project.mainStack.length, project.slug).toBeGreaterThanOrEqual(Math.min(4, project.stack.length))
+    for (const item of project.mainStack) expect(project.stack, `${project.slug}: ${item}`).toContain(item)
+  }
+})
+
 test('a tile that covers several tools, like JWT & OAuth, filters to every project that uses any of them', async ({
   page,
 }) => {

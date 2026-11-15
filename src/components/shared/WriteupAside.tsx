@@ -36,7 +36,7 @@ function WriteupAside({ project }: { project: Project }) {
         <CardContent className="flex flex-col gap-3 px-5 pt-3">
           <div className="flex flex-wrap gap-1.5">
             <Badge>{project.category}</Badge>
-            {project.stack.slice(0, 3).map((item) => (
+            {project.mainStack.slice(0, 3).map((item) => (
               <Badge key={item} variant="secondary">
                 {item}
               </Badge>

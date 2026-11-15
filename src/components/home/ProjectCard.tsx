@@ -97,7 +97,7 @@ function CardMedia({ project }: { project: Project }) {
   return (
     <div className={cn(visualClass, 'content-center')} aria-hidden="true" data-card-media>
       <div className="flex max-w-full flex-wrap justify-center gap-2 font-mono text-sm text-muted-foreground">
-        {project.stack.slice(0, 6).map((item) => (
+        {project.mainStack.map((item) => (
           <span key={item} className="rounded-md border bg-card px-2.5 py-1 shadow-sm">
             {item}
           </span>
@@ -226,7 +226,7 @@ function ProjectCard({ project, revealDelay = 0 }: { project: Project; revealDel
                 ))}
               </ol>
               <ul className="m-0 mt-3 flex list-none flex-wrap gap-1.5 p-0" aria-label="Stack">
-                {project.stack.map((item) => (
+                {project.mainStack.map((item) => (
                   <li key={item}>
                     <Badge variant="secondary">{item}</Badge>
                   </li>
