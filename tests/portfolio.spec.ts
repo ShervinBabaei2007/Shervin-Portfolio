@@ -25,13 +25,24 @@ const hydrated = (page: Page) =>
     Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')),
   )
 
-test('hero states the role, links to the resume, and shows no stats or email', async ({ page }) => {
+test('hero states the role and offers two ways to act: the work, and the resume PDF on small screens', async ({
+  page,
+}) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Full-stack developer')
+  await expect(page.locator('#home')).toContainText('Open to junior, co-op and internship roles')
   await expect(page.locator('#home').getByRole('link', { name: 'See my projects' })).toHaveAttribute('href', '/#work')
+  await expect(page.locator('#home')).not.toContainText('shervinb22')
+  // One Resume button at a time: the header's on wide screens, the hero's below 960px.
+  const heroResume = page.locator('#home').getByRole('link', { name: 'Download resume (PDF)' })
+  await page.setViewportSize({ width: 800, height: 900 })
+  await expect(heroResume).toHaveAttribute('href', '/Shervin-Babaei-Resume.pdf')
+  await expect(page.getByRole('banner').getByRole('link', { name: 'Download resume (PDF)' })).toBeHidden()
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await expect(heroResume).toBeHidden()
+  await expect(page.getByRole('banner').getByRole('link', { name: 'Download resume (PDF)' })).toBeVisible()
   await expect(page.locator('#home').getByRole('link', { name: 'View resume' })).toHaveCount(0)
   await expect(page.getByRole('list', { name: 'Highlights' })).toHaveCount(0)
-  await expect(page.locator('#home')).not.toContainText('shervinb22')
   await expect(page.locator('#home').getByRole('link', { name: /Top 6 of 36 teams/ })).toHaveAttribute(
     'href',
     '/work/gitscribe',
@@ -707,8 +718,8 @@ test.describe('tools cards', () => {
 
 test('every featured project card has the same size of picture area, on desktop and on a phone', async ({ page }) => {
   for (const [width, expected] of [
-    [1440, 208],
-    [390, 190],
+    [1440, 184],
+    [390, 170],
   ] as const) {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
@@ -1553,4 +1564,148 @@ test('a tile that covers several tools, like JWT & OAuth, filters to every proje
     project.stack.some((item) => ['JWT', 'OAuth', 'Auth0', 'GitHub OAuth', 'Google OAuth'].includes(item)),
   )
   await expect(page.locator('#work [data-project-card]')).toHaveCount(expected.length)
+})
+
+test('the resume PDF is one click away on wide screens: in the header and in the contact section', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/')
+  const header = page.getByRole('banner')
+  await expect(header.getByRole('link', { name: 'Download resume (PDF)' })).toHaveAttribute(
+    'href',
+    '/Shervin-Babaei-Resume.pdf',
+  )
+  await expect(page.locator('#contact').getByRole('link', { name: /Resume/ })).toHaveAttribute(
+    'href',
+    '/Shervin-Babaei-Resume.pdf',
+  )
+  const response = await page.request.get('/Shervin-Babaei-Resume.pdf')
+  expect(response.ok()).toBe(true)
+  expect(response.headers()['content-type']).toContain('pdf')
+})
+
+test('the home sections run work, quick answers, about, tools, contact', async ({ page }) => {
+  await page.goto('/')
+  const ids = await page.locator('section[id]').evaluateAll((els) => els.map((el) => el.id))
+  expect(ids).toEqual(['home', 'work', 'faq', 'about', 'skills', 'contact'])
+})
+
+test('About is four cards whose full text stays in the page and opens on Read more', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const cards = page.locator('#about [data-about-card]')
+  await expect(cards).toHaveCount(4)
+  const first = cards.first()
+  const toggle = first.getByRole('button', { name: /Read more/ })
+  const more = first.locator('[data-slot="collapsible-content"]')
+  // Collapsed, the rest of the text is hidden from view but still in the HTML (so it is prerendered and searchable).
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(more).toBeHidden()
+  await expect(first).toContainText('That took me from full-stack web')
+  await toggle.click()
+  await expect(more).toBeVisible()
+  await expect(first.getByRole('button', { name: /Show less/ })).toHaveAttribute('aria-expanded', 'true')
+  const box = (await first.getByRole('button', { name: /Show less/ }).boundingBox())!
+  expect(box.height).toBeGreaterThanOrEqual(44)
+})
+
+test('every Quick answer opens with a bold line to skim', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const triggers = page.locator('#faq [data-slot="accordion-trigger"]')
+  const count = await triggers.count()
+  expect(count).toBe(8)
+  for (let i = 0; i < count; i++) {
+    await triggers.nth(i).click()
+    const content = page.locator('#faq [data-slot="accordion-content"][data-state="open"]')
+    await expect(content.locator('b').first()).toBeVisible()
+  }
+})
+
+test('reading Quick answers keeps About marked as the current section in the header', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const nav = page.getByRole('navigation', { name: 'Main navigation' })
+  await page.evaluate(() => document.getElementById('contact')?.scrollIntoView())
+  await expect(nav.getByRole('link', { name: 'Contact' })).toHaveAttribute('aria-current', 'location')
+  await page.evaluate(() => document.getElementById('faq')?.scrollIntoView())
+  await expect(nav.getByRole('link', { name: 'About' })).toHaveAttribute('aria-current', 'location')
+})
+
+test('on a phone every project card on the projects page fits inside the screen', async ({ page }) => {
+  for (const width of [360, 390]) {
+    await page.setViewportSize({ width, height: 844 })
+    await page.goto('/projects')
+    await page.waitForLoadState('networkidle')
+    const rights = await page
+      .locator('[data-project-card]')
+      .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().right)))
+    expect(rights.length).toBeGreaterThan(0)
+    for (const right of rights) expect(right, `${width}px`).toBeLessThanOrEqual(width)
+  }
+})
+
+test('on a phone each Tools card is only as tall as its tiles, with no empty space inside it', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const gaps = await page.locator('#skills [data-skill-group]').evaluateAll((cards) =>
+    cards.map((card) => {
+      const tiles = [...card.querySelectorAll('button[aria-pressed]')]
+      const lastBottom = Math.max(...tiles.map((tile) => tile.getBoundingClientRect().bottom))
+      return Math.round(card.getBoundingClientRect().bottom - lastBottom)
+    }),
+  )
+  // The card's own bottom padding is about 24px; anything much larger is empty space.
+  for (const gap of gaps) expect(gap).toBeLessThan(48)
+})
+
+test('Tools tiles are readable and touch-sized on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const sizes = await page.locator('#skills button[aria-pressed]').evaluateAll((tiles) =>
+    tiles.map((tile) => ({
+      height: Math.round(tile.getBoundingClientRect().height),
+      font: parseFloat(getComputedStyle(tile.querySelector('span:not([aria-hidden])') ?? tile).fontSize),
+    })),
+  )
+  for (const { height, font } of sizes) {
+    expect(height).toBeGreaterThanOrEqual(44)
+    expect(font).toBeGreaterThanOrEqual(14)
+  }
+})
+
+test('the Vancouver time tag stays off phones, where it would cover the text', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 3))
+  await page.waitForTimeout(500)
+  await expect(page.locator('p:has(time)')).toBeHidden()
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 3))
+  await expect(page.locator('p:has(time)')).toBeVisible()
+})
+
+test('on a phone the Tools carousel is as tall as the card on screen, and wide screens set no height', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const viewport = page.locator('#skills [data-slot="carousel-content"]')
+  const cards = page.locator('#skills [data-skill-group]')
+  const height = (locator: typeof viewport) => locator.evaluate((el) => Math.round(el.getBoundingClientRect().height))
+  await expect
+    .poll(async () => Math.abs((await height(viewport)) - (await height(cards.nth(0)))))
+    .toBeLessThanOrEqual(4)
+  // Moving to the next group (the arrow keys work inside the carousel) fits the next, taller card.
+  await cards.nth(0).getByRole('button').first().focus()
+  await page.keyboard.press('ArrowRight')
+  await expect
+    .poll(async () => Math.abs((await height(viewport)) - (await height(cards.nth(1)))))
+    .toBeLessThanOrEqual(4)
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await expect.poll(() => viewport.evaluate((el) => (el as HTMLElement).style.height)).toBe('')
 })
