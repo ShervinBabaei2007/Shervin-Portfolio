@@ -44,8 +44,10 @@ const faqs: Faq[] = [
         I am a full-stack developer, so I can take either side of a feature. On {link('/work/skillmatch', 'SkillMatch')}
         , a team of {skillmatch.teamSize}, I led backend and DevOps: {skillmatch.myMergedPrs} of the team’s{' '}
         {skillmatch.teamMergedPrs} merged pull requests and {skillmatch.myCommits} of its {skillmatch.teamCommits}{' '}
-        commits were mine. On {link('/work/gitscribe', 'GitScribe')} I led the front end. I am most useful where the two
-        meet: connecting a screen to the API and database behind it.
+        commits were mine. On {link('/work/gitscribe', 'GitScribe')} I led the front end. On{' '}
+        {link('/work/network-growth-assistant', 'Network Growth Assistant')} I worked alone from design to deployment,
+        including an English and Canadian French version of every signed-in page. I am most useful where the two meet:
+        connecting a screen to the API and database behind it.
       </>
     ),
   },
@@ -68,8 +70,9 @@ const faqs: Faq[] = [
         I write automated tests, so a change that breaks something gets caught straight away.{' '}
         {link('/work/network-growth-assistant', 'Network Growth Assistant')}, my biggest solo project, has{' '}
         {facts.tests.unit.toLocaleString('en-CA')} unit tests and {facts.tests.database} database tests, plus a browser
-        test suite that also scans for accessibility problems. All of it runs in CI on GitHub Actions. My Python
-        projects use pytest.
+        test suite that also scans for accessibility problems. I run all of it locally before every merge, and the
+        repository has no hosted CI. {link('/work/signaldesk', 'SignalDesk')} runs its tests in CI on GitHub Actions,
+        and my Python projects use pytest.
       </>
     ),
   },

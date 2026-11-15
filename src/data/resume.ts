@@ -83,7 +83,7 @@ export const resume = {
       role: 'Solo Developer & Architect',
       bullets: [
         'Built a full-stack outreach and job-application tracker featuring verified contact discovery, live link health checks, and detailed networking metrics.',
-        'Enforced tenant data isolation via PostgreSQL RLS and maintained production reliability with 1,500+ automated unit and E2E tests in GitHub Actions.',
+        'Enforced tenant data isolation via PostgreSQL RLS and maintained production reliability with 1,500+ automated unit and E2E tests.',
         'Integrated automated background job processing for contact verification and rate-limited API retries using exponential backoff retry routines.',
       ],
     },

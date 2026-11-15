@@ -255,14 +255,14 @@ export const projects: Project[] = [
     summary:
       'A Next.js and Supabase app for growing a professional network and running a job search: a daily outreach queue, a research assistant that quotes its sources, verified job postings, and an applications board.',
     role: 'Solo project, design to deployment',
-    team: 'Built on my own. All 256 commits in the repository are mine.',
-    highlight: '1,523 unit tests, 305 database tests, 256 commits',
-    result: 'Built solo over 256 commits, with automated tests that run on every change',
+    team: 'Built on my own. All 263 commits in the repository are mine.',
+    highlight: '1,564 unit tests, 305 database tests, 263 commits',
+    result: 'Built solo over 263 commits, backed by unit, database and browser tests',
     signal: {
       ownership:
         'The whole product: Next.js app, Supabase schema and row-level security, job crawler, and test suites.',
       decision: 'Return fewer people rather than lower the evidence bar, and count only accepted invitations.',
-      evidence: 'A live app, a public repository with CI, and the safe-fetch source shown below.',
+      evidence: 'A live app, a public repository, and the safe-fetch source shown below.',
     },
     overview: [
       'Network Growth Assistant is a website that helps you meet more people in your field and run your job search, all in one place. It remembers who you want to contact, which messages are still waiting to be sent, and which jobs you have applied for.',
@@ -309,7 +309,8 @@ export const projects: Project[] = [
       'Wrote safe-fetch, the only path for fetching outside URLs: it refuses private and reserved addresses, pins the connection to the addresses it just checked, and follows redirects by hand.',
       'Built Discover, a research assistant over public sources that verifies each fact against the source page and drops any quote it cannot find, with scores computed by visible rules rather than a model.',
       'Built the Jobs search over employers’ own boards, where a posting gets an Apply button only after its link is verified.',
-      'Wrote 1,523 unit tests and 305 pgTAP tests (checks that run inside the database itself), and ran axe-core accessibility scans in the Playwright end-to-end suite, with CI on GitHub Actions.',
+      'Wrote 1,564 unit tests and 305 pgTAP tests (checks that run inside the database itself), and ran axe-core accessibility scans in the Playwright end-to-end suite. I run all of them locally before merging; the repository has no hosted CI.',
+      'Translated every signed-in page into Canadian French, with a build check that fails if the French message file does not have exactly the English keys.',
     ],
     outcome:
       'A deployed app on Vercel and Supabase that never scrapes LinkedIn, never sends anything for you, and shows progress that cannot be inflated by pending invitations.',
@@ -338,7 +339,6 @@ export const projects: Project[] = [
       'Playwright',
       'axe-core',
       'Git',
-      'GitHub Actions',
       'Claude Code',
     ],
     mainStack: ['Next.js', 'React', 'TypeScript', 'Supabase', 'PostgreSQL', 'Playwright'],
