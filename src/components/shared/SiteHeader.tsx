@@ -91,7 +91,7 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
   )
 
   return (
-    <header className="sticky top-0 z-20 grid min-h-[var(--header-height)] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center justify-between border-b bg-background px-[max(var(--gutter),calc((100%-var(--content-max))/2))] py-2 max-[620px]:flex max-[620px]:flex-wrap max-[620px]:gap-y-1 print:hidden">
+    <header className="site-header sticky top-0 z-20 grid min-h-[var(--header-height)] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center justify-between border-b border-nav-border px-[max(var(--gutter),calc((100%-var(--content-max))/2))] py-2 max-[620px]:flex max-[620px]:flex-wrap max-[620px]:gap-y-1 print:hidden">
       <Link
         className="col-start-1 inline-flex min-h-11 min-w-11 items-center justify-self-start"
         to="/"
@@ -106,7 +106,7 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
         {navLinks.map((link) => (
           <Link
             key={link.to}
-            className="relative inline-flex min-h-[var(--target)] items-center text-muted-foreground no-underline transition-colors after:absolute after:inset-x-0 after:bottom-1.5 after:h-0.5 after:rounded-full after:bg-primary after:opacity-0 after:transition-opacity hover:text-primary focus-visible:text-foreground active:text-foreground aria-[current]:text-foreground aria-[current]:after:opacity-100"
+            className="relative inline-flex min-h-[var(--target)] items-center text-nav-text no-underline transition-colors after:absolute after:inset-x-0 after:bottom-1.5 after:h-0.5 after:rounded-full after:bg-nav-active after:opacity-0 after:transition-opacity hover:text-nav-text-hover focus-visible:text-nav-text-hover active:text-nav-text-hover aria-[current]:text-nav-active aria-[current]:after:opacity-100"
             to={link.to}
             aria-current={currentFor(link)}
           >

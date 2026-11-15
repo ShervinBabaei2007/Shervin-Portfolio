@@ -1,0 +1,183 @@
+/* Cream & Cobalt: the colour tokens. This file is the single source of truth for colour.
+   Light values are the defaults (they land on :root); the dark theme overrides the same names under
+   [data-theme='dark']. Components use these names (or the shadcn aliases at the bottom), never raw colours.
+
+   A cream canvas and warm text carry the mood; one calm cobalt carries the action. Every pair is checked against
+   WCAG 2.2 AA (4.5:1 text, 3:1 UI):
+   - Light accent #2B4ACB is 6.7:1 on the page and 6.1:1 on the alt surface; white on the same fill is 7.1:1.
+   - Dark accent #8CA3FF is 7.3:1 on the page, and the dark button label is the page colour (dark on periwinkle,
+     7.3:1). White on that fill would fail, so --color-primary-text flips in the dark theme.
+   - Field outlines (--color-input) clear 3:1 on the page and on a card; --color-border is decorative only.
+   - Success and warning are text-safe in both themes.
+   - --color-highlight is the warm gold of the hand-drawn underline. It is decoration only, never text. */
+
+@theme static {
+  /* Canvas, surfaces, structure */
+  --color-canvas: #fbf8f1;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f2ede0;
+  --color-border: #e6dfd0;
+  --color-grid: #f6f2e8;
+  --color-input: #857d70;
+  --color-overlay: rgb(30 26 21 / 0.5);
+  --color-shadow: rgb(30 26 21 / 0.2);
+
+  /* Typography */
+  --color-text-primary: #1e1a15;
+  --color-text-secondary: #1e1a15;
+  --color-text-body: #473f36;
+  --color-text-muted: #5f574c;
+  --color-text-link: #2340b0;
+  --color-selection-background: #dce3fb;
+  --color-selection-text: #1a2e86;
+  --color-highlight: #e0a63a;
+
+  /* Navigation */
+  --color-nav-background: rgb(251 248 241 / 0.85);
+  --color-nav-border: #e6dfd0;
+  --color-nav-text: #5f574c;
+  --color-nav-text-hover: #1e1a15;
+  --color-nav-active: #2b4acb;
+
+  /* Interactive */
+  --color-primary: #2b4acb;
+  --color-primary-text: #ffffff;
+  --color-primary-fill: #2b4acb;
+  --color-primary-fill-hover: #2340b0;
+  --color-primary-fill-active: #1a2e86;
+  --color-secondary-background: #ffffff;
+  --color-secondary-border: #e6dfd0;
+  --color-focus-ring: #2b4acb;
+  --color-disabled-background: #e6dfd0;
+  --color-disabled-text: #7a7268;
+  --color-writeup: #0f766e; /* writeups button, same in both themes: 5.5:1 under white text */
+  --color-writeup-text: #ffffff;
+  --color-destructive: #b91c1c; /* errors: 6.0:1 on the page. Always shown with an icon or words, never by colour alone. */
+
+  /* Developer and engineering components */
+  --color-tech-background: #f2ede0;
+  --color-tech-text: #473f36;
+  --color-featured-background: rgb(43 74 203 / 0.1);
+  --color-featured-text: #2340b0;
+  --color-inline-code-background: #f2ede0;
+  --color-inline-code-text: #be123c;
+  --color-code-background: #f4efe4;
+  --color-code-border: #e6dfd0;
+  --color-code-text: #1e1a15;
+  --color-code-muted: #5f574c;
+  --color-code-accent: #2340b0;
+
+  /* Status */
+  --color-success: #166534;
+  --color-warning: #8a4b0a;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-canvas: #1b1a18;
+  --color-surface: #242220;
+  --color-surface-hover: #2e2b28;
+  --color-border: #3a3631;
+  --color-grid: #1e1d1a;
+  --color-input: #7e776b;
+  --color-overlay: rgb(0 0 0 / 0.6);
+  --color-shadow: rgb(0 0 0 / 0.6);
+
+  --color-text-primary: #f4efe4;
+  --color-text-secondary: #f4efe4;
+  --color-text-body: #d8d2c5;
+  --color-text-muted: #a59e91;
+  --color-text-link: #a5b7ff;
+  --color-selection-background: #2b3a7a;
+  --color-selection-text: #e4e9ff;
+  --color-highlight: #e8b04b;
+
+  --color-nav-background: rgb(27 26 24 / 0.85);
+  --color-nav-border: #3a3631;
+  --color-nav-text: #a59e91;
+  --color-nav-text-hover: #f4efe4;
+  --color-nav-active: #8ca3ff;
+
+  --color-primary: #8ca3ff;
+  --color-primary-text: #1b1a18;
+  --color-primary-fill: #8ca3ff;
+  --color-primary-fill-hover: #a5b7ff;
+  --color-primary-fill-active: #7189e8;
+  --color-focus-ring: #8ca3ff;
+  --color-secondary-background: #242220;
+  --color-secondary-border: #3a3631;
+  --color-disabled-background: #2e2b28;
+  --color-disabled-text: #948c81;
+  --color-destructive: #f87171; /* errors: 6.4:1 on a card */
+
+  --color-tech-background: #2e2b28;
+  --color-tech-text: #d8d2c5;
+  --color-featured-background: rgb(140 163 255 / 0.15);
+  --color-featured-text: #a5b7ff;
+  --color-inline-code-background: #2e2b28;
+  --color-inline-code-text: #fb7185;
+  --color-code-background: #131210;
+  --color-code-border: #2e2b28;
+  --color-code-text: #ece6d8;
+  --color-code-muted: #a59e91;
+  --color-code-accent: #a5b7ff;
+
+  --color-success: #4ade80;
+  --color-warning: #e8b04b;
+}
+
+/* shadcn names and Tailwind utility names that existing components still use. They point at the tokens above and are
+   declared on every themed element (not just :root), so a nested [data-theme] island (the dark code previews on
+   project cards) re-resolves them. */
+:root,
+[data-theme] {
+  --background: var(--color-canvas);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-text);
+  --secondary: var(--color-surface-hover);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-surface-hover);
+  --muted-foreground: var(--color-text-muted);
+  --accent: var(--color-surface-hover);
+  --accent-foreground: var(--color-text-primary);
+  --border: var(--color-border);
+  --input: var(--color-input);
+  --ring: var(--color-focus-ring);
+}
+
+/* Increased contrast. Unlayered and after the themes, so these win. */
+@media (prefers-contrast: more) {
+  :root {
+    --color-text-muted: #3f382f;
+    --color-border: #7a7268;
+    --color-input: #5c554e;
+  }
+
+  [data-theme='dark'] {
+    --color-text-muted: #d8d2c5;
+    --color-border: #948c81;
+    --color-input: #a59e91;
+  }
+}
+
+/* Print always uses plain dark-on-white colours, whichever theme is on screen. */
+@media print {
+  :root,
+  [data-theme] {
+    --color-canvas: #fff;
+    --color-surface: #fff;
+    --color-text-primary: #000;
+    --color-text-secondary: #000;
+    --color-text-body: #000;
+    --color-text-muted: #333;
+    --color-border: #999;
+    --color-primary: #1e3a8a;
+    --color-grid: transparent;
+  }
+}

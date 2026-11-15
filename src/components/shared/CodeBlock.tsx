@@ -12,6 +12,8 @@ type CodeBlockProps = {
   showCaption?: boolean
   /** Show the "View on GitHub" link. Defaults to showCaption. */
   showLink?: boolean
+  /** Whether the code area can take keyboard focus (it scrolls sideways). Off by default for clipped card previews. */
+  focusable?: boolean
   /** Extra classes for the outer figure (spacing and width come from the parent). */
   className?: string
   /** Extra classes for the <pre>. */
@@ -24,6 +26,7 @@ function CodeBlock({
   maxLines,
   showCaption = true,
   showLink = showCaption,
+  focusable = !maxLines,
   className,
   preClassName,
 }: CodeBlockProps) {
@@ -63,7 +66,7 @@ function CodeBlock({
         {showLink && (
           <div className="flex flex-none items-center gap-3">
             <button
-              className="inline-flex min-h-7 cursor-pointer items-center gap-1.5 rounded-md px-1.5 text-code-accent hover:bg-white/10 pointer-coarse:min-h-11 pointer-coarse:px-3"
+              className="inline-flex min-h-7 cursor-pointer items-center gap-1.5 rounded-md px-1.5 text-code-accent hover:bg-code-border pointer-coarse:min-h-11 pointer-coarse:px-3"
               type="button"
               aria-label={`Copy code from ${snippet.file}`}
               onClick={() => void copyCode()}
@@ -87,7 +90,11 @@ function CodeBlock({
           </div>
         )}
       </div>
-      <pre className={cn(blockPre, preClassName)} tabIndex={maxLines ? -1 : 0} aria-label={`Code from ${snippet.file}`}>
+      <pre
+        className={cn(blockPre, preClassName)}
+        tabIndex={focusable ? 0 : -1}
+        aria-label={`Code from ${snippet.file}`}
+      >
         <code ref={code}>
           {visible.join('\n')}
           {truncated ? '\n…' : ''}

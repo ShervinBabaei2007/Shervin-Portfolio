@@ -23,15 +23,15 @@ const storedPreference = (): Preference => {
 // Turns a preference into the scheme to show, looking up the system setting for 'system'.
 const resolve = (preference: Preference): Scheme => (preference === 'system' ? systemScheme() : preference)
 
-/** Pins the resolved scheme on <html> (the `dark` class drives Tailwind and shadcn). Mirrors index.html. */
+/** Pins the resolved scheme on <html> as `data-theme`, which every colour token keys off. Mirrors index.html. */
 function applyScheme(scheme: Scheme) {
   const root = document.documentElement
-  root.classList.toggle('dark', scheme === 'dark')
+  root.dataset.theme = scheme
   const meta = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]')
   if (meta) meta.content = scheme
   const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
   // The page background in the new theme, read from the token so the address bar always matches it.
-  const background = getComputedStyle(root).getPropertyValue('--background').trim()
+  const background = getComputedStyle(root).getPropertyValue('--color-canvas').trim()
   if (themeColor && background) themeColor.content = background
 }
 
