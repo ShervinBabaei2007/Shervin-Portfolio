@@ -17,7 +17,7 @@ const hero: Photo = {
   alt: 'Shervin Babaei in an olive zip hoodie on a rocky shoreline, with the water and the bay behind him',
   widths: [480, 720],
   sizes: '(min-width: 640px) 342px, 62vw',
-  className: 'col-span-2 row-span-2',
+  className: 'col-span-2 row-span-2 max-[620px]:col-span-1 max-[620px]:row-span-1 max-[620px]:aspect-[4/5]',
 }
 
 const supporting: Photo[] = [
@@ -87,7 +87,11 @@ function Card({ photo, featured = false }: { photo: Photo; featured?: boolean })
 /** The photo grid in the About section: one large photo with two smaller ones beside it. */
 function AboutPortraits() {
   return (
-    <div role="group" aria-label="Photos of Shervin" className="mt-8 grid max-w-[520px] grid-cols-3 gap-4 pb-6">
+    <div
+      role="group"
+      aria-label="Photos of Shervin"
+      className="mt-8 grid max-w-[520px] grid-cols-3 gap-4 pb-6 max-[620px]:mt-6 max-[620px]:gap-3 max-[620px]:pb-2"
+    >
       <Card photo={hero} featured />
       {supporting.map((photo) => (
         <Card key={photo.name} photo={photo} />

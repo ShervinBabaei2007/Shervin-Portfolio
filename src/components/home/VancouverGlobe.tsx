@@ -91,7 +91,7 @@ function VancouverGlobe() {
   return (
     <div
       ref={frame}
-      className="relative h-[230px] overflow-hidden rounded-xl border bg-card/40 [mask-image:linear-gradient(#000_70%,transparent)] max-[620px]:h-[190px] print:hidden"
+      className="relative h-[200px] overflow-hidden rounded-xl border bg-card/40 [mask-image:linear-gradient(#000_70%,transparent)] max-[620px]:h-[160px] print:hidden"
       aria-hidden="true"
       data-globe
     >

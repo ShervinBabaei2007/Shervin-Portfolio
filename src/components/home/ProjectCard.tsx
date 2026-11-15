@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils'
  * The thumbnail area: one fixed height for every card, so a row of cards lines up whatever it shows
  * (a screenshot, code or a terminal).
  */
-const mediaBase = cn('relative z-[1] h-[208px] overflow-hidden bg-muted max-[620px]:h-[190px]')
+const mediaBase = cn('relative z-[1] h-[184px] overflow-hidden bg-muted max-[620px]:h-[170px]')
 const visualClass = cn(mediaBase, 'grid place-items-center px-7 py-[19px] max-[620px]:p-4')
 
 // Pixel sizes of every generated image, keyed by its path.

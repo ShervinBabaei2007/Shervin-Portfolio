@@ -89,7 +89,7 @@ function GitHubActivity() {
 
   return (
     <Reveal>
-      <div className="relative rounded-xl border bg-card p-6 max-[620px]:p-4 md:p-8" data-github>
+      <div className="relative rounded-xl border bg-card p-5 max-[620px]:p-4 md:p-6" data-github>
         {live && <BorderBeam size={140} duration={9} colorFrom="var(--primary)" colorTo="var(--ring)" />}
         <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
           <div>
@@ -120,7 +120,7 @@ function GitHubActivity() {
           </div>
         </div>
 
-        <dl className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border md:grid-cols-4">
+        <dl className="mt-5 grid grid-cols-2 gap-px overflow-hidden rounded-lg border bg-border md:grid-cols-4">
           {/* [label, value] pairs; the PR count is left out when the snapshot has none. */}
           {[
             ['Commits', stats.total.toLocaleString('en-CA')],
@@ -134,7 +134,7 @@ function GitHubActivity() {
               </span>,
             ],
           ].map(([label, value]) => (
-            <div key={label as string} className="bg-card px-4 py-3.5">
+            <div key={label as string} className="bg-card px-4 py-3">
               <dt className="font-mono text-label tracking-wide text-muted-foreground uppercase">{label}</dt>
               <dd className="mt-1 text-2xl leading-none font-semibold tabular-nums">{value}</dd>
             </div>
@@ -143,7 +143,7 @@ function GitHubActivity() {
 
         <CollapsiblePrimitive.Root open={historyOpen} onOpenChange={setHistoryOpen}>
           <CollapsiblePrimitive.Trigger asChild>
-            <Button type="button" variant="outline" size="sm" className="mt-6 gap-2">
+            <Button type="button" variant="outline" size="sm" className="mt-5 gap-2">
               {historyOpen ? 'Hide full history' : 'Show full history'}
               <ChevronDown className={cn('transition-transform', historyOpen && 'rotate-180')} aria-hidden="true" />
             </Button>
@@ -260,7 +260,7 @@ function GitHubActivity() {
           </CollapsiblePrimitive.Content>
         </CollapsiblePrimitive.Root>
 
-        <div className="mt-6" aria-live="polite" data-commit-panel>
+        <div className="mt-4" aria-live="polite" data-commit-panel>
           {showDay && selectedDay ? (
             <>
               <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b pb-3">
@@ -324,10 +324,15 @@ function commitTime(date: string, now: number | null, showTime: boolean): string
 /** Commits as links to GitHub. `showTime` prints the author's local time of day instead of "x ago". */
 function CommitList({ commits, now, showTime = false, className }: CommitListProps) {
   return (
-    <ul className={cn('m-0 grid list-none p-0 md:grid-cols-2 md:gap-x-12 [&>li]:border-b', className)}>
+    <ul
+      className={cn(
+        'm-0 grid list-none p-0 md:grid-cols-2 md:gap-x-10 lg:grid-cols-3 lg:gap-x-8 [&>li]:border-b',
+        className,
+      )}
+    >
       {commits.map((commit) => (
         <li key={commit.sha}>
-          <a className="group grid gap-1 py-3.5 no-underline" href={commitUrl(commit)} target="_blank" rel="noreferrer">
+          <a className="group grid gap-1 py-3 no-underline" href={commitUrl(commit)} target="_blank" rel="noreferrer">
             <span className="flex min-w-0 items-center gap-1.5 font-medium group-hover:text-primary">
               <span className="truncate">{commit.message}</span>
               <ArrowUpRight size={14} className="shrink-0" aria-hidden="true" />

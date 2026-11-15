@@ -93,9 +93,9 @@
   --measure: 38rem; /* longest body line: about 72 characters. (DM Sans digits are wide, so 68ch ran to 100 characters.) */
 
   /* Spacing scale. One value per job, so the gap between two sections is never two paddings added together. */
-  --space-section: clamp(5rem, 4rem + 4vw, 9rem); /* top and bottom padding of a home-page section */
+  --space-section: clamp(3.5rem, 2.5rem + 3.5vw, 6.25rem); /* top and bottom padding of a home-page section */
   --space-page: clamp(4.5rem, 3.5rem + 2.5vw, 6rem); /* top and bottom padding of an inner page */
-  --space-heading: clamp(2.5rem, 2rem + 1.5vw, 4rem); /* a section heading to its content */
+  --space-heading: clamp(2rem, 1.5rem + 1.2vw, 3rem); /* a section heading to its content */
   --space-block: 2.5rem; /* between blocks inside a section */
   --space-card: 2rem; /* gap between cards */
   --pad-card: 1.75rem; /* inside a card */
@@ -131,9 +131,9 @@
   :root {
     --gutter: 20px;
     --header-height: 65px;
-    --space-section: 3.75rem;
+    --space-section: 3.125rem;
     --space-page: 3rem;
-    --space-heading: 2rem;
+    --space-heading: 1.5rem;
     --space-block: 2rem;
     --space-card: 1.25rem;
     --pad-card: 1.25rem;

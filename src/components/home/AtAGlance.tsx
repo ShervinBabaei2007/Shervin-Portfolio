@@ -42,7 +42,7 @@ function AtAGlance() {
                 className="border-border not-last:border-r max-[900px]:odd:border-r max-[900px]:even:border-r-0 max-[900px]:nth-[-n+2]:border-b"
               >
                 <Link
-                  className="flex h-full flex-col px-8 py-8 no-underline transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring max-[620px]:px-5 max-[620px]:py-6"
+                  className="flex h-full flex-col px-8 py-7 no-underline transition-colors hover:bg-muted focus-visible:bg-muted focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring max-[620px]:px-4 max-[620px]:py-4"
                   to={to}
                   aria-label={`${prefix ? `${prefix} ` : ''}${value.toLocaleString('en-CA')} ${label}, ${detail}`}
                 >
