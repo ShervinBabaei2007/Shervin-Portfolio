@@ -57,6 +57,12 @@ test.describe('accessibility in the states a visitor can reach', () => {
     await hydrated(page)
     await page.locator('button[aria-label="Open menu"]').click()
     await expect(page.getByRole('navigation', { name: 'Mobile navigation' })).toBeVisible()
+    // The links fade in one after another; check contrast once they have settled, not halfway through.
+    await page.waitForFunction(() =>
+      document
+        .getAnimations()
+        .every((a) => a.playState !== 'running' || a.effect?.getComputedTiming().endTime === Infinity),
+    )
     expect(await violations(page)).toEqual([])
   })
 })
@@ -307,9 +313,10 @@ test.describe('animation', () => {
     await page.waitForTimeout(1500)
     expect(await frames(600)).toBeGreaterThan(10)
 
-    // Scrolled down to Contact, the field is off screen and stops asking for frames.
+    // Scrolled down to Contact, the field is off screen and stops asking for frames. The wait lets the sections that
+    // rise in on arrival (GSAP, about 1.3 s) finish, after which GSAP sleeps too.
     await page.locator('#contact-title').scrollIntoViewIfNeeded()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(2000)
     expect(await frames(600)).toBeLessThan(8)
   })
 })

@@ -7,6 +7,7 @@ import SiteHeader from '@/components/shared/SiteHeader'
 import BackToTop from '@/components/shared/BackToTop'
 import PageTransition from '@/components/shared/PageTransition'
 import { reportError } from './lib/monitoring'
+import { haltSmoothScroll } from './lib/motion'
 import { usePageMeta } from './hooks/usePageMeta'
 import { useTheme, type Scheme } from './hooks/useTheme'
 import { pages } from './routes'
@@ -37,6 +38,8 @@ function ScrollManager() {
   const { pathname, hash } = useLocation()
 
   useEffect(() => {
+    // A wheel glide still in progress would carry on down the new page.
+    haltSmoothScroll()
     if (hash) {
       const target = document.getElementById(decodeURIComponent(hash.slice(1)))
       if (target) {

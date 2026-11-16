@@ -2,7 +2,7 @@
 
 Personal portfolio for Shervin Babaei (https://shervin-babaei.me). A Vite + React 19 + TypeScript app that is prerendered to static HTML at build time and hydrated in the browser. Hosted on Vercel. There is no database: content lives in typed TS modules and generated JSON snapshots.
 
-Stack: React Router 6, Tailwind CSS 4, shadcn/ui (new-york, zinc) + Radix, Motion, Cobe, cmdk, Sonner. Playwright + axe for tests, ESLint (jsx-a11y, react-hooks), Prettier (no semicolons, single quotes, width 120, Tailwind class sorting). Dev machine is Windows.
+Stack: React Router 6, Tailwind CSS 4, shadcn/ui (new-york, zinc) + Radix, cmdk, Sonner, Lenis (wheel smoothing) and GSAP (scroll reveals; see `src/lib/motion.ts`). Fonts: Geist, Bricolage Grotesque, JetBrains Mono (self-hosted, `src/fonts.css`). Playwright + axe for tests, ESLint (jsx-a11y, react-hooks), Prettier (no semicolons, single quotes, width 120, Tailwind class sorting). Dev machine is Windows.
 
 ## Commands
 

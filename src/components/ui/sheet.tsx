@@ -33,7 +33,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "fixed inset-0 z-50 bg-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-300",
+        "fixed inset-0 z-50 bg-overlay backdrop-blur-[3px] ease-[cubic-bezier(.32,.72,0,1)] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-[380ms] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-[560ms]",
         className
       )}
       {...props}
@@ -57,22 +57,22 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "fixed z-50 flex flex-col gap-4 bg-background shadow-lg ease-[cubic-bezier(.2,.7,.2,1)] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-[240ms] data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-[420ms]",
+          "fixed z-50 flex flex-col gap-4 bg-background shadow-lg will-change-transform data-[state=closed]:animate-out data-[state=closed]:duration-[380ms] data-[state=closed]:ease-[cubic-bezier(.4,0,.2,1)] data-[state=open]:animate-in data-[state=open]:duration-[560ms] data-[state=open]:ease-[cubic-bezier(.32,.72,0,1)]",
           side === "right" &&
-            "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right-[10%] data-[state=open]:slide-in-from-right-[12%] sm:max-w-sm",
+            "inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
           side === "left" &&
-            "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
+            "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
           side === "top" &&
-            "inset-x-0 top-0 h-auto border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
+            "inset-x-0 top-0 h-auto border-b data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
           side === "bottom" &&
-            "inset-x-0 bottom-0 h-auto border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+            "inset-x-0 bottom-0 h-auto border-t data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
           className
         )}
         {...props}
       >
         {children}
         {showCloseButton && (
-          <SheetPrimitive.Close className="absolute top-[calc((var(--header-height)-44px)/2)] right-[calc(var(--gutter)-12px)] grid size-11 place-items-center rounded-full text-foreground ring-offset-background transition-colors hover:bg-surface-hover focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+          <SheetPrimitive.Close className="absolute top-[calc((var(--header-height)-44px)/2)] right-[calc(var(--gutter)-12px)] grid size-11 animate-in place-items-center rounded-full text-foreground delay-200 duration-500 ease-[cubic-bezier(.32,.72,0,1)] fade-in-0 spin-in-90 [animation-fill-mode:both] ring-offset-background transition-colors hover:bg-surface-hover focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
             <XIcon className="size-5" />
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
