@@ -240,6 +240,18 @@
   transform: translateY(48px);
 }
 
+/* The commit grid (see GitHubActivity) fills in week by week when the full history is opened. */
+@keyframes cell-in {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+[data-heatmap] [data-cell] {
+  animation: cell-in 0.4s calc(var(--col, 0) * 6ms) cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
 /* Lenis smooth scrolling (see lib/motion.ts), from lenis/dist/lenis.css. */
 html.lenis,
 html.lenis body {
@@ -255,7 +267,8 @@ html.lenis body {
 }
 
 @media print {
-  [data-reveal] {
+  [data-reveal],
+  [data-heatmap] [data-cell] {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;

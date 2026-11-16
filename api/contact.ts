@@ -73,9 +73,12 @@ export async function POST(request: Request) {
       'Retry-After': String(WINDOW_MS / 1000),
     })
 
+  // Valid JSON that is not an object (null, a number, a list) is as unusable as invalid JSON.
   let data: Record<string, unknown>
   try {
-    data = await request.json()
+    const body: unknown = await request.json()
+    if (!body || typeof body !== 'object' || Array.isArray(body)) throw new Error('not an object')
+    data = body as Record<string, unknown>
   } catch {
     return json({ error: 'Invalid request.' }, 400)
   }

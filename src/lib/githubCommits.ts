@@ -23,9 +23,12 @@ type SearchItem = {
   repository: { full_name: string; private: boolean }
 }
 
-/** Search URL for one page (100 commits) of the user's commits, newest first. */
-export const commitSearchUrl = (user: string, page = 1) =>
-  `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${user}`)}&sort=author-date&order=desc&per_page=100&page=${page}`
+/**
+ * Search URL for one page (100 commits) of the user's commits, newest first. `until` (YYYY-MM-DD) limits it to commits
+ * on or before that day: GitHub search stops at 1,000 results, so the build script walks back a year in such chunks.
+ */
+export const commitSearchUrl = (user: string, page = 1, until?: string) =>
+  `https://api.github.com/search/commits?q=${encodeURIComponent(`author:${user}${until ? ` author-date:<=${until}` : ''}`)}&sort=author-date&order=desc&per_page=100&page=${page}`
 
 /** Search URL for the user's merged pull requests (public repositories) since a `YYYY-MM-DD` day; only `total_count` is used. */
 export const mergedPrsUrl = (user: string, since: string) =>

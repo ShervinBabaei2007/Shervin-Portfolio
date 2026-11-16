@@ -1379,3 +1379,126 @@ test('on a phone every project card on the projects page fits inside the screen'
     for (const right of rights) expect(right, `${width}px`).toBeLessThanOrEqual(width)
   }
 })
+
+test('the commit history card shows merged PRs and active days, with no streak', async ({ page }) => {
+  await page.goto('/')
+  const card = page.locator('[data-github]')
+  await expect(card.getByText('PRs merged', { exact: true })).toBeVisible()
+  await expect(card.getByText('Active days', { exact: true })).toBeVisible()
+  await expect(card.getByText('Longest streak')).toHaveCount(0)
+})
+
+const searchResult = (message: string, date: string, count = 1, repo = 'ShervinBabaei2007/Portfolio') => ({
+  total_count: count,
+  items: Array.from({ length: count }, (_, index) => ({
+    sha: `abc${String(index).padStart(4, '0')}def`,
+    commit: { message, author: { date } },
+    repository: { full_name: repo, private: false },
+  })),
+})
+
+test('GitHub activity shows live recent commits, and hides itself when nothing is recent', async ({ page }) => {
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({ json: searchResult('feat: live commit from the mock', recent) }),
+  )
+  await page.goto('/')
+  const activity = page.locator('[data-github]')
+  await expect(activity).toContainText('feat: live commit from the mock')
+  await expect(activity).toContainText('2 days ago')
+  await expect(activity).toContainText('Live from GitHub')
+  // The year grid stays folded until asked for.
+  await expect(activity.locator('[data-heatmap]')).toHaveCount(0)
+  await activity.getByRole('button', { name: 'Show full history' }).click()
+  await expect(activity.locator('[data-heatmap]')).toBeVisible()
+
+  const stale = await page.context().newPage()
+  await stale.route('https://api.github.com/**', (route) =>
+    route.fulfill({ json: searchResult('chore: old commit', '2025-01-01T00:00:00Z') }),
+  )
+  await stale.goto('/')
+  await stale.waitForLoadState('networkidle')
+  if (!(await stale.locator('[data-github]').count())) return // stale snapshot and stale live data: hidden
+  await expect(stale.locator('[data-github]')).not.toContainText('old commit')
+})
+
+test('the recent work list skips commits to this site, but the day view still shows them', async ({ page }) => {
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  // A full page (100) so the live commits win over the snapshot for that day.
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({
+      json: searchResult('chore: site-only commit', recent, 100, 'ShervinBabaei2007/Shervin-Portfolio'),
+    }),
+  )
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const activity = page.locator('[data-github]')
+  await expect(activity).toContainText('Live from GitHub')
+  const panel = activity.locator('[data-commit-panel]')
+  await expect(panel).not.toContainText('chore: site-only commit')
+  await expect(panel).toContainText('Nothing recent outside this site')
+
+  await activity.getByRole('button', { name: 'Show full history' }).click()
+  await activity.locator(`[data-heatmap] [data-day="${recent.slice(0, 10)}"]`).click()
+  await expect(panel).toContainText('chore: site-only commit')
+})
+
+test('commit history keeps the full-year totals when the live request adds the newest commits', async ({ page }) => {
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({ json: searchResult('feat: mock', recent, 100) }),
+  )
+  await page.goto('/')
+  const activity = page.locator('[data-github]')
+  await expect(activity).toContainText('Live from GitHub')
+  const commits = activity.locator('dl > div').first().locator('dd')
+  await expect.poll(async () => Number((await commits.innerText()).replace(/[,+]/g, ''))).toBeGreaterThan(100)
+})
+
+test('commit history: select a day to list its commits, then go back to the latest', async ({ page }) => {
+  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
+  await page.route('https://api.github.com/**', (route) =>
+    route.fulfill({ json: searchResult('feat: mock', recent, 100) }),
+  )
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const activity = page.locator('[data-github]')
+  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
+
+  await activity.getByRole('button', { name: 'Show full history' }).click()
+  const days = activity.locator('[data-heatmap] [data-day]')
+  expect(await days.count()).toBeGreaterThan(10)
+  await days.nth(3).click()
+  await expect(days.nth(3)).toHaveAttribute('data-selected', 'true')
+  await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
+  await expect(activity.getByRole('heading', { name: 'Recent work' })).toHaveCount(0)
+  const links = activity.locator('[data-commit-panel] li a')
+  expect(await links.count()).toBeGreaterThan(0)
+  await expect(links.first()).toHaveAttribute('href', /^https:\/\/github\.com\/.+\/commit\/[0-9a-f]{7}$/)
+
+  await activity.getByRole('button', { name: 'Show latest commits' }).click()
+  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
+  await expect(days.nth(3)).toHaveAttribute('data-selected', 'false')
+
+  // The same thing from the keyboard-friendly menu.
+  const menu = activity.getByLabel('Show commits for')
+  await menu.selectOption({ index: 2 })
+  await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
+  await menu.selectOption('')
+  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
+  // The cells are a pointer shortcut and are not in the tab order.
+  await expect(activity.locator('[data-heatmap] button')).toHaveCount(0)
+})
+
+test('a visitor who scrolls before the page hydrates stays where they scrolled', async ({ page }) => {
+  // Hold the app's code back so the scroll happens on the prerendered page, as on a slow phone.
+  await page.route(/\/assets\/index-[\w-]+\.js$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 800))
+    await route.continue()
+  })
+  await page.goto('/work/skillmatch')
+  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }))
+  await hydrated(page)
+  await page.waitForTimeout(300)
+  expect(await page.evaluate(() => Math.round(window.scrollY))).toBe(1500)
+})
