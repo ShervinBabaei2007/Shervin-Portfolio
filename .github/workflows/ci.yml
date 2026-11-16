@@ -16,7 +16,8 @@ concurrency:
 
 jobs:
   checks:
-    runs-on: ubuntu-latest
+    # Pinned: Playwright 1.57 cannot install its browsers on ubuntu-latest (26.04). Move up with a Playwright upgrade.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
