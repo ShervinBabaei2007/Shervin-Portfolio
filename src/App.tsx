@@ -1,4 +1,4 @@
-import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
+import { Component, lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import { Skeleton } from '@/components/ui/skeleton'
 import NavigationProgress from '@/components/shared/NavigationProgress'
@@ -36,8 +36,14 @@ function LazyToaster({ scheme }: { scheme: Scheme }) {
 /** Scrolls to the #hash after navigation, or to the top of a new page. */
 function ScrollManager() {
   const { pathname, hash } = useLocation()
+  // The location the page was last scrolled for. It starts as the first page's: the browser has already placed that
+  // page (at the top, at a #hash, or wherever the visitor scrolled while it hydrated), and scrolling for it again would
+  // yank them back to the top. Comparing locations, not counting runs, also survives StrictMode's double effects.
+  const scrolledFor = useRef(pathname + hash)
 
   useEffect(() => {
+    if (scrolledFor.current === pathname + hash) return
+    scrolledFor.current = pathname + hash
     // A wheel glide still in progress would carry on down the new page.
     haltSmoothScroll()
     if (hash) {

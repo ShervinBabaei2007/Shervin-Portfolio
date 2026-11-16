@@ -1489,3 +1489,16 @@ test('commit history: select a day to list its commits, then go back to the late
   // The cells are a pointer shortcut and are not in the tab order.
   await expect(activity.locator('[data-heatmap] button')).toHaveCount(0)
 })
+
+test('a visitor who scrolls before the page hydrates stays where they scrolled', async ({ page }) => {
+  // Hold the app's code back so the scroll happens on the prerendered page, as on a slow phone.
+  await page.route(/\/assets\/index-[\w-]+\.js$/, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 800))
+    await route.continue()
+  })
+  await page.goto('/work/skillmatch')
+  await page.evaluate(() => window.scrollTo({ top: 1500, behavior: 'instant' }))
+  await hydrated(page)
+  await page.waitForTimeout(300)
+  expect(await page.evaluate(() => Math.round(window.scrollY))).toBe(1500)
+})
