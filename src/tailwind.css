@@ -317,12 +317,6 @@
   letter-spacing: 0.08em;
 }
 
-/* A full-width band with a faint brand tint, so a section can stand apart from the page and its cards read as raised. */
-.section-band {
-  border-block: 1px solid var(--color-border);
-  background-color: color-mix(in srgb, var(--color-primary) 7%, var(--color-background));
-}
-
 /* Theme switch: the browser cross-fades old and new page snapshots (see withSmoothSwitch in useTheme). */
 ::view-transition-old(root),
 ::view-transition-new(root) {

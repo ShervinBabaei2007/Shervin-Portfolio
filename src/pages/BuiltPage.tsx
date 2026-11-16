@@ -9,12 +9,10 @@ import {
   TestTubeDiagonal,
   type LucideIcon,
 } from 'lucide-react'
-import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
-import PageIntro from '@/components/shared/PageIntro'
+import PageHero from '@/components/shared/PageHero'
 import Reveal from '@/components/shared/Reveal'
 import { Button } from '@/components/ui/button'
-import { pill, raised } from '@/lib/surfaces'
-import { cn } from '@/lib/utils'
+import { raised } from '@/lib/surfaces'
 import { site } from '../data/site'
 
 // The main tools named in the text below, as chips under the heading.
@@ -58,28 +56,22 @@ const sections: { title: string; icon: LucideIcon; body: string }[] = [
 function BuiltPage() {
   return (
     <article aria-labelledby="built-title">
-      {/* The header sits on the tinted band used across the site; the cards below sit on the page. */}
-      <div className="section-band">
-        <div className="section-wrap pt-[clamp(1.25rem,3.5svh,2.25rem)] pb-[var(--space-block)]">
-          <PageBreadcrumb trail={[{ label: 'Home', to: '/' }]} current="How this site is built" />
-          <div className="mt-[18px]">
-            <PageIntro
-              eyebrow="COLOPHON"
-              id="built-title"
-              title="How this site is built"
-              lead="A portfolio is a project too, so I built and tested this one the way I would a product."
-            />
-            <ul className="m-0 -mt-4 flex list-none flex-wrap gap-2 p-0" aria-label="Main tools">
-              {tools.map((tool) => (
-                <li key={tool} className={cn(pill, 'font-mono text-label')}>
-                  {tool}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div className="section-wrap pt-[var(--space-block)] pb-[var(--space-page)]">
+      {/* The same entrance as the other pages (ASCII field, prompt, big title); the cards below keep this page's own look. */}
+      <PageHero
+        id="built-title"
+        command="cat colophon.md"
+        title="How this site is built"
+        lead="A portfolio is a project too, so I built and tested this one the way I would a product."
+      >
+        <ul className="m-0 mt-6 flex list-none flex-wrap gap-2 p-0" aria-label="Main tools">
+          {tools.map((tool) => (
+            <li key={tool} className="rounded-full bg-surface-hover px-3 py-1.5 text-[14px] text-foreground">
+              {tool}
+            </li>
+          ))}
+        </ul>
+      </PageHero>
+      <div className="section-wrap pb-[clamp(88px,10vw,144px)]">
         <ul className="m-0 grid list-none gap-6 p-0 min-[900px]:grid-cols-2">
           {sections.map(({ title, icon: Icon, body }, index) => (
             <li key={title}>

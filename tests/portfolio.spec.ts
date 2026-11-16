@@ -813,6 +813,9 @@ test('large screenshots offer a small copy and reserve their space', async ({ pa
 })
 
 test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the other visitor', async ({ page }) => {
+  // The limiter's 10-second windows line up with the real clock, so a burst near the end of a window could spill
+  // into the next one. Start the page's clock half a second into a window, which leaves plenty of time for the test.
+  await page.clock.install({ time: new Date('2026-01-01T00:00:00.500Z') })
   await page.goto('/work/thinkboard')
   await hydrated(page)
   const demo = page.locator('[data-limiter-demo]')
