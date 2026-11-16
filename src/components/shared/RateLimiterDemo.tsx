@@ -281,7 +281,6 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
             data-limited={entry.status === 429 ? '' : undefined}
           >
             <span className="max-[620px]:col-span-full max-[620px]:text-muted-foreground">{label[entry.client]}</span>
-            {/* DM Mono ships only weight 400. */}
             <b className="font-mono text-[.875rem] leading-[normal] font-normal text-primary">
               {statusText(entry.status)}
             </b>

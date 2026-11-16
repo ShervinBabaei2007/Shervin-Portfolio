@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { smoothScrollToTop } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 
 /** A round button that appears after a couple of screens of scrolling and returns you to the top of the page. */
@@ -18,7 +19,7 @@ function BackToTop() {
   // Scroll up, then move keyboard focus to the main content so the next Tab starts from the top.
   const toTop = () => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
+    if (!smoothScrollToTop()) window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' })
     document.getElementById('main')?.focus({ preventScroll: true })
   }
 

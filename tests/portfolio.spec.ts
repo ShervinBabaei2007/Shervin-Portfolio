@@ -458,7 +458,12 @@ test.describe('copy buttons', () => {
 })
 
 test('a slow page change shows a progress bar, and a fast one does not', async ({ page }) => {
+  // The Contact page's code is held until 1.5 s after the Contact link is clicked. A fixed delay from page load would
+  // race the background prefetch, which can finish before the click when the steps above are slow.
+  let release = () => {}
+  const clicked = new Promise<void>((resolve) => (release = resolve))
   await page.route(/\/assets\/ContactPage-[\w-]+\.js$/, async (route) => {
+    await clicked
     await new Promise((resolve) => setTimeout(resolve, 1500))
     await route.continue()
   })
@@ -478,6 +483,7 @@ test('a slow page change shows a progress bar, and a fast one does not', async (
 
   // The Contact page's code takes 1.5 s: the bar appears while we wait, and goes once the page is shown.
   await nav.getByRole('link', { name: 'Contact' }).click()
+  release()
   await expect(bar).toBeVisible({ timeout: 1200 })
   await expect(page.getByRole('status').filter({ hasText: 'Loading page' })).toBeAttached()
   await expect(page).toHaveURL(/\/contact$/, { timeout: 5000 })
@@ -819,7 +825,9 @@ test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the othe
   await page.goto('/work/thinkboard')
   await hydrated(page)
   const demo = page.locator('[data-limiter-demo]')
+  // The burst sends 15 requests 70 ms apart; run the clock past the last one so none lands after the next click.
   await demo.getByRole('button', { name: 'Burst 15 requests' }).click()
+  await page.clock.runFor(1100)
   await expect(demo.locator('[data-limiter-log] li[data-limited]').first()).toBeVisible({ timeout: 5000 })
   await expect(demo.getByRole('meter').first()).toHaveAttribute('aria-valuenow', '10')
 
@@ -831,6 +839,7 @@ test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the othe
   // Per-visitor keys: the same burst no longer affects them.
   await demo.getByLabel(/One key per visitor/).check()
   await demo.getByRole('button', { name: 'Burst 15 requests' }).click()
+  await page.clock.runFor(1100)
   await expect(demo.locator('[data-limiter-log] li[data-limited]').first()).toBeVisible({ timeout: 5000 })
   await demo.getByRole('button', { name: 'Other visitor sends 1' }).click()
   await expect(demo.locator('[data-limiter-log] li').first()).toContainText('200 OK')
@@ -938,7 +947,11 @@ test('a page whose code fails to load shows a reload prompt, not a blank site', 
 })
 
 test('a slow page keeps the current page on screen, then shows the new one', async ({ page }) => {
+  // The Contact page’s code is held until 1.5 s after the click, so the background prefetch cannot finish first.
+  let release = () => {}
+  const clicked = new Promise<void>((resolve) => (release = resolve))
   await page.route(/\/assets\/ContactPage-[\w-]+\.js$/, async (route) => {
+    await clicked
     await new Promise((resolve) => setTimeout(resolve, 1500))
     await route.continue()
   })
@@ -946,6 +959,7 @@ test('a slow page keeps the current page on screen, then shows the new one', asy
   await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
   await hydrated(page)
   await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Contact' }).click()
+  release()
   await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
   await expect(page.locator('[aria-label="Loading page"]')).toHaveCount(0)
 

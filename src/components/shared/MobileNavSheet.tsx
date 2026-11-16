@@ -56,9 +56,9 @@ function MobileNavSheet({
           {links.map((link, index) => (
             <SheetClose key={link.to} asChild>
               <Link
-                // Each link rises in a beat after the one above it, so the menu settles in rather than snapping open.
-                style={{ animationDelay: `${90 + index * 45}ms` }}
-                className="group flex min-h-16 animate-in items-center justify-between border-b border-foreground/10 font-display text-[2rem] leading-none font-semibold tracking-[-0.03em] text-foreground no-underline duration-500 ease-[cubic-bezier(.2,.7,.2,1)] fade-in-0 [animation-fill-mode:both] slide-in-from-bottom-2 active:text-primary aria-[current]:text-primary"
+                // The links trail the panel in from the right, each a beat after the one above, so the menu glides open.
+                style={{ animationDelay: `${320 + index * 100}ms` }}
+                className="group flex min-h-16 animate-in items-center justify-between border-b border-foreground/10 font-display text-[2rem] leading-none font-semibold tracking-[-0.03em] text-foreground no-underline duration-[900ms] ease-[cubic-bezier(.32,.72,0,1)] fade-in-0 [animation-fill-mode:both] slide-in-from-right-12 active:text-primary aria-[current]:text-primary"
                 to={link.to}
                 aria-current={link.current}
               >
@@ -72,8 +72,8 @@ function MobileNavSheet({
           ))}
         </nav>
         <div
-          style={{ animationDelay: `${90 + links.length * 45}ms` }}
-          className="mt-auto grid animate-in gap-6 px-[var(--gutter)] pt-8 pb-[max(24px,env(safe-area-inset-bottom))] duration-500 ease-[cubic-bezier(.2,.7,.2,1)] fade-in-0 [animation-fill-mode:both]"
+          style={{ animationDelay: `${380 + links.length * 100}ms` }}
+          className="mt-auto grid animate-in gap-6 px-[var(--gutter)] pt-8 pb-[max(24px,env(safe-area-inset-bottom))] duration-[900ms] ease-[cubic-bezier(.32,.72,0,1)] fade-in-0 [animation-fill-mode:both] slide-in-from-bottom-3"
         >
           <div className="grid gap-2.5">
             <p id="mobile-theme-label" className="m-0 font-mono text-[13px] text-muted-foreground">

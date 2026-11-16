@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Github, Linkedin, Mail, Menu, Moon, Sun } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
@@ -62,6 +62,13 @@ function SiteHeader({ scheme, onToggleTheme, preference, onPreferenceChange }: S
   const menuButton = useRef<HTMLButtonElement>(null)
   const activeSection = useActiveSection(Object.keys(sectionOwner), pathname === '/')
   const activeOwner = activeSection ? sectionOwner[activeSection] : null
+
+  // On phone widths, fetch the menu once the browser is idle, so the first tap slides it open with no wait.
+  useEffect(() => {
+    if (!window.matchMedia('(max-width: 959px)').matches) return
+    const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 1500))
+    idle(preloadMobileNav)
+  }, [])
 
   /** `location` while its section is in view on the home page, `page` while you are on its own page. */
   const currentFor = (link: (typeof navLinks)[number] | (typeof moreLinks)[number]) => {

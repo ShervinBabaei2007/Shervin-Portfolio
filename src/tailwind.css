@@ -217,17 +217,6 @@
   }
 }
 
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 @keyframes border-beam {
   to {
     offset-distance: 100%;
@@ -245,14 +234,24 @@
   }
 }
 
-/* Scroll reveal (see Reveal.tsx): hidden only after mount, only below the fold. */
+/* Scroll reveal (see Reveal.tsx): hidden only after mount, only below the fold, until GSAP takes over. */
 [data-reveal='pending'] {
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(48px);
 }
 
-[data-reveal='in'] {
-  animation: reveal-up 0.4s var(--reveal-delay, 0s) ease-out backwards;
+/* Lenis smooth scrolling (see lib/motion.ts), from lenis/dist/lenis.css. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 @media print {
@@ -317,11 +316,27 @@
   letter-spacing: 0.08em;
 }
 
-/* Theme switch: the browser cross-fades old and new page snapshots (see withSmoothSwitch in useTheme). */
+/*
+ * Theme switch (see withSmoothSwitch in useTheme). The old snapshot holds still and the new one fades in over it.
+ * Fading both at once lets the page dip toward transparent halfway, which reads as a flicker.
+ */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.25s;
-  animation-timing-function: ease-in-out;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  animation: theme-fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes theme-fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .theme-switching *,

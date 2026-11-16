@@ -23,8 +23,8 @@ I'm currently open to co-op, internship and software roles in Vancouver, on-site
 The site is a small React app that is prerendered to static HTML, so pages load fast and work well for search and sharing.
 
 - **Front end:** React 19, TypeScript, Vite and React Router
-- **Styling:** Tailwind CSS 4 with shadcn/ui and Radix primitives, set in DM Sans and DM Mono
-- **Motion and detail:** Motion for animation, a Cobe globe, a command palette (⌘K / Ctrl+K), light and dark themes
+- **Styling:** Tailwind CSS 4 with shadcn/ui and Radix primitives, set in Geist, Bricolage Grotesque and JetBrains Mono
+- **Motion and detail:** Lenis smooth scrolling, GSAP scroll reveals, an animated ASCII canvas, view-transition theme switching, a command palette (⌘K / Ctrl+K), light and dark themes
 - **Quality:** Playwright end-to-end tests, axe accessibility checks, ESLint and Prettier
 - **Monitoring:** Sentry for errors, plus Vercel Analytics and Speed Insights
 - **Hosting:** Vercel

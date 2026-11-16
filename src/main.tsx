@@ -5,6 +5,7 @@ import App from './App'
 import RootErrorBoundary from './components/shared/RootErrorBoundary'
 import { reloadOnceAfterChunkFailure } from './lib/reloadOnce'
 import { startMonitoring } from './lib/monitoring'
+import { startSmoothScroll } from './lib/motion'
 import { pageForPath, preloadAllPages } from './routes'
 import './fonts.css'
 import './tailwind.css'
@@ -30,6 +31,7 @@ function warmOtherPages() {
   // A chunk that fails here is retried when someone navigates to that page.
   idle(() => void preloadAllPages().catch(() => {}))
   idle(() => void startMonitoring().catch(() => {}))
+  idle(() => void startSmoothScroll().catch(() => {}))
 }
 
 // Load this route's chunk before hydrating, so React renders the same markup

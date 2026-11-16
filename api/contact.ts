@@ -12,6 +12,11 @@ const topics = ['Job Opportunity', 'Project Collaboration', 'General Inquiry']
 const hits = new Map<string, number[]>()
 const WINDOW_MS = 10 * 60 * 1000
 const MAX_HITS = 5
+// Past this many tracked IPs, visitors whose window has ended are dropped, so a long-lived instance stays small.
+const SWEEP_AT = 1000
+// Redis only decides the rate limit, so it gets a short wait before the in-memory fallback takes over.
+const REDIS_TIMEOUT_MS = 2000
+const RESEND_TIMEOUT_MS = 10_000
 
 /** Fixed-window counter in Upstash Redis, shared by all instances. Returns null if Redis is unavailable. */
 async function limitedByRedis(ip: string): Promise<boolean | null> {
@@ -28,6 +33,7 @@ async function limitedByRedis(ip: string): Promise<boolean | null> {
         ['INCR', key],
         ['EXPIRE', key, String(WINDOW_MS / 1000)],
       ]),
+      signal: AbortSignal.timeout(REDIS_TIMEOUT_MS),
     })
     if (!response.ok) return null
     const [count] = (await response.json()) as Array<{ result: number }>
@@ -40,6 +46,9 @@ async function limitedByRedis(ip: string): Promise<boolean | null> {
 /** Per-instance fallback: weaker, because serverless instances do not share memory. */
 function limitedInMemory(ip: string) {
   const now = Date.now()
+  if (hits.size >= SWEEP_AT) {
+    for (const [key, times] of hits) if (now - times[times.length - 1] >= WINDOW_MS) hits.delete(key)
+  }
   const recent = (hits.get(ip) ?? []).filter((time) => now - time < WINDOW_MS)
   hits.set(ip, [...recent, now])
   return recent.length >= MAX_HITS
@@ -87,17 +96,28 @@ export async function POST(request: Request) {
   const to = process.env.CONTACT_TO_EMAIL
   if (!key || !to) return json({ error: 'The contact form is not configured yet.' }, 503)
 
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: process.env.CONTACT_FROM_EMAIL ?? 'Portfolio <onboarding@resend.dev>',
-      to: [to],
-      reply_to: email,
-      subject: `[Portfolio] ${topic} from ${name}`,
-      html: `<p><b>${escapeHtml(name)}</b> (${escapeHtml(email)}) &middot; ${escapeHtml(topic)}</p><p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`,
-    }),
-  })
-  if (!response.ok) return json({ error: 'Could not send the message. Please email me directly.' }, 502)
+  const failed = json({ error: 'Could not send the message. Please email me directly.' }, 502)
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: process.env.CONTACT_FROM_EMAIL ?? 'Portfolio <onboarding@resend.dev>',
+        to: [to],
+        reply_to: email,
+        subject: `[Portfolio] ${topic} from ${name}`,
+        html: `<p><b>${escapeHtml(name)}</b> (${escapeHtml(email)}) &middot; ${escapeHtml(topic)}</p><p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`,
+      }),
+      signal: AbortSignal.timeout(RESEND_TIMEOUT_MS),
+    })
+    if (!response.ok) {
+      console.error(`contact: Resend answered ${response.status}`)
+      return failed
+    }
+  } catch (error) {
+    // A timeout or a dropped connection: the same plain answer as a Resend error, instead of an unhandled 500.
+    console.error('contact: could not reach Resend', error)
+    return failed
+  }
   return json({ ok: true })
 }
