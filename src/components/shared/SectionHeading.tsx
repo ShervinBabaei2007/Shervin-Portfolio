@@ -5,37 +5,31 @@ import { cn } from '@/lib/utils'
 type SectionHeadingProps = {
   /** Heading id, referenced by the section's aria-labelledby. */
   id: string
-  /** Section number shown before the eyebrow label, for example "02". */
+  /** Section number shown before the heading, for example "02". */
   number: string
-  eyebrow: string
   title: ReactNode
-  /** Trailing punctuation drawn in the accent colour. */
-  punctuation?: string
-  /** A short supporting line shown under the heading. */
+  /** A short supporting line, at the right of the heading on wide screens and under it on narrow ones. */
   aside?: ReactNode
   className?: string
 }
 
-/**
- * The numbered eyebrow, heading and supporting line that open every home-page section. The supporting line sits under
- * the heading, left-aligned with it, so the two read as one block and always line up with the content below.
- */
-function SectionHeading({ id, number, eyebrow, title, punctuation = '.', aside, className }: SectionHeadingProps) {
+/** The small mono number, the heading and a rule under both, which open every home-page section. */
+function SectionHeading({ id, number, title, aside, className }: SectionHeadingProps) {
   return (
     <Reveal>
-      <div className={cn('mb-[var(--space-heading)]', className)}>
-        <p className="eyebrow">
-          <span className="text-primary">{number}</span> {eyebrow}
-        </p>
-        <h2 id={id} className="mt-5 text-h2-section [&>span:last-child]:text-primary">
-          {title}
-          <span>{punctuation}</span>
-        </h2>
-        {aside && (
-          <p className="mt-4 max-w-[60ch] text-[1.0625rem] leading-[1.7] text-muted-foreground max-[620px]:text-[.9375rem]">
-            {aside}
-          </p>
+      <div
+        className={cn(
+          'mb-[clamp(32px,4vw,48px)] flex flex-wrap items-end justify-between gap-x-12 gap-y-4 border-b border-foreground/15 pb-5',
+          className,
         )}
+      >
+        <div className="flex items-baseline gap-4">
+          <span className="font-mono text-[13px] text-muted-foreground">{number}</span>
+          <h2 id={id} className="m-0 text-[clamp(2rem,3.8vw,3.25rem)] leading-none tracking-[-0.04em]">
+            {title}
+          </h2>
+        </div>
+        {aside && <p className="m-0 max-w-[460px] text-[15px] leading-[1.5] text-muted-foreground">{aside}</p>}
       </div>
     </Reveal>
   )

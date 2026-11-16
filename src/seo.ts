@@ -34,6 +34,8 @@ const withContext = (node: Record<string, unknown>) => ({ '@context': 'https://s
 /** Every URL that gets prerendered and listed in the sitemap. */
 export const staticRoutes = [
   '/',
+  '/about',
+  '/contact',
   '/resume',
   '/how-its-built',
   '/projects',
@@ -58,6 +60,28 @@ export function getPageMeta(pathname: string): PageMeta {
       image: image('home'),
       type: 'profile',
       jsonLd: [withContext(person), withContext({ '@type': 'WebSite', name: site.name, url: site.url })],
+    }
+  }
+
+  if (path === '/about') {
+    return {
+      title: `About | ${site.name}`,
+      description: `About ${site.name}: how I got into software, how I debug and work on a team, the tools I have shipped with, and quick answers for employers.`,
+      path,
+      image: image('home'),
+      type: 'profile',
+      jsonLd: [withContext(person)],
+    }
+  }
+
+  if (path === '/contact') {
+    return {
+      title: `Contact | ${site.name}`,
+      description: `Get in touch with ${site.name} about a junior full-stack role, co-op or internship in Vancouver.`,
+      path,
+      image: image('home'),
+      type: 'website',
+      jsonLd: [withContext(person)],
     }
   }
 

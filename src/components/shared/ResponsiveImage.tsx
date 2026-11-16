@@ -11,6 +11,7 @@ type ResponsiveImageProps = {
   sizes: string
   /** Above-the-fold images load eagerly and are fetched first. */
   priority?: boolean
+  className?: string
 }
 
 // The AVIF copy sits next to each WebP file under the same name.
@@ -22,7 +23,7 @@ const toAvif = (path: string) => path.replace(/\.webp$/, '.avif')
  * download the smaller file. File info comes from src/data/images.json,
  * written by `npm run images`.
  */
-function ResponsiveImage({ src, alt, sizes, priority = false }: ResponsiveImageProps) {
+function ResponsiveImage({ src, alt, sizes, priority = false, className }: ResponsiveImageProps) {
   const info = catalog[src]
   const srcSet = info?.small ? `${info.small.src} ${info.small.width}w, ${src} ${info.width}w` : undefined
   // `sizes` only matters when there is a choice of files.
@@ -49,6 +50,7 @@ function ResponsiveImage({ src, alt, sizes, priority = false }: ResponsiveImageP
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : undefined}
         decoding="async"
+        className={className}
       />
     </picture>
   )

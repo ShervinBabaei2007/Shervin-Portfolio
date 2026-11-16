@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, type FormEvent } from 'react'
-import { CircleAlert, CircleCheck, Send } from 'lucide-react'
+import { CircleAlert, CircleCheck } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
@@ -13,7 +13,7 @@ import {
   FieldSet,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { RadioGroup as RadioGroupPrimitive } from 'radix-ui'
 import { Spinner } from '@/components/ui/spinner'
 import { Textarea } from '@/components/ui/textarea'
 import { contactLimits, contactTopics, emailPattern } from '@/data/contact'
@@ -23,11 +23,14 @@ import { cn } from '@/lib/utils'
 const MESSAGE_MAX = contactLimits.message
 // A field marked invalid turns its inherited text red; typed text stays the normal colour, because red on the dark field is only 4.3:1.
 const FIELD_TEXT = 'text-foreground'
+// Fields sit on the page colour inside the tinted form card.
+const FIELD_BOX = 'rounded-md border-input bg-canvas shadow-none'
 
 type Values = { name: string; email: string; topic: string; message: string }
 type Errors = Partial<Record<keyof Values, string>>
 
-const emptyValues: Values = { name: '', email: '', topic: '', message: '' }
+// The first topic is chosen to start with, the most common reason to write.
+const emptyValues: Values = { name: '', email: '', topic: contactTopics[0], message: '' }
 
 // Returns an error message for each field that is missing or wrong; an empty object means the form is valid.
 function validate({ name, email, topic, message }: Values): Errors {
@@ -41,7 +44,7 @@ function validate({ name, email, topic, message }: Values): Errors {
 }
 
 // Fields in the order they appear on screen, so focus goes to the topmost problem.
-const fieldOrder: (keyof Values)[] = ['name', 'email', 'topic', 'message']
+const fieldOrder: (keyof Values)[] = ['topic', 'name', 'email', 'message']
 // The id to focus for the first invalid field (for the topic, its first radio button).
 const focusId: Record<keyof Values, string> = {
   name: 'contact-name',
@@ -165,8 +168,34 @@ function ContactForm() {
 
   return (
     <form className="flex flex-1 flex-col text-left" noValidate onSubmit={onSubmit}>
-      <FieldGroup className="flex-1 gap-5">
-        <div className="grid items-start gap-5 sm:grid-cols-2">
+      <FieldGroup className="flex-1 gap-6">
+        {/* The topic is a row of pills; underneath they are radio buttons, so arrow keys and screen readers work. */}
+        <FieldSet data-invalid={Boolean(errors.topic)} className="gap-3">
+          <FieldLegend variant="label">What is this about?</FieldLegend>
+          <RadioGroupPrimitive.Root
+            className="flex flex-wrap gap-2"
+            value={values.topic}
+            onValueChange={(value) => update('topic', value)}
+            aria-invalid={Boolean(errors.topic)}
+            aria-describedby={describedBy('topic')}
+            aria-required="true"
+            aria-label="What is this about?"
+          >
+            {contactTopics.map((topic, index) => (
+              <RadioGroupPrimitive.Item
+                key={topic}
+                value={topic}
+                id={`contact-topic-${index}`}
+                className="inline-flex h-10 cursor-pointer items-center rounded-full border border-foreground/25 bg-transparent px-4 text-[15px] text-foreground transition-colors hover:border-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground data-[state=checked]:text-background pointer-coarse:h-11"
+              >
+                {topic}
+              </RadioGroupPrimitive.Item>
+            ))}
+          </RadioGroupPrimitive.Root>
+          {errors.topic && <FieldError id="contact-topic-error">{errors.topic}</FieldError>}
+        </FieldSet>
+
+        <div className="grid items-start gap-4 sm:grid-cols-2">
           <Field data-invalid={Boolean(errors.name)}>
             <FieldLabel htmlFor="contact-name">Name</FieldLabel>
             <Input
@@ -177,7 +206,7 @@ function ContactForm() {
               onBlur={() => check('name')}
               maxLength={contactLimits.name}
               autoComplete="name"
-              className={cn(FIELD_TEXT, 'h-11')}
+              className={cn(FIELD_TEXT, FIELD_BOX, 'h-12')}
               aria-invalid={Boolean(errors.name)}
               aria-describedby={describedBy('name')}
               aria-required="true"
@@ -191,13 +220,12 @@ function ContactForm() {
               id="contact-email"
               name="email"
               type="email"
-              placeholder="you@company.com"
               value={values.email}
               onChange={(event) => update('email', event.target.value)}
               onBlur={() => check('email')}
               maxLength={contactLimits.email}
               autoComplete="email"
-              className={cn(FIELD_TEXT, 'h-11')}
+              className={cn(FIELD_TEXT, FIELD_BOX, 'h-12')}
               aria-invalid={Boolean(errors.email)}
               aria-describedby={describedBy('email')}
               aria-required="true"
@@ -206,50 +234,27 @@ function ContactForm() {
           </Field>
         </div>
 
-        <FieldSet data-invalid={Boolean(errors.topic)}>
-          <FieldLegend variant="label">What is this about?</FieldLegend>
-          <RadioGroup
-            className="flex flex-wrap gap-x-6 gap-y-2"
-            value={values.topic}
-            onValueChange={(value) => update('topic', value)}
-            aria-invalid={Boolean(errors.topic)}
-            aria-describedby={describedBy('topic')}
-            aria-required="true"
-          >
-            {contactTopics.map((topic, index) => (
-              <Field className="w-auto" key={topic} orientation="horizontal">
-                <RadioGroupItem value={topic} id={`contact-topic-${index}`} aria-invalid={Boolean(errors.topic)} />
-                <FieldLabel className="font-normal" htmlFor={`contact-topic-${index}`}>
-                  {topic}
-                </FieldLabel>
-              </Field>
-            ))}
-          </RadioGroup>
-          {errors.topic && <FieldError id="contact-topic-error">{errors.topic}</FieldError>}
-        </FieldSet>
-
         <Field className="flex-1" data-invalid={Boolean(errors.message)}>
-          <FieldLabel htmlFor="contact-message">Message</FieldLabel>
+          <div className="flex items-baseline justify-between gap-3">
+            <FieldLabel htmlFor="contact-message">Message</FieldLabel>
+            <FieldDescription className="shrink-0 font-mono text-[13px]" aria-live="off">
+              {values.message.length} / {MESSAGE_MAX}
+            </FieldDescription>
+          </div>
           <Textarea
             id="contact-message"
             name="message"
             value={values.message}
             onChange={(event) => update('message', event.target.value)}
             onBlur={() => check('message')}
-            className={cn(FIELD_TEXT, 'field-sizing-fixed min-h-32 flex-1')}
-            placeholder="Tell me what you're building"
+            className={cn(FIELD_TEXT, FIELD_BOX, 'field-sizing-fixed min-h-[168px] flex-1')}
             maxLength={MESSAGE_MAX}
-            rows={4}
+            rows={6}
             aria-invalid={Boolean(errors.message)}
             aria-describedby={describedBy('message')}
             aria-required="true"
           />
-          <div className="flex items-start justify-between gap-3">
-            {errors.message ? <FieldError id="contact-message-error">{errors.message}</FieldError> : <span />}
-            <FieldDescription className="shrink-0 font-mono text-label" aria-live="off">
-              {values.message.length} / {MESSAGE_MAX}
-            </FieldDescription>
-          </div>
+          {errors.message && <FieldError id="contact-message-error">{errors.message}</FieldError>}
         </Field>
 
         {/* Honeypot for bots; hidden from people and assistive tech. */}
@@ -269,23 +274,23 @@ function ContactForm() {
           </Alert>
         )}
 
-        <Button
-          type="submit"
-          disabled={status === 'sending'}
-          aria-busy={status === 'sending'}
-          className="h-12 w-full text-base font-semibold"
-        >
-          {status === 'sending' ? (
-            <>
-              <Spinner aria-hidden="true" role="presentation" /> Sending…
-            </>
-          ) : (
-            <>
-              Send message <Send aria-hidden="true" />
-            </>
-          )}
-        </Button>
-        <p className="-mt-1 text-center text-sm text-muted-foreground">I reply within two business days.</p>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+          <Button
+            type="submit"
+            disabled={status === 'sending'}
+            aria-busy={status === 'sending'}
+            className="h-12 rounded-full bg-foreground px-6 text-base text-background hover:bg-primary-fill hover:text-primary-foreground"
+          >
+            {status === 'sending' ? (
+              <>
+                <Spinner aria-hidden="true" role="presentation" /> Sending…
+              </>
+            ) : (
+              'Send message'
+            )}
+          </Button>
+          <p className="m-0 text-[15px] text-muted-foreground">I reply within two business days.</p>
+        </div>
       </FieldGroup>
     </form>
   )

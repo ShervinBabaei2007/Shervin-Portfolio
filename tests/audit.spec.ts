@@ -59,14 +59,6 @@ test.describe('accessibility in the states a visitor can reach', () => {
     await expect(page.getByRole('navigation', { name: 'Mobile navigation' })).toBeVisible()
     expect(await violations(page)).toEqual([])
   })
-
-  test('Quick look, open', async ({ page }) => {
-    await page.goto('/')
-    await hydrated(page)
-    await page.locator('button', { hasText: 'Quick look' }).first().click()
-    await expect(page.getByRole('dialog')).toBeVisible()
-    expect(await violations(page)).toEqual([])
-  })
 })
 
 test.describe('the whole site', () => {
@@ -180,7 +172,7 @@ test.describe('keyboard only', () => {
   })
 
   test('a form field shows a clear focus indicator', async ({ page }) => {
-    await page.goto('/#contact')
+    await page.goto('/contact')
     await hydrated(page)
     await page.getByLabel('Name').focus()
     const indicator = await page.evaluate(() => {
@@ -208,7 +200,7 @@ test.describe('command palette', () => {
     await expect(page).toHaveURL(/\/writeups\/fetching-links-you-dont-trust$/)
   })
 
-  test('finds a skill and filters the work by it', async ({ page }) => {
+  test('finds a skill and opens the first project that uses it', async ({ page }) => {
     await page.goto('/')
     await hydrated(page)
     await page.waitForLoadState('networkidle')
@@ -217,11 +209,7 @@ test.describe('command palette', () => {
     await expect(dialog).toBeVisible()
     await page.keyboard.type('Redis')
     await dialog.getByRole('option', { name: /^Redis/ }).click()
-    await expect(page.getByText('Showing projects that use')).toBeVisible()
-    await expect(page.locator('#work')).toBeInViewport()
-    // A reload does not apply the skill a second time.
-    await page.reload()
-    await expect(page.getByText('Showing projects that use')).toHaveCount(0)
+    await expect(page).toHaveURL(/\/work\/[\w-]+$/)
   })
 })
 
@@ -229,7 +217,7 @@ test.describe('contact', () => {
   test('the email can be copied, with confirmation', async ({ browser }) => {
     const context = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'] })
     const page = await context.newPage()
-    await page.goto('/#contact')
+    await page.goto('/contact')
     await hydrated(page)
     await page.getByRole('button', { name: 'Copy email' }).click()
     await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
@@ -240,7 +228,7 @@ test.describe('contact', () => {
 
   test('a dropped connection gets a plain message and a way to email instead', async ({ page }) => {
     await page.route('**/api/contact', (route) => route.abort())
-    await page.goto('/#contact')
+    await page.goto('/contact')
     await hydrated(page)
     await page.getByLabel('Name').fill('Test Person')
     await page.locator('#contact-email').fill('test@example.com')
@@ -255,31 +243,17 @@ test.describe('contact', () => {
   })
 })
 
-test.describe('resilience', () => {
-  test('if Quick look cannot load, a message appears and the page stays intact', async ({ page }) => {
-    await page.route(/\/assets\/CaseStudySheet-[\w-]+\.js$/, (route) => route.abort())
-    await page.goto('/')
-    await hydrated(page)
-    const button = page.locator('button', { hasText: 'Quick look' }).first()
-    await button.click()
-    await expect(page.getByText('Quick look could not load')).toBeVisible()
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-    await expect(button).toHaveAttribute('aria-busy', 'false')
-  })
-})
-
 test.describe('theme colour', () => {
   test('the browser bar colour follows the theme', async ({ page }) => {
     const themeColor = () => page.locator('meta[name="theme-color"]').getAttribute('content')
     await page.goto('/')
     await hydrated(page)
-    expect(await themeColor()).toBe('#1b1a18')
-    await page.getByRole('button', { name: 'Settings' }).click()
-    await page.getByRole('menuitemradio', { name: 'Light' }).click()
-    await expect.poll(themeColor).toBe('#fbf8f1')
+    expect(await themeColor()).toBe('#f3f0ea')
+    await page.getByRole('button', { name: 'Switch to dark theme' }).click()
+    await expect.poll(themeColor).toBe('#1b1a18')
     // And it is right from the first paint after a reload, before the app starts.
     await page.reload()
-    expect(await themeColor()).toBe('#fbf8f1')
+    expect(await themeColor()).toBe('#1b1a18')
   })
 })
 
@@ -294,9 +268,13 @@ test.describe('small controls on touch screens', () => {
     expect(copyCode!.height).toBeGreaterThanOrEqual(43.5)
     await page.goto('/projects')
     await hydrated(page)
-    const repoLink = await page.locator('[data-more-repos] a').first().boundingBox()
-    expect(repoLink!.height).toBeGreaterThanOrEqual(43.5)
-    await page.goto('/#contact')
+    const filter = await page
+      .getByRole('group', { name: 'Filter projects by type' })
+      .getByRole('button')
+      .first()
+      .boundingBox()
+    expect(filter!.height).toBeGreaterThanOrEqual(43.5)
+    await page.goto('/contact')
     await hydrated(page)
     const copyEmail = await page.getByRole('button', { name: 'Copy email' }).boundingBox()
     expect(copyEmail!.height).toBeGreaterThanOrEqual(43.5)
@@ -325,14 +303,14 @@ test.describe('animation', () => {
 
     await page.goto('/')
     await hydrated(page)
-    // At the top of the page the globe (Contact) is far below the screen.
-    await page.waitForTimeout(800)
-    expect(await frames(600)).toBeLessThan(8)
+    // At the top of the page the hero's ASCII field is on screen and animates (it starts once the browser is idle).
+    await page.waitForTimeout(1500)
+    expect(await frames(600)).toBeGreaterThan(10)
 
-    // Scrolled to the Contact section, the globe is on screen and animates.
+    // Scrolled down to Contact, the field is off screen and stops asking for frames.
     await page.locator('#contact-title').scrollIntoViewIfNeeded()
     await page.waitForTimeout(500)
-    expect(await frames(600)).toBeGreaterThan(10)
+    expect(await frames(600)).toBeLessThan(8)
   })
 })
 

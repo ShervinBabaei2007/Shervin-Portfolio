@@ -13,8 +13,9 @@ const outDir = resolve(root, 'public/og')
 mkdirSync(outDir, { recursive: true })
 
 const logoUrl = `data:image/svg+xml;base64,${readFileSync(resolve(root, 'public/logo.svg')).toString('base64')}`
-const dmSansUrl = fontUrl('@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2')
-const dmMonoUrl = fontUrl('@fontsource/dm-mono/files/dm-mono-latin-400-normal.woff2')
+const displayUrl = fontUrl('@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2')
+const bodyUrl = fontUrl('@fontsource-variable/geist/files/geist-latin-wght-normal.woff2')
+const monoUrl = fontUrl('@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2')
 
 /** Escapes the two characters that could break the HTML of a card. */
 const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -28,9 +29,9 @@ function titleSize(title) {
 
 /** The full HTML page for one share image. */
 const card = ({ kicker, title, subtitle, result }) => `<!doctype html><html><head><style>
-@font-face { font-family: Display; src: url('${dmSansUrl}'); font-weight: 100 1000; }
-@font-face { font-family: Body; src: url('${dmSansUrl}'); font-weight: 100 1000; }
-@font-face { font-family: Mono; src: url('${dmMonoUrl}'); }
+@font-face { font-family: Display; src: url('${displayUrl}'); font-weight: 200 800; }
+@font-face { font-family: Body; src: url('${bodyUrl}'); font-weight: 100 900; }
+@font-face { font-family: Mono; src: url('${monoUrl}'); font-weight: 100 800; }
 * { box-sizing: border-box; margin: 0; }
 body { width: 1200px; height: 630px; padding: 72px 84px; display: flex; flex-direction: column;
   color: #f4efe4; font-family: Body, sans-serif;
@@ -43,7 +44,7 @@ body { width: 1200px; height: 630px; padding: 72px 84px; display: flex; flex-dir
 .kicker { color: #a59e91; font: 22px Mono; }
 h1 { margin-top: auto; max-width: 960px; font: 600 ${titleSize(title)}px/1.04 Display; letter-spacing: -.02em; }
 p { margin-top: 22px; max-width: 960px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: #a59e91; font-size: 30px; line-height: 1.35; }
-.result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #8ca3ff; background: #242220; font: 600 26px Body; }
+.result { display: inline-block; margin-top: 34px; padding: 12px 18px; border-left: 6px solid #e0784f; background: #242220; font: 600 26px Body; }
 .foot { display: flex; justify-content: space-between; margin-top: 40px; color: #a59e91; font: 20px Mono; }
 </style></head><body>
 <div class="top"><div class="mark"><img src="${logoUrl}" alt="" /></div><span class="kicker">${escape(kicker)}</span></div>

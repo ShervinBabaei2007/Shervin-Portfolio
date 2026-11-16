@@ -1,28 +1,28 @@
 <!doctype html>
-<html lang="en-CA" data-theme="dark">
+<html lang="en-CA" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#1b1a18" />
+    <meta name="theme-color" content="#f3f0ea" />
     <script>
-      // Apply the theme before first paint so there is no flash. Dark is the default. Mirrors src/hooks/useTheme.ts.
+      // Apply the theme before first paint so there is no flash. Light is the default. Mirrors src/hooks/useTheme.ts.
       try {
         var pref = localStorage.getItem('color-scheme')
         var scheme =
-          pref === 'light'
-            ? 'light'
+          pref === 'dark'
+            ? 'dark'
             : pref === 'system'
               ? matchMedia('(prefers-color-scheme: dark)').matches
                 ? 'dark'
                 : 'light'
-              : 'dark'
+              : 'light'
         var root = document.documentElement
         root.setAttribute('data-theme', scheme)
         document.querySelector('meta[name="color-scheme"]').content = scheme
-        document.querySelector('meta[name="theme-color"]').content = scheme === 'dark' ? '#1b1a18' : '#fbf8f1'
+        document.querySelector('meta[name="theme-color"]').content = scheme === 'dark' ? '#1b1a18' : '#f3f0ea'
       } catch (e) {
-        document.documentElement.setAttribute('data-theme', 'dark')
+        document.documentElement.setAttribute('data-theme', 'light')
       }
     </script>
     <link rel="icon" href="/favicon.ico" sizes="48x48" />

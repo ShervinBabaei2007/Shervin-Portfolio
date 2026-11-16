@@ -15,12 +15,12 @@ Stack: React Router 6, Tailwind CSS 4, shadcn/ui (new-york, zinc) + Radix, Motio
 
 ## Architecture
 
-- `src/routes.ts` is the single route table. Each page is a lazy chunk with `path`, `source` (used for modulepreload) and `Component`; `pageForPath()` is shared by the client, SSR and the prerenderer. Routes: `/`, `/work/:slug`, `/projects`, `/writeups`, `/writeups/:slug`, `/lab`, `/resume`, `/how-its-built`, `*`.
+- `src/routes.ts` is the single route table. Each page is a lazy chunk with `path`, `source` (used for modulepreload) and `Component`; `pageForPath()` is shared by the client, SSR and the prerenderer. Routes: `/`, `/about`, `/contact`, `/work/:slug`, `/projects`, `/writeups`, `/writeups/:slug`, `/lab`, `/resume`, `/how-its-built`, `*`.
 - `src/main.tsx` preloads the current route's chunk, then hydrates; other pages and monitoring load when idle. `src/App.tsx` is the shell (header, footer, error boundary, Suspense, page transition, lazy toaster).
 - Prerender pipeline: `src/entry-server.tsx` renders HTML and `<head>` tags from `src/seo.ts` (`getPageMeta`, `staticRoutes`); `scripts/prerender.mjs` writes `dist/<route>.html`, `404.html`, `sitemap.xml`, `robots.txt`, adds modulepreloads, and defers the entry script.
 - `src/data/` holds all content: `site.ts` (site facts, GitHub user, availability), `projects.ts`, `notes.ts` (writeups), `facts.ts`, `skills.ts`, `resume.ts`, `repos.ts`. Generated: `github.json`, `github-commits.json`, `repos.json`.
 - Components: `src/components/home` (home sections), `shared` (site-wide pieces), `ui` (shadcn). Hooks in `src/hooks`, helpers in `src/lib` (`githubCommits.ts` is shared by the browser and the build script).
-- State is local React state; there is no global store. Theme is in `hooks/useTheme.ts` (dark by default, `color-scheme` in localStorage).
+- State is local React state; there is no global store. Theme is in `hooks/useTheme.ts` (light by default, `color-scheme` in localStorage).
 - `api/` has two Vercel Functions: `contact.ts` (POST, sends mail through Resend; env `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, optional `CONTACT_FROM_EMAIL`, `UPSTASH_REDIS_REST_URL`/`_TOKEN` for a shared rate limit) and `github-commits.ts` (GET, cached 15 min; optional `GITHUB_TOKEN`).
 - `vercel.json`: clean URLs, redirect from the vercel.app host, `/notes` -> `/writeups`, security and cache headers.
 - `.github/workflows/sync-repos.yml` refreshes `repos.json` weekly and keeps an issue of repos worth featuring.
@@ -28,7 +28,7 @@ Stack: React Router 6, Tailwind CSS 4, shadcn/ui (new-york, zinc) + Radix, Motio
 ## Conventions and gotchas
 
 - Add a project or writeup by editing `src/data/projects.ts` or `notes.ts`; routes, SEO, sitemap and prerender pick it up through `staticRoutes`. A new page needs an entry in `routes.ts` and a case in `getPageMeta` in `seo.ts`.
-- Keep the first render identical to the server render. Do not read `window` or localStorage during render; read after mount (see `useTheme`, `GitHubActivity`). Use the guarded `useLayoutEffect` pattern from `HomePage`.
+- Keep the first render identical to the server render. Do not read `window` or localStorage during render; read after mount (see `useTheme`, `useVancouverClock`).
 - Do not hand-edit the generated JSON in `src/data/` (`github*.json`, `repos.json`).
 - The GitHub username is duplicated in `src/data/site.ts` and `api/github-commits.ts` (a Vercel function can't import from `src/`); change both. `tests/github-api.spec.ts` fails if they drift.
 - `src/components/ui/**` is shadcn output and is excluded from lint. Use the `@/` alias for imports from `src`.

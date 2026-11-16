@@ -25,37 +25,42 @@ const hydrated = (page: Page) =>
     Object.keys(document.getElementById('root') ?? {}).some((key) => key.startsWith('__reactContainer')),
   )
 
-test('hero states the role and offers two ways to act: the work, and the resume PDF on small screens', async ({
-  page,
-}) => {
+test('hero states the role and offers two ways to act: the work, and the resume PDF', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Shervin Babaei')
-  await expect(page.locator('#home h2').first()).toContainText('Full-stack developer')
-  await expect(page.locator('#home')).toContainText('Open to junior, co-op and internship roles')
-  await expect(page.locator('#home').getByRole('link', { name: 'See my projects' })).toHaveAttribute('href', '/#work')
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Full-stack developer who goes down the stack.' }),
+  ).toBeVisible()
+  await expect(page.locator('#home')).toContainText('whoami → shervin babaei')
+  await expect(page.locator('#home')).toContainText('Open to work')
+  await expect(page.locator('#home').getByRole('link', { name: /See selected work/ })).toHaveAttribute('href', '/#work')
   await expect(page.locator('#home')).not.toContainText('shervinb22')
-  // One Resume button at a time: the header's on wide screens, the hero's below 960px.
-  const heroResume = page.locator('#home').getByRole('link', { name: 'Download resume (PDF)' })
+  await expect(page.locator('#home').getByRole('link', { name: 'Download resume (PDF)' })).toHaveAttribute(
+    'href',
+    '/Shervin-Babaei-Resume.pdf',
+  )
+  // The header's Resume link shows from 960px up; below that it is in the phone menu.
   await page.setViewportSize({ width: 800, height: 900 })
-  await expect(heroResume).toHaveAttribute('href', '/Shervin-Babaei-Resume.pdf')
   await expect(page.getByRole('banner').getByRole('link', { name: 'Download resume (PDF)' })).toBeHidden()
   await page.setViewportSize({ width: 1280, height: 800 })
-  await expect(heroResume).toBeHidden()
   await expect(page.getByRole('banner').getByRole('link', { name: 'Download resume (PDF)' })).toBeVisible()
-  await expect(page.locator('#home').getByRole('link', { name: 'View resume' })).toHaveCount(0)
-  await expect(page.getByRole('list', { name: 'Highlights' })).toHaveCount(0)
-  await expect(page.getByLabel('At a glance').getByRole('link', { name: /36 teams/ })).toHaveAttribute(
-    'href',
-    '/work/gitscribe',
-  )
+  await expect(page.locator('#home > dl dd')).toHaveText([String(projects.length), 'Top 6 of 36', '1,564'])
 })
 
-test('the commit history card shows merged PRs and active days, with no streak', async ({ page }) => {
+test('the status card shows the live Vancouver time after load, and I toggles inspect mode', async ({ page }) => {
   await page.goto('/')
-  const card = page.locator('[data-github]')
-  await expect(card.getByText('PRs merged', { exact: true })).toBeVisible()
-  await expect(card.getByText('Active days', { exact: true })).toBeVisible()
-  await expect(card.getByText('Longest streak')).toHaveCount(0)
+  await hydrated(page)
+  await expect(page.locator('#home time')).toHaveText(/^\d{2}:\d{2}:\d{2}$/)
+  const button = page.locator('#home button[aria-pressed]')
+  await expect(button).toHaveAttribute('aria-pressed', 'false')
+  await page.keyboard.press('i')
+  await expect(page.getByRole('status').filter({ hasText: 'Inspect mode' })).toBeVisible()
+  await page.locator('#hero-title').hover()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('status').filter({ hasText: 'Inspect mode' })).toHaveCount(0)
+  await button.click()
+  await expect(button).toHaveAttribute('aria-pressed', 'true')
+  await page.getByRole('button', { name: 'Exit · Esc' }).click()
+  await expect(button).toHaveAttribute('aria-pressed', 'false')
 })
 
 test('pages are prerendered with content, metadata, and a PNG share image', async ({ request }) => {
@@ -89,70 +94,55 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
   expect(errors).toEqual([])
 })
 
-test('home shows four flagships and links to the full projects page', async ({ page }) => {
+test('home shows the four flagships in a two-by-two grid and links to the full projects page', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(
-    Math.min(4, flagshipProjects.length),
-  )
-  await expect(page.getByRole('heading', { name: 'More projects' })).toHaveCount(0)
-  await expect(page.getByText('Illustrative interface preview')).toHaveCount(0)
-  await page.getByRole('link', { name: /View all projects/ }).click()
+  const cards = page
+    .locator('#work')
+    .getByRole('link')
+    .filter({ has: page.getByRole('heading', { level: 3 }) })
+  await expect(cards).toHaveCount(flagshipProjects.length)
+  await expect(cards.first()).toHaveAttribute('href', `/work/${flagshipProjects[0].slug}`)
+  await page.getByRole('link', { name: `All ${projects.length} projects` }).click()
   await expect(page).toHaveURL(/\/projects$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Everything')
   await expect(page.locator('[data-project-card]')).toHaveCount(projects.length)
 })
 
-test('project cards hide the technical stack in a drawer and only live projects say Launch Live App', async ({
-  page,
-}) => {
-  await page.goto('/projects')
-  await page.waitForLoadState('networkidle')
-  const cards = page.locator('[data-project-card]')
-  await expect(cards.filter({ has: page.getByRole('link', { name: 'Launch Live App' }) })).toHaveCount(
-    projects.filter((project) => project.live).length,
-  )
-  const first = cards.first()
-  const trigger = first.getByRole('button', { name: 'Technical Architecture & Stack' })
-  await expect(trigger).toHaveAttribute('aria-expanded', 'false')
-  await expect(first.getByRole('list', { name: 'Stack' })).toHaveCount(0)
-  await trigger.click()
-  await expect(trigger).toHaveAttribute('aria-expanded', 'true')
-  await expect(first.getByRole('list', { name: 'Stack' })).toBeVisible()
-})
-
-test('opening a technical drawer does not resize the card beside it', async ({ page }) => {
-  for (const path of ['/', '/projects']) {
-    await page.goto(path)
-    await page.waitForLoadState('networkidle')
-    const cards = page.locator('[data-project-card]')
-    const height = async (index: number) => Math.round((await cards.nth(index).boundingBox())!.height)
-    const neighbour = await height(1)
-    await cards.first().getByRole('button', { name: 'Technical Architecture & Stack' }).click()
-    await expect(cards.first().getByRole('list', { name: 'Stack' })).toBeVisible()
-    expect(await height(1)).toBe(neighbour)
-  }
-})
-
-test('the header lists only Work, About and Contact; Settings holds only the theme choices', async ({ page }) => {
+test('the About page tells the story, lists the tools, and answers employer questions', async ({ page }) => {
   await page.goto('/')
-  const links = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link')
-  await expect(links).toHaveText(['Work', 'About', 'Contact'])
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'About' }).click()
+  await expect(page).toHaveURL(/\/about$/)
+  await expect(page).toHaveTitle(/^About \|/)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('has never been enough for me')
+  await expect(page.locator('#story-title ~ *, section h3').filter({ hasText: 'How I debug' }).first()).toBeVisible()
+  await expect(page.getByText(`Used in ${projects.length} of ${projects.length} projects`)).toBeVisible()
   await hydrated(page)
-  await page.getByRole('button', { name: 'Settings' }).click()
-  await expect(page.getByRole('menuitemradio')).toHaveText(['Light', 'Dark', 'System'])
-  await expect(page.getByRole('menuitem')).toHaveCount(0)
+  const photos = page.getByRole('group', { name: 'Choose a photo' }).getByRole('button')
+  await expect(photos).toHaveCount(3)
+  await photos.nth(1).click()
+  await expect(photos.nth(1)).toHaveAttribute('aria-pressed', 'true')
+  const first = page.getByRole('button', { name: 'Are you available, and where?' })
+  await expect(first).toHaveAttribute('aria-expanded', 'true')
+  await page.getByRole('button', { name: 'Have you worked with AI?' }).click()
+  await expect(first).toHaveAttribute('aria-expanded', 'false')
 })
 
-test('the projects page has a Writeups button beside the heading that opens the writeups page', async ({ page }) => {
-  await page.goto('/projects')
-  await page.getByRole('link', { name: /^Writeups/ }).click()
+test('home lists three writeups and links to all of them', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('#writeups li')).toHaveCount(3)
+  await page.getByRole('link', { name: `All ${notes.length} writeups` }).click()
   await expect(page).toHaveURL(/\/writeups$/)
 })
 
-test('the writeups page has a back button to the projects page', async ({ page }) => {
-  await page.goto('/writeups')
-  await page.getByRole('link', { name: /Back to projects/ }).click()
-  await expect(page).toHaveURL(/\/projects$/)
+test('the header lists Work, Writeups, Lab, About and Contact, and one click flips the theme', async ({ page }) => {
+  await page.goto('/')
+  const links = page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link')
+  await expect(links).toHaveText(['Work', 'Writeups', 'Lab', 'About', 'Contact'])
+  await hydrated(page)
+  await page.waitForLoadState('networkidle')
+  await page.getByRole('button', { name: 'Switch to dark theme' }).click()
+  await expect(page.getByRole('button', { name: 'Switch to light theme' })).toBeVisible()
+  await expect(page.getByRole('menu')).toHaveCount(0)
 })
 
 test('projects with no screenshots show a labelled illustration that loads', async ({ page }) => {
@@ -173,14 +163,6 @@ test('projects with no screenshots show a labelled illustration that loads', asy
   }
 })
 
-test('skills do not rank or rate anything', async ({ page }) => {
-  await page.goto('/')
-  const skills = page.locator('#skills')
-  await expect(skills).not.toContainText('Exploring')
-  await expect(skills.getByText('Core', { exact: true })).toHaveCount(0)
-  await expect(skills.locator('[role="progressbar"]')).toHaveCount(0)
-})
-
 test('old /notes links redirect to /writeups in the Vercel config', async () => {
   const { redirects } = JSON.parse(readFileSync('vercel.json', 'utf8'))
   expect(redirects).toContainEqual({ source: '/notes/:slug', destination: '/writeups/:slug', permanent: true })
@@ -188,7 +170,7 @@ test('old /notes links redirect to /writeups in the Vercel config', async () => 
 
 test('case study is a shareable page with team context, code, and trade-off', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('link', { name: 'SkillMatch case study' }).click()
+  await page.locator('#work a[href="/work/skillmatch"]').click()
   await expect(page).toHaveURL(/\/work\/skillmatch$/)
   await expect(page).toHaveTitle('SkillMatch case study | Shervin Babaei')
   await expect(page.getByRole('heading', { level: 1, name: 'SkillMatch' })).toBeVisible()
@@ -211,7 +193,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
 
 test('the lab is its own page and linked from home', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('link', { name: /Try the rate-limiter lab/ }).click()
+  await page.getByRole('link', { name: /Open the full lab/ }).click()
   await expect(page).toHaveURL(/\/lab$/)
   await expect(page.getByRole('heading', { level: 1, name: /Break the assumption/ })).toBeVisible()
   await expect(page.locator('[data-limiter-demo]')).toBeVisible()
@@ -265,7 +247,7 @@ test('toasts still appear even though the toast container loads after idle', asy
 })
 
 // The header also has an "Email" link, so look inside the form.
-const contactForm = (page: Page) => page.locator('#contact form')
+const contactForm = (page: Page) => page.locator('main form')
 
 /** Fills every contact field with valid values; pass 'topic' to leave the topic unchosen. */
 const fillContact = async (page: Page, skip?: 'topic') => {
@@ -277,7 +259,7 @@ const fillContact = async (page: Page, skip?: 'topic') => {
 
 test.describe('contact form', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/contact')
     await page.waitForLoadState('networkidle')
   })
 
@@ -290,7 +272,7 @@ test.describe('contact form', () => {
     await page.getByRole('button', { name: 'Send message' }).click()
     await expect(page.getByText('Enter your name.')).toBeVisible()
     await expect(page.getByText('Enter an email address I can reply to.')).toBeVisible()
-    await expect(page.getByText('Choose what this is about.')).toBeVisible()
+    await expect(page.getByText('Choose what this is about.')).toHaveCount(0)
     await expect(page.getByText('Write a short message so I know how to help.')).toBeVisible()
     await expect(contactForm(page).getByLabel('Name', { exact: true })).toBeFocused()
     await expect(contactForm(page).getByLabel('Name', { exact: true })).toHaveAttribute('aria-invalid', 'true')
@@ -301,12 +283,11 @@ test.describe('contact form', () => {
     await expect(page.getByText('Enter your name.')).toBeHidden()
   })
 
-  test('asks for a topic next to the topic field, not in a toast', async ({ page }) => {
-    await fillContact(page, 'topic')
-    await page.getByRole('button', { name: 'Send message' }).click()
-    await expect(page.getByText('Choose what this is about.')).toBeVisible()
-    await expect(page.getByText('Pick a topic first')).toHaveCount(0)
-    await expect(page.getByRole('radio', { name: 'Job Opportunity' })).toBeFocused()
+  test('starts with the first topic chosen, and the topic pills are radio buttons', async ({ page }) => {
+    await expect(page.getByRole('radio', { name: 'Job Opportunity' })).toHaveAttribute('aria-checked', 'true')
+    await page.getByRole('radio', { name: 'General Inquiry' }).click()
+    await expect(page.getByRole('radio', { name: 'General Inquiry' })).toHaveAttribute('aria-checked', 'true')
+    await expect(page.getByRole('radio', { name: 'Job Opportunity' })).toHaveAttribute('aria-checked', 'false')
   })
 
   test('rejects an email that is not an email address', async ({ page }) => {
@@ -357,7 +338,7 @@ test.describe('contact form', () => {
     await page.getByRole('button', { name: 'Send message' }).click()
     await expect(page.getByText('Enter your name.')).toBeVisible()
     const results = await new AxeBuilder({ page })
-      .include('#contact')
+      .include('main form')
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
       .analyze()
     expect(results.violations.map((violation) => `${violation.id} (${violation.nodes.length})`)).toEqual([])
@@ -387,20 +368,6 @@ test('the phone menu button shows it is busy while the menu code is still loadin
   await button.click()
   await expect(button).toHaveAttribute('aria-busy', 'true')
   await expect(page.getByRole('navigation', { name: 'Mobile navigation' })).toBeVisible({ timeout: 5000 })
-  await expect(button).toHaveAttribute('aria-busy', 'false')
-})
-
-test('Quick look shows it is busy while its panel is still loading', async ({ page }) => {
-  await page.route(/\/assets\/CaseStudySheet-[\w-]+\.js$/, async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    await route.continue()
-  })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const button = page.locator('button', { hasText: 'Quick look' }).first()
-  await button.click()
-  await expect(button).toHaveAttribute('aria-busy', 'true')
-  await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5000 })
   await expect(button).toHaveAttribute('aria-busy', 'false')
 })
 
@@ -448,12 +415,12 @@ test.describe('copy buttons', () => {
 })
 
 test('a slow page change shows a progress bar, and a fast one does not', async ({ page }) => {
-  await page.route(/\/assets\/HomePage-[\w-]+\.js$/, async (route) => {
+  await page.route(/\/assets\/ContactPage-[\w-]+\.js$/, async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 1500))
     await route.continue()
   })
   await page.goto('/writeups')
-  // No waiting for the network to go quiet: the delayed home chunk is already being fetched and would finish first.
+  // No waiting for the network to go quiet: the delayed contact chunk is already being fetched and would finish first.
   await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
   await hydrated(page)
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
@@ -466,11 +433,11 @@ test('a slow page change shows a progress bar, and a fast one does not', async (
   await expect(page).toHaveURL(/\/resume$/)
   await expect(bar).toHaveCount(0)
 
-  // The home page's code takes 1.5 s: the bar appears while we wait, and goes once the page is shown.
+  // The Contact page's code takes 1.5 s: the bar appears while we wait, and goes once the page is shown.
   await nav.getByRole('link', { name: 'Contact' }).click()
   await expect(bar).toBeVisible({ timeout: 1200 })
   await expect(page.getByRole('status').filter({ hasText: 'Loading page' })).toBeAttached()
-  await expect(page).toHaveURL(/\/#contact$/, { timeout: 5000 })
+  await expect(page).toHaveURL(/\/contact$/, { timeout: 5000 })
   await expect(bar).toHaveCount(0)
 })
 
@@ -482,7 +449,7 @@ test.describe('typography', () => {
   ] as const) {
     test(`no visible text is under ${minimum}px on ${name}, and only the site fonts are used`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })
-      for (const path of ['/', '/work/skillmatch', '/work/mini-rpg-battle', '/resume', '/writeups', '/lab']) {
+      for (const path of ['/', '/about', '/work/skillmatch', '/work/mini-rpg-battle', '/resume', '/writeups', '/lab']) {
         await page.goto(path)
         await page.waitForLoadState('networkidle')
         await page.evaluate(() => document.fonts.ready)
@@ -501,10 +468,12 @@ test.describe('typography', () => {
             const size = parseFloat(style.fontSize)
             const family = style.fontFamily.split(',')[0].replace(/["']/g, '')
             if (size < min) problems.push(`${size}px "${text.slice(0, 30)}"`)
-            if (!['DM Sans Variable', 'DM Mono'].includes(family))
+            if (!['Geist Variable', 'Bricolage Grotesque Variable', 'JetBrains Mono Variable'].includes(family))
               problems.push(`font ${family} "${text.slice(0, 30)}"`)
           }
-          const loaded = document.fonts.check('16px "DM Sans Variable"') && document.fonts.check('16px "DM Mono"')
+          const loaded = ['Geist Variable', 'Bricolage Grotesque Variable', 'JetBrains Mono Variable'].every((font) =>
+            document.fonts.check(`16px "${font}"`),
+          )
           return loaded ? problems : [...problems, 'site fonts not loaded']
         }, minimum)
         expect(found, `${path} on ${name}`).toEqual([])
@@ -514,9 +483,7 @@ test.describe('typography', () => {
 })
 
 test.describe('reading width', () => {
-  // DM Sans digits are wide, so a "ch" cap runs long: 70ch was 862px, over 100 characters a line.
   // Body text is about 740px and the 19px lead line under a case-study title about 780px, so 800px has room.
-  // The closing card is skipped on purpose: it spans the page and holds one-line text, not prose.
   // Case studies and writeups are skipped too: case studies run the full width of the page and writeups use a centred column (see the tests below).
   for (const width of [1440, 2560]) {
     test(`long prose stays under 800px wide at ${width}px`, async ({ page }) => {
@@ -528,10 +495,7 @@ test.describe('reading width', () => {
           [...document.querySelectorAll('main p, main li:not(:has(p))')]
             .filter(
               (element) =>
-                (element.textContent ?? '').trim().length >= 70 &&
-                !element.closest(
-                  'pre, [aria-hidden="true"], #closing-cta-title + p, section[aria-labelledby="closing-cta-title"]',
-                ),
+                (element.textContent ?? '').trim().length >= 70 && !element.closest('pre, [aria-hidden="true"]'),
             )
             .map((element) => ({
               width: Math.round(element.getBoundingClientRect().width),
@@ -596,7 +560,7 @@ test('body text lines stay under about 120 characters on case studies and writeu
   }
 })
 
-test('writeups are centred, their header spans the page, and the closing card still has room', async ({ page }) => {
+test('writeups are centred and their header spans the page', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/writeups/skillmatch-attend-race-condition')
   await page.waitForLoadState('networkidle')
@@ -615,28 +579,20 @@ test('writeups are centred, their header spans the page, and the closing card st
   const rail = (await page.getByRole('navigation', { name: 'On this page' }).boundingBox())!
   expect(paragraph.width).toBeGreaterThan(800)
   expect(rail.x - (paragraph.x + paragraph.width)).toBeLessThan(80)
-  const card = page.getByRole('region', { name: 'Found this useful?' })
-  // The text sits beside the buttons rather than being squeezed above them.
-  expect((await card.getByRole('paragraph').first().boundingBox())!.width).toBeGreaterThan(400)
 })
 
 test.describe('the end of a page', () => {
-  test('a case study ends with a way to get in touch, and the link works', async ({ page }) => {
-    await page.goto('/work/skillmatch')
-    await page.waitForLoadState('networkidle')
-    const cta = page.getByRole('region', { name: 'Working on something like SkillMatch?' })
-    await expect(cta.getByRole('link', { name: /Get in touch/ })).toHaveAttribute('href', '/#contact')
-    await expect(cta.getByRole('link', { name: /View resume/ })).toHaveAttribute('href', '/resume')
-    await expect(cta.getByRole('link', { name: /All projects/ })).toHaveAttribute('href', '/projects')
-    await cta.getByRole('link', { name: /Get in touch/ }).click()
-    await expect(page).toHaveURL(/\/#contact$/)
-    await expect(page.locator('#contact')).toBeInViewport()
-  })
-
-  test('a note ends with the same next step', async ({ page }) => {
-    await page.goto('/writeups/skillmatch-attend-race-condition')
-    const cta = page.getByRole('region', { name: 'Found this useful?' })
-    await expect(cta.getByRole('link', { name: /Get in touch/ })).toHaveAttribute('href', '/#contact')
+  test('case studies and writeups end with the footer contact band only, with no second box above it', async ({
+    page,
+  }) => {
+    for (const path of ['/work/skillmatch', '/writeups/skillmatch-attend-race-condition']) {
+      await page.goto(path)
+      await expect(page.getByRole('link', { name: /Get in touch/ }), path).toHaveCount(0)
+      const band = page.locator('#contact')
+      await expect(band.getByRole('heading', { name: /Have an interesting problem/ }), path).toBeVisible()
+      await band.getByRole('link', { name: /Send a message/ }).click()
+      await expect(page).toHaveURL(/\/contact$/)
+    }
   })
 
   test('the project pager does not wrap around', async ({ page }) => {
@@ -677,68 +633,14 @@ test('the case-study header puts the actions beside the title on desktop and bel
   expect((await position()).below).toBe(true)
 })
 
-test.describe('tools cards', () => {
-  test('the six groups sit three to a row on desktop, every skill has a logo, and on a phone they become one swipeable row', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 1440, height: 900 })
-    await page.goto('/')
-    await page.waitForLoadState('networkidle')
-    const cards = page.locator('#skills [data-skill-group]')
-    await expect(cards).toHaveCount(6)
-    const tops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)))
-    expect(new Set(tops).size).toBe(2)
-    const tiles = page.locator('#skills button[aria-pressed]')
-    const count = await tiles.count()
-    expect(count).toBeGreaterThan(10)
-    // Each tile starts with a decorative logo next to the skill name.
-    expect(
-      await tiles.evaluateAll((els) => els.filter((el) => !el.querySelector('svg[aria-hidden="true"]')).length),
-    ).toBe(0)
-
-    await page.setViewportSize({ width: 390, height: 844 })
-    const phoneTops = await cards.evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top)))
-    // One row: every card starts at the same height, side by side, not stacked.
-    expect(new Set(phoneTops).size).toBe(1)
-  })
-
-  test('no skill tile is clipped at 360px, 390px or 1100px', async ({ page }) => {
-    for (const width of [360, 390, 1100]) {
-      await page.setViewportSize({ width, height: 900 })
-      await page.goto('/')
-      await page.waitForLoadState('networkidle')
-      const clipped = await page
-        .locator('#skills ul button')
-        .evaluateAll((els) =>
-          els.filter((el) => el.scrollWidth > el.clientWidth + 1).map((el) => el.getAttribute('aria-label')),
-        )
-      expect(clipped, `${width}px`).toEqual([])
-    }
-  })
-})
-
-test('every featured project card has the same size of picture area, on desktop and on a phone', async ({ page }) => {
-  for (const [width, expected] of [
-    [1440, 216],
-    [390, 190],
-  ] as const) {
-    await page.setViewportSize({ width, height: 900 })
-    await page.goto('/')
-    await page.waitForLoadState('networkidle')
-    const heights = await page
-      .locator('[data-slot="carousel"] [data-card-media]')
-      .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().height)))
-    expect(heights, `${width}px`).toEqual([expected, expected, expected, expected])
-  }
-})
-
 test('a project card shows its category and date on one line on a phone', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
+  await page.goto('/projects')
   await page.waitForLoadState('networkidle')
   const wrapped = await page
     .locator('[data-project-card] [data-card-meta]')
-    .evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 24).length)
+    // One line of 13px mono text plus its padding is about 32px; a wrapped label would be twice that.
+    .evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 40).length)
   expect(wrapped).toBe(0)
 })
 
@@ -752,50 +654,25 @@ test('unknown routes show a 404 page', async ({ page }) => {
   await expect(page.getByRole('heading', { name: "This page doesn't exist." })).toBeVisible()
 })
 
-test('skill chips filter projects and can be cleared', async ({ page }) => {
-  await page.goto('/')
-  // Wait for hydration, otherwise the click can land before React attaches its handlers.
-  await page.waitForLoadState('networkidle')
-  await page.getByRole('button', { name: /using Redis$/ }).click()
-  await expect(page.getByText('Showing projects that use')).toBeVisible()
-  await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(1)
-  await expect(page.getByRole('heading', { name: 'More projects' })).toHaveCount(0)
-  await page.getByRole('button', { name: 'Clear skill filter' }).click()
-  await expect(page.locator('[data-slot="carousel"] [data-project-card]')).toHaveCount(
-    Math.min(4, flagshipProjects.length),
-  )
-})
-
-test('every listed skill is backed by at least one project', async ({ page }) => {
-  await page.goto('/')
-  const labels = await page
-    .locator('#skills button[aria-pressed]')
-    .evaluateAll((buttons) => buttons.map((button) => button.getAttribute('aria-label') ?? ''))
-  expect(labels.length).toBeGreaterThan(0)
-  for (const label of labels) expect(Number(label.match(/Show (\d+) project/)?.[1])).toBeGreaterThan(0)
-})
-
-test('theme is dark by default and remembers a manual choice', async ({ browser }) => {
+test('theme is light by default and remembers a manual choice', async ({ browser }) => {
   const context = await browser.newContext({ colorScheme: 'dark' })
   const page = await context.newPage()
   await page.goto('/')
-  // Wait for hydration, otherwise the first click can land before the menu has its handlers.
+  // Wait for hydration, otherwise the first click can land before the button has its handler.
   await page.waitForLoadState('networkidle')
   const isDark = () => page.evaluate(() => document.documentElement.dataset.theme === 'dark')
-  expect(await isDark()).toBe(true)
-
-  await page.getByRole('button', { name: 'Settings' }).click()
-  await page.getByRole('menuitemradio', { name: 'Light' }).click()
-  // The switch is a cross-fade, so the class changes a frame after the click.
-  await expect.poll(isDark).toBe(false)
-  await page.reload()
-  await page.waitForLoadState('networkidle')
   expect(await isDark()).toBe(false)
 
-  await page.getByRole('button', { name: 'Settings' }).click()
-  await page.getByRole('menuitemradio', { name: 'System' }).click()
-  await expect.poll(() => page.evaluate(() => localStorage.getItem('color-scheme'))).toBe('system')
+  await page.getByRole('button', { name: 'Switch to dark theme' }).click()
+  // The switch is a cross-fade, so the class changes a frame after the click.
   await expect.poll(isDark).toBe(true)
+  await page.reload()
+  await page.waitForLoadState('networkidle')
+  expect(await isDark()).toBe(true)
+
+  await page.getByRole('button', { name: 'Switch to light theme' }).click()
+  await expect.poll(isDark).toBe(false)
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('color-scheme'))).toBe('light')
   await context.close()
 })
 
@@ -834,6 +711,7 @@ for (const scheme of ['light', 'dark'] as const) {
     const page = await context.newPage()
     for (const path of [
       '/',
+      '/about',
       '/work/skillmatch',
       '/work/thinkboard',
       '/work/mini-rpg-battle',
@@ -874,13 +752,14 @@ test('each page preloads only its own code chunk', async ({ request }) => {
   expect(caseStudy).not.toMatch(/\/assets\/(ResumePage|HomePage)-/)
 })
 
-test('fonts: two above-the-fold files preloaded, unused weight not shipped', async ({ request }) => {
+test('fonts: the three Latin variable fonts are preloaded and no other font file ships', async ({ request }) => {
   const html = await (await request.get('/')).text()
   const preloads = html.match(/rel="preload" as="font"[^>]+/g) ?? []
-  expect(preloads).toHaveLength(2)
-  expect(html).toMatch(/dm-mono-latin-400/)
+  expect(preloads).toHaveLength(3)
+  for (const font of ['geist-latin-wght', 'bricolage-grotesque-latin-opsz', 'jetbrains-mono-latin-wght'])
+    expect(html).toMatch(font)
   const css = await (await request.get(html.match(/\/assets\/index-[\w-]+\.css/)![0])).text()
-  expect(css).not.toContain('dm-mono-latin-500')
+  expect(css.match(/\.woff2/g)).toHaveLength(3)
 })
 
 test('large screenshots offer a small copy and reserve their space', async ({ page }) => {
@@ -914,7 +793,7 @@ test('rate-limiter demo: a burst hits 429, and per-visitor keys isolate the othe
 
 test('writeups: listed on the writeups page, own pages, linked from case studies', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('link', { name: /Read my writeups/ }).click()
+  await page.getByRole('link', { name: `All ${notes.length} writeups` }).click()
   await expect(page).toHaveURL(/\/writeups$/)
   await expect(page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })).toHaveCount(notes.length)
   await page
@@ -998,114 +877,11 @@ test('a project with several writeups links to the list filtered to it', async (
   await expect(page.locator('main li a[href^="/writeups/"]')).toHaveCount(2)
 })
 
-/** A search page. `count` of 100 is a full page, which means older commits exist beyond it. */
-const searchResult = (message: string, date: string, count = 1, repo = 'ShervinBabaei2007/Portfolio') => ({
-  total_count: count,
-  items: Array.from({ length: count }, (_, index) => ({
-    sha: `abc${String(index).padStart(4, '0')}def`,
-    commit: { message, author: { date } },
-    repository: { full_name: repo, private: false },
-  })),
-})
-
-test('GitHub activity shows live recent commits, and hides itself when nothing is recent', async ({ page }) => {
-  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
-  await page.route('https://api.github.com/**', (route) =>
-    route.fulfill({ json: searchResult('feat: live commit from the mock', recent) }),
-  )
-  await page.goto('/')
-  const activity = page.locator('[data-github]')
-  await expect(activity).toContainText('feat: live commit from the mock')
-  await expect(activity).toContainText('2 days ago')
-  await expect(activity).toContainText('Live from GitHub')
-  // The year grid stays folded until asked for.
-  await expect(activity.locator('[data-heatmap]')).toHaveCount(0)
-  await activity.getByRole('button', { name: 'Show full history' }).click()
-  await expect(activity.locator('[data-heatmap]')).toBeVisible()
-
-  const stale = await page.context().newPage()
-  await stale.route('https://api.github.com/**', (route) =>
-    route.fulfill({ json: searchResult('chore: old commit', '2025-01-01T00:00:00Z') }),
-  )
-  await stale.goto('/')
-  await stale.waitForLoadState('networkidle')
-  if (!(await stale.locator('[data-github]').count())) return // stale snapshot and stale live data: hidden
-  await expect(stale.locator('[data-github]')).not.toContainText('old commit')
-})
-
-test('the recent work list skips commits to this site, but the day view still shows them', async ({ page }) => {
-  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
-  // A full page (100) so the live commits win over the snapshot for that day.
-  await page.route('https://api.github.com/**', (route) =>
-    route.fulfill({
-      json: searchResult('chore: site-only commit', recent, 100, 'ShervinBabaei2007/Shervin-Portfolio'),
-    }),
-  )
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const activity = page.locator('[data-github]')
-  await expect(activity).toContainText('Live from GitHub')
-  const panel = activity.locator('[data-commit-panel]')
-  await expect(panel).not.toContainText('chore: site-only commit')
-  await expect(panel).toContainText('Nothing recent outside this site')
-
-  await activity.getByRole('button', { name: 'Show full history' }).click()
-  await activity.locator(`[data-heatmap] [data-day="${recent.slice(0, 10)}"]`).click()
-  await expect(panel).toContainText('chore: site-only commit')
-})
-
-test('commit history keeps the full-year totals when the live request adds the newest commits', async ({ page }) => {
-  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
-  await page.route('https://api.github.com/**', (route) =>
-    route.fulfill({ json: searchResult('feat: mock', recent, 100) }),
-  )
-  await page.goto('/')
-  const activity = page.locator('[data-github]')
-  await expect(activity).toContainText('Live from GitHub')
-  const commits = activity.locator('dl > div').first().locator('dd')
-  await expect.poll(async () => Number((await commits.innerText()).replace(/,/g, ''))).toBeGreaterThan(100)
-})
-
-test('commit history: select a day to list its commits, then go back to the latest', async ({ page }) => {
-  const recent = new Date(Date.now() - 2 * 86_400_000).toISOString()
-  await page.route('https://api.github.com/**', (route) =>
-    route.fulfill({ json: searchResult('feat: mock', recent, 100) }),
-  )
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const activity = page.locator('[data-github]')
-  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
-
-  await activity.getByRole('button', { name: 'Show full history' }).click()
-  const days = activity.locator('[data-heatmap] [data-day]')
-  expect(await days.count()).toBeGreaterThan(10)
-  await days.nth(3).click()
-  await expect(days.nth(3)).toHaveAttribute('data-selected', 'true')
-  await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
-  await expect(activity.getByRole('heading', { name: 'Recent work' })).toHaveCount(0)
-  const links = activity.locator('[data-commit-panel] li a')
-  expect(await links.count()).toBeGreaterThan(0)
-  await expect(links.first()).toHaveAttribute('href', /^https:\/\/github\.com\/.+\/commit\/[0-9a-f]{7}$/)
-
-  await activity.getByRole('button', { name: 'Show latest commits' }).click()
-  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
-  await expect(days.nth(3)).toHaveAttribute('data-selected', 'false')
-
-  // The same thing from the keyboard-friendly menu.
-  const menu = activity.getByLabel('Show commits for')
-  await menu.selectOption({ index: 2 })
-  await expect(activity.getByRole('heading', { name: /^Commits on / })).toBeVisible()
-  await menu.selectOption('')
-  await expect(activity.getByRole('heading', { name: 'Recent work' })).toBeVisible()
-  // The cells are a pointer shortcut and are not in the tab order.
-  await expect(activity.locator('[data-heatmap] button')).toHaveCount(0)
-})
-
 test('a page whose code fails to load shows a reload prompt, not a blank site', async ({ page }) => {
-  await page.route(/\/assets\/HomePage-[\w-]+\.js$/, (route) => route.abort())
+  await page.route(/\/assets\/ContactPage-[\w-]+\.js$/, (route) => route.abort())
   await page.goto('/resume')
   await page.waitForLoadState('networkidle')
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Work' }).click()
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Contact' }).click()
   await expect(page.getByRole('heading', { name: "This page didn't load." })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Reload the page' })).toBeVisible()
   await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeVisible()
@@ -1115,8 +891,8 @@ test('a page whose code fails to load shows a reload prompt, not a blank site', 
   await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
 })
 
-test('a slow page keeps the current page on screen, then lands on the linked section', async ({ page }) => {
-  await page.route(/\/assets\/HomePage-[\w-]+\.js$/, async (route) => {
+test('a slow page keeps the current page on screen, then shows the new one', async ({ page }) => {
+  await page.route(/\/assets\/ContactPage-[\w-]+\.js$/, async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 1500))
     await route.continue()
   })
@@ -1127,8 +903,8 @@ test('a slow page keeps the current page on screen, then lands on the linked sec
   await expect(page.getByRole('heading', { name: /Writeups on things I built/ })).toBeVisible()
   await expect(page.locator('[aria-label="Loading page"]')).toHaveCount(0)
 
-  await expect(page).toHaveURL(/\/#contact$/, { timeout: 5000 })
-  await expect(page.locator('#contact')).toBeInViewport()
+  await expect(page).toHaveURL(/\/contact$/, { timeout: 5000 })
+  await expect(page.getByRole('heading', { level: 1, name: /Have an interesting problem/ })).toBeVisible()
 })
 
 test('if the current page’s code cannot load, the prerendered page stays readable', async ({ page }) => {
@@ -1138,7 +914,7 @@ test('if the current page’s code cannot load, the prerendered page stays reada
   await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible()
   const nav = page.getByRole('navigation', { name: 'Main navigation' })
-  await expect(nav.getByRole('link', { name: 'Work' })).toHaveAttribute('href', '/#work')
+  await expect(nav.getByRole('link', { name: 'Work' })).toHaveAttribute('href', '/projects')
 })
 
 test('the first load does not download the SEO data chunk', async ({ page }) => {
@@ -1161,17 +937,6 @@ test('Ctrl+K opens the search palette and jumps to a project', async ({ page }) 
   await page.keyboard.type('ThinkBoard')
   await page.keyboard.press('Enter')
   await expect(page).toHaveURL(/\/work\/thinkboard$/)
-})
-
-test('project carousel can be moved with the arrow keys on a phone', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  await page.getByRole('link', { name: `${flagshipProjects[0].name} case study`, exact: true }).focus()
-  await page.keyboard.press('ArrowRight')
-  await expect(page.getByRole('link', { name: `${flagshipProjects[1].name} case study`, exact: true })).toBeInViewport({
-    ratio: 0.9,
-  })
 })
 
 test('screenshots are served as AVIF to browsers that support it', async ({ page }) => {
@@ -1213,9 +978,9 @@ test('a page whose code 404s once recovers with an automatic reload', async ({ p
   // Wait for the reload's request, then for the reloaded page to settle.
   await expect.poll(() => requests).toBeGreaterThanOrEqual(2)
   await page.waitForLoadState('networkidle')
-  // Only a hydrated page can open the theme menu, so this proves the reload fixed it.
-  await page.getByRole('button', { name: 'Settings' }).click()
-  await expect(page.getByRole('menuitemradio', { name: 'Light' })).toBeVisible()
+  // Only a hydrated page can flip the theme, so this proves the reload fixed it.
+  await page.getByRole('button', { name: 'Switch to dark theme' }).click()
+  await expect(page.getByRole('button', { name: 'Switch to light theme' })).toBeVisible()
   expect(requests).toBe(2)
 })
 
@@ -1275,29 +1040,12 @@ test('clicking a screenshot opens a viewer on the same page with every screensho
   await expect(viewer).toBeHidden()
 })
 
-test('the matching-projects message appears inside the group of the skill you clicked', async ({ page }) => {
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const web = page.locator('#skills [data-skill-group]').filter({ hasText: 'Frontend' })
-  const tools = page.locator('#skills [data-skill-group]').filter({ hasText: 'Delivery & Testing' })
-
-  await page.getByRole('button', { name: /using HTML5$/ }).click()
-  await expect(web).toContainText('matching')
-  await expect(tools).not.toContainText('matching')
-  // The projects that use it are listed as links to their case studies.
-  await expect(web.getByRole('link', { name: 'Jinterest' })).toBeVisible()
-
-  await page.getByRole('button', { name: /using Vercel$/ }).click()
-  await expect(tools).toContainText('matching')
-  await expect(web).not.toContainText('matching')
-})
-
 test('form field outlines are at least 3:1 against the page and the card, in light and dark', async ({ browser }) => {
   for (const theme of ['light', 'dark']) {
     const context = await browser.newContext()
     await context.addInitScript((value) => localStorage.setItem('color-scheme', value), theme)
     const page = await context.newPage()
-    await page.goto('/')
+    await page.goto('/contact')
     await page.waitForLoadState('networkidle')
     const ratios = await page.evaluate(() => {
       const rgb = (value: string) => (value.match(/\d+(\.\d+)?/g) ?? []).slice(0, 3).map(Number)
@@ -1323,7 +1071,8 @@ test('form field outlines are at least 3:1 against the page and the card, in lig
       }
       const field = document.querySelector('#contact-email') as HTMLElement
       const border = getComputedStyle(field).borderTopColor
-      return { page: ratio(border, resolve('--background')), card: ratio(border, resolve('--card')) }
+      // The fields sit on the page colour inside the tinted form card, so check against both.
+      return { page: ratio(border, resolve('--background')), card: ratio(border, resolve('--color-surface-hover')) }
     })
     expect(ratios.page, `${theme} against the page`).toBeGreaterThanOrEqual(3)
     expect(ratios.card, `${theme} against a card`).toBeGreaterThanOrEqual(3)
@@ -1332,7 +1081,7 @@ test('form field outlines are at least 3:1 against the page and the card, in lig
 })
 
 test('the contact form checks a field when you leave it, but stays quiet about empty ones', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/contact')
   await page.waitForLoadState('networkidle')
   const email = page.locator('#contact-email')
   await email.focus()
@@ -1343,67 +1092,6 @@ test('the contact form checks a field when you leave it, but stays quiet about e
   await expect(page.locator('#contact-email-error')).toHaveText("That email address doesn't look right.")
   await email.fill('me@company.com')
   await expect(page.locator('#contact-email-error')).toHaveCount(0)
-})
-
-test('the hero is your name as the H1, with the tagline as an H2 under it', async ({ page }) => {
-  await page.goto('/')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Shervin Babaei')
-  await expect(page.locator('#hero-title .typed-name')).toHaveAttribute('aria-hidden', 'true')
-  await expect(page.locator('#hero-title')).toHaveAttribute('aria-label', 'Shervin Babaei')
-  await expect(page.locator('#home h2').first()).toHaveText('Full-stack developer who goes down the stack.')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1)
-})
-
-test('with reduced motion the Contact globe is a still picture, otherwise it is the turning globe', async ({
-  browser,
-}) => {
-  for (const reducedMotion of ['reduce', 'no-preference'] as const) {
-    const context = await browser.newContext({ reducedMotion })
-    const page = await context.newPage()
-    await page.goto('/')
-    await page.waitForLoadState('networkidle')
-    await page.locator('#contact-title').scrollIntoViewIfNeeded()
-    const still = page.locator('[data-globe] [data-globe-still]')
-    const canvas = page.locator('[data-globe] canvas')
-    if (reducedMotion === 'reduce') {
-      await expect(still).toBeVisible()
-      await expect(canvas).toHaveCount(0)
-    } else {
-      await expect(canvas).toHaveCount(1)
-      await expect(still).toHaveCount(0)
-    }
-    await context.close()
-  }
-})
-
-test('Quick look keeps every line of text inside its panel, on a phone and on a desktop', async ({ page }) => {
-  for (const width of [390, 1440]) {
-    await page.setViewportSize({ width, height: 844 })
-    await page.goto('/projects')
-    await page.waitForLoadState('networkidle')
-    const buttons = page.getByRole('button', { name: 'Quick look' })
-    for (const index of [0, 5, 9]) {
-      await buttons.nth(index).click()
-      const panel = page.getByRole('dialog')
-      await panel.waitFor()
-      const scroller = panel.getByRole('region')
-      // Nothing may be wider than the panel; long code lines scroll inside their own code block instead.
-      const overflow = await scroller.evaluate((el) => el.scrollWidth - el.clientWidth)
-      expect(overflow, `${width}px, project ${index}`).toBeLessThanOrEqual(1)
-      await page.keyboard.press('Escape')
-      await expect(panel).toBeHidden()
-    }
-  }
-})
-
-test('the projects page has a Back to Home link that returns to the work section', async ({ page }) => {
-  await page.goto('/projects')
-  await page.waitForLoadState('networkidle')
-  const back = page.getByRole('link', { name: 'Back to Home' })
-  await expect(back).toHaveAttribute('href', '/#work')
-  await back.click()
-  await expect(page).toHaveURL(/\/#work$/)
-  await expect(page.locator('#work')).toBeInViewport()
 })
 
 test('a case study leads with its outcome, then its scope', async ({ page }) => {
@@ -1424,16 +1112,6 @@ test('the 404 page and the resume page offer a way onward', async ({ page }) => 
   await expect(page.getByRole('link', { name: 'See the work behind it' })).toHaveAttribute('href', '/projects')
 })
 
-test('on a tablet the skill groups sit two to a row', async ({ page }) => {
-  await page.setViewportSize({ width: 768, height: 1024 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const tops = await page
-    .locator('#skills [data-skill-group]')
-    .evaluateAll((els) => els.map((el) => Math.round(el.getBoundingClientRect().top + window.scrollY)))
-  expect(new Set(tops).size).toBe(3)
-})
-
 test('a case study states its key result in plain words', async ({ page }) => {
   await page.goto('/work/skillmatch')
   const glance = page.getByLabel('At a glance')
@@ -1446,22 +1124,6 @@ test('Work is marked as the current page on the projects page and on a case stud
     const nav = page.getByRole('navigation', { name: 'Main navigation' })
     await expect(nav.getByRole('link', { name: 'Work' })).toHaveAttribute('aria-current', 'page')
   }
-})
-
-test('moving quickly between skills never leaves two tooltips open', async ({ page }) => {
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  await page.locator('#skills').scrollIntoViewIfNeeded()
-  const tile = (name: RegExp) => page.getByRole('button', { name })
-  // Bring each tile on screen first, so the page is not scrolling underneath the pointer while it hovers.
-  for (const name of [/using React$/, /using TypeScript$/, /using Python$/]) await tile(name).scrollIntoViewIfNeeded()
-  await tile(/using React$/).hover()
-  await page.waitForTimeout(250)
-  await tile(/using TypeScript$/).hover()
-  await tile(/using Python$/).hover()
-  await page.waitForTimeout(400)
-  await expect(page.getByRole('tooltip')).toHaveCount(1)
-  await expect(page.getByRole('tooltip')).toContainText('Python')
 })
 
 test('the old left-hand trace rail is gone', async ({ page }) => {
@@ -1520,28 +1182,40 @@ test('projects page filters by type', async ({ page }) => {
   await page.goto('/projects')
   // Wait for hydration, otherwise the click can land before React attaches its handlers.
   await page.waitForLoadState('networkidle')
-  const cards = page
-    .getByRole('list')
-    .filter({ has: page.getByRole('link', { name: /case study/i }) })
-    .first()
-    .getByRole('listitem')
-  const all = await cards.count()
+  const cards = page.locator('[data-project-card]')
+  await expect(cards).toHaveCount(projects.length)
   await page.getByRole('button', { name: /^Hackathon/ }).click()
   await expect(page.getByRole('button', { name: /^Hackathon/ })).toHaveAttribute('aria-pressed', 'true')
-  // Cards that are filtered out fade away first, so wait for the list to settle.
-  await expect(cards).toHaveCount(1)
+  await expect(cards).toHaveCount(projects.filter((project) => project.category === 'Hackathon').length)
   await page.getByRole('button', { name: /^All/ }).click()
-  await expect(cards).toHaveCount(all)
+  await expect(cards).toHaveCount(projects.length)
+  // Cards without a screenshot show a short code preview instead.
+  await expect(page.locator('[data-project-card]').filter({ hasText: 'Mini RPG Battle' })).toContainText(
+    "WARRIOR'S PATH",
+  )
+  await expect(page.getByRole('link', { name: /More on GitHub/ })).toHaveAttribute('href', /github\.com/)
 })
 
-test('repos without a case study are listed automatically under More on GitHub', async ({ page }) => {
-  await page.goto('/projects')
-  const more = page.locator('[data-more-repos]')
-  await expect(more.getByRole('heading', { name: 'More on GitHub' })).toBeVisible()
-  expect(await more.getByRole('listitem').count()).toBeGreaterThan(0)
-  // A repo that has a case study is not listed twice.
-  await expect(more.getByRole('link', { name: /^SkillMatch/ })).toHaveCount(0)
-  await expect(more.getByRole('link', { name: /^Network-Growth-Assistance/ })).toHaveCount(0)
+test('writeups are listed newest first, grouped by month, with totals at the top', async ({ page }) => {
+  await page.goto('/writeups')
+  await expect(page.locator('main')).toContainText(`${notes.length} writeups`)
+  const cards = page.locator('main li a[href^="/writeups/"]')
+  await expect(cards).toHaveCount(notes.length)
+  await expect(cards.first()).toHaveAttribute('href', `/writeups/${notes[0].slug}`)
+  const months = await page.locator('main section h2').allInnerTexts()
+  expect(months.length).toBeGreaterThan(0)
+  expect(months.every((month) => /^[A-Z][a-z]+ \d{4}$/.test(month))).toBe(true)
+})
+
+test('the Contact page has every way to reach me and the form', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Contact' }).click()
+  await expect(page).toHaveURL(/\/contact$/)
+  await expect(page.getByRole('heading', { level: 1, name: /Have an interesting problem/ })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Connect professionally/ })).toHaveAttribute('href', /linkedin/)
+  await expect(page.getByRole('heading', { name: 'Send a message' })).toBeVisible()
+  // The Contact page is already the question, so its footer is only the bottom row.
+  await expect(page.locator('#contact-title')).toHaveCount(0)
 })
 
 test('each new writeup opens and is linked from its project page', async ({ page }) => {
@@ -1562,38 +1236,6 @@ test('each new writeup opens and is linked from its project page', async ({ page
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     expect(await page.locator('pre').count()).toBeGreaterThan(0)
   }
-})
-
-test('writeups are listed newest first, grouped by month, and can be searched and filtered', async ({ page }) => {
-  await page.goto('/writeups')
-  // Wait for hydration, otherwise typing can land before React attaches its handlers.
-  await page.waitForLoadState('networkidle')
-  const rows = page.locator('main li').filter({ has: page.locator('a[href^="/writeups/"]') })
-  // The page lists the writeups in the data's order, and that order puts the newest month first.
-  const months = notes.map((note) => note.date.slice(0, 7))
-  expect(months).toEqual([...months].sort().reverse())
-  for (const [index, note] of notes.entries()) {
-    await expect(rows.nth(index).getByRole('link')).toHaveAttribute('href', `/writeups/${note.slug}`)
-  }
-  await expect(page.locator('main h2')).toHaveText([/November 2026/, /October 2026/])
-  await expect(page.locator('[data-writeup-count]')).toContainText(`${notes.length} writeups, newest month first`)
-  await expect(page.getByText('Featured', { exact: true })).toHaveCount(2)
-
-  await page.getByLabel('Search writeups').fill('rebinding')
-  await expect(rows).toHaveCount(1)
-  await expect(rows.first()).toContainText('fetches links it doesn’t trust')
-  await expect(page.locator('[data-writeup-count]')).toContainText(`1 of ${notes.length} writeups`)
-
-  await page.getByLabel('Search writeups').fill('zzzzzz')
-  await expect(page.getByText('No writeups match')).toBeVisible()
-  await page.getByRole('button', { name: 'Clear filters' }).click()
-  await expect(rows).toHaveCount(notes.length)
-
-  await page.getByRole('button', { name: /^LinkLocker/ }).click()
-  await expect(page.getByRole('button', { name: /^LinkLocker/ })).toHaveAttribute('aria-pressed', 'true')
-  await expect(rows).toHaveCount(1)
-  await page.getByRole('button', { name: /^All/ }).click()
-  await expect(rows).toHaveCount(notes.length)
 })
 
 test('writeups have a table of contents that jumps to a heading', async ({ page }) => {
@@ -1617,17 +1259,18 @@ test('back to top appears after scrolling and returns to the top', async ({ page
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(5)
 })
 
-test('the writeups index heading and intro use the full width of the page', async ({ page }) => {
+test('inner page headings use the design’s column: 820px for the title, 560px for the lead', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
-  await page.goto('/writeups')
-  await page.waitForLoadState('networkidle')
-  const section = (await page.locator('section[aria-labelledby="writeups-index-title"]').boundingBox())!
-  const title = (await page.locator('#writeups-index-title').boundingBox())!
-  const lead = (await page.locator('#writeups-index-title + p').boundingBox())!
-  expect(title.width).toBeGreaterThan(section.width * 0.95)
-  expect(lead.width).toBeGreaterThan(section.width * 0.95)
-  // The heading fits on one line instead of wrapping early.
-  expect(title.height).toBeLessThan(90)
+  for (const [path, id] of [
+    ['/writeups', 'writeups-index-title'],
+    ['/projects', 'projects-title'],
+  ]) {
+    await page.goto(path)
+    const title = (await page.locator(`#${id}`).boundingBox())!
+    const lead = (await page.locator(`#${id} + p`).boundingBox())!
+    expect(Math.round(title.width), path).toBe(820)
+    expect(Math.round(lead.width), path).toBe(560)
+  }
 })
 
 test('each project shows only its few main tools, all of which are in the full stack', () => {
@@ -1636,18 +1279,6 @@ test('each project shows only its few main tools, all of which are in the full s
     expect(project.mainStack.length, project.slug).toBeGreaterThanOrEqual(Math.min(4, project.stack.length))
     for (const item of project.mainStack) expect(project.stack, `${project.slug}: ${item}`).toContain(item)
   }
-})
-
-test('a tile that covers several tools, like JWT & OAuth, filters to every project that uses any of them', async ({
-  page,
-}) => {
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  await page.getByRole('button', { name: /using JWT & OAuth$/ }).click()
-  const expected = projects.filter((project) =>
-    project.stack.some((item) => ['JWT', 'OAuth', 'Auth0', 'GitHub OAuth', 'Google OAuth'].includes(item)),
-  )
-  await expect(page.locator('#work [data-project-card]')).toHaveCount(expected.length)
 })
 
 test('the resume PDF is one click away on wide screens: in the header and in the contact section', async ({ page }) => {
@@ -1667,53 +1298,10 @@ test('the resume PDF is one click away on wide screens: in the header and in the
   expect(response.headers()['content-type']).toContain('pdf')
 })
 
-test('the home sections run work, quick answers, about, tools, contact', async ({ page }) => {
+test('the home sections run work, writeups, lab, about, contact', async ({ page }) => {
   await page.goto('/')
   const ids = await page.locator('section[id]').evaluateAll((els) => els.map((el) => el.id))
-  expect(ids).toEqual(['home', 'work', 'faq', 'about', 'skills', 'contact'])
-})
-
-test('About is four cards whose full text stays in the page and opens on Read more', async ({ page }) => {
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const cards = page.locator('#about [data-about-card]')
-  await expect(cards).toHaveCount(4)
-  const first = cards.first()
-  const toggle = first.getByRole('button', { name: /Read more/ })
-  const more = first.locator('[data-slot="collapsible-content"]')
-  // Collapsed, the rest of the text is hidden from view but still in the HTML (so it is prerendered and searchable).
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
-  await expect(more).toBeHidden()
-  await expect(first).toContainText('That took me from full-stack web')
-  await toggle.click()
-  await expect(more).toBeVisible()
-  await expect(first.getByRole('button', { name: /Show less/ })).toHaveAttribute('aria-expanded', 'true')
-  const box = (await first.getByRole('button', { name: /Show less/ }).boundingBox())!
-  expect(box.height).toBeGreaterThanOrEqual(44)
-})
-
-test('every Quick answer opens with a bold line to skim', async ({ page }) => {
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const triggers = page.locator('#faq [data-slot="accordion-trigger"]')
-  const count = await triggers.count()
-  expect(count).toBe(8)
-  for (let i = 0; i < count; i++) {
-    await triggers.nth(i).click()
-    const content = page.locator('#faq [data-slot="accordion-content"][data-state="open"]')
-    await expect(content.locator('b').first()).toBeVisible()
-  }
-})
-
-test('reading Quick answers keeps About marked as the current section in the header', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const nav = page.getByRole('navigation', { name: 'Main navigation' })
-  await page.evaluate(() => document.getElementById('contact')?.scrollIntoView())
-  await expect(nav.getByRole('link', { name: 'Contact' })).toHaveAttribute('aria-current', 'location')
-  await page.evaluate(() => document.getElementById('faq')?.scrollIntoView())
-  await expect(nav.getByRole('link', { name: 'About' })).toHaveAttribute('aria-current', 'location')
+  expect(ids).toEqual(['home', 'work', 'writeups', 'lab', 'about', 'contact'])
 })
 
 test('on a phone every project card on the projects page fits inside the screen', async ({ page }) => {
@@ -1727,57 +1315,4 @@ test('on a phone every project card on the projects page fits inside the screen'
     expect(rights.length).toBeGreaterThan(0)
     for (const right of rights) expect(right, `${width}px`).toBeLessThanOrEqual(width)
   }
-})
-
-test('on a phone each Tools card is only as tall as its tiles, with no empty space inside it', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const gaps = await page.locator('#skills [data-skill-group]').evaluateAll((cards) =>
-    cards.map((card) => {
-      const tiles = [...card.querySelectorAll('button[aria-pressed]')]
-      const lastBottom = Math.max(...tiles.map((tile) => tile.getBoundingClientRect().bottom))
-      return Math.round(card.getBoundingClientRect().bottom - lastBottom)
-    }),
-  )
-  // The card's own bottom padding is about 24px; anything much larger is empty space.
-  for (const gap of gaps) expect(gap).toBeLessThan(48)
-})
-
-test('Tools tiles are readable and touch-sized on a phone', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const sizes = await page.locator('#skills button[aria-pressed]').evaluateAll((tiles) =>
-    tiles.map((tile) => ({
-      height: Math.round(tile.getBoundingClientRect().height),
-      font: parseFloat(getComputedStyle(tile.querySelector('span:not([aria-hidden])') ?? tile).fontSize),
-    })),
-  )
-  for (const { height, font } of sizes) {
-    expect(height).toBeGreaterThanOrEqual(44)
-    expect(font).toBeGreaterThanOrEqual(14)
-  }
-})
-
-test('on a phone the Tools carousel is as tall as the card on screen, and wide screens set no height', async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
-  await page.waitForLoadState('networkidle')
-  const viewport = page.locator('#skills [data-slot="carousel-content"]')
-  const cards = page.locator('#skills [data-skill-group]')
-  const height = (locator: typeof viewport) => locator.evaluate((el) => Math.round(el.getBoundingClientRect().height))
-  await expect
-    .poll(async () => Math.abs((await height(viewport)) - (await height(cards.nth(0)))))
-    .toBeLessThanOrEqual(4)
-  // Moving to the next group (the arrow keys work inside the carousel) fits the next, taller card.
-  await cards.nth(0).getByRole('button').first().focus()
-  await page.keyboard.press('ArrowRight')
-  await expect
-    .poll(async () => Math.abs((await height(viewport)) - (await height(cards.nth(1)))))
-    .toBeLessThanOrEqual(4)
-  await page.setViewportSize({ width: 1280, height: 800 })
-  await expect.poll(() => viewport.evaluate((el) => (el as HTMLElement).style.height)).toBe('')
 })

@@ -10,13 +10,13 @@ const query = '(prefers-color-scheme: dark)'
 const systemScheme = (): Scheme =>
   typeof window !== 'undefined' && window.matchMedia(query).matches ? 'dark' : 'light'
 
-/** Dark is the default; only an explicit light or system choice changes that. */
+/** Light is the default; only an explicit dark or system choice changes that. */
 const storedPreference = (): Preference => {
   try {
     const value = localStorage.getItem(STORAGE_KEY)
-    return value === 'light' || value === 'system' ? value : 'dark'
+    return value === 'dark' || value === 'system' ? value : 'light'
   } catch {
-    return 'dark'
+    return 'light'
   }
 }
 
@@ -54,13 +54,13 @@ function withSmoothSwitch(change: () => void) {
 }
 
 /**
- * Dark by default, with Light / Dark / System choices remembered in localStorage.
- * The first render is always 'dark' so the server-rendered HTML and the
+ * Light by default, with Light / Dark / System choices remembered in localStorage.
+ * The first render is always 'light' so the server-rendered HTML and the
  * hydrated app match; the real value is read right after mount.
  */
 export function useTheme() {
-  const [preference, setPreferenceState] = useState<Preference>('dark')
-  const [scheme, setScheme] = useState<Scheme>('dark')
+  const [preference, setPreferenceState] = useState<Preference>('light')
+  const [scheme, setScheme] = useState<Scheme>('light')
 
   // After mount: apply the saved choice, then follow the system setting while 'system' is chosen.
   useEffect(() => {

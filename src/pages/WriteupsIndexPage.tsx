@@ -1,49 +1,15 @@
-import { useMemo, useState } from 'react'
-import { ArrowLeft, Search, SearchX, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import NoteRow from '@/components/shared/NoteRow'
-import FilterBar from '@/components/shared/FilterBar'
-import PageIntro from '@/components/shared/PageIntro'
-import { Button } from '@/components/ui/button'
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
-import { Input } from '@/components/ui/input'
-import { formatMonth, notes, type Note, type NoteBlock } from '../data/notes'
-import { findProject } from '../data/projects'
-import { tone } from '@/lib/buttonTones'
-import { pill } from '@/lib/surfaces'
-import { cn } from '@/lib/utils'
-
-/** How many writeups show before "Show more". Newest first, so the latest are always on screen. */
-const PAGE_SIZE = 8
+import PageHero from '@/components/shared/PageHero'
+import Reveal from '@/components/shared/Reveal'
+import { formatDay, formatMonth, notes, type Note } from '@/data/notes'
+import { findProject } from '@/data/projects'
 
 // The project's display name, or the slug itself if no project matches.
 const projectName = (slug: string) => findProject(slug)?.name ?? slug
 
-// The searchable text inside one block of a writeup's body.
-function blockText(block: NoteBlock): string[] {
-  if (block.type === 'p' || block.type === 'h2') return [block.text]
-  if (block.type === 'list') return block.items
-  return []
-}
-
-/** Everything a search can match for one writeup, lowercased once. */
-const searchText = new Map(
-  notes.map((note) => [
-    note.slug,
-    [note.title, note.summary, projectName(note.project), ...note.body.flatMap(blockText)].join(' ').toLowerCase(),
-  ]),
-)
-
-/** Projects that have at least one writeup, with how many, in the order they first appear (newest first). */
-const projectFilters = notes.reduce<{ slug: string; name: string; count: number }[]>((list, note) => {
-  const existing = list.find((entry) => entry.slug === note.project)
-  if (existing) existing.count += 1
-  else list.push({ slug: note.project, name: projectName(note.project), count: 1 })
-  return list
-}, [])
-
-/** Total reading time of every writeup, for the summary line at the top. */
 const totalMinutes = notes.reduce((sum, note) => sum + note.minutes, 0)
+const projectCount = new Set(notes.map((note) => note.project)).size
 
 /** Splits a newest-first list into month groups, keeping the order. */
 function byMonth(list: Note[]) {
@@ -57,181 +23,97 @@ function byMonth(list: Note[]) {
   return groups
 }
 
-// The heading id for a month group, e.g. "Nov 2026" becomes "month-nov-2026".
-const monthId = (month: string) => `month-${month.replace(/\s+/g, '-').toLowerCase()}`
+const plural = (count: number) => `${count} ${count === 1 ? 'writeup' : 'writeups'}`
 
-/** The /writeups page: every writeup grouped by month, with search and a project filter. */
-function WriteupsIndexPage() {
-  const [query, setQuery] = useState('')
-  // A link from a case study can open the list already filtered to its project (?project=slug).
-  const [searchParams] = useSearchParams()
-  const fromLink = searchParams.get('project')
-  const [project, setProject] = useState<string | null>(
-    projectFilters.some((entry) => entry.slug === fromLink) ? fromLink : null,
+function WriteupCard({ note }: { note: Note }) {
+  return (
+    <Link
+      to={`/writeups/${note.slug}`}
+      className="flex h-full flex-col justify-between gap-10 rounded-md bg-surface-hover p-[clamp(22px,2.2vw,28px)] text-foreground no-underline transition-[box-shadow,transform] duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:-translate-y-1 hover:text-foreground hover:shadow-[0_18px_40px_-24px_var(--color-shadow)]"
+    >
+      <span className="flex flex-col gap-3.5">
+        <span className="flex justify-between gap-3 font-mono text-[13px] text-muted-foreground">
+          <span>{projectName(note.project)}</span>
+          {note.featured && <span className="text-primary">Featured</span>}
+        </span>
+        <span className="font-display text-[clamp(1.3125rem,1.8vw,1.5rem)] leading-[1.15] font-semibold tracking-[-0.025em] text-balance">
+          {note.title}
+        </span>
+        <span className="text-[15px] leading-normal text-text-body">{note.summary}</span>
+      </span>
+      <span className="flex justify-between gap-3 font-mono text-[13px]">
+        <time dateTime={note.date} className="text-muted-foreground">
+          {formatDay(note.date)}
+        </time>
+        <span className="text-primary">
+          Read · {note.minutes} min <span aria-hidden="true">→</span>
+        </span>
+      </span>
+    </Link>
   )
-  const [visible, setVisible] = useState(PAGE_SIZE)
+}
 
-  // A writeup matches when it is in the chosen project and contains every word typed, in any order.
-  const matches = useMemo(() => {
-    const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
-    return notes.filter(
-      (note) =>
-        (!project || note.project === project) && terms.every((term) => searchText.get(note.slug)?.includes(term)),
-    )
-  }, [query, project])
+/** The Writeups page: every writeup as a card, grouped by month, newest first. */
+function WriteupsIndexPage() {
+  // A case study can link here filtered to its project (?project=slug). Read after mount, so the prerendered page
+  // (the full list) and the first render in the browser are the same.
+  const [searchParams] = useSearchParams()
+  const [project, setProject] = useState<string | null>(null)
+  useEffect(() => {
+    const slug = searchParams.get('project')
+    setProject(slug && notes.some((note) => note.project === slug) ? slug : null)
+  }, [searchParams])
 
-  const shown = matches.slice(0, visible)
-  const filtering = Boolean(query.trim() || project)
-  // Each change to the search or filter starts the list again from the first page.
-  const search = (value: string) => {
-    setQuery(value)
-    setVisible(PAGE_SIZE)
-  }
-  const choose = (next: string | null) => {
-    setProject(next)
-    setVisible(PAGE_SIZE)
-  }
-  const clear = () => {
-    search('')
-    choose(null)
-  }
+  const shown = project ? notes.filter((note) => note.project === project) : notes
 
   return (
-    <section aria-labelledby="writeups-index-title">
-      {/* The header sits on the tinted band used across the site; the cards below sit on the page. */}
-      <div className="section-band">
-        <div className="section-wrap page-y">
-          <Button asChild size="lg" className={cn('mb-[var(--space-block)] font-semibold shadow-md', tone.ink)}>
-            <Link to="/projects">
-              <ArrowLeft size={16} aria-hidden="true" /> Back to projects
+    <>
+      <PageHero
+        id="writeups-index-title"
+        command="ls ./writeups"
+        title="Writeups on things I built"
+        lead="Each writeup starts from real code in one of my projects, explains what it actually does, and ends with what I would change."
+      >
+        <p className="mt-6 mb-0 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[13px] text-muted-foreground">
+          <span>{plural(notes.length)}</span>
+          <span>{projectCount} projects</span>
+          <span>{totalMinutes} minutes of reading</span>
+        </p>
+      </PageHero>
+      <section className="section-wrap pb-[clamp(88px,10vw,144px)]" aria-label="All writeups">
+        <div className="border-t border-foreground/15" />
+        {project && (
+          <p className="mt-6 mb-0 flex flex-wrap items-center gap-x-4 gap-y-1 text-[15px] text-text-body" role="status">
+            Showing {plural(shown.length)} about {projectName(project)}.
+            <Link
+              to="/writeups"
+              className="inline-flex min-h-11 items-center text-foreground underline underline-offset-4 hover:text-primary"
+            >
+              Show all {notes.length}
             </Link>
-          </Button>
-          <PageIntro
-            wide
-            eyebrow="WRITEUPS"
-            id="writeups-index-title"
-            title="Writeups on things I built"
-            lead="Each writeup starts from real code in one of my projects, explains what it actually does, and ends with what I would change."
-          />
-
-          <ul
-            className="m-0 mb-6 flex list-none flex-wrap gap-2.5 p-0 font-mono text-label"
-            aria-label="The writeups at a glance"
-          >
-            {[
-              `${notes.length} writeups`,
-              `${projectFilters.length} projects`,
-              `${totalMinutes} minutes of reading`,
-            ].map((text) => (
-              <li key={text} className={pill}>
-                {text}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-2 grid gap-4">
-            {/* A card-coloured field with a border and soft shadow, so it stands out from the page, with a search icon
-            and a clear button. The browser's own clear button is hidden so there is only one. */}
-            <div className="relative w-full max-w-[34rem]">
-              <Search
-                className="pointer-events-none absolute top-1/2 left-3.5 size-[18px] -translate-y-1/2 text-muted-foreground"
-                aria-hidden="true"
-              />
-              <Input
-                type="search"
-                aria-label="Search writeups"
-                placeholder="Search writeups"
-                autoComplete="off"
-                value={query}
-                onChange={(event) => search(event.target.value)}
-                className="h-12 rounded-xl border-foreground/20 bg-card pr-12 pl-11 shadow-sm hover:border-primary/60 focus-visible:border-primary md:text-base dark:bg-card [&::-webkit-search-cancel-button]:hidden"
-              />
-              {query && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label="Clear search"
-                  className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground"
-                  onClick={() => search('')}
-                >
-                  <X />
-                </Button>
-              )}
-            </div>
-            <FilterBar
-              label="Filter writeups by project"
-              value={project ?? 'all'}
-              onChange={(value) => choose(value === 'all' ? null : value)}
-              options={[
-                { value: 'all', label: 'All', count: notes.length },
-                ...projectFilters.map((entry) => ({ value: entry.slug, label: entry.name, count: entry.count })),
-              ]}
-              className="w-fit max-w-full"
-            />
-            <p className="font-mono text-label text-muted-foreground" aria-live="polite" data-writeup-count>
-              {filtering
-                ? `${matches.length} of ${notes.length} writeups`
-                : `${notes.length} ${notes.length === 1 ? 'writeup' : 'writeups'}, newest month first, best first within each month`}
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="section-wrap pt-[var(--space-block)] pb-[var(--space-page)]">
-        {matches.length > 0 ? (
-          <div
-            key={project ?? 'all'}
-            className="mt-8 grid gap-12 motion-safe:animate-in motion-safe:duration-500 motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-3"
-          >
-            {byMonth(shown).map((group) => (
-              <section key={group.month} aria-labelledby={monthId(group.month)}>
-                <h2
-                  id={monthId(group.month)}
-                  className="mb-4 flex items-center gap-3 font-mono text-sm font-medium tracking-wide text-foreground uppercase"
-                >
-                  {group.month}
-                  <span className="rounded-full border bg-card px-2 py-0.5 text-label font-normal text-muted-foreground tabular-nums">
-                    {group.notes.length}
-                  </span>
-                  <span className="h-px flex-1 bg-border" aria-hidden="true" />
-                </h2>
-                <ul className="m-0 grid list-none gap-4 p-0">
-                  {group.notes.map((note) => (
-                    <NoteRow key={note.slug} note={note} project={projectName(note.project)} />
-                  ))}
-                </ul>
-              </section>
-            ))}
-            {matches.length > shown.length && (
-              <div>
-                <Button
-                  type="button"
-                  size="lg"
-                  className={cn('font-semibold shadow-md', tone.writeup)}
-                  onClick={() => setVisible((count) => count + PAGE_SIZE)}
-                >
-                  Show more writeups ({matches.length - shown.length} left)
-                </Button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <Empty className="mt-8 border">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <SearchX />
-              </EmptyMedia>
-              <EmptyTitle>No writeups match</EmptyTitle>
-              <EmptyDescription>Try a different word, or clear the filters to see everything.</EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button type="button" variant="outline" onClick={clear}>
-                Clear filters
-              </Button>
-            </EmptyContent>
-          </Empty>
+          </p>
         )}
-      </div>
-    </section>
+        {byMonth(shown).map((group) => (
+          <div key={group.month} className="mt-[clamp(40px,5vw,64px)]">
+            <div className="mb-[clamp(20px,2.4vw,28px)] flex items-baseline justify-between gap-4 border-b border-foreground/15 pb-4">
+              <h2 className="m-0 text-[clamp(1.625rem,2.6vw,2.25rem)] leading-none tracking-[-0.035em]">
+                {group.month}
+              </h2>
+              <span className="font-mono text-[13px] text-muted-foreground">{plural(group.notes.length)}</span>
+            </div>
+            <ul className="m-0 grid list-none grid-cols-1 gap-[clamp(16px,2vw,24px)] p-0 min-[700px]:grid-cols-2 min-[1030px]:grid-cols-3">
+              {group.notes.map((note, index) => (
+                <Reveal key={note.slug} delay={(index % 3) * 0.06}>
+                  <li className="min-w-0">
+                    <WriteupCard note={note} />
+                  </li>
+                </Reveal>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+    </>
   )
 }
 

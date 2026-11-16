@@ -1,7 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import ArticleLayout from '@/components/shared/ArticleLayout'
-import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import NoteBody from '@/components/shared/NoteBody'
 import CopyLinkButton from '@/components/shared/CopyLinkButton'
@@ -96,13 +95,9 @@ function WriteupPage() {
         </ArticleLayout>
       </div>
 
-      {/* The ending sits on the tinted band used across the site: the call to action, then where to read next. */}
+      {/* The ending sits on the tinted band used across the site: where to read next. The footer band below is the call to action. */}
       <div className="section-band">
         <div className="section-wrap grid gap-6 py-[var(--space-page)]">
-          <ClosingCta
-            heading="Found this useful?"
-            body="I'm happy to talk through the details, or what I would do differently."
-          />
           <footer className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
             {project && (
               <Link className={footerLink} to={`/work/${project.slug}`}>

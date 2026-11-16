@@ -1,71 +1,76 @@
-/* Cream & Cobalt: the colour tokens. This file is the single source of truth for colour.
+/* Paper & Terracotta: the colour tokens. This file is the single source of truth for colour.
    Light values are the defaults (they land on :root); the dark theme overrides the same names under
    [data-theme='dark']. Components use these names (or the shadcn aliases at the bottom), never raw colours.
 
-   A cream canvas and warm text carry the mood; one calm cobalt carries the action. Every pair is checked against
+   Warm paper and ink carry the mood; one terracotta carries the action. Every pair is checked against
    WCAG 2.2 AA (4.5:1 text, 3:1 UI):
-   - Light accent #2B4ACB is 6.7:1 on the page and 6.1:1 on the alt surface; white on the same fill is 7.1:1.
-   - Dark accent #8CA3FF is 7.3:1 on the page, and the dark button label is the page colour (dark on periwinkle,
-     7.3:1). White on that fill would fail, so --color-primary-text flips in the dark theme.
+   - Light accent #a83f1b is 5.4:1 on the page and 4.9:1 on the alt surface; the paper colour on the same fill is 5.4:1.
+   - Dark accent #e0784f is 5.8:1 on the page and 5.3:1 on a card, and the dark button label is the page colour
+     (ink on terracotta, 5.8:1). --color-primary-text flips in the dark theme.
    - Field outlines (--color-input) clear 3:1 on the page and on a card; --color-border is decorative only.
    - Success and warning are text-safe in both themes.
-   - --color-highlight is the warm gold of the hand-drawn underline. It is decoration only, never text. */
+   - --color-highlight is the brighter terracotta used for decoration (the ASCII field, marks). It is never text. */
 
 @theme static {
   /* Canvas, surfaces, structure */
-  --color-canvas: #fbf8f1;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f2ede0;
-  --color-border: #e6dfd0;
-  --color-grid: #f6f2e8;
+  --color-canvas: #f3f0ea;
+  --color-surface: #faf8f4;
+  --color-surface-hover: #e9e5dc;
+  --color-border: #d9d3c8;
+  --color-grid: transparent;
   --color-input: #857d70;
-  --color-overlay: rgb(30 26 21 / 0.5);
-  --color-shadow: rgb(30 26 21 / 0.2);
+  --color-overlay: rgb(27 26 24 / 0.5);
+  --color-shadow: rgb(27 26 24 / 0.2);
 
   /* Typography */
-  --color-text-primary: #1e1a15;
-  --color-text-secondary: #1e1a15;
-  --color-text-body: #473f36;
-  --color-text-muted: #5f574c;
-  --color-text-link: #2340b0;
-  --color-selection-background: #dce3fb;
-  --color-selection-text: #1a2e86;
-  --color-highlight: #e0a63a;
+  --color-text-primary: #1b1a18;
+  --color-text-secondary: #1b1a18;
+  --color-text-body: #3d3a35;
+  --color-text-muted: #5c574f;
+  --color-text-link: #a83f1b;
+  --color-selection-background: #a83f1b;
+  --color-selection-text: #f3f0ea;
+  --color-highlight: #c6532c;
 
   /* Navigation */
-  --color-nav-background: rgb(251 248 241 / 0.85);
-  --color-nav-border: #e6dfd0;
-  --color-nav-text: #5f574c;
-  --color-nav-text-hover: #1e1a15;
-  --color-nav-active: #2b4acb;
+  --color-nav-background: rgb(243 240 234 / 0.88);
+  --color-nav-border: rgb(27 26 24 / 0.08);
+  --color-nav-text: #1b1a18;
+  --color-nav-text-hover: #a83f1b;
+  --color-nav-active: #a83f1b;
 
   /* Interactive */
-  --color-primary: #2b4acb;
-  --color-primary-text: #ffffff;
-  --color-primary-fill: #2b4acb;
-  --color-primary-fill-hover: #2340b0;
-  --color-primary-fill-active: #1a2e86;
-  --color-secondary-background: #ffffff;
-  --color-secondary-border: #e6dfd0;
-  --color-focus-ring: #2b4acb;
-  --color-disabled-background: #e6dfd0;
+  --color-primary: #a83f1b;
+  --color-primary-text: #f3f0ea;
+  --color-primary-fill: #a83f1b;
+  --color-primary-fill-hover: #8f3415;
+  --color-primary-fill-active: #772b11;
+  --color-secondary-background: #faf8f4;
+  --color-secondary-border: #d9d3c8;
+  --color-focus-ring: #c6532c;
+  --color-disabled-background: #e3ded4;
   --color-disabled-text: #7a7268;
   --color-writeup: #0f766e; /* writeups button, same in both themes: 5.5:1 under white text */
   --color-writeup-text: #ffffff;
   --color-destructive: #b91c1c; /* errors: 6.0:1 on the page. Always shown with an icon or words, never by colour alone. */
 
   /* Developer and engineering components */
-  --color-tech-background: #f2ede0;
-  --color-tech-text: #473f36;
-  --color-featured-background: rgb(43 74 203 / 0.1);
-  --color-featured-text: #2340b0;
-  --color-inline-code-background: #f2ede0;
-  --color-inline-code-text: #be123c;
-  --color-code-background: #f4efe4;
-  --color-code-border: #e6dfd0;
-  --color-code-text: #1e1a15;
-  --color-code-muted: #5f574c;
-  --color-code-accent: #2340b0;
+  --color-tech-background: #e9e5dc;
+  --color-tech-text: #3d3a35;
+  --color-featured-background: rgb(168 63 27 / 0.1);
+  --color-featured-text: #8f3415;
+  --color-inline-code-background: #e9e5dc;
+  --color-inline-code-text: #8f3415;
+  --color-code-background: #ece8e0;
+  --color-code-border: #d9d3c8;
+  --color-code-text: #1b1a18;
+  --color-code-muted: #5c574f;
+  --color-code-accent: #8f3415;
+
+  /* Picture-card stages: three close paper tones that alternate down a grid */
+  --color-stage-1: #e3ded4;
+  --color-stage-2: #dcd6cb;
+  --color-stage-3: #e8e2d6;
 
   /* Status */
   --color-success: #166534;
@@ -79,32 +84,32 @@
   --color-surface: #242220;
   --color-surface-hover: #2e2b28;
   --color-border: #3a3631;
-  --color-grid: #1e1d1a;
+  --color-grid: transparent;
   --color-input: #7e776b;
   --color-overlay: rgb(0 0 0 / 0.6);
   --color-shadow: rgb(0 0 0 / 0.6);
 
-  --color-text-primary: #f4efe4;
-  --color-text-secondary: #f4efe4;
+  --color-text-primary: #f3f0ea;
+  --color-text-secondary: #f3f0ea;
   --color-text-body: #d8d2c5;
   --color-text-muted: #a59e91;
-  --color-text-link: #a5b7ff;
-  --color-selection-background: #2b3a7a;
-  --color-selection-text: #e4e9ff;
-  --color-highlight: #e8b04b;
+  --color-text-link: #e0784f;
+  --color-selection-background: #e0784f;
+  --color-selection-text: #1b1a18;
+  --color-highlight: #e0784f;
 
-  --color-nav-background: rgb(27 26 24 / 0.85);
-  --color-nav-border: #3a3631;
-  --color-nav-text: #a59e91;
-  --color-nav-text-hover: #f4efe4;
-  --color-nav-active: #8ca3ff;
+  --color-nav-background: rgb(27 26 24 / 0.88);
+  --color-nav-border: rgb(243 240 234 / 0.08);
+  --color-nav-text: #f3f0ea;
+  --color-nav-text-hover: #e0784f;
+  --color-nav-active: #e0784f;
 
-  --color-primary: #8ca3ff;
+  --color-primary: #e0784f;
   --color-primary-text: #1b1a18;
-  --color-primary-fill: #8ca3ff;
-  --color-primary-fill-hover: #a5b7ff;
-  --color-primary-fill-active: #7189e8;
-  --color-focus-ring: #8ca3ff;
+  --color-primary-fill: #e0784f;
+  --color-primary-fill-hover: #e8906d;
+  --color-primary-fill-active: #c9643d;
+  --color-focus-ring: #e0784f;
   --color-secondary-background: #242220;
   --color-secondary-border: #3a3631;
   --color-disabled-background: #2e2b28;
@@ -113,18 +118,34 @@
 
   --color-tech-background: #2e2b28;
   --color-tech-text: #d8d2c5;
-  --color-featured-background: rgb(140 163 255 / 0.15);
-  --color-featured-text: #a5b7ff;
+  --color-featured-background: rgb(224 120 79 / 0.15);
+  --color-featured-text: #e8906d;
   --color-inline-code-background: #2e2b28;
-  --color-inline-code-text: #fb7185;
+  --color-inline-code-text: #e8906d;
   --color-code-background: #131210;
   --color-code-border: #2e2b28;
   --color-code-text: #ece6d8;
   --color-code-muted: #a59e91;
-  --color-code-accent: #a5b7ff;
+  --color-code-accent: #e8906d;
+
+  --color-stage-1: #2a2724;
+  --color-stage-2: #2e2b28;
+  --color-stage-3: #262421;
 
   --color-success: #4ade80;
   --color-warning: #e8b04b;
+}
+
+/* The ink panels (the hero status card, the lab bucket, the contact band and footer) are dark islands in both themes.
+   They carry data-theme="dark" so every token inside them resolves dark; this one value is their fill. It is declared on
+   the root element only, so an island inherits the page's value instead of redefining it: ink on paper in the light
+   theme, a lifted ink on the dark page. */
+:root {
+  --ink-panel: #1b1a18;
+}
+
+:root[data-theme='dark'] {
+  --ink-panel: #252320;
 }
 
 /* shadcn names and Tailwind utility names that existing components still use. They point at the tokens above and are
@@ -177,7 +198,7 @@
     --color-text-body: #000;
     --color-text-muted: #333;
     --color-border: #999;
-    --color-primary: #1e3a8a;
+    --color-primary: #8f3415;
     --color-grid: transparent;
   }
 }

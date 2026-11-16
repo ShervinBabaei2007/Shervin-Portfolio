@@ -162,7 +162,7 @@ function ResumePage() {
         <Link className={`${textLinkClass} min-h-11`} to="/projects">
           See the work behind it
         </Link>
-        <Link className={`${textLinkClass} min-h-11`} to="/#contact">
+        <Link className={`${textLinkClass} min-h-11`} to="/contact">
           Get in touch
         </Link>
       </p>

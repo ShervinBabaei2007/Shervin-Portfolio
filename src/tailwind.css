@@ -14,12 +14,13 @@
 /* Site tokens (type, layout, spacing). Colour lives in tokens.css; these are this site's own.
    They stay unlayered and come before the print block so print can override them. */
 :root {
-  --font-body: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --display: var(--font-body);
-  --header-height: 78px;
-  --gutter: 40px;
-  --content-max: 1160px;
+  --font-body: 'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', var(--font-body);
+  --header-height: 64px;
+  /* The page column: 1264px of content inside a 1360px frame, with 20-48px of side padding. */
+  --gutter: clamp(20px, 4vw, 48px);
+  --content-max: 1264px;
   --target: 44px; /* minimum comfortable touch target */
 
   /* Small-text scale. Phones get one step larger, because small text is hardest to read there. */
@@ -34,7 +35,7 @@
   --type-h2-section: clamp(1.875rem, 1.5rem + 1.4vw, 2.5rem); /* a section of the home page */
   --type-h2: clamp(1.5rem, 1.3rem + 0.7vw, 1.875rem); /* a section inside a case study or writeup */
   --type-h3: clamp(1.375rem, 1.3rem + 0.3vw, 1.5rem); /* a card or sub-section title */
-  --measure: 38rem; /* longest body line: about 72 characters. (DM Sans digits are wide, so 68ch ran to 100 characters.) */
+  --measure: 38rem; /* longest body line: about 72 characters. */
 
   /* Spacing scale. One value per job, so the gap between two sections is never two paddings added together. */
   --space-section: clamp(3.5rem, 2.5rem + 3.5vw, 6.25rem); /* top and bottom padding of a home-page section */
@@ -45,30 +46,8 @@
   --pad-card: 1.75rem; /* inside a card */
 }
 
-@media (min-width: 1280px) {
-  :root {
-    --gutter: 56px;
-    --content-max: 1320px;
-  }
-}
-
-@media (min-width: 1800px) {
-  :root {
-    --gutter: 80px;
-    --content-max: 1480px;
-  }
-}
-
-@media (max-width: 1100px) {
-  :root {
-    --gutter: 32px;
-  }
-}
-
 @media (max-width: 620px) {
   :root {
-    --gutter: 20px;
-    --header-height: 65px;
     --space-section: 3.125rem;
     --space-page: 3rem;
     --space-heading: 1.5rem;
@@ -137,13 +116,14 @@
   h3,
   h4 {
     color: var(--color-text-secondary);
+    font-family: var(--display);
     font-weight: 600;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
   h1 {
     color: var(--color-text-primary);
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
   }
   p,
   li,
@@ -174,6 +154,7 @@
   --animate-nav-progress: nav-progress 1.1s ease-in-out infinite;
   --font-sans: var(--font-body);
   --font-mono: var(--mono);
+  --font-display: var(--display);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -213,13 +194,13 @@
   margin: 0.35in 0.45in;
 }
 
-/* Resume colours: a navy accent for headings and links, and ink that always prints dark on white paper. */
+/* Resume colours: the site accent on screen, navy in print, and ink that always prints dark on white paper. */
 .resume-sheet {
-  --resume-accent: #2340b0;
+  --resume-accent: #a83f1b;
 }
 
 [data-theme='dark'] .resume-sheet {
-  --resume-accent: #a5b7ff;
+  --resume-accent: #e0784f;
 }
 
 @media print {
@@ -245,17 +226,6 @@
   }
 }
 
-@keyframes cell-in {
-  from {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
 @keyframes border-beam {
   to {
     offset-distance: 100%;
@@ -273,13 +243,6 @@
   }
 }
 
-/* The hand-drawn marks from Highlighter are decoration. */
-@media print {
-  .rough-annotation {
-    display: none;
-  }
-}
-
 /* Scroll reveal (see Reveal.tsx): hidden only after mount, only below the fold. */
 [data-reveal='pending'] {
   opacity: 0;
@@ -290,18 +253,38 @@
   animation: reveal-up 0.4s var(--reveal-delay, 0s) ease-out backwards;
 }
 
-/* The commit grid fills in column by column once its card has been revealed. */
-[data-reveal='in'] [data-cell] {
-  animation: cell-in 0.25s calc(var(--col, 0) * 4ms) ease-out backwards;
-}
-
 @media print {
-  [data-reveal],
-  [data-reveal] [data-cell] {
+  [data-reveal] {
     opacity: 1 !important;
     transform: none !important;
     filter: none !important;
     animation: none !important;
+  }
+}
+
+/* The hero's staggered entrance (see Hero.tsx). It is CSS only, so the prerendered text is in the page from the start
+   and only its arrival is animated; reduced motion and print show it straight away. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+}
+
+.rise {
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms) backwards;
+}
+
+/* The status dot in the hero card. */
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media print {
+  .rise {
+    animation: none;
   }
 }
 
@@ -320,7 +303,7 @@
   padding-block: var(--space-page);
 }
 
-/* Longest comfortable line of body text (about 72 characters in DM Sans). */
+/* Longest comfortable line of body text (about 72 characters). */
 @utility measure {
   max-width: var(--measure);
 }
@@ -330,69 +313,6 @@
   font-family: var(--mono);
   font-size: 0.8125rem;
   letter-spacing: 0.08em;
-}
-
-/* The hero name types itself (see TypedName.tsx). Each letter fades in at its own time (--d); a block cursor rides
-   along: before the first letter (::before), after each letter until the next one arrives (::after), and finally
-   blinks after the last. Reduced motion and print show the finished name with no cursor. */
-/* The letter fades in through its colour, not its opacity, so the cursor drawn inside it stays visible. */
-@keyframes char-in {
-  from {
-    color: transparent;
-  }
-}
-
-@keyframes cursor-on {
-  from,
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes cursor-blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-.typed-char {
-  position: relative;
-  white-space: pre;
-  animation: char-in 0.22s ease-out var(--d) backwards;
-}
-
-.typed-char::before,
-.typed-char::after {
-  content: '';
-  position: absolute;
-  top: 0.1em;
-  width: 0.07em;
-  height: 0.82em;
-  background: var(--color-primary);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.typed-char::after {
-  left: calc(100% + 0.03em);
-  animation: cursor-on var(--gap) steps(1, end) var(--d);
-}
-
-.typed-char[data-first]::before {
-  left: -0.1em;
-  animation: cursor-on var(--lead) steps(1, end);
-}
-
-.typed-char[data-last]::after {
-  animation: cursor-blink 1.1s steps(1, end) var(--d) infinite;
-}
-
-@media (prefers-reduced-motion: reduce), print {
-  .typed-char,
-  .typed-char::before,
-  .typed-char::after {
-    animation: none;
-  }
 }
 
 /* A full-width band with a faint brand tint, so a section can stand apart from the page and its cards read as raised. */

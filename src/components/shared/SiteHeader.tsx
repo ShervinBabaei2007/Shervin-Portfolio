@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef, useState } from 'react'
-import { ChevronDown, Download, Github, Linkedin, Mail, Menu } from 'lucide-react'
+import { Github, Linkedin, Mail, Menu, Moon, Sun } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import CommandPalette from '@/components/shared/CommandPalette'
@@ -8,11 +8,13 @@ import PendingFlag from '@/components/shared/PendingFlag'
 import { Spinner } from '@/components/ui/spinner'
 import ScrollProgress from '@/components/shared/ScrollProgress'
 import { useActiveSection } from '@/hooks/useActiveSection'
-import type { Preference } from '@/hooks/useTheme'
+import type { Preference, Scheme } from '@/hooks/useTheme'
 import { site } from '@/data/site'
 import { hitArea } from '@/lib/hitArea'
 
 type SiteHeaderProps = {
+  scheme: Scheme
+  onToggleTheme: () => void
   preference: Preference
   onPreferenceChange: (preference: Preference) => void
 }
@@ -23,30 +25,24 @@ const MobileNavSheet = lazy(loadMobileNav)
 // Early downloads ignore failures; LazyBoundary handles them if the menu is actually opened.
 const preloadMobileNav = () => void loadMobileNav().catch(() => {})
 
-// The Settings menu pulls in the dropdown menu code, so it downloads on first hover, focus, touch or click.
-const loadUtilityMenu = () => import('./UtilityMenu')
-const UtilityMenu = lazy(loadUtilityMenu)
-const preloadUtilityMenu = () => void loadUtilityMenu().catch(() => {})
-
-// The header shows only the section links and the Settings menu; the phone menu also lists the extra pages and socials.
+// The header links, one per page.
 const navLinks = [
-  { to: '/#work', label: 'Work', section: 'work', pages: ['/projects', '/work/'] },
-  { to: '/#about', label: 'About', section: 'about' },
-  { to: '/#contact', label: 'Contact', section: 'contact' },
+  { to: '/projects', label: 'Work', section: 'work', pages: ['/projects', '/work/'] },
+  { to: '/writeups', label: 'Writeups', section: 'writeups', pages: ['/writeups'] },
+  { to: '/lab', label: 'Lab', section: 'lab', pages: ['/lab'] },
+  { to: '/about', label: 'About', section: 'about', pages: ['/about'] },
+  { to: '/contact', label: 'Contact', section: 'contact', pages: ['/contact'] },
 ] as const
 
 // Extra pages that appear only in the phone menu.
-const moreLinks = [
-  { to: '/writeups', label: 'Writeups', page: '/writeups' },
-  { to: '/resume', label: 'Resume', page: '/resume' },
-] as const
+const moreLinks = [{ to: '/resume', label: 'Resume', page: '/resume' }] as const
 
 /** Every home-page section, and which nav item it belongs to while you are reading it. */
 const sectionOwner: Record<string, string> = {
   work: 'work',
+  writeups: 'writeups',
+  lab: 'lab',
   about: 'about',
-  skills: 'about',
-  faq: 'about',
   contact: 'contact',
 }
 
@@ -57,13 +53,12 @@ const socials = [
   { label: 'Email', href: `mailto:${site.email}`, Icon: Mail, external: false },
 ]
 
-/** The sticky header: logo, section links, search, the Settings menu and, on phones, the menu button. */
-function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
+/** The sticky header: wordmark, links, search, the Settings menu, the resume and, on phones, the menu button. */
+function SiteHeader({ scheme, onToggleTheme, preference, onPreferenceChange }: SiteHeaderProps) {
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuEverOpened, setMenuEverOpened] = useState(false)
   const [menuLoading, setMenuLoading] = useState(false)
-  const [moreMenuWanted, setMoreMenuWanted] = useState(false)
   const menuButton = useRef<HTMLButtonElement>(null)
   const activeSection = useActiveSection(Object.keys(sectionOwner), pathname === '/')
   const activeOwner = activeSection ? sectionOwner[activeSection] : null
@@ -76,37 +71,26 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
     return undefined
   }
 
-  // A plain look-alike of the Settings button, shown until the real menu's code has loaded.
-  const moreButton = (
-    <Button
-      variant="ghost"
-      size="sm"
-      className={`${hitArea} cursor-pointer gap-1 text-muted-foreground max-[959px]:hidden`}
-      onPointerEnter={preloadUtilityMenu}
-      onFocus={preloadUtilityMenu}
-      onClick={() => setMoreMenuWanted(true)}
-    >
-      Settings <ChevronDown />
-    </Button>
-  )
-
   return (
-    <header className="site-header sticky top-0 z-20 grid min-h-[var(--header-height)] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center justify-between border-b border-nav-border px-[max(var(--gutter),calc((100%-var(--content-max))/2))] py-2 max-[620px]:flex max-[620px]:flex-wrap max-[620px]:gap-y-1 print:hidden">
+    <header className="site-header sticky top-0 z-20 grid min-h-[var(--header-height)] w-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-6 border-b border-nav-border px-[max(var(--gutter),calc((100%-var(--content-max))/2))] max-[959px]:grid-cols-[minmax(0,1fr)_auto] print:hidden">
       <Link
-        className="col-start-1 inline-flex min-h-11 min-w-11 items-center justify-self-start"
+        className="inline-flex min-h-11 items-center justify-self-start font-display text-[18px] font-bold tracking-[-0.02em] text-foreground no-underline"
         to="/"
         aria-label="Shervin Babaei, home"
       >
-        <img className="size-[35px] rounded-[8px]" src="/logo.svg" width={35} height={35} alt="" />
+        <span>
+          {site.name}
+          <span className="text-[1.7em] leading-[0] text-highlight" aria-hidden="true">
+            .
+          </span>
+        </span>
       </Link>
-      <nav
-        className="col-start-2 flex flex-wrap justify-center gap-x-[clamp(22px,2.2vw,34px)] justify-self-center max-[959px]:hidden"
-        aria-label="Main navigation"
-      >
+      {/* The page links sit alone in the middle; the tools (search, theme, resume) are grouped quietly on the right. */}
+      <nav className="flex items-center gap-1 text-[15px] max-[959px]:hidden" aria-label="Main navigation">
         {navLinks.map((link) => (
           <Link
             key={link.to}
-            className="relative inline-flex min-h-[var(--target)] items-center text-nav-text no-underline transition-colors after:absolute after:inset-x-0 after:bottom-1.5 after:h-0.5 after:rounded-full after:bg-nav-active after:opacity-0 after:transition-opacity hover:text-nav-text-hover focus-visible:text-nav-text-hover active:text-nav-text-hover aria-[current]:text-nav-active aria-[current]:after:opacity-100"
+            className="inline-flex h-9 items-center rounded-full px-3.5 text-nav-text no-underline transition-colors hover:bg-surface-hover aria-[current]:bg-surface-hover aria-[current]:font-medium aria-[current]:text-nav-active"
             to={link.to}
             aria-current={currentFor(link)}
           >
@@ -114,24 +98,28 @@ function SiteHeader({ preference, onPreferenceChange }: SiteHeaderProps) {
           </Link>
         ))}
       </nav>
-      <div className="col-start-3 flex items-center gap-2 justify-self-end max-[620px]:gap-0">
+      <div className="flex items-center gap-1 justify-self-end max-[620px]:gap-0">
         <CommandPalette />
-        <div className="max-[959px]:hidden">
-          {moreMenuWanted ? (
-            <LazyBoundary label="Settings menu" fallback={moreButton} onFail={() => setMoreMenuWanted(false)}>
-              <Suspense fallback={moreButton}>
-                <UtilityMenu preference={preference} onPreferenceChange={onPreferenceChange} defaultOpen />
-              </Suspense>
-            </LazyBoundary>
-          ) : (
-            moreButton
-          )}
-        </div>
-        <Button asChild size="sm" className="ml-1 font-semibold max-[959px]:hidden">
-          <a href="/Shervin-Babaei-Resume.pdf" download="Shervin-Babaei-Resume.pdf" aria-label="Download resume (PDF)">
-            Resume <Download aria-hidden="true" />
-          </a>
+        {/* One click flips light and dark; the icon shows the theme you are in. The phone menu also offers System. */}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          aria-label={scheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+          title={scheme === 'dark' ? 'Dark theme (switch to light)' : 'Light theme (switch to dark)'}
+          className={`${hitArea} cursor-pointer rounded-full text-muted-foreground hover:text-foreground max-[959px]:hidden`}
+          onClick={onToggleTheme}
+        >
+          {scheme === 'dark' ? <Moon /> : <Sun />}
         </Button>
+        <a
+          href="/Shervin-Babaei-Resume.pdf"
+          download="Shervin-Babaei-Resume.pdf"
+          aria-label="Download resume (PDF)"
+          className="ml-2 inline-flex h-9 items-center gap-1.5 rounded-full border border-foreground/20 px-4 text-[15px] text-foreground no-underline transition-colors hover:bg-foreground hover:text-background max-[959px]:hidden"
+        >
+          Resume <span aria-hidden="true">↗</span>
+        </a>
         <Button
           ref={menuButton}
           variant="ghost"

@@ -96,11 +96,11 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
 /** The site shell: skip link, header, the current page, footer and the floating corner widgets. */
 function App() {
   const { pathname } = useLocation()
-  const { scheme, preference, setPreference } = useTheme()
+  const { scheme, preference, setPreference, toggle } = useTheme()
   usePageMeta()
 
   return (
-    <div className="min-h-dvh overflow-clip bg-background bg-[linear-gradient(var(--color-grid)_1px,transparent_1px),linear-gradient(90deg,var(--color-grid)_1px,transparent_1px)] bg-[length:38px_38px] text-foreground transition-[background-color,color] duration-[250ms] ease-[ease] print:min-h-0 print:bg-none">
+    <div className="min-h-dvh overflow-clip bg-background text-foreground transition-[background-color,color] duration-[250ms] ease-[ease] print:min-h-0">
       <a
         className="fixed top-3 left-3 z-[100] -translate-y-[160%] bg-foreground px-3.5 py-2.5 text-background focus:translate-y-0 print:hidden"
         href="#main"
@@ -109,7 +109,7 @@ function App() {
       </a>
       <ScrollManager />
       <NavigationProgress />
-      <SiteHeader preference={preference} onPreferenceChange={setPreference} />
+      <SiteHeader scheme={scheme} onToggleTheme={toggle} preference={preference} onPreferenceChange={setPreference} />
       <main id="main" tabIndex={-1}>
         <PageErrorBoundary pathname={pathname}>
           <Suspense

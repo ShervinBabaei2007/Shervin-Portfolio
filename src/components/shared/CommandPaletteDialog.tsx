@@ -90,16 +90,19 @@ function CommandPaletteDialog({ open, onOpenChange }: Props) {
             <CommandSeparator />
             <CommandGroup heading="Skills">
               {allSkills.map((skill) => {
-                const count = projectsUsing(skill).length
+                const using = projectsUsing(skill)
+                if (using.length === 0) return null
+                // Opens the first project (in site order) that uses the skill.
                 return (
                   <CommandItem
                     key={skill}
                     value={`${skill} skill`}
-                    onSelect={() => run(() => navigate('/', { state: { skill } }))}
+                    onSelect={() => run(() => navigate(`/work/${using[0].slug}`))}
                   >
                     <Wrench /> {skill}
                     <span className="ml-auto text-label text-muted-foreground">
-                      {count} {count === 1 ? 'project' : 'projects'}
+                      {using[0].name}
+                      {using.length > 1 && ` +${using.length - 1}`}
                     </span>
                   </CommandItem>
                 )

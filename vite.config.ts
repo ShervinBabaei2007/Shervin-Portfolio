@@ -18,9 +18,11 @@ function preloadFonts(): Plugin {
     generateBundle(_options, bundle) {
       const htmlFile = Object.values(bundle).find((file) => file.type === 'asset' && file.fileName === 'index.html')
       if (!htmlFile || htmlFile.type !== 'asset') return
-      // The DM Sans variable font and the regular DM Mono weight, whatever hash Vite gave their file names.
+      // The Geist body, Bricolage Grotesque display and JetBrains Mono fonts, whatever hash Vite gave their file names.
       const preloads = Object.keys(bundle)
-        .filter((name) => /(dm-sans-latin-wght|dm-mono-latin-400)-normal.*\.woff2$/.test(name))
+        .filter((name) =>
+          /(geist-latin-wght|bricolage-grotesque-latin-opsz|jetbrains-mono-latin-wght)-normal.*\.woff2$/.test(name),
+        )
         .map((name) => `<link rel="preload" as="font" type="font/woff2" crossorigin href="/${name}">`)
         .join('\n    ')
       htmlFile.source = String(htmlFile.source).replace('</head>', `    ${preloads}\n  </head>`)

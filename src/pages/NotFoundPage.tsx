@@ -24,7 +24,7 @@ function NotFoundPage() {
           { to: '/#work', label: 'See the work' },
           { to: '/writeups', label: 'Read the writeups' },
           { to: '/resume', label: 'View the resume' },
-          { to: '/#contact', label: 'Get in touch' },
+          { to: '/contact', label: 'Get in touch' },
         ].map(({ to, label }) => (
           <Link key={to} className={`${textLinkClass} min-h-11`} to={to}>
             {label}

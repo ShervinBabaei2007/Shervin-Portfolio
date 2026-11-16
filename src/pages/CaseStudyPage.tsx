@@ -3,7 +3,6 @@ import ArticleLayout from '@/components/shared/ArticleLayout'
 import TableOfContents from '@/components/shared/TableOfContents'
 import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import ClosingCta from '@/components/shared/ClosingCta'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import CodeBlock from '@/components/shared/CodeBlock'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
@@ -381,14 +380,9 @@ function CaseStudyPage() {
         </ArticleLayout>
       </div>
 
-      {/* The ending sits on the tinted band used across the site: the call to action, then the neighbouring projects. */}
+      {/* The ending sits on the tinted band used across the site: the neighbouring projects. The footer band below is the call to action. */}
       <div className="section-band">
         <div className="section-wrap grid gap-6 py-[var(--space-page)]">
-          <ClosingCta
-            heading={`Working on something like ${project.name}?`}
-            body="Tell me what you're building and I'll reply within two business days."
-          />
-
           {/* Previous and next case studies; at either end of the list the slot links back to the work section. */}
           <nav className="grid grid-cols-2 gap-4 max-[620px]:grid-cols-1" aria-label="More case studies">
             {previous ? (

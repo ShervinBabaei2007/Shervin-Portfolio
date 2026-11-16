@@ -1,22 +1,8 @@
 import type { ReactNode } from 'react'
-import {
-  Bug,
-  CalendarCheck,
-  ListChecks,
-  ShieldCheck,
-  Sparkles,
-  Target,
-  Timer,
-  Users,
-  type LucideIcon,
-} from 'lucide-react'
 import { Link } from 'react-router-dom'
-import Reveal from '@/components/shared/Reveal'
-import SectionHeading from '@/components/shared/SectionHeading'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { facts } from '@/data/facts'
 import { site } from '@/data/site'
-import { raised } from '@/lib/surfaces'
 
 type Faq = { id: string; question: string; answer: ReactNode }
 
@@ -36,18 +22,6 @@ const link = (to: string, label: string) => (
 
 const { skillmatch, hackathon } = facts
 const { availability } = site
-// An icon for each question, so the list can be scanned by shape as well as by words.
-const icons: Record<string, LucideIcon> = {
-  available: CalendarCheck,
-  role: Users,
-  deliver: Timer,
-  quality: ListChecks,
-  debug: Bug,
-  ai: Sparkles,
-  next: Target,
-  verify: ShieldCheck,
-}
-
 // Opening sentence of the availability answer, left out when no start date is set.
 const start = availability.from
   ? `I am available from ${availability.from}${availability.term ? ` for ${availability.term}` : ''}. `
@@ -187,50 +161,26 @@ const faqs: Faq[] = [
   },
 ]
 
-const accordionClass = `rounded-2xl border bg-card px-6 max-[620px]:px-4 ${raised}`
-// Two columns on wide screens keep the section compact, with no empty column beside a long list.
-const columns = [faqs.slice(0, 4), faqs.slice(4)]
-
-/** The eight questions an employer asks first, answered up front. */
-function FaqSection() {
+/** The eight questions a hiring manager asks first, one open at a time, the first open to start. */
+function QuickAnswers() {
   return (
-    <section className="section-wrap section-y" id="faq" aria-labelledby="faq-title">
-      <SectionHeading
-        id="faq-title"
-        number="02"
-        eyebrow="FOR EMPLOYERS"
-        title="Quick answers"
-        aside="What a hiring manager usually wants to know first, answered up front."
-      />
-      <Reveal>
-        <div className="grid items-start gap-5 lg:grid-cols-2 lg:gap-8">
-          {columns.map((items) => (
-            <Accordion key={items[0].id} type="single" collapsible className={accordionClass}>
-              {items.map(({ id, question, answer }) => {
-                const Icon = icons[id]
-                return (
-                  <AccordionItem key={id} value={id}>
-                    <AccordionTrigger className="items-center max-[620px]:py-3">
-                      <span className="flex items-center gap-3.5">
-                        <span
-                          className="grid size-9 flex-none place-items-center rounded-lg bg-primary/10 text-primary"
-                          aria-hidden="true"
-                        >
-                          <Icon size={18} />
-                        </span>
-                        {question}
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent className="pl-[3.125rem] max-[620px]:pl-0">{answer}</AccordionContent>
-                  </AccordionItem>
-                )
-              })}
-            </Accordion>
-          ))}
-        </div>
-      </Reveal>
-    </section>
+    <Accordion type="single" collapsible defaultValue={faqs[0].id} className="border-t border-foreground/15">
+      {faqs.map(({ id, question, answer }) => (
+        <AccordionItem key={id} value={id} className="border-b border-foreground/12 last:border-b">
+          <AccordionTrigger className="group items-center py-5 font-display text-[clamp(1.125rem,1.6vw,1.3125rem)] font-semibold tracking-[-0.02em] text-foreground hover:text-primary hover:no-underline [&>svg]:hidden">
+            {question}
+            <span aria-hidden="true" className="font-mono text-base font-normal">
+              <span className="group-data-[state=open]:hidden">+</span>
+              <span className="hidden group-data-[state=open]:inline">−</span>
+            </span>
+          </AccordionTrigger>
+          <AccordionContent className="pr-10 pb-[22px] text-base leading-[1.6] text-text-body max-[620px]:pr-0">
+            {answer}
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
   )
 }
 
-export default FaqSection
+export default QuickAnswers
