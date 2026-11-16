@@ -8,11 +8,25 @@
       "homepage": "linkedin-network-growth-assistance.vercel.app",
       "topics": [],
       "stars": 0,
-      "pushedAt": "2026-11-06T03:57:40Z",
+      "pushedAt": "2026-11-15T00:30:59Z",
       "createdAt": "2026-10-10T04:58:52Z",
-      "commits": 256,
+      "commits": 263,
       "thumbnail": "/repos/Network-Growth-Assistance.webp",
-      "score": 18
+      "score": 18.1
+    },
+    {
+      "name": "SignalDesk",
+      "url": "https://github.com/ShervinBabaei2007/SignalDesk",
+      "description": "AI-powered News Intelligence and Cross-Source Analysis Platform",
+      "language": "Python",
+      "homepage": "https://signaldesk-lemon.vercel.app",
+      "topics": [],
+      "stars": 0,
+      "pushedAt": "2026-11-14T23:04:52Z",
+      "createdAt": "2026-11-14T01:32:41Z",
+      "commits": 67,
+      "thumbnail": "/repos/SignalDesk.webp",
+      "score": 15.4
     },
     {
       "name": "mkdocs-project-2026",

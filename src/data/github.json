@@ -1,8 +1,18 @@
 {
-  "fetchedAt": "2026-11-08T00:45:22.298Z",
-  "mergedPrs": 53,
+  "fetchedAt": "2026-11-16T21:53:03.707Z",
+  "mergedPrs": 60,
+  "capped": false,
   "days": {
-    "2026-11-05": 31,
+    "2026-11-16": 11,
+    "2026-11-15": 10,
+    "2026-11-14": 25,
+    "2026-11-13": 63,
+    "2026-11-10": 42,
+    "2026-11-09": 12,
+    "2026-11-08": 10,
+    "2026-11-07": 44,
+    "2026-11-06": 110,
+    "2026-11-05": 33,
     "2026-11-03": 13,
     "2026-11-02": 1,
     "2026-11-01": 13,
@@ -19,11 +29,13 @@
     "2026-10-14": 11,
     "2026-10-12": 4,
     "2026-10-11": 3,
-    "2026-10-10": 5,
+    "2026-10-10": 7,
     "2026-10-09": 17,
     "2026-10-07": 11,
     "2026-10-06": 4,
-    "2026-10-02": 6,
+    "2026-10-04": 1,
+    "2026-10-03": 16,
+    "2026-10-02": 8,
     "2026-10-01": 4,
     "2026-08-06": 1,
     "2026-08-01": 1,
@@ -95,52 +107,100 @@
   },
   "commits": [
     {
-      "sha": "9623e71",
-      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
-      "message": "fix: render the not-found text inside Suspense so the page still prerenders",
-      "date": "2026-11-05T20:45:17.000-07:00"
+      "sha": "aca4359",
+      "repo": "ShervinBabaei2007/Shervin-Portfolio",
+      "message": "Merge pull request #4 from ShervinBabaei2007/v2",
+      "date": "2026-11-16T14:19:46.000-07:00"
     },
     {
-      "sha": "a13b7ce",
-      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
-      "message": "docs: French now covers the whole signed-in app; refresh test counts",
-      "date": "2026-11-05T20:31:48.000-07:00"
+      "sha": "3a9863b",
+      "repo": "ShervinBabaei2007/Shervin-Portfolio",
+      "message": "feat(motion): Lenis smooth scrolling, GSAP scroll reveals and a new phone menu",
+      "date": "2026-11-16T14:18:34.000-07:00"
     },
     {
-      "sha": "442d09a",
-      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
-      "message": "feat: appearance form, alert fields, compare bar, bell and not-found page in French",
-      "date": "2026-11-05T20:31:40.000-07:00"
+      "sha": "c2405cd",
+      "repo": "ShervinBabaei2007/Shervin-Portfolio",
+      "message": "test: remove timing races from the rate-limiter and slow-navigation tests",
+      "date": "2026-11-16T14:18:34.000-07:00"
     },
     {
-      "sha": "bfef1ca",
-      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
-      "message": "feat: guided tour in French",
-      "date": "2026-11-05T20:25:52.000-07:00"
+      "sha": "2b0be1c",
+      "repo": "ShervinBabaei2007/Shervin-Portfolio",
+      "message": "fix(api): add timeouts and failure handling to the contact and commits functions",
+      "date": "2026-11-16T14:18:34.000-07:00"
     },
     {
-      "sha": "f38dad3",
-      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
-      "message": "feat: finish quick capture, discover form, job search summary and notes strings in French",
-      "date": "2026-11-05T20:22:18.000-07:00"
+      "sha": "dd33b40",
+      "repo": "ShervinBabaei2007/Shervin-Portfolio",
+      "message": "Merge pull request #3 from ShervinBabaei2007/v2",
+      "date": "2026-11-16T13:11:53.000-07:00"
     },
     {
-      "sha": "fd89731",
-      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
-      "message": "chore: stable translator hook, remove unused imports and impure date calls",
-      "date": "2026-11-05T20:19:16.000-07:00"
+      "sha": "d507fdc",
+      "repo": "ShervinBabaei2007/Shervin-Portfolio",
+      "message": "feat(built): move how-it's-built onto the shared page hero",
+      "date": "2026-11-16T13:11:39.000-07:00"
     },
     {
-      "sha": "9e47e80",
-      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
-      "message": "feat: candidate import, save-search, apply prompt and AI key section in French",
-      "date": "2026-11-05T20:16:08.000-07:00"
+      "sha": "3d50eaa",
+      "repo": "ShervinBabaei2007/Shervin-Portfolio",
+      "message": "Merge pull request #2: finish the v2 redesign, new icon and a phone-first pass",
+      "date": "2026-11-16T10:52:39.000-07:00"
     },
     {
-      "sha": "9c0d611",
+      "sha": "c2ee6eb",
+      "repo": "ShervinBabaei2007/Shervin-Portfolio",
+      "message": "feat: finish the v2 redesign, new icon and a phone-first pass",
+      "date": "2026-11-16T10:50:50.000-07:00"
+    },
+    {
+      "sha": "3d01c14",
+      "repo": "Tinabcit/IDSP-3380-Group-6",
+      "message": "Merge pull request #41 from Tinabcit/feature/upload-generates-tasks",
+      "date": "2026-11-16T08:07:12.000-07:00"
+    },
+    {
+      "sha": "955c5f5",
+      "repo": "Tinabcit/IDSP-3380-Group-6",
+      "message": "Open the Review tasks dialog after a document upload",
+      "date": "2026-11-16T08:06:54.000-07:00"
+    },
+    {
+      "sha": "4cfcfaa",
+      "repo": "Tinabcit/IDSP-3380-Group-6",
+      "message": "add img",
+      "date": "2026-11-15T20:01:11.000-07:00"
+    },
+    {
+      "sha": "0bbedbb",
+      "repo": "Tinabcit/IDSP-3380-Group-6",
+      "message": "Make Sponsor pop-up match the design exactly (#40)",
+      "date": "2026-11-15T20:00:14.000-07:00"
+    },
+    {
+      "sha": "61a5988",
+      "repo": "Tinabcit/IDSP-3380-Group-6",
+      "message": "Add Comp Tickets by Event section to the Sponsor pop-up (#39)",
+      "date": "2026-11-15T19:52:45.000-07:00"
+    },
+    {
+      "sha": "bd8b378",
       "repo": "ShervinBabaei2007/Network-Growth-Assistance",
-      "message": "feat: job detail tailoring, notes and document editors in French",
-      "date": "2026-11-05T20:12:54.000-07:00"
+      "message": "chore: remove the GitHub Actions CI workflow",
+      "date": "2026-11-14T17:30:55.000-07:00"
+    },
+    {
+      "sha": "4b904e6",
+      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
+      "message": "Merge refactor/mutation-and-list-modules",
+      "date": "2026-11-14T17:23:29.000-07:00"
+    },
+    {
+      "sha": "6f4ab37",
+      "repo": "ShervinBabaei2007/Network-Growth-Assistance",
+      "message": "test: wait for \"Hide company\" to finish before leaving the Jobs page",
+      "date": "2026-11-14T17:19:56.000-07:00"
     }
   ]
 }
