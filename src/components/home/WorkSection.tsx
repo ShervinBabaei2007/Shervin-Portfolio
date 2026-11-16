@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
+import GitHubActivity from '@/components/home/GitHubActivity'
 import Reveal from '@/components/shared/Reveal'
 import SectionHeading from '@/components/shared/SectionHeading'
 import WorkCard from '@/components/shared/WorkCard'
 import { flagshipProjects, projects, spotlightProjects } from '@/data/projects'
 import { outlinePill } from '@/lib/surfaces'
 
-/** Selected work: the four flagship projects in a two-by-two grid, then a link to all of them. */
+/** Selected work: the four flagship projects in a two-by-two grid, a link to all of them, then the commit history. */
 function WorkSection() {
   return (
     <section className="section-wrap pt-[clamp(56px,7vw,96px)]" id="work" aria-labelledby="work-title">
@@ -39,6 +40,7 @@ function WorkSection() {
           </span>
         </p>
       </div>
+      <GitHubActivity className="mt-[clamp(56px,6vw,88px)]" />
     </section>
   )
 }
