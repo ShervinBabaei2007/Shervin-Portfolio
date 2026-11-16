@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom'
-import { cn, textLinkClass } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { resume } from '../data/resume'
-import { Button } from '@/components/ui/button'
-import { tone } from '@/lib/buttonTones'
 
 /*
  * One plain, single-column document: no cards, icons or decoration, so it reads the same in a parser, on
@@ -14,6 +12,8 @@ import { tone } from '@/lib/buttonTones'
 const tapTarget =
   "max-[620px]:relative max-[620px]:after:absolute max-[620px]:after:inset-y-[-12px] max-[620px]:after:inset-x-[-4px] max-[620px]:after:content-['']"
 const accent = 'text-[var(--resume-accent)]'
+const onwardLink =
+  'inline-flex min-h-11 items-center text-[15px] text-foreground underline decoration-1 underline-offset-4 hover:text-primary'
 const link = cn(accent, 'font-semibold underline underline-offset-[3px]', tapTarget)
 const section = 'mt-8 print:mt-[4pt]'
 const sectionHeading = cn(
@@ -32,19 +32,23 @@ const rowDate = 'text-[.875rem] whitespace-nowrap text-muted-foreground print:te
 function ResumePage() {
   return (
     <article
-      className="section-wrap max-w-[880px] pt-10 pb-[100px] print:m-0 print:w-full print:max-w-none print:p-0"
+      className="section-wrap max-w-[880px] pt-[clamp(40px,6vw,72px)] pb-[clamp(88px,10vw,144px)] print:m-0 print:w-full print:max-w-none print:p-0"
       aria-labelledby="resume-title"
     >
-      <div className="flex items-center justify-between gap-3.5 print:hidden">
-        <p className="eyebrow">RESUME</p>
-        <Button asChild size="lg" className={cn('h-11 px-[17px] text-control font-semibold shadow-md', tone.ink)}>
-          <a href="/Shervin-Babaei-Resume.pdf" download="Shervin-Babaei-Resume.pdf">
-            Download PDF
-          </a>
-        </Button>
+      <div className="flex flex-wrap items-center justify-between gap-3.5 print:hidden">
+        <p className="m-0 font-mono text-[13px] text-muted-foreground">
+          <span className="text-primary">~</span> $ cat resume.pdf
+        </p>
+        <a
+          href="/Shervin-Babaei-Resume.pdf"
+          download="Shervin-Babaei-Resume.pdf"
+          className="inline-flex h-11 items-center gap-2.5 rounded-full bg-foreground px-5 text-[15px] text-background no-underline transition-colors hover:bg-primary-fill hover:text-primary-foreground"
+        >
+          Download PDF <span aria-hidden="true">↓</span>
+        </a>
       </div>
 
-      <div className="resume-sheet mt-6 rounded-xl border bg-card px-12 pt-10 pb-11 max-[620px]:px-[18px] max-[620px]:pt-[22px] max-[620px]:pb-[26px] print:m-0 print:rounded-none print:border-0 print:bg-transparent print:p-0 print:text-[10pt]">
+      <div className="resume-sheet mt-6 rounded-md border border-foreground/15 bg-surface px-12 pt-10 pb-11 max-[620px]:px-[18px] max-[620px]:pt-[22px] max-[620px]:pb-[26px] print:m-0 print:rounded-none print:border-0 print:bg-transparent print:p-0 print:text-[10pt]">
         <header className="text-center">
           <h1
             id="resume-title"
@@ -158,12 +162,12 @@ function ResumePage() {
           ))}
         </section>
       </div>
-      <p className="mt-8 flex flex-wrap gap-x-6 gap-y-1 print:hidden">
-        <Link className={`${textLinkClass} min-h-11`} to="/projects">
-          See the work behind it
+      <p className="mt-8 mb-0 flex flex-wrap gap-x-6 gap-y-1 print:hidden">
+        <Link className={onwardLink} to="/projects">
+          See the work behind it&nbsp;<span aria-hidden="true">→</span>
         </Link>
-        <Link className={`${textLinkClass} min-h-11`} to="/contact">
-          Get in touch
+        <Link className={onwardLink} to="/contact">
+          Get in touch&nbsp;<span aria-hidden="true">→</span>
         </Link>
       </p>
     </article>

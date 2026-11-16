@@ -2,7 +2,7 @@ import { useState } from 'react'
 import PageHero from '@/components/shared/PageHero'
 import Reveal from '@/components/shared/Reveal'
 import WorkCard from '@/components/shared/WorkCard'
-import { projects } from '@/data/projects'
+import { projects, spotlightProjects } from '@/data/projects'
 import { site } from '@/data/site'
 import { outlinePill } from '@/lib/surfaces'
 import { cn } from '@/lib/utils'
@@ -12,11 +12,13 @@ const categoryOrder: string[] = ['Full-stack', 'Hackathon', 'AI tools', 'Systems
 // "All", then each category that has a project, in a fixed order.
 const filters = ['All', ...categoryOrder.filter((name) => projects.some((project) => project.category === name))]
 
-// Flagship projects first, then the rest grouped by category (keeping their data order inside a group).
+// Flagship projects first, then the spotlight, then the rest grouped by category (keeping their data order inside a
+// group).
 const ordered = [
   ...projects.filter((project) => project.flagship),
+  ...spotlightProjects,
   ...projects
-    .filter((project) => !project.flagship)
+    .filter((project) => !project.flagship && !spotlightProjects.includes(project))
     .sort((a, b) => categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category)),
 ]
 

@@ -32,8 +32,10 @@ const rise = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties
 function Hero() {
   const [inspecting, setInspecting] = useState(false)
 
-  // Press I to toggle inspect mode (not while typing, and not with a modifier), Esc to leave it.
+  // Press I to toggle inspect mode (not while typing, and not with a modifier), Esc to leave it. Inspect mode is a
+  // mouse feature (it reads what is under the pointer), so touch screens get neither the shortcut nor the button.
   useEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
     const onKey = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return
       const target = event.target as HTMLElement
@@ -47,7 +49,7 @@ function Hero() {
 
   return (
     <section
-      className="relative section-wrap pt-[clamp(40px,6vw,88px)] pb-[clamp(56px,7vw,96px)] print:py-4"
+      className="relative section-wrap pt-[clamp(32px,6vw,88px)] pb-[clamp(40px,7vw,96px)] print:py-4"
       id="home"
       aria-labelledby="hero-title"
     >
@@ -57,20 +59,27 @@ function Hero() {
         style={rise(0)}
         className="rise relative mb-[clamp(24px,3vw,40px)] font-mono text-[13px] text-muted-foreground"
       >
-        <span className="text-primary">~</span> $ whoami → {site.name.toLowerCase()}
+        <span className="text-primary">~</span> $ whoami
       </p>
       <div className="relative flex flex-wrap items-start gap-[clamp(36px,5vw,80px)]">
         <div className="flex min-w-0 flex-[7_1_480px] flex-col gap-[clamp(32px,4vw,48px)]">
-          <h1
-            id="hero-title"
-            data-calm
-            className="m-0 text-[clamp(2.875rem,6vw,5.875rem)] leading-[0.95] font-[650] tracking-[-0.045em]"
-          >
-            <span style={rise(80)} className="rise block pb-[0.04em]">
-              Full-stack developer
-            </span>{' '}
-            <span style={rise(170)} className="rise block pb-[0.04em]">
-              who goes <span className="sr-only">down</span>
+          {/* The name is the first and largest thing on the page; the tagline under it says what I do. */}
+          <div data-calm className="flex flex-col gap-[clamp(16px,2vw,24px)]">
+            <h1
+              id="hero-title"
+              style={rise(80)}
+              className="rise m-0 text-[clamp(2.875rem,6vw,5.875rem)] leading-[0.95] font-[650] tracking-[-0.045em]"
+            >
+              {site.name}
+              <span className="text-highlight" aria-hidden="true">
+                .
+              </span>
+            </h1>
+            <p
+              style={rise(170)}
+              className="rise m-0 font-display text-[clamp(1.75rem,3.2vw,3rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-foreground"
+            >
+              Full-stack developer who goes <span className="sr-only">down</span>
               <span aria-hidden="true" className="inline-flex cursor-s-resize text-primary">
                 {'down'.split('').map((letter, index) => (
                   <span
@@ -81,12 +90,10 @@ function Hero() {
                     {letter}
                   </span>
                 ))}
-              </span>
-            </span>{' '}
-            <span style={rise(260)} className="rise block pb-[0.04em]">
+              </span>{' '}
               the stack.
-            </span>
-          </h1>
+            </p>
+          </div>
           <div data-calm style={rise(360)} className="rise flex max-w-[520px] flex-col gap-7">
             <p className="m-0 text-[clamp(1.0625rem,1.4vw,1.1875rem)] leading-[1.55] text-text-body">
               I&apos;m a {site.school} student in Vancouver. I build with React, TypeScript, Node.js and PostgreSQL,
@@ -119,10 +126,11 @@ function Hero() {
         {stats.map(({ value, label }) => (
           <div
             key={label}
-            className="flex flex-[1_1_200px] flex-col-reverse gap-1.5 border-t border-foreground/15 py-[18px]"
+            // On phones each number sits on one row with its label beside it, instead of three tall blocks.
+            className="flex flex-[1_1_200px] flex-col-reverse gap-1.5 border-t border-foreground/15 py-[18px] max-[620px]:flex-row-reverse max-[620px]:items-baseline max-[620px]:justify-between max-[620px]:gap-4 max-[620px]:py-3.5"
           >
-            <dt className="font-mono text-[13px] text-muted-foreground">{label}</dt>
-            <dd className="m-0 font-display text-[36px] leading-none font-semibold tracking-[-0.035em] text-foreground">
+            <dt className="font-mono text-[13px] text-muted-foreground max-[620px]:text-right">{label}</dt>
+            <dd className="m-0 font-display text-[36px] leading-none font-semibold tracking-[-0.035em] whitespace-nowrap text-foreground max-[620px]:text-[26px]">
               {value}
             </dd>
           </div>

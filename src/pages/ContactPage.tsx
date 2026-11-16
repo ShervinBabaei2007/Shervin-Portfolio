@@ -54,7 +54,7 @@ function ContactPage() {
                   <span className={labelClass}>Email</span>
                   <a
                     href={`mailto:${site.email}`}
-                    className={`${valueClass} [overflow-wrap:anywhere] text-foreground no-underline hover:text-primary`}
+                    className={`${valueClass} flex min-h-11 items-center [overflow-wrap:anywhere] text-foreground no-underline hover:text-primary`}
                   >
                     {site.email}
                   </a>

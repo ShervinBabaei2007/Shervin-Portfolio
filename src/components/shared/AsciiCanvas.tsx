@@ -15,7 +15,11 @@ function AsciiCanvas() {
       void import('@/lib/asciiField')
         .then(({ startAsciiField }) => {
           if (cancelled || !canvas.current) return
-          const motion = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          // Animated only with a mouse or trackpad: the ripple follows the pointer, and on phones a still frame saves
+          // the battery and the frame budget for scrolling.
+          const motion =
+            !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+            window.matchMedia('(hover: hover) and (pointer: fine)').matches
           stop = startAsciiField(canvas.current, { motion })
         })
         .catch(() => {})

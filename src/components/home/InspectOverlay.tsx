@@ -121,7 +121,7 @@ function InspectOverlay({ onExit }: { onExit: () => void }) {
         <span className="flex items-center gap-2">
           <span className="size-1.5 rounded-full bg-primary" aria-hidden="true" />
           <span>
-            Inspect mode<span className="max-[480px]:hidden"> · hover or tap anything</span>
+            Inspect mode<span className="max-[480px]:hidden"> · hover or click anything</span>
           </span>
         </span>
         <button

@@ -12,13 +12,17 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
         switch (block.type) {
           case 'h2':
             return (
-              <h2 key={index} id={headingId(block.text)} className="mt-[52px] text-h2 font-semibold">
+              <h2
+                key={index}
+                id={headingId(block.text)}
+                className="mt-[56px] mb-0 border-t border-foreground/15 pt-8 text-[clamp(1.5rem,2.4vw,2rem)] leading-[1.1] tracking-[-0.03em]"
+              >
                 {block.text}
               </h2>
             )
           case 'p':
             return (
-              <p key={index} className="mt-5 text-[1.125rem] leading-[1.75] max-[620px]:text-base">
+              <p key={index} className="mt-5 mb-0 text-[1.125rem] leading-[1.75] text-text-body max-[620px]:text-base">
                 <RichText text={block.text} />
               </p>
             )
@@ -26,7 +30,7 @@ function NoteBody({ blocks }: { blocks: NoteBlock[] }) {
             return (
               <ul
                 key={index}
-                className="mt-4 list-disc pl-[22px] text-[1.125rem] leading-[1.75] max-[620px]:text-base [&>li+li]:mt-2.5"
+                className="mt-4 mb-0 list-disc pl-[22px] text-[1.125rem] leading-[1.75] text-text-body marker:text-primary max-[620px]:text-base [&>li+li]:mt-2.5"
               >
                 {block.items.map((item) => (
                   <li key={item}>

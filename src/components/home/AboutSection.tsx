@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Reveal from '@/components/shared/Reveal'
+import { Button } from '@/components/ui/button'
 import SectionHeading from '@/components/shared/SectionHeading'
 import { portraitSrcSet } from '@/lib/portraits'
 
@@ -8,10 +9,12 @@ const srcSet = (extension: string) => portraitSrcSet('portrait-a', [320, 480], e
 const sizes = '(min-width: 900px) 380px, 90vw'
 
 const links = [
-  { to: '/about', label: 'More about me' },
   { to: '/resume', label: 'Read my resume' },
   { to: '/how-its-built', label: 'How this site is built' },
 ]
+
+const textLink =
+  'inline-flex min-h-11 items-center whitespace-nowrap text-foreground underline decoration-1 underline-offset-4 hover:text-primary'
 
 /** About: a portrait, the one sentence that explains how I work, and the story behind it. */
 function AboutSection() {
@@ -53,18 +56,26 @@ function AboutSection() {
             </p>
           </Reveal>
           <Reveal delay={0.14}>
-            <ul className="m-0 mt-2 flex list-none flex-wrap gap-x-7 gap-y-1 p-0 text-[15px]">
-              {links.map(({ to, label }) => (
-                <li key={to}>
-                  <Link
-                    to={to}
-                    className="inline-flex min-h-11 items-center text-foreground underline decoration-1 underline-offset-4 hover:text-primary"
-                  >
-                    {label}&nbsp;<span aria-hidden="true">→</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {/* The About page is the next step, so it is the one button; the other two are plain links on one line. */}
+            <div className="mt-2 flex flex-col items-stretch gap-3">
+              <Button
+                asChild
+                className="h-12 rounded-full bg-foreground px-[22px] text-[15px] font-normal text-background hover:bg-primary-fill hover:text-primary-foreground"
+              >
+                <Link to="/about">
+                  More about me <span aria-hidden="true">→</span>
+                </Link>
+              </Button>
+              <ul className="m-0 flex list-none flex-wrap gap-x-6 p-0 text-[15px] max-[380px]:gap-x-4 max-[380px]:text-[14px]">
+                {links.map(({ to, label }) => (
+                  <li key={to}>
+                    <Link to={to} className={textLink}>
+                      {label}&nbsp;<span aria-hidden="true">→</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </Reveal>
         </div>
       </div>

@@ -80,7 +80,7 @@ function StatusCard({ inspecting, onToggleInspect }: StatusCardProps) {
         type="button"
         aria-pressed={inspecting}
         onClick={onToggleInspect}
-        className="flex w-full cursor-pointer items-center justify-between gap-3 border-0 bg-primary-fill p-[18px] text-left font-mono text-[13px] font-medium text-primary-foreground transition-colors hover:bg-primary-fill-hover max-[380px]:p-3.5"
+        className="hidden w-full cursor-pointer items-center justify-between gap-3 border-0 bg-primary-fill p-[18px] text-left font-mono text-[13px] font-medium text-primary-foreground transition-colors hover:bg-primary-fill-hover max-[380px]:p-3.5 desktop:flex"
       >
         <span className="flex items-center gap-2.5">
           <span aria-hidden="true" className="text-base">

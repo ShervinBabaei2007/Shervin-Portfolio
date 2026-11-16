@@ -27,10 +27,15 @@ const hydrated = (page: Page) =>
 
 test('hero states the role and offers two ways to act: the work, and the resume PDF', async ({ page }) => {
   await page.goto('/')
-  await expect(
-    page.getByRole('heading', { level: 1, name: 'Full-stack developer who goes down the stack.' }),
-  ).toBeVisible()
-  await expect(page.locator('#home')).toContainText('whoami → shervin babaei')
+  // The name is the H1, the first and largest thing on the page; the tagline sits under it.
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Shervin Babaei.')
+  await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
+  // The tagline's "down" is written twice in the markup: once for screen readers, once as animated letters.
+  const tagline = page.locator('#hero-title + p')
+  await expect(tagline.locator('.sr-only')).toHaveText('down')
+  await expect(tagline).toContainText('Full-stack developer who goes')
+  await expect(tagline).toContainText('the stack.')
+  await expect(page.locator('#home')).toContainText('$ whoami')
   await expect(page.locator('#home')).toContainText('Open to work')
   await expect(page.locator('#home').getByRole('link', { name: /See selected work/ })).toHaveAttribute('href', '/#work')
   await expect(page.locator('#home')).not.toContainText('shervinb22')
@@ -96,12 +101,22 @@ test('prerendered pages hydrate without errors', async ({ page }) => {
 
 test('home shows the four flagships in a two-by-two grid and links to the full projects page', async ({ page }) => {
   await page.goto('/')
-  const cards = page
-    .locator('#work')
-    .getByRole('link')
-    .filter({ has: page.getByRole('heading', { level: 3 }) })
+  const cards = page.locator('#work h3 a')
   await expect(cards).toHaveCount(flagshipProjects.length)
   await expect(cards.first()).toHaveAttribute('href', `/work/${flagshipProjects[0].slug}`)
+  // Each card shows its main tools and opens the live app and the code in one click.
+  const first = page.locator('#work').getByRole('list', { name: `${flagshipProjects[0].name} main tools` })
+  await expect(first.getByRole('listitem')).toHaveCount(Math.min(4, flagshipProjects[0].mainStack.length))
+  await expect(page.getByRole('link', { name: `Open the ${flagshipProjects[0].name} live app` })).toHaveAttribute(
+    'href',
+    flagshipProjects[0].live!,
+  )
+  await expect(page.getByRole('link', { name: `${flagshipProjects[0].name} source code on GitHub` })).toBeVisible()
+  // The game projects are one click away from home.
+  await expect(page.locator('#work').getByRole('link', { name: 'Mini RPG Battle' })).toHaveAttribute(
+    'href',
+    '/work/mini-rpg-battle',
+  )
   await page.getByRole('link', { name: `All ${projects.length} projects` }).click()
   await expect(page).toHaveURL(/\/projects$/)
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Everything')
@@ -125,6 +140,35 @@ test('the About page tells the story, lists the tools, and answers employer ques
   await expect(first).toHaveAttribute('aria-expanded', 'true')
   await page.getByRole('button', { name: 'Have you worked with AI?' }).click()
   await expect(first).toHaveAttribute('aria-expanded', 'false')
+})
+
+test('on a touch phone the desktop-only features are gone and long pages start with their text', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })
+  const page = await context.newPage()
+  await page.goto('/')
+  await hydrated(page)
+  // Inspect mode reads what is under a mouse pointer, so a touch screen gets neither the button nor the shortcut.
+  await expect(page.locator('#home button[aria-pressed]')).toBeHidden()
+  await page.keyboard.press('i')
+  await expect(page.getByRole('status').filter({ hasText: 'Inspect mode' })).toHaveCount(0)
+  // The three numbers under the hero sit on one row each, label beside the number.
+  const stat = (await page.locator('#home > dl > div').first().boundingBox())!
+  expect(stat.height).toBeLessThan(70)
+
+  await page.goto('/writeups/fetching-links-you-dont-trust')
+  await hydrated(page)
+  const toc = page.getByRole('navigation', { name: 'On this page' })
+  const toggle = toc.getByRole('button', { name: /On this page/ })
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(toc.getByRole('link').first()).toBeHidden()
+  await expect(page.getByRole('region', { name: 'About this writeup' })).toBeHidden()
+  await toggle.tap()
+  await expect(toc.getByRole('link').first()).toBeVisible()
+  await toc.getByRole('link').nth(1).tap()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await context.close()
 })
 
 test('home lists three writeups and links to all of them', async ({ page }) => {
@@ -188,7 +232,7 @@ test('case study is a shareable page with team context, code, and trade-off', as
   await page.getByRole('link', { name: /Next/ }).click()
   await expect(page).toHaveURL(new RegExp(`/work/${neighbour('skillmatch', 1)}$`))
   await page.getByRole('navigation', { name: 'breadcrumb' }).getByRole('link', { name: 'Work' }).click()
-  await expect(page).toHaveURL(/\/#work$/)
+  await expect(page).toHaveURL(/\/projects$/)
 })
 
 test('the lab is its own page and linked from home', async ({ page }) => {
@@ -203,7 +247,6 @@ test('case study opens with actions and jump links to its sections', async ({ pa
   await page.goto('/work/skillmatch')
   const live = page.getByRole('link', { name: 'Live project' })
   await expect(live).toHaveAttribute('href', 'https://skillmatch-web.vercel.app/')
-  await expect(live).toHaveAttribute('data-slot', 'button')
   await page.waitForLoadState('networkidle')
   await page.getByRole('navigation', { name: 'On this page' }).getByRole('link', { name: 'The trade-off' }).click()
   await expect(page).toHaveURL(/#tradeoff$/)
@@ -560,7 +603,7 @@ test('body text lines stay under about 120 characters on case studies and writeu
   }
 })
 
-test('writeups are centred and their header spans the page', async ({ page }) => {
+test('writeups are centred and their header uses the 940px reading column', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/writeups/skillmatch-attend-race-condition')
   await page.waitForLoadState('networkidle')
@@ -570,10 +613,9 @@ test('writeups are centred and their header spans the page', async ({ page }) =>
   expect(Math.abs(article.x - main.x - (main.x + main.width - article.x - article.width))).toBeLessThan(2)
   // The header runs the full width of the page content, and the title is not squeezed into half of it.
   expect(article.width).toBeGreaterThan(1000)
-  const summary = (await page.locator('article header p').first().boundingBox())!
-  expect(summary.width).toBeGreaterThan(article.width * 0.95)
+  // The title column is the same 940px reading column as the other page headers.
   const title = (await page.locator('#note-title').boundingBox())!
-  expect(title.width).toBeGreaterThan(article.width * 0.95)
+  expect(Math.round(title.width)).toBe(940)
   // Body paragraphs fill the column up to the rail, which sits to their right.
   const paragraph = (await page.locator('#note-body > p').first().boundingBox())!
   const rail = (await page.getByRole('navigation', { name: 'On this page' }).boundingBox())!
@@ -600,7 +642,7 @@ test.describe('the end of a page', () => {
     // First project: nothing before it, so the left slot goes back to the work list.
     await page.goto(`/work/${projects[0].slug}`)
     await expect(pager().getByRole('link', { name: /Previous/ })).toHaveCount(0)
-    await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
+    await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/projects')
     await expect(pager().getByRole('link', { name: /Next/ })).toHaveAttribute('href', `/work/${projects[1].slug}`)
     // Last project: nothing after it, so the right slot goes back to the work list.
     await page.goto(`/work/${projects.at(-1)!.slug}`)
@@ -609,7 +651,7 @@ test.describe('the end of a page', () => {
       'href',
       `/work/${projects.at(-2)!.slug}`,
     )
-    await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/#work')
+    await expect(pager().getByRole('link', { name: /Back to work/ })).toHaveAttribute('href', '/projects')
   })
 })
 
@@ -824,7 +866,8 @@ test('a case study opens with what it is, and the screenshots come after how it 
   expect(media).toBeLessThan(why)
   const copy = (await page.getByRole('button', { name: 'Copy link' }).boundingBox())!
   const writeup = (await page.getByRole('link', { name: /Read the writeup/ }).boundingBox())!
-  expect(writeup.y).toBeGreaterThanOrEqual(copy.y)
+  // Copy link is the least important action, so it comes last.
+  expect(copy.y).toBeGreaterThanOrEqual(writeup.y)
 })
 
 test('every case study lists a table-of-contents entry for each of its sections, and the reverse', async ({
@@ -1184,6 +1227,9 @@ test('projects page filters by type', async ({ page }) => {
   await page.waitForLoadState('networkidle')
   const cards = page.locator('[data-project-card]')
   await expect(cards).toHaveCount(projects.length)
+  // The two game projects come straight after the flagships.
+  await expect(cards.nth(flagshipProjects.length).locator('h2')).toHaveText('Mini RPG Battle')
+  await expect(cards.nth(flagshipProjects.length + 1).locator('h2')).toHaveText('Tic-Tac-Toe Minimax AI')
   await page.getByRole('button', { name: /^Hackathon/ }).click()
   await expect(page.getByRole('button', { name: /^Hackathon/ })).toHaveAttribute('aria-pressed', 'true')
   await expect(cards).toHaveCount(projects.filter((project) => project.category === 'Hackathon').length)

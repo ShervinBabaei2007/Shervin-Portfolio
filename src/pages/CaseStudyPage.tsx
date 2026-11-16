@@ -1,43 +1,42 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight, Check, Github, Link2, NotebookPen, Users } from 'lucide-react'
 import ArticleLayout from '@/components/shared/ArticleLayout'
+import AsciiCanvas from '@/components/shared/AsciiCanvas'
 import TableOfContents from '@/components/shared/TableOfContents'
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import CodeBlock from '@/components/shared/CodeBlock'
 import RateLimiterDemo from '@/components/shared/RateLimiterDemo'
 import ResponsiveImage from '@/components/shared/ResponsiveImage'
 import ScreenshotGallery from '@/components/shared/ScreenshotGallery'
-import WindowFrame from '@/components/shared/WindowFrame'
 import TerminalBlock from '@/components/shared/TerminalBlock'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { useCopy } from '@/hooks/useCopy'
-import { tone } from '@/lib/buttonTones'
 import { caseStudySections, type CaseStudySection, type SectionId } from '@/lib/caseStudySections'
 import { screenshotShape } from '@/lib/images'
-import { raised, raisedShadow } from '@/lib/surfaces'
 import { cn } from '@/lib/utils'
 import { notesForProject } from '../data/notes'
 import { findProject, projects } from '../data/projects'
 import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
-const h2Class = 'text-h2 font-semibold'
-// Every part of a case study is a raised card, the same look as the cards on the home page.
-const card = `rounded-2xl border bg-card p-8 max-[620px]:p-5 ${raised}`
+const h2Class = 'm-0 text-[clamp(1.5rem,2.4vw,2rem)] leading-[1.1] tracking-[-0.03em]'
+// Sections are flat on the page, divided by a rule, like the sections of the home page.
+const card = 'border-t border-foreground/15 pt-[clamp(28px,3vw,40px)]'
 // The same look for the sections the article layout renders, which do not carry their own classes.
 const articleCards =
-  'grid grid-cols-[minmax(0,1fr)] gap-6 [&>section]:rounded-2xl [&>section]:border [&>section]:border-foreground/15 [&>section]:bg-card [&>section]:p-8 [&>section]:shadow-[0_2px_4px_var(--color-shadow),0_30px_60px_-26px_var(--color-shadow)] max-[620px]:[&>section]:p-5'
+  'grid grid-cols-[minmax(0,1fr)] gap-[clamp(40px,5vw,64px)] [&>section]:border-t [&>section]:border-foreground/15 [&>section]:pt-[clamp(28px,3vw,40px)]'
 
-const bodyClass = 'mt-2.5 text-[1.125rem] leading-[1.75] text-muted-foreground max-[620px]:text-[1.0625rem]'
-const factDt = 'font-mono text-label text-muted-foreground'
-// Header action buttons: a row that wraps on small screens, and a stack of equal-width buttons beside the title on wide ones.
-const actionButton = 'h-11 px-[17px] text-control font-semibold min-[1024px]:w-full min-[1024px]:justify-between'
-const factDd = 'mt-[5px] text-sm leading-normal font-semibold'
+const bodyClass = 'mt-3 text-[1.0625rem] leading-[1.7] text-text-body max-[620px]:text-base'
+const factDt = 'font-mono text-[13px] text-muted-foreground'
+const factDd = 'mt-2 mb-0 text-[15px] leading-normal font-medium text-foreground'
+// Header actions: pills that wrap on small screens and stack to the width of the column beside the title on wide ones.
+const pill =
+  'inline-flex h-11 items-center justify-between gap-2.5 rounded-full px-5 text-[15px] no-underline transition-colors min-[1024px]:w-full'
+const inkPill = `${pill} bg-foreground text-background hover:bg-primary-fill hover:text-primary-foreground`
+const outlinePill = `${pill} border border-foreground/25 bg-transparent text-foreground hover:bg-foreground hover:text-background`
 const pagerLink =
-  'grid gap-1.5 rounded-xl border bg-card px-5 py-[18px] no-underline hover:border-primary [&:hover_b]:text-primary'
-const pagerLabel = 'flex items-center gap-1.5 text-sm text-muted-foreground'
+  'grid gap-1.5 rounded-md bg-surface-hover px-6 py-5 text-foreground no-underline transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:text-foreground hover:shadow-[0_18px_40px_-24px_var(--color-shadow)] [&:hover_b]:text-primary'
+const pagerLabel = 'flex items-center gap-1.5 font-mono text-[13px] text-muted-foreground'
 
 /** A list of steps numbered 01, 02, and so on. */
 function StepList({ steps }: { steps: string[] }) {
@@ -45,7 +44,7 @@ function StepList({ steps }: { steps: string[] }) {
     <ol className="mt-2.5 grid list-none gap-3 p-0">
       {steps.map((step, i) => (
         <li key={step} className="grid grid-cols-[30px_1fr] items-start gap-2.5">
-          <span className="pt-1 font-mono text-sm text-primary">{String(i + 1).padStart(2, '0')}</span>
+          <span className="pt-1 font-mono text-[13px] text-primary">{String(i + 1).padStart(2, '0')}</span>
           <p className={cn(bodyClass, 'm-0')}>{step}</p>
         </li>
       ))}
@@ -79,9 +78,6 @@ function CaseStudyPage() {
         ] as [string, string][])
       : []),
   ]
-  // The header's action buttons sit two to a row. Copy link takes the whole row unless it has to pair with a lone
-  // source button above it (one repository link and no team repository).
-  const copyFillsRow = Boolean(project.github) === Boolean(project.teamRepo)
   // A wide screenshot makes a good opening picture; a phone shot does not.
   const heroShot = project.screenshots?.find((shot) => screenshotShape(shot.src) === 'wide')
   const sections = caseStudySections(project)
@@ -112,9 +108,9 @@ function CaseStudyPage() {
         <h2 className={h2Class}>What it can do</h2>
         <ul className="mt-3 grid list-none gap-3 p-0 min-[760px]:grid-cols-2">
           {features.map((feature) => (
-            <li key={feature.title} className="rounded-lg border bg-card px-4 py-3.5">
-              <h3 className="text-base font-semibold">{feature.title}</h3>
-              <p className="mt-1 text-[.9375rem] leading-[1.6] text-muted-foreground">{feature.text}</p>
+            <li key={feature.title} className="rounded-md bg-surface-hover px-5 py-4">
+              <h3 className="m-0 text-[1.0625rem] tracking-[-0.02em]">{feature.title}</h3>
+              <p className="mt-1.5 mb-0 text-[15px] leading-[1.55] text-text-body">{feature.text}</p>
             </li>
           ))}
         </ul>
@@ -206,7 +202,7 @@ function CaseStudyPage() {
       <section
         key="tradeoff"
         id="tradeoff"
-        className="mt-1 rounded-r-lg !border-b-0 border-l-[3px] border-l-primary bg-card px-5"
+        className="rounded-md !border-t-0 bg-surface-hover p-[clamp(20px,2.4vw,32px)]"
       >
         <h2 className={h2Class}>The trade-off</h2>
         <p className={bodyClass}>{project.tradeoff}</p>
@@ -228,107 +224,115 @@ function CaseStudyPage() {
 
   return (
     <article aria-labelledby="case-study-title">
-      {/* The top of the page sits on a tinted band: title, actions, the outcome, then a big look at the real app. */}
-      <div className="section-band border-t-0">
-        <div className="section-wrap pt-[clamp(1.25rem,3.5svh,2.25rem)] pb-[var(--space-block)]">
+      {/* The top of the page: the ASCII field behind the title and actions, the facts row, then a big look at the app. */}
+      <div className="relative section-wrap pt-[clamp(28px,4vw,56px)] pb-[clamp(40px,5vw,64px)]">
+        <AsciiCanvas />
+        <div className="relative">
           <PageBreadcrumb
             trail={[
               { label: 'Home', to: '/' },
-              { label: 'Work', to: '/#work' },
+              { label: 'Work', to: '/projects' },
             ]}
             current={project.name}
           />
 
-          {/* Title block on the left, actions on the right (stacked above the phone breakpoint's wide layout), summary card below. */}
-          <header className="mt-[18px]">
-            <div className="grid gap-6 min-[1024px]:grid-cols-[minmax(0,1fr)_23rem] min-[1024px]:items-start min-[1024px]:gap-12">
-              <div>
-                <p className="eyebrow">
-                  {project.category.toUpperCase()} <span className="text-muted-foreground">/</span>{' '}
-                  {project.date.toUpperCase()}
+          {/* Title block on the left, actions on the right (below the wide layout they wrap under the title). */}
+          <header className="mt-[clamp(28px,4vw,48px)]">
+            <div className="grid gap-8 min-[1024px]:grid-cols-[minmax(0,1fr)_20rem] min-[1024px]:items-end min-[1024px]:gap-16">
+              <div data-calm>
+                <p className="rise m-0 truncate font-mono text-[13px] text-muted-foreground">
+                  <span className="text-primary">~</span> $ cat work/{project.slug}.md
                 </p>
-                <h1 id="case-study-title" className="mt-3.5 text-title font-semibold">
+                <h1
+                  id="case-study-title"
+                  className="rise mt-5 mb-0 text-[clamp(2.75rem,5.6vw,5.25rem)] leading-[0.98] font-[650] tracking-[-0.045em]"
+                  style={{ '--d': '80ms' } as CSSProperties}
+                >
                   {project.name}
                 </h1>
-                <p className="mt-2 max-w-[60ch] text-[1.1875rem] leading-[1.6] text-muted-foreground">
+                <p
+                  className="rise mt-5 mb-0 max-w-[60ch] text-[clamp(1.0625rem,1.4vw,1.1875rem)] leading-[1.55] text-text-body"
+                  style={{ '--d': '160ms' } as CSSProperties}
+                >
                   {project.subtitle}
                 </p>
-                <p className="mt-3.5 flex max-w-[70ch] items-baseline gap-2 text-sm leading-normal text-muted-foreground">
-                  <Users className="flex-none translate-y-0.5 text-primary" size={15} aria-hidden="true" />{' '}
-                  {project.team}
+                <p className="mt-4 mb-0 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[13px] text-muted-foreground">
+                  <span>
+                    {project.category} · {project.date}
+                  </span>
+                  <span className="inline-flex items-baseline gap-2">
+                    <Users className="flex-none translate-y-0.5 text-primary" size={14} aria-hidden="true" />
+                    {project.team}
+                  </span>
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center gap-3 min-[1024px]:grid min-[1024px]:grid-cols-2 min-[1024px]:gap-2.5">
+              <div data-calm className="flex flex-wrap items-center gap-2.5 min-[1024px]:flex-col">
                 {project.live && (
-                  <Button asChild size="lg" className={cn(actionButton, 'min-[1024px]:col-span-2')}>
-                    <a href={project.live} target="_blank" rel="noreferrer">
-                      Live project <ArrowUpRight />
-                    </a>
-                  </Button>
+                  <a href={project.live} target="_blank" rel="noreferrer" className={inkPill}>
+                    Live project <ArrowUpRight size={16} aria-hidden="true" />
+                  </a>
                 )}
                 {project.github && (
-                  <Button asChild variant="outline" size="lg" className={actionButton}>
-                    <a href={project.github} target="_blank" rel="noreferrer">
-                      {project.teamRepo ? 'My fork' : 'Source code'} <Github />
-                    </a>
-                  </Button>
+                  <a href={project.github} target="_blank" rel="noreferrer" className={outlinePill}>
+                    {project.teamRepo ? 'My fork' : 'Source code'} <Github size={16} aria-hidden="true" />
+                  </a>
                 )}
                 {project.teamRepo && (
-                  <Button asChild variant="outline" size="lg" className={actionButton}>
-                    <a href={project.teamRepo} target="_blank" rel="noreferrer">
-                      Team repository <Github />
-                    </a>
-                  </Button>
+                  <a href={project.teamRepo} target="_blank" rel="noreferrer" className={outlinePill}>
+                    Team repository <Github size={16} aria-hidden="true" />
+                  </a>
                 )}
-                <Button
+                {relatedNotes.length > 0 && (
+                  <Link to={writeupHref} className={outlinePill}>
+                    {relatedNotes.length === 1 ? 'Read the writeup' : 'Read the writeups'}
+                    <NotebookPen size={16} aria-hidden="true" />
+                  </Link>
+                )}
+                <button
                   type="button"
-                  variant="outline"
-                  size="lg"
-                  className={cn(actionButton, copyFillsRow && 'min-[1024px]:col-span-2')}
+                  className={cn(outlinePill, 'cursor-pointer font-mono text-[13px]')}
                   onClick={() => void copy(`${site.url}/work/${project.slug}`)}
                 >
                   {copyLabel}
-                  {copied ? <Check /> : <Link2 />}
-                </Button>
-                {relatedNotes.length > 0 && (
-                  <Button
-                    asChild
-                    size="lg"
-                    className={cn(actionButton, 'shadow-md min-[1024px]:col-span-2', tone.writeup)}
-                  >
-                    <Link to={writeupHref}>
-                      {relatedNotes.length === 1 ? 'Read the writeup' : 'Read the writeups'} <NotebookPen />
-                    </Link>
-                  </Button>
-                )}
+                  {copied ? <Check size={16} aria-hidden="true" /> : <Link2 size={16} aria-hidden="true" />}
+                </button>
                 <span className="sr-only" role="status">
                   {copied ? 'Link copied to clipboard.' : ''}
                 </span>
               </div>
             </div>
 
+            {/* The facts sit in columns with a rule above each, like the numbers under the home hero. */}
             <dl
-              className={`mt-8 grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-8 gap-y-4 rounded-2xl border bg-card px-6 py-5 max-[620px]:mt-6 max-[620px]:grid-cols-1 max-[620px]:gap-[11px] max-[620px]:p-3.5 min-[621px]:max-[1099px]:grid-cols-2 ${raised}`}
+              className="mt-[clamp(40px,5vw,64px)] mb-0 grid grid-cols-1 gap-x-[clamp(24px,4vw,56px)] min-[760px]:grid-cols-2 min-[1100px]:grid-cols-4"
               aria-label="At a glance"
             >
               {glance.map(([label, value], index) => (
-                // The outcome leads: it spans the whole card and reads bigger than the facts under it.
-                <div key={label} className={cn('min-w-0', index === 0 && 'col-span-full')}>
+                // The outcome leads: it reads bigger than the facts beside it.
+                <div key={label} className="min-w-0 border-t border-foreground/15 py-[18px]">
                   <dt className={factDt}>{label}</dt>
-                  <dd className={index === 0 ? 'mt-1 text-[1.25rem] leading-snug font-semibold' : factDd}>{value}</dd>
+                  <dd
+                    className={
+                      index === 0
+                        ? 'mt-2 mb-0 font-display text-[1.25rem] leading-snug font-semibold tracking-[-0.02em] text-foreground'
+                        : factDd
+                    }
+                  >
+                    {value}
+                  </dd>
                 </div>
               ))}
             </dl>
 
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2.5">
-              <h2 className="eyebrow uppercase">Built with</h2>
+              <h2 className="m-0 font-mono text-[13px] font-normal tracking-normal text-muted-foreground">
+                Built with
+              </h2>
               <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
                 {project.mainStack.map((t) => (
-                  <li key={t}>
-                    <Badge variant="secondary" className="rounded-md px-3 py-1 font-mono text-[.8125rem]">
-                      {t}
-                    </Badge>
+                  <li key={t} className="rounded-full bg-surface-hover px-3 py-1.5 text-[14px] text-foreground">
+                    {t}
                   </li>
                 ))}
               </ul>
@@ -336,18 +340,22 @@ function CaseStudyPage() {
           </header>
           {heroShot && (
             // The same screenshot is in the gallery below with its description, so this copy is decoration.
-            <div className="mt-8 h-[clamp(220px,40vw,540px)]" aria-hidden="true" data-case-hero>
-              <WindowFrame label={heroShot.caption} className={`max-w-none rounded-xl border-b ${raisedShadow}`}>
+            <div
+              className="relative mt-[clamp(40px,5vw,64px)] aspect-[16/8] overflow-hidden rounded-md bg-stage-1 max-[620px]:aspect-[16/10]"
+              aria-hidden="true"
+              data-case-hero
+            >
+              <div className="absolute top-[9%] left-[6%] w-[94%] overflow-hidden rounded-tl-md shadow-[0_30px_60px_-30px_rgb(27_26_24/0.45)] [&_img]:block [&_img]:h-auto [&_img]:w-full">
                 <ResponsiveImage src={heroShot.src} alt="" sizes="(max-width: 1100px) 94vw, 1180px" priority />
-              </WindowFrame>
+              </div>
             </div>
           )}
         </div>
       </div>
 
-      <div className="section-wrap pt-[var(--space-block)] pb-[var(--space-block)]">
-        <div className="grid gap-6">{render('intro')}</div>
-        <section className={`mt-6 ${card}`} aria-labelledby="architecture-title">
+      <div className="section-wrap pb-[clamp(56px,7vw,96px)]">
+        <div className="grid gap-[clamp(40px,5vw,64px)]">{render('intro')}</div>
+        <section className={`mt-[clamp(40px,5vw,64px)] ${card}`} aria-labelledby="architecture-title">
           <h2 id="architecture-title" className={h2Class}>
             How a request flows
           </h2>
@@ -357,14 +365,14 @@ function CaseStudyPage() {
               <li
                 key={node.label}
                 className={cn(
-                  'relative grid gap-1 rounded-lg border bg-card px-4 py-3.5',
+                  'relative grid gap-1 rounded-md bg-surface-hover px-4 py-3.5',
                   'after:absolute after:top-1/2 after:-right-[22px] after:-translate-y-1/2 after:font-mono after:text-lg after:text-primary',
                   'not-last:after:content-["→"] max-[1100px]:nth-2:after:content-none',
                   'max-[620px]:after:top-auto max-[620px]:after:right-auto max-[620px]:after:-bottom-6 max-[620px]:after:left-[18px] max-[620px]:after:translate-y-0 max-[620px]:after:rotate-90 max-[620px]:nth-2:not-last:after:content-["→"]',
                 )}
               >
-                <b className="text-base font-semibold">{node.label}</b>
-                <span className="text-meta leading-[1.45] text-muted-foreground">{node.detail}</span>
+                <b className="font-display text-base font-semibold">{node.label}</b>
+                <span className="text-[14px] leading-[1.45] text-text-body">{node.detail}</span>
               </li>
             ))}
           </ol>
@@ -373,16 +381,16 @@ function CaseStudyPage() {
         {project.demo === 'rate-limiter' && <RateLimiterDemo />}
 
         <ArticleLayout
-          className="mt-[18px] max-[620px]:mt-5"
+          className="mt-[clamp(40px,5vw,64px)]"
           rail={<TableOfContents items={sections.map(({ id, label }) => ({ id, label }))} />}
         >
           <div className={articleCards}>{render('article')}</div>
         </ArticleLayout>
       </div>
 
-      {/* The ending sits on the tinted band used across the site: the neighbouring projects. The footer band below is the call to action. */}
-      <div className="section-band">
-        <div className="section-wrap grid gap-6 py-[var(--space-page)]">
+      {/* The neighbouring projects; the footer band below is the call to action. */}
+      <div className="section-wrap pb-[clamp(88px,10vw,144px)]">
+        <div className="border-t border-foreground/15 pt-[clamp(28px,3vw,40px)]">
           {/* Previous and next case studies; at either end of the list the slot links back to the work section. */}
           <nav className="grid grid-cols-2 gap-4 max-[620px]:grid-cols-1" aria-label="More case studies">
             {previous ? (
@@ -390,14 +398,14 @@ function CaseStudyPage() {
                 <span className={pagerLabel}>
                   <ArrowLeft size={15} /> Previous
                 </span>
-                <b className="text-xl font-semibold">{previous.name}</b>
+                <b className="font-display text-[1.375rem] font-semibold tracking-[-0.025em]">{previous.name}</b>
               </Link>
             ) : (
-              <Link className={pagerLink} to="/#work">
+              <Link className={pagerLink} to="/projects">
                 <span className={pagerLabel}>
                   <ArrowLeft size={15} /> Back to work
                 </span>
-                <b className="text-xl font-semibold">All projects</b>
+                <b className="font-display text-[1.375rem] font-semibold tracking-[-0.025em]">All projects</b>
               </Link>
             )}
             {next ? (
@@ -405,14 +413,14 @@ function CaseStudyPage() {
                 <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
                   Next <ArrowRight size={15} />
                 </span>
-                <b className="text-xl font-semibold">{next.name}</b>
+                <b className="font-display text-[1.375rem] font-semibold tracking-[-0.025em]">{next.name}</b>
               </Link>
             ) : (
-              <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to="/#work">
+              <Link className={cn(pagerLink, 'text-right max-[620px]:text-left')} to="/projects">
                 <span className={cn(pagerLabel, 'justify-end max-[620px]:justify-start')}>
                   Back to work <ArrowUpRight size={15} />
                 </span>
-                <b className="text-xl font-semibold">All projects</b>
+                <b className="font-display text-[1.375rem] font-semibold tracking-[-0.025em]">All projects</b>
               </Link>
             )}
           </nav>

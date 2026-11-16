@@ -14,9 +14,9 @@ type Crumb = { label: string; to: string }
 /** Breadcrumb trail at the top of a detail page, ending with the current page's name. */
 function PageBreadcrumb({ trail, current }: { trail: Crumb[]; current: string }) {
   return (
-    <Breadcrumb className="py-2.5">
+    <Breadcrumb className="py-2.5 font-mono [&_ol]:text-[13px]">
       <BreadcrumbList>
-        {trail.map((crumb) => (
+        {trail.map((crumb, index) => (
           <Fragment key={crumb.to}>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
@@ -25,11 +25,12 @@ function PageBreadcrumb({ trail, current }: { trail: Crumb[]; current: string })
                 </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator />
+            {/* On phones the trail stops at the section: the page's own title is right below. */}
+            <BreadcrumbSeparator className={index === trail.length - 1 ? 'max-sm:hidden' : undefined} />
           </Fragment>
         ))}
-        <BreadcrumbItem>
-          <BreadcrumbPage className="block max-w-[55vw] truncate sm:max-w-none">{current}</BreadcrumbPage>
+        <BreadcrumbItem className="max-sm:hidden">
+          <BreadcrumbPage className="block truncate">{current}</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>

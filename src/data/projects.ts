@@ -1759,6 +1759,11 @@ export const flagshipProjects = projects.filter((project) => project.flagship)
 /** The rest, listed compactly. */
 export const moreProjects = projects.filter((project) => !project.flagship)
 
+/** The two game projects, shown right after the flagships on the Work page and linked from the home page. */
+export const spotlightProjects = ['mini-rpg-battle', 'tic-tac-toe-minimax'].flatMap((slug) =>
+  projects.filter((project) => project.slug === slug),
+)
+
 /** The project with this slug, or undefined if there is none. */
 export function findProject(slug: string | undefined): Project | undefined {
   return projects.find((project) => project.slug === slug)

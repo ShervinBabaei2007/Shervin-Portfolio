@@ -1,21 +1,23 @@
+import type { CSSProperties } from 'react'
 import { ArrowRight } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import ArticleLayout from '@/components/shared/ArticleLayout'
+import AsciiCanvas from '@/components/shared/AsciiCanvas'
 import PageBreadcrumb from '@/components/shared/PageBreadcrumb'
 import NoteBody from '@/components/shared/NoteBody'
 import CopyLinkButton from '@/components/shared/CopyLinkButton'
 import TableOfContents from '@/components/shared/TableOfContents'
 import WriteupAside from '@/components/shared/WriteupAside'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { findNote, formatDate, notes } from '../data/notes'
 import { findProject } from '../data/projects'
 import { headingId } from '@/lib/utils'
-import { raised } from '@/lib/surfaces'
 import { site } from '../data/site'
 import NotFoundPage from './NotFoundPage'
 
-const footerLink = `grid gap-1.5 rounded-2xl border bg-card px-5 py-[18px] no-underline transition-colors hover:border-primary ${raised}`
-const footerLabel = 'inline-flex items-center gap-1.5 text-meta text-muted-foreground'
+const footerLink =
+  'grid gap-1.5 rounded-md bg-surface-hover px-6 py-5 text-foreground no-underline transition-[box-shadow,transform] duration-300 hover:-translate-y-1 hover:text-foreground hover:shadow-[0_18px_40px_-24px_var(--color-shadow)] [&:hover_b]:text-primary'
+const footerLabel = 'inline-flex items-center gap-1.5 font-mono text-[13px] text-muted-foreground'
+const footerTitle = 'font-display text-[1.25rem] leading-[1.25] font-semibold tracking-[-0.025em]'
 
 /** One writeup at /writeups/:slug, or the 404 page when the slug is unknown. */
 function WriteupPage() {
@@ -33,9 +35,10 @@ function WriteupPage() {
 
   return (
     <article aria-labelledby="note-title">
-      {/* Title block on the tinted band: the project it comes from, the title, the one-line summary and who wrote it. */}
-      <div className="section-band">
-        <div className="section-wrap pt-[clamp(1.25rem,3.5svh,2.25rem)] pb-[var(--space-block)]">
+      {/* The top of the page: the ASCII field behind the project it comes from, the title, the summary and the byline. */}
+      <div className="relative section-wrap pt-[clamp(28px,4vw,56px)] pb-[clamp(40px,5vw,64px)]">
+        <AsciiCanvas />
+        <div className="relative">
           <PageBreadcrumb
             trail={[
               { label: 'Home', to: '/' },
@@ -43,40 +46,45 @@ function WriteupPage() {
             ]}
             current={note.title}
           />
-          <header className="mt-[18px]">
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <span className="eyebrow">WRITEUP</span>
+          <header data-calm className="mt-[clamp(28px,4vw,48px)] max-w-[940px]">
+            <p className="rise m-0 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[13px] text-muted-foreground">
+              <span className="max-w-full truncate">
+                <span className="text-primary">~</span> $ cat writeups/{note.slug}.md
+              </span>
               {project && (
                 <Link
-                  className="inline-flex min-h-8 items-center rounded-full border border-foreground/15 bg-card px-3 font-mono text-label text-foreground no-underline transition-colors hover:border-primary hover:text-primary"
+                  className="inline-flex min-h-8 items-center rounded-full bg-surface-hover px-3 text-foreground no-underline transition-colors hover:text-primary pointer-coarse:min-h-11"
                   to={`/work/${project.slug}`}
                 >
                   {project.name}
                 </Link>
               )}
             </p>
-            <h1 id="note-title" className="mt-4 max-w-[26ch] text-title font-semibold text-wrap">
+            <h1
+              id="note-title"
+              className="rise mt-5 mb-0 text-[clamp(2.5rem,5.2vw,4.75rem)] leading-[0.98] font-[650] tracking-[-0.045em]"
+              style={{ '--d': '80ms' } as CSSProperties}
+            >
               {note.title}
             </h1>
-            <p className="mt-5 max-w-[62ch] text-[1.25rem] leading-[1.65] text-muted-foreground">{note.summary}</p>
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-foreground/10 pt-5">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarFallback className="bg-primary-fill font-mono text-xs text-primary-foreground">
-                    SB
-                  </AvatarFallback>
-                </Avatar>
-                <p className="font-mono text-meta text-muted-foreground">
-                  <span className="text-foreground">{site.name}</span> ·{' '}
-                  <time dateTime={note.date}>{formatDate(note.date)}</time> · {note.minutes} min read
-                </p>
-              </div>
-              <CopyLinkButton />
-            </div>
+            <p
+              className="rise mt-6 mb-0 max-w-[62ch] text-[clamp(1.0625rem,1.4vw,1.25rem)] leading-[1.55] text-text-body"
+              style={{ '--d': '160ms' } as CSSProperties}
+            >
+              {note.summary}
+            </p>
           </header>
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-foreground/15 pt-5">
+            <p className="m-0 font-mono text-[13px] text-muted-foreground">
+              <span className="text-foreground">{site.name}</span> ·{' '}
+              <time dateTime={note.date}>{formatDate(note.date)}</time> ·{' '}
+              <span className="whitespace-nowrap">{note.minutes} min read</span>
+            </p>
+            <CopyLinkButton />
+          </div>
         </div>
       </div>
-      <div className="section-wrap pt-[var(--space-block)] pb-[var(--space-block)]">
+      <div className="section-wrap pb-[clamp(56px,7vw,96px)]">
         <ArticleLayout
           className="mt-0"
           rail={
@@ -86,35 +94,28 @@ function WriteupPage() {
             </>
           }
         >
-          {/* The text sits on a raised white sheet, like the cards around it, so it reads as the main thing on the page. */}
-          <div
-            className={`rounded-2xl border bg-card px-10 py-9 max-[900px]:px-6 max-[620px]:px-4 max-[620px]:py-6 ${raised}`}
-          >
-            <NoteBody blocks={note.body} />
-          </div>
+          <NoteBody blocks={note.body} />
         </ArticleLayout>
       </div>
 
-      {/* The ending sits on the tinted band used across the site: where to read next. The footer band below is the call to action. */}
-      <div className="section-band">
-        <div className="section-wrap grid gap-6 py-[var(--space-page)]">
-          <footer className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4">
-            {project && (
-              <Link className={footerLink} to={`/work/${project.slug}`}>
-                <span className={footerLabel}>Case study</span>
-                <b className="text-[1.0625rem] leading-[1.3] font-semibold">{project.name}</b>
-              </Link>
-            )}
-            {next.slug !== note.slug && (
-              <Link className={footerLink} to={`/writeups/${next.slug}`}>
-                <span className={footerLabel}>
-                  Next writeup <ArrowRight size={14} />
-                </span>
-                <b className="text-[1.0625rem] leading-[1.3] font-semibold">{next.title}</b>
-              </Link>
-            )}
-          </footer>
-        </div>
+      {/* Where to read next; the footer band below is the call to action. */}
+      <div className="section-wrap pb-[clamp(88px,10vw,144px)]">
+        <footer className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-4 border-t border-foreground/15 pt-[clamp(28px,3vw,40px)]">
+          {project && (
+            <Link className={footerLink} to={`/work/${project.slug}`}>
+              <span className={footerLabel}>Case study</span>
+              <b className={footerTitle}>{project.name}</b>
+            </Link>
+          )}
+          {next.slug !== note.slug && (
+            <Link className={footerLink} to={`/writeups/${next.slug}`}>
+              <span className={footerLabel}>
+                Next writeup <ArrowRight size={14} aria-hidden="true" />
+              </span>
+              <b className={footerTitle}>{next.title}</b>
+            </Link>
+          )}
+        </footer>
       </div>
     </article>
   )

@@ -53,18 +53,24 @@ type WorkCardProps = {
   headingLevel?: 'h2' | 'h3'
 }
 
+// Small outlined pills for the card's live and source links, raised above the card's stretched link.
+const actionPill =
+  'relative z-[3] inline-flex h-9 items-center gap-1.5 rounded-full border border-foreground/25 px-3.5 font-mono text-[13px] text-foreground no-underline transition-colors hover:bg-foreground hover:text-background pointer-coarse:h-11'
+
 /**
  * The picture card used on the home page and the Work page: a tinted stage with the category and date, the
- * screenshot (or a code preview when there is none) offset to the bottom right, then the name, one line and the proof.
+ * screenshot (or a code preview when there is none) offset to the bottom right, then the name, one line, the proof,
+ * the main tools, and one-click links to the live app and the code.
+ *
+ * The name is the link to the case study, stretched over the whole card, so the card still opens as one target; the
+ * live and code links sit above that stretched area so they can be clicked on their own.
  */
 function WorkCard({ project, index, headingLevel = 'h3' }: WorkCardProps) {
   const Heading = headingLevel
   const shot = project.preview ? undefined : (project.screenshots?.[0] ?? project.illustration)
+  const source = project.github ?? project.teamRepo
   return (
-    <Link
-      to={`/work/${project.slug}`}
-      className="group flex min-w-0 flex-col gap-5 text-foreground no-underline hover:text-foreground"
-    >
+    <div className="group relative flex h-full min-w-0 flex-col gap-5 text-foreground">
       <div
         className={cn(
           'relative aspect-[16/10] overflow-hidden rounded-md',
@@ -95,13 +101,53 @@ function WorkCard({ project, index, headingLevel = 'h3' }: WorkCardProps) {
         {project.preview && <CodePreview {...project.preview} />}
       </div>
       <div className="flex flex-col gap-2">
-        <Heading className="m-0 text-[clamp(1.375rem,2vw,1.75rem)] leading-[1.2] tracking-[-0.03em] transition-colors group-hover:text-primary">
-          {project.name}
+        <Heading className="m-0 text-[clamp(1.375rem,2vw,1.75rem)] leading-[1.2] tracking-[-0.03em]">
+          <Link
+            to={`/work/${project.slug}`}
+            className="text-foreground no-underline transition-colors group-hover:text-primary after:absolute after:inset-0 after:z-[1] after:content-[''] hover:text-primary focus-visible:outline-none focus-visible:after:rounded-md focus-visible:after:outline-2 focus-visible:after:outline-offset-4 focus-visible:after:outline-focus-ring"
+          >
+            {project.name}
+          </Link>
         </Heading>
         <p className="m-0 max-w-[52ch] text-base leading-normal text-text-body">{project.tagline}</p>
         <span className="font-mono text-[13px] text-primary">{project.cardProof ?? project.result}</span>
       </div>
-    </Link>
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
+        <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0" aria-label={`${project.name} main tools`}>
+          {project.mainStack.slice(0, 4).map((tool) => (
+            <li key={tool} className="rounded-full bg-surface-hover px-2.5 py-1 text-[13px] text-foreground">
+              {tool}
+            </li>
+          ))}
+        </ul>
+        {(project.live || source) && (
+          <div className="flex flex-wrap gap-2">
+            {project.live && (
+              <a
+                href={project.live}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Open the ${project.name} live app`}
+                className={actionPill}
+              >
+                Live app <span aria-hidden="true">↗</span>
+              </a>
+            )}
+            {source && (
+              <a
+                href={source}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${project.name} source code on GitHub`}
+                className={actionPill}
+              >
+                Code <span aria-hidden="true">↗</span>
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
 
