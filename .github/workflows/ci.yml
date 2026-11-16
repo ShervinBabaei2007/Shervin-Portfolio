@@ -1,0 +1,42 @@
+name: CI
+
+# Runs every check from CLAUDE.md on each push and pull request: lint, formatting, the type check and build,
+# the end-to-end and accessibility tests against the prerendered site, and the entry-chunk size budget.
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npx playwright install --with-deps chromium
+      # Playwright's web server runs `npm run build` (type check, client and SSR builds, prerender) before testing.
+      - run: npm run test:e2e
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Measures the build the tests just made.
+      - run: npm run check:bundle
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: test-results/
+          retention-days: 7

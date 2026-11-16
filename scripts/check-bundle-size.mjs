@@ -6,7 +6,7 @@ import { resolve } from 'node:path'
 import { gzipSync } from 'node:zlib'
 import { root } from './lib.mjs'
 
-const BUDGET_KB = 250 // raised from 135 on purpose (2026-11) to make room for richer components; measured 127 KB then, react-dom alone is about 111 KB
+const BUDGET_KB = 125 // lowered from 250 (2026-11): measured 108 KB, so a heavy import now fails CI instead of slipping in
 const assets = resolve(root, 'dist/assets')
 // The entry chunk is the index-*.js file that calls createRoot (other index-*.js chunks may exist).
 const entry = readdirSync(assets).find(
