@@ -66,7 +66,7 @@ function CommandPalette() {
         <Search />
         {/* The label and shortcut hint need room: below 1180px the header would run the nav into them. */}
         <span className="hidden min-[1180px]:inline">Search</span>
-        <span className="hidden items-center gap-1 min-[1180px]:inline-flex" aria-hidden="true">
+        <span className="hidden items-center gap-1 desktop:min-[1180px]:inline-flex" aria-hidden="true">
           <Kbd>{isMac ? '⌘' : 'Ctrl'}</Kbd>
           <Kbd>K</Kbd>
         </span>

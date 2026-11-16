@@ -60,7 +60,7 @@ function CodeBlock({
   }
 
   return (
-    <figure className={cn(blockFrame, className)} data-code-block>
+    <figure data-theme="dark" className={cn(blockFrame, className)} data-code-block>
       <div className={blockBar}>
         <span className="truncate">{snippet.file}</span>
         {showLink && (
@@ -79,7 +79,7 @@ function CodeBlock({
             </span>
             {snippet.href && (
               <a
-                className="inline-flex items-center gap-1.5 text-code-accent no-underline hover:underline hover:underline-offset-[3px]"
+                className="hit-area inline-flex items-center gap-1.5 text-code-accent no-underline hover:underline hover:underline-offset-[3px]"
                 href={snippet.href}
                 target="_blank"
                 rel="noreferrer"

@@ -6,6 +6,8 @@
 @import './tokens.css';
 
 @custom-variant dark (&:is([data-theme='dark'] *));
+/* A mouse or trackpad: hover-only and keyboard-shortcut features show only here, never on touch screens. */
+@custom-variant desktop (@media (hover: hover) and (pointer: fine));
 
 :root {
   --radius: 0.625rem;
@@ -319,24 +321,6 @@
 .section-band {
   border-block: 1px solid var(--color-border);
   background-color: color-mix(in srgb, var(--color-primary) 7%, var(--color-background));
-}
-
-/* The stage behind a project card's picture: a brand tint with a dot grid and a soft glow from above, so the card
-   stands apart from the page instead of matching it. */
-.card-stage {
-  background-color: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface));
-  background-image:
-    radial-gradient(color-mix(in srgb, var(--color-primary) 24%, transparent) 1px, transparent 1.5px),
-    radial-gradient(90% 85% at 50% 0%, color-mix(in srgb, var(--color-primary) 18%, transparent), transparent 70%);
-  background-size:
-    18px 18px,
-    100% 100%;
-}
-
-@media print {
-  .card-stage {
-    background-image: none;
-  }
 }
 
 /* Theme switch: the browser cross-fades old and new page snapshots (see withSmoothSwitch in useTheme). */

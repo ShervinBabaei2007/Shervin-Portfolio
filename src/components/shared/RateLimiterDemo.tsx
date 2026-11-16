@@ -26,8 +26,10 @@ type Buckets = Map<string, Map<number, number>>
 // Shared class names for the radio labels, action buttons and meters.
 const modeLabel = 'inline-flex min-h-11 cursor-pointer items-center gap-2 font-semibold'
 const modeInput = 'size-[18px] accent-primary'
-const actionClass = 'h-[46px] border px-[17px] text-control font-semibold'
-const meterTrack = 'mt-2 h-3 overflow-hidden rounded-full border bg-background'
+const actionClass = 'h-11 rounded-full px-5 text-[15px] font-normal'
+// The outlined pills, filled with ink on hover like the other outlined buttons on the site.
+const outlineClass = 'border-foreground/25 bg-transparent hover:bg-foreground hover:text-background'
+const meterTrack = 'mt-2 h-3 overflow-hidden rounded-full bg-canvas'
 const meterFill = 'block h-full transition-[width] duration-200 ease-linear'
 
 // How each simulated client is named in the log.
@@ -119,9 +121,8 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
   return (
     <section
       className={cn(
-        'mt-9 rounded-[12px] border border-t-[3px] border-t-primary bg-card px-7 pt-[26px] pb-7 max-[620px]:px-4 max-[620px]:pt-5 max-[620px]:pb-[22px]',
-        compact &&
-          'mt-[30px] bg-[linear-gradient(var(--color-grid)_1px,transparent_1px),linear-gradient(90deg,var(--color-grid)_1px,transparent_1px)] bg-[length:22px_22px]',
+        'mt-9 rounded-md bg-surface-hover p-[clamp(20px,2.6vw,36px)]',
+        compact && 'mt-[clamp(32px,4vw,48px)]',
       )}
       aria-labelledby="limiter-demo-title"
       data-limiter-demo
@@ -130,11 +131,15 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
         <h2
           id="limiter-demo-title"
           // tailwind-merge drops an earlier leading-* when a later text-* size follows, so leading goes last.
-          className={cn('text-[1.5rem]', compact && 'text-[clamp(1.55rem,1.3rem+.8vw,2rem)]', 'leading-[normal]')}
+          className={cn(
+            'm-0 text-[1.5rem] tracking-[-0.03em]',
+            compact && 'text-[clamp(1.55rem,1.3rem+.8vw,2rem)]',
+            'leading-[1.1]',
+          )}
         >
           Can you lock out another visitor?
         </h2>
-        <p className="mt-2 max-w-[60ch] leading-[1.6] text-muted-foreground">
+        <p className="mt-2 mb-0 max-w-[60ch] leading-[1.6] text-text-body">
           This is the same sliding-window rule ThinkBoard runs in Redis, scaled to {LIMIT} requests per{' '}
           {WINDOW_MS / 1000} seconds. Start with the shared key, burst your requests, then ask another visitor to send
           one.
@@ -142,7 +147,9 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
       </div>
 
       <fieldset className="mt-5 flex flex-wrap gap-x-6 gap-y-2 border-0 p-0">
-        <legend className="mb-2 p-0 font-mono text-label leading-[normal] text-muted-foreground">Rate-limit key</legend>
+        <legend className="mb-2 p-0 font-mono text-[13px] leading-[normal] text-muted-foreground">
+          Rate-limit key
+        </legend>
         <label className={modeLabel}>
           <input
             className={modeInput}
@@ -166,14 +173,23 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
       </fieldset>
 
       <div className="mt-3.5 flex flex-wrap items-center gap-2.5">
-        <Button type="button" size="lg" className={cn(actionClass, narrowFill)} onClick={() => send('you')}>
+        <Button
+          type="button"
+          size="lg"
+          className={cn(
+            actionClass,
+            'bg-foreground text-background hover:bg-primary-fill hover:text-primary-foreground',
+            narrowFill,
+          )}
+          onClick={() => send('you')}
+        >
           Send 1 request
         </Button>
         <Button
           type="button"
           variant="outline"
           size="lg"
-          className={cn(actionClass, narrowFill)}
+          className={cn(actionClass, outlineClass, narrowFill)}
           onClick={() => burst(15)}
         >
           Burst 15 requests
@@ -182,7 +198,7 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
           type="button"
           variant="outline"
           size="lg"
-          className={cn(actionClass, narrowFill)}
+          className={cn(actionClass, outlineClass, narrowFill)}
           onClick={() => send('other')}
         >
           Other visitor sends 1
@@ -191,7 +207,10 @@ function RateLimiterDemo({ compact = false }: { compact?: boolean }) {
           type="button"
           variant="ghost"
           size="lg"
-          className={cn('h-11 border px-2 text-muted-foreground hover:text-primary', narrowFill)}
+          className={cn(
+            'h-11 rounded-full border border-foreground/25 bg-transparent px-5 font-mono text-[13px] text-muted-foreground hover:bg-transparent hover:text-foreground',
+            narrowFill,
+          )}
           onClick={() => reset()}
         >
           Reset

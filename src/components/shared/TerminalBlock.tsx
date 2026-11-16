@@ -28,7 +28,7 @@ function TerminalBlock({
   const visible = maxLines ? lines.slice(0, maxLines) : lines
 
   return (
-    <figure className={cn(blockFrame, className)} data-terminal-block>
+    <figure data-theme="dark" className={cn(blockFrame, className)} data-terminal-block>
       <div className={cn(blockBar, 'justify-start gap-1.5')}>
         <span className={dot} />
         <span className={dot} />

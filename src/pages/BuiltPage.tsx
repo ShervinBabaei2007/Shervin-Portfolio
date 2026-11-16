@@ -25,27 +25,27 @@ const sections: { title: string; icon: LucideIcon; body: string }[] = [
   {
     title: 'Stack',
     icon: Layers,
-    body: 'React 19 and TypeScript, bundled with Vite, with React Router for the case-study pages. Tailwind CSS and shadcn/ui provide the components and the light and dark colour tokens. The only hand-written CSS sits in the same file and covers what utilities cannot express: keyframe animations, the resume’s print layout, and the reduced-motion rules.',
+    body: 'React 19 and TypeScript, bundled with Vite, with React Router for every page. Tailwind CSS and shadcn/ui provide the components, styled with one set of light and dark colour tokens. The hand-written CSS covers only what utilities cannot express: the colour tokens themselves, keyframe animations, the resume’s print layout, and the reduced-motion rules. The animated background behind the page titles is a small canvas script.',
   },
   {
     title: 'Every page is real HTML',
     icon: FileCode2,
-    body: 'At build time each route (home, resume, and one page per project) is rendered to static HTML, then React attaches to it in the browser. “Prerendered” just means the page arrives already written out, not assembled afterwards. Pages load with content before any JavaScript runs, each has its own title, description, canonical URL, and share image, and search engines and link previews see the full text.',
+    body: 'At build time every route (home, the work and writeup pages, About, Contact, the lab, the resume, and this page) is rendered to static HTML, then React attaches to it in the browser. “Prerendered” just means the page arrives already written out, not assembled afterwards. Pages load with content before any JavaScript runs, each has its own title, description, canonical URL, and share image, and search engines and link previews see the full text.',
   },
   {
     title: 'Tested like a product',
     icon: TestTubeDiagonal,
-    body: 'Playwright drives a real browser through the site on desktop and mobile sizes: the skill filter, case-study pages, the resume, theme persistence, and the absence of horizontal scrolling. Each run also scans pages with axe-core (an automatic accessibility checker) and fails on any accessibility violation. The same checks, plus ESLint and Prettier, run in CI on every push.',
+    body: 'Playwright drives a real browser through the built, prerendered site on desktop and phone sizes: the project filters, case-study and writeup pages, the contact form, the resume, the theme switch, the phone menu, and the absence of horizontal scrolling. Each run also scans pages with axe-core (an automatic accessibility checker) in both themes and fails on any accessibility violation. ESLint, Prettier, and a size budget for the main JavaScript file check the code itself.',
   },
   {
     title: 'Accessibility',
     icon: Accessibility,
-    body: 'Keyboard focus is always visible, interactive targets are at least 44 pixels, and the site respects reduced motion, increased contrast, and Windows high-contrast mode. Colour pairs are checked for WCAG AA contrast (the common accessibility standard) in both themes.',
+    body: 'Keyboard focus is always visible, controls are at least 44 pixels tall on touch screens, and the site respects reduced motion and the increased-contrast setting. Colour pairs are checked for WCAG AA contrast (the common accessibility standard) in both themes. Features that need a mouse, such as inspect mode, are left out on touch screens instead of shown broken.',
   },
   {
     title: 'Performance',
     icon: Gauge,
-    body: 'Each page loads only its own JavaScript: pages are split into separate chunks, and the prerendered HTML preloads exactly the chunk it needs, then fetches the rest in the background so navigating is instant. Heavier pieces, such as the search dialog and the quick-look drawer, load the first time you open them. One hashed stylesheet is cached once and reused on every page. Fonts are self-hosted, subset to Latin, and the two used above the fold are preloaded. Screenshots carry their real width and height to avoid layout shift (content jumping around as the page loads), and phones get a smaller copy of each image.',
+    body: 'Each page loads only its own JavaScript: pages are split into separate chunks, and the prerendered HTML preloads exactly the chunk it needs, then fetches the rest in the background so navigating is instant. Heavier pieces load only when needed: the search dialog and the phone menu the first time you open them, and the animated background once the browser is idle (on phones it draws one still frame instead of animating). One hashed stylesheet is cached once and reused on every page. Fonts are self-hosted, subset to Latin, and the three used above the fold are preloaded. Screenshots carry their real width and height to avoid layout shift (content jumping around as the page loads), and phones get a smaller copy of each image.',
   },
   {
     title: 'Honest content',

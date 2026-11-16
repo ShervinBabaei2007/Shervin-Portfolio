@@ -10,7 +10,6 @@ import { reportError } from './lib/monitoring'
 import { usePageMeta } from './hooks/usePageMeta'
 import { useTheme, type Scheme } from './hooks/useTheme'
 import { pages } from './routes'
-import { Button } from '@/components/ui/button'
 
 // The toast container from shadcn's sonner wrapper, split into its own chunk.
 const Toaster = lazy(() => import('@/components/ui/sonner').then((module) => ({ default: module.Toaster })))
@@ -75,19 +74,29 @@ class PageErrorBoundary extends Component<{ pathname: string; children: ReactNod
   render() {
     if (!this.state.failed) return this.props.children
     return (
-      <section className="section-wrap page-y" aria-labelledby="page-error-title">
+      <section
+        className="section-wrap pt-[clamp(48px,7vw,104px)] pb-[clamp(88px,10vw,144px)]"
+        aria-labelledby="page-error-title"
+      >
+        <p className="m-0 font-mono text-[13px] text-muted-foreground">
+          <span className="text-primary">~</span> $ reload
+        </p>
         <h1
           id="page-error-title"
-          className="mt-3.5 max-w-[18ch] text-[clamp(2.375rem,1.8rem+2vw,3.5rem)] leading-[1.06]"
+          className="mt-5 mb-0 max-w-[18ch] text-[clamp(2.875rem,6vw,5.875rem)] leading-[0.95] font-[650] tracking-[-0.045em]"
         >
           This page didn&apos;t load.
         </h1>
-        <p className="mt-4 mb-7 max-w-[60ch] text-[1.125rem] leading-[1.65] text-muted-foreground">
+        <p className="mt-6 mb-8 max-w-[560px] text-[clamp(1.0625rem,1.4vw,1.1875rem)] leading-[1.55] text-text-body">
           The connection may have dropped, or the site was updated while this tab was open.
         </p>
-        <Button type="button" onClick={() => window.location.reload()}>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="inline-flex h-12 cursor-pointer items-center rounded-full border-0 bg-foreground px-[22px] text-[15px] text-background transition-colors hover:bg-primary-fill hover:text-primary-foreground"
+        >
           Reload the page
-        </Button>
+        </button>
       </section>
     )
   }

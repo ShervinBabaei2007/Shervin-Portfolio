@@ -1,14 +1,14 @@
 /*
- * Shared look for CodeBlock and TerminalBlock: a panel that follows the theme through the code-* tokens.
+ * Shared look for CodeBlock and TerminalBlock: the dark ink panel used across the site, in both themes (the figures
+ * carry data-theme="dark", so the code-* tokens inside resolve dark).
  * Small text uses the tokens in tailwind.css (no line-height added); code itself is 13px on every screen.
  */
 /** The outer panel. */
-export const blockFrame =
-  'mt-3.5 min-w-0 overflow-hidden rounded-[10px] border border-code-border bg-code text-code-foreground'
+export const blockFrame = 'mt-3.5 min-w-0 overflow-hidden rounded-md bg-[var(--ink-panel)] text-code-foreground'
 
 /** The title bar across the top. */
 export const blockBar =
-  'flex min-h-9 items-center justify-between gap-3 border-b border-code-border px-3.5 font-mono text-label leading-[normal] text-code-muted'
+  'flex min-h-9 items-center justify-between gap-3 border-b border-code-border px-3.5 font-mono text-[13px] leading-[normal] text-code-muted'
 
 /** The scrollable code area. */
 export const blockPre =
