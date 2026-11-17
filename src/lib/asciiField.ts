@@ -30,6 +30,7 @@ export function startAsciiField(canvas: HTMLCanvasElement, { motion }: { motion:
     }
     context.setTransform(ratio, 0, 0, ratio, 0, 0)
     context.clearRect(0, 0, width, height)
+    context.globalAlpha = 1
 
     const style = getComputedStyle(canvas)
     const ink =
@@ -85,14 +86,22 @@ export function startAsciiField(canvas: HTMLCanvasElement, { motion }: { motion:
           quiet = Math.min(quiet, Math.min(1, Math.hypot(dx, dy) / fall))
         }
         const distance = Math.hypot(qx - glow.x, qy - glow.y)
+        // The ripple thins out around text too, so the name and tagline are never painted over.
         const ripple =
           distance < 260 && glow.strength > 0.01
-            ? (1 - distance / 260) * (0.55 + 0.45 * Math.sin(distance * 0.07 - time * 0.008)) * glow.strength
+            ? (1 - distance / 260) *
+              (0.55 + 0.45 * Math.sin(distance * 0.07 - time * 0.008)) *
+              glow.strength *
+              quiet *
+              quiet
             : 0
         const level = Math.min(0.999, value * 0.8 * (0.1 + 0.9 * quiet) + ripple * 0.9)
         const index = Math.floor(level * chars.length)
         if (index < 1) continue
-        context.fillStyle = ripple > 0.28 ? accent : `rgba(${ink},${(0.06 + level * 0.24).toFixed(3)})`
+        // The ripple's characters are drawn faint, so it reads as a soft tint rather than solid orange.
+        const rippling = ripple > 0.28
+        context.globalAlpha = rippling ? 0.3 : 1
+        context.fillStyle = rippling ? accent : `rgba(${ink},${(0.06 + level * 0.24).toFixed(3)})`
         context.fillText(chars[index], qx, qy)
       }
     }
