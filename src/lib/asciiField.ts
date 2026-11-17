@@ -86,23 +86,25 @@ export function startAsciiField(canvas: HTMLCanvasElement, { motion }: { motion:
           quiet = Math.min(quiet, Math.min(1, Math.hypot(dx, dy) / fall))
         }
         const distance = Math.hypot(qx - glow.x, qy - glow.y)
-        // The ripple thins out around text too, so the name and tagline are never painted over.
         const ripple =
           distance < 260 && glow.strength > 0.01
-            ? (1 - distance / 260) *
-              (0.55 + 0.45 * Math.sin(distance * 0.07 - time * 0.008)) *
-              glow.strength *
-              quiet *
-              quiet
+            ? (1 - distance / 260) * (0.55 + 0.45 * Math.sin(distance * 0.07 - time * 0.008)) * glow.strength
             : 0
-        const level = Math.min(0.999, value * 0.8 * (0.1 + 0.9 * quiet) + ripple * 0.9)
+        // Near text the ripple stays but turns faint; smoothstep keeps the falloff free of a visible edge.
+        const soft = quiet * quiet * (3 - 2 * quiet)
+        const level = Math.min(0.999, value * 0.8 * (0.1 + 0.9 * quiet) + ripple * 0.9 * (0.35 + 0.65 * soft))
         const index = Math.floor(level * chars.length)
         if (index < 1) continue
-        // The ripple's characters are drawn faint, so it reads as a soft tint rather than solid orange.
-        const rippling = ripple > 0.28
-        context.globalAlpha = rippling ? 0.3 : 1
-        context.fillStyle = rippling ? accent : `rgba(${ink},${(0.06 + level * 0.24).toFixed(3)})`
+        context.globalAlpha = 1
+        context.fillStyle = `rgba(${ink},${(0.06 + level * 0.24).toFixed(3)})`
         context.fillText(chars[index], qx, qy)
+        // The accent is laid over the same glyph with an alpha that grows with the ripple, so it tints in and out.
+        const tint = Math.min(1, ripple * 1.8) * 0.32 * (0.2 + 0.8 * soft)
+        if (tint > 0.01) {
+          context.globalAlpha = tint
+          context.fillStyle = accent
+          context.fillText(chars[index], qx, qy)
+        }
       }
     }
   }
