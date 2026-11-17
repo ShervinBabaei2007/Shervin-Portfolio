@@ -1045,17 +1045,18 @@ test('a page whose code 404s once recovers with an automatic reload', async ({ p
 })
 
 test('a missing page file reloads at most once instead of looping', async ({ page }) => {
-  let requests = 0
-  await page.route(/\/assets\/ResumePage-[\w-]+\.js$/, (route) => {
-    requests += 1
-    return route.fulfill({ status: 404, body: 'Not found' })
+  // Count page loads, not requests for the file: a browser may fetch it twice per load (preload link and import()).
+  let loads = 0
+  page.on('framenavigated', (frame) => {
+    if (frame === page.mainFrame()) loads += 1
   })
+  await page.route(/\/assets\/ResumePage-[\w-]+\.js$/, (route) => route.fulfill({ status: 404, body: 'Not found' }))
   await page.goto('/resume')
   await page.waitForLoadState('networkidle')
   await page.waitForTimeout(1500)
   await expect(page.getByRole('heading', { level: 1, name: 'Shervin Babaei' })).toBeVisible()
   // The original load plus one reload; a loop would keep growing this.
-  expect(requests).toBe(2)
+  expect(loads).toBe(2)
 })
 
 test('clicking a screenshot opens a viewer on the same page with every screenshot to click through', async ({
