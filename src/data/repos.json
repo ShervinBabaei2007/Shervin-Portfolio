@@ -44,7 +44,7 @@
     },
     {
       "name": "MERN-thinkBoard",
-      "url": "https://github.com/ShervinBabaei2007/MERN-thinkBoard",
+      "url": "https://github.com/ShervinBabaei2007/thinkboard",
       "description": "MERN notes app with a 5-endpoint REST API, Upstash Redis rate-limiting, and synchronized dual-layer validation.",
       "language": "JavaScript",
       "homepage": "https://mern-thinkboard-plum.vercel.app",
@@ -58,7 +58,7 @@
     },
     {
       "name": "Web-adminProject",
-      "url": "https://github.com/ShervinBabaei2007/Web-adminProject",
+      "url": "https://github.com/ShervinBabaei2007/linklocker",
       "description": "This is a URL Shortner, users enter a long URL, generate a shorter link, and redirect visitors to the original URL.",
       "language": "JavaScript",
       "homepage": "https://linklocker.northcentralus.cloudapp.azure.com/",
@@ -100,7 +100,7 @@
     },
     {
       "name": "Mini-RPG-Battle",
-      "url": "https://github.com/ShervinBabaei2007/Mini-RPG-Battle",
+      "url": "https://github.com/ShervinBabaei2007/warriors-path",
       "description": "A turn-based RPG combat simulator featuring leveling, loot drops, boss fights, inventory management, and a test-driven core architecture built using Python OOP principles.",
       "language": "Python",
       "homepage": null,

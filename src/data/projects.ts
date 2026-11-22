@@ -730,7 +730,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     ],
     stack: ['React', 'JavaScript', 'Node.js', 'Express', 'MongoDB', 'Redis'],
     mainStack: ['React', 'Node.js', 'Express', 'MongoDB', 'Redis'],
-    github: 'https://github.com/ShervinBabaei2007/MERN-thinkBoard',
+    github: 'https://github.com/ShervinBabaei2007/thinkboard',
     live: 'https://mern-thinkboard-plum.vercel.app/',
     demo: 'rate-limiter',
     screenshots: [
@@ -757,7 +757,7 @@ export const FOLLOW_UP_LABELS: Record<FollowUpKind, { title: string; when: strin
     ],
     snippet: {
       file: 'backend/src/middleware/rateLimiter.js',
-      href: 'https://github.com/ShervinBabaei2007/MERN-thinkBoard/blob/main/backend/src/middleware/rateLimiter.js',
+      href: 'https://github.com/ShervinBabaei2007/thinkboard/blob/main/backend/src/middleware/rateLimiter.js',
       language: 'js',
       caption:
         'Every request goes through this check first. It counts requests and turns away any beyond 50 per minute. It counts everyone together, which is the trade-off described below.',
@@ -984,7 +984,7 @@ except requests.exceptions.HTTPError as e:
     mainStack: ['Python', 'Object-oriented design', 'pytest', 'JSON'],
     snippet: {
       file: 'main.py',
-      href: 'https://github.com/ShervinBabaei2007/Mini-RPG-Battle/blob/main/main.py',
+      href: 'https://github.com/ShervinBabaei2007/warriors-path/blob/main/main.py',
       language: 'python',
       caption:
         'The “bad luck protection”. The game counts kills and boss fights, and once the count is high enough it hands out a guaranteed reward and starts counting again.',
@@ -1006,7 +1006,7 @@ except requests.exceptions.HTTPError as e:
                 + f"  ✦ Boss pity reward: {reward['name']} ✦"
             )`,
     },
-    github: 'https://github.com/ShervinBabaei2007/Mini-RPG-Battle',
+    github: 'https://github.com/ShervinBabaei2007/warriors-path',
     terminal: {
       title: 'python main.py',
       transcript: `==========================================
@@ -1451,7 +1451,7 @@ wss.on("connection", (ws) => {
     mainStack: ['Node.js', 'Express', 'MongoDB', 'Google OAuth', 'Azure', 'Nginx'],
     snippet: {
       file: 'src/app.js',
-      href: 'https://github.com/ShervinBabaei2007/Web-adminProject/blob/main/src/app.js',
+      href: 'https://github.com/ShervinBabaei2007/linklocker/blob/main/src/app.js',
       language: 'js',
       caption:
         'What happens when a signed-in person pastes a web address. It checks the address is real, makes a short random code, and saves it. If the code is already taken, it tries again.',
@@ -1490,7 +1490,7 @@ app.post("/api/links", requireAuth, async (req, res) => {
   }
 });`,
     },
-    github: 'https://github.com/ShervinBabaei2007/Web-adminProject',
+    github: 'https://github.com/ShervinBabaei2007/linklocker',
     live: 'https://linklocker.northcentralus.cloudapp.azure.com/',
     screenshots: [
       {
