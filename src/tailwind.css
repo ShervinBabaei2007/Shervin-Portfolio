@@ -358,6 +358,53 @@ html.lenis body {
   transition: none !important;
 }
 
+/* The custom cursor (CustomCursor.tsx) hides the arrow only once its script has seen a mouse move. Text fields keep
+   the I-beam, [data-cursor='native'] areas (the screenshot magnifier) keep their own cursor, and inspect mode sets
+   data-native-cursor to get the crosshair back. */
+@media (hover: hover) and (pointer: fine) {
+  html.custom-cursor:not([data-native-cursor]),
+  html.custom-cursor:not([data-native-cursor])
+    :not(:is(input, textarea, [contenteditable], [data-cursor='native'], [data-cursor='native'] *)) {
+    cursor: none;
+  }
+
+  html.custom-cursor
+    :is(
+      input:not(
+        [type='checkbox'],
+        [type='radio'],
+        [type='button'],
+        [type='submit'],
+        [type='reset'],
+        [type='range'],
+        [type='color'],
+        [type='file']
+      ),
+      textarea,
+      [contenteditable]:not([contenteditable='false'])
+    ) {
+    cursor: text;
+  }
+
+  html.custom-cursor [data-cursor='native'] {
+    cursor: auto;
+  }
+}
+
+/* A click sends a pulse out from the cursor's ring; a shadow keeps the ring's shape, circle or outlined pill. */
+.cursor-pulse {
+  animation: cursor-pulse 0.55s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+@keyframes cursor-pulse {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-primary) 60%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 18px color-mix(in oklab, var(--color-primary) 0%, transparent);
+  }
+}
+
 /* Reduced motion: one consolidated block. !important is deliberate (it must beat every component rule). */
 @media (prefers-reduced-motion: reduce) {
   html {

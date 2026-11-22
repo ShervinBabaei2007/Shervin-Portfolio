@@ -14,6 +14,7 @@ import { pages } from './routes'
 
 // The toast container from shadcn's sonner wrapper, split into its own chunk.
 const Toaster = lazy(() => import('@/components/ui/sonner').then((module) => ({ default: module.Toaster })))
+const CustomCursor = lazy(() => import('@/components/shared/CustomCursor'))
 
 /**
  * The toast container is only needed after something happens (a copied email, a sent message), so it loads
@@ -29,6 +30,21 @@ function LazyToaster({ scheme }: { scheme: Scheme }) {
   return ready ? (
     <Suspense fallback={null}>
       <Toaster theme={scheme} />
+    </Suspense>
+  ) : null
+}
+
+/** The custom cursor is decoration for mouse users, so it loads once the browser is idle and never on touch screens. */
+function LazyCursor() {
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+    const idle = window.requestIdleCallback ?? ((callback: () => void) => window.setTimeout(callback, 1500))
+    idle(() => setReady(true))
+  }, [])
+  return ready ? (
+    <Suspense fallback={null}>
+      <CustomCursor />
     </Suspense>
   ) : null
 }
@@ -157,6 +173,7 @@ function App() {
       <SiteFooter />
       <BackToTop />
       <LazyToaster scheme={scheme} />
+      <LazyCursor />
     </div>
   )
 }

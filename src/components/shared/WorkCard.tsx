@@ -104,6 +104,7 @@ function WorkCard({ project, index, headingLevel = 'h3' }: WorkCardProps) {
         <Heading className="m-0 text-[clamp(1.375rem,2vw,1.75rem)] leading-[1.2] tracking-[-0.03em]">
           <Link
             to={`/work/${project.slug}`}
+            data-cursor="view"
             className="text-foreground no-underline transition-colors group-hover:text-primary after:absolute after:inset-0 after:z-[1] after:content-[''] hover:text-primary focus-visible:outline-none focus-visible:after:rounded-md focus-visible:after:outline-2 focus-visible:after:outline-offset-4 focus-visible:after:outline-focus-ring"
           >
             {project.name}

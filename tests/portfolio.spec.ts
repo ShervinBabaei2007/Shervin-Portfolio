@@ -153,6 +153,9 @@ test('on a touch phone the desktop-only features are gone and long pages start w
   await expect(page.locator('#home button[aria-pressed]')).toBeHidden()
   await page.keyboard.press('i')
   await expect(page.getByRole('status').filter({ hasText: 'Inspect mode' })).toHaveCount(0)
+  // The custom cursor is for a mouse only, so the phone never loads it.
+  await page.waitForTimeout(1600)
+  await expect(page.locator('[data-custom-cursor]')).toHaveCount(0)
   // The three numbers under the hero sit on one row each, label beside the number.
   const stat = (await page.locator('#home > dl > div').first().boundingBox())!
   expect(stat.height).toBeLessThan(70)
@@ -1502,4 +1505,51 @@ test('a visitor who scrolls before the page hydrates stays where they scrolled',
   await hydrated(page)
   await page.waitForTimeout(300)
   expect(await page.evaluate(() => Math.round(window.scrollY))).toBe(1500)
+})
+
+test('with a mouse the custom cursor follows the pointer, reacts to what it is over, and keeps the I-beam in fields', async ({
+  page,
+}) => {
+  await page.goto('/contact')
+  await hydrated(page)
+  const layer = page.locator('[data-custom-cursor]')
+  await expect(layer).toBeAttached()
+  const html = page.locator('html')
+  // Until the mouse moves, the native arrow stays.
+  await expect(html).not.toHaveClass(/custom-cursor/)
+  expect(await page.evaluate(() => getComputedStyle(document.body).cursor)).not.toBe('none')
+
+  await page.mouse.move(400, 300)
+  await expect(html).toHaveClass(/custom-cursor/)
+  expect(await page.evaluate(() => getComputedStyle(document.body).cursor)).toBe('none')
+  const dot = (await layer.locator('> div').last().locator('> div').boundingBox())!
+  expect(Math.abs(dot.x + dot.width / 2 - 400)).toBeLessThan(2)
+  expect(Math.abs(dot.y + dot.height / 2 - 300)).toBeLessThan(2)
+
+  const link = page.locator('header a[href="/about"]').first()
+  await link.hover()
+  // A nav link is small, so the ring outlines it instead of sitting on top of it.
+  await expect(layer).toHaveAttribute('data-state', 'snap')
+  const box = (await link.boundingBox())!
+  await expect
+    .poll(async () => (await layer.locator('[class*="rounded-full"]').first().boundingBox())!.width)
+    .toBeCloseTo(box.width + 8, 0)
+  // Pressing fills the ring and sends a pulse out from it. (The page margin, so the press does not follow a link.)
+  await page.mouse.move(4, 400)
+  await page.mouse.down()
+  await expect(layer).toHaveAttribute('data-pressed', '')
+  await expect(layer.locator('.cursor-pulse')).toHaveCount(1)
+  await page.mouse.up()
+  await expect(layer).not.toHaveAttribute('data-pressed')
+
+  const field = page.locator('textarea, input[type="email"], input[type="text"]').first()
+  await field.hover()
+  await expect(layer).toHaveAttribute('data-state', 'hidden')
+  expect(await field.evaluate((element) => getComputedStyle(element).cursor)).toBe('text')
+
+  await page.goto('/projects')
+  await hydrated(page)
+  await expect(layer).toBeAttached()
+  await page.locator('[data-project-card] a[data-cursor="view"]').first().hover()
+  await expect(layer).toHaveAttribute('data-state', 'view')
 })

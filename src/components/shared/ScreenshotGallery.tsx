@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type HTMLAttributes } from 'react'
 import { ChevronLeft, ChevronRight, Maximize, Minus, Plus, ZoomIn } from 'lucide-react'
 import { TransformComponent, TransformWrapper, type ReactZoomPanPinchRef } from 'react-zoom-pan-pinch'
 import ResponsiveImage from '@/components/shared/ResponsiveImage'
@@ -122,6 +122,7 @@ function ScreenshotGallery({ shots, projectName, layout = 'stack' }: ScreenshotG
                     wrapperClass="!h-full !w-full"
                     contentClass="!h-full !w-full"
                     wrapperStyle={{ cursor: scale > 1.01 ? 'grab' : 'zoom-in' }}
+                    wrapperProps={{ 'data-cursor': 'native' } as HTMLAttributes<HTMLDivElement>}
                   >
                     <div className="grid size-full place-items-center px-4 pt-4 pb-16 [&_img]:block [&_img]:max-h-full [&_img]:w-auto [&_img]:max-w-full [&_img]:rounded-md [&_img]:object-contain">
                       {/* sizes is large on purpose, so the browser picks the full-size file to magnify, not the 480px copy. */}

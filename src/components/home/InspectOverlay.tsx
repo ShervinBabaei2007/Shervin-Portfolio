@@ -91,11 +91,13 @@ function InspectOverlay({ onExit }: { onExit: () => void }) {
     document.addEventListener('click', onClick, true)
     window.addEventListener('scroll', onScroll, true)
     document.body.style.cursor = 'crosshair'
+    document.documentElement.setAttribute('data-native-cursor', '')
     return () => {
       document.removeEventListener('mousemove', onMove, true)
       document.removeEventListener('click', onClick, true)
       window.removeEventListener('scroll', onScroll, true)
       document.body.style.cursor = ''
+      document.documentElement.removeAttribute('data-native-cursor')
     }
   }, [])
 
