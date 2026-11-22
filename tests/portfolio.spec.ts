@@ -113,9 +113,9 @@ test('home shows the four flagships in a two-by-two grid and links to the full p
   )
   await expect(page.getByRole('link', { name: `${flagshipProjects[0].name} source code on GitHub` })).toBeVisible()
   // The game projects are one click away from home.
-  await expect(page.locator('#work').getByRole('link', { name: 'Mini RPG Battle' })).toHaveAttribute(
+  await expect(page.locator('#work').getByRole('link', { name: 'Warrior’s Path' })).toHaveAttribute(
     'href',
-    '/work/mini-rpg-battle',
+    '/work/warriors-path',
   )
   await page.getByRole('link', { name: `All ${projects.length} projects` }).click()
   await expect(page).toHaveURL(/\/projects$/)
@@ -192,7 +192,7 @@ test('the header lists Work, Writeups, Lab, About and Contact, and one click fli
 test('projects with no screenshots show a labelled illustration that loads', async ({ page }) => {
   for (const slug of [
     'discord-ai-bridge',
-    'mini-rpg-battle',
+    'warriors-path',
     'job-application-tracker',
     'tic-tac-toe-minimax',
     'ollama-rag',
@@ -498,7 +498,7 @@ test.describe('typography', () => {
   ] as const) {
     test(`no visible text is under ${minimum}px on ${name}, and only the site fonts are used`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 })
-      for (const path of ['/', '/about', '/work/skillmatch', '/work/mini-rpg-battle', '/resume', '/writeups', '/lab']) {
+      for (const path of ['/', '/about', '/work/skillmatch', '/work/warriors-path', '/resume', '/writeups', '/lab']) {
         await page.goto(path)
         await page.waitForLoadState('networkidle')
         await page.evaluate(() => document.fonts.ready)
@@ -693,7 +693,7 @@ test('a project card shows its category and date on one line on a phone', async 
 })
 
 test('terminal projects show a recorded session', async ({ page }) => {
-  await page.goto('/work/mini-rpg-battle')
+  await page.goto('/work/warriors-path')
   await expect(page.locator('[data-terminal-block]')).toContainText('Victory! Survived 10 rounds.')
 })
 
@@ -762,7 +762,7 @@ for (const scheme of ['light', 'dark'] as const) {
       '/about',
       '/work/skillmatch',
       '/work/thinkboard',
-      '/work/mini-rpg-battle',
+      '/work/warriors-path',
       '/resume',
       '/how-its-built',
       '/projects',
@@ -1246,7 +1246,7 @@ test('projects page filters by type', async ({ page }) => {
   const cards = page.locator('[data-project-card]')
   await expect(cards).toHaveCount(projects.length)
   // The two game projects come straight after the flagships.
-  await expect(cards.nth(flagshipProjects.length).locator('h2')).toHaveText('Mini RPG Battle')
+  await expect(cards.nth(flagshipProjects.length).locator('h2')).toHaveText('Warrior’s Path')
   await expect(cards.nth(flagshipProjects.length + 1).locator('h2')).toHaveText('Tic-Tac-Toe Minimax AI')
   await page.getByRole('button', { name: /^Hackathon/ }).click()
   await expect(page.getByRole('button', { name: /^Hackathon/ })).toHaveAttribute('aria-pressed', 'true')
@@ -1254,7 +1254,7 @@ test('projects page filters by type', async ({ page }) => {
   await page.getByRole('button', { name: /^All/ }).click()
   await expect(cards).toHaveCount(projects.length)
   // Cards without a screenshot show a short code preview instead.
-  await expect(page.locator('[data-project-card]').filter({ hasText: 'Mini RPG Battle' })).toContainText(
+  await expect(page.locator('[data-project-card]').filter({ hasText: 'Warrior’s Path' })).toContainText(
     "WARRIOR'S PATH",
   )
   await expect(page.getByRole('link', { name: /More on GitHub/ })).toHaveAttribute('href', /github\.com/)

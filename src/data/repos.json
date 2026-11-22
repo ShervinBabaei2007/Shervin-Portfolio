@@ -3,14 +3,20 @@
     {
       "name": "Network-Growth-Assistance",
       "url": "https://github.com/ShervinBabaei2007/Network-Growth-Assistance",
-      "description": "Grow your professional network and run your job search from one calm, honest workspace.",
+      "description": "Networking and job search in one place: people worth meeting with every fact traced to a public source, and jobs pulled from companies' own career pages.",
       "language": "TypeScript",
-      "homepage": "linkedin-network-growth-assistance.vercel.app",
-      "topics": [],
+      "homepage": "https://linkedin-network-growth-assistance.vercel.app",
+      "topics": [
+        "nextjs",
+        "postgresql",
+        "react",
+        "supabase",
+        "typescript"
+      ],
       "stars": 0,
-      "pushedAt": "2026-11-15T00:30:59Z",
+      "pushedAt": "2026-11-22T02:07:43Z",
       "createdAt": "2026-10-10T04:58:52Z",
-      "commits": 263,
+      "commits": 264,
       "thumbnail": "/repos/Network-Growth-Assistance.webp",
       "score": 18.1
     },
@@ -20,7 +26,13 @@
       "description": "AI-powered News Intelligence and Cross-Source Analysis Platform",
       "language": "Python",
       "homepage": "https://signaldesk-lemon.vercel.app",
-      "topics": [],
+      "topics": [
+        "docker",
+        "fastapi",
+        "python",
+        "react",
+        "typescript"
+      ],
       "stars": 0,
       "pushedAt": "2026-11-14T23:04:52Z",
       "createdAt": "2026-11-14T01:32:41Z",
@@ -34,7 +46,12 @@
       "description": "UX redesign case study for Pacific Northwest X-Ray Inc. — full process from research to WCAG-compliant high-fidelity Figma wireframes.",
       "language": null,
       "homepage": "https://shervinbabaei2007.github.io/mkdocs-project-2026/",
-      "topics": [],
+      "topics": [
+        "accessibility",
+        "figma",
+        "mkdocs",
+        "ux-design"
+      ],
       "stars": 0,
       "pushedAt": "2026-05-20T22:41:51Z",
       "createdAt": "2026-01-14T23:28:07Z",
@@ -43,31 +60,61 @@
       "score": 13.1
     },
     {
-      "name": "MERN-thinkBoard",
+      "name": "mkdoc-UserDoc",
+      "url": "https://github.com/ShervinBabaei2007/mkdoc-UserDoc",
+      "description": "A beginner-friendly how-to guide for Adobe Photoshop, built with MkDocs Material and hosted on GitHub Pages. Written as a group project for COMM 2116 (Business Communications) at BCIT, Term 2, 2026.",
+      "language": null,
+      "homepage": "https://shervinbabaei2007.github.io/mkdoc-UserDoc/",
+      "topics": [
+        "documentation",
+        "mkdocs",
+        "writing"
+      ],
+      "stars": 0,
+      "pushedAt": "2026-03-25T19:32:09Z",
+      "createdAt": "2026-03-04T20:45:10Z",
+      "commits": 64,
+      "thumbnail": "/repos/mkdoc-UserDoc.webp",
+      "score": 13.1
+    },
+    {
+      "name": "thinkboard",
       "url": "https://github.com/ShervinBabaei2007/thinkboard",
-      "description": "MERN notes app with a 5-endpoint REST API, Upstash Redis rate-limiting, and synchronized dual-layer validation.",
+      "description": "A notes app with a REST API that stays steady under load: rate limiting, checks on both ends, and a cache in front of the database.",
       "language": "JavaScript",
       "homepage": "https://mern-thinkboard-plum.vercel.app",
-      "topics": [],
+      "topics": [
+        "express",
+        "mongodb",
+        "nodejs",
+        "react",
+        "redis"
+      ],
       "stars": 0,
       "pushedAt": "2026-11-10T14:47:27Z",
       "createdAt": "2026-03-28T17:32:16Z",
       "commits": 18,
-      "thumbnail": "/repos/MERN-thinkBoard.webp",
+      "thumbnail": "/repos/thinkboard.webp",
       "score": 12.4
     },
     {
-      "name": "Web-adminProject",
+      "name": "linklocker",
       "url": "https://github.com/ShervinBabaei2007/linklocker",
-      "description": "This is a URL Shortner, users enter a long URL, generate a shorter link, and redirect visitors to the original URL.",
+      "description": "A link shortener running on a real server: HTTPS, a reverse proxy, click tracking and Google sign-in.",
       "language": "JavaScript",
       "homepage": "https://linklocker.northcentralus.cloudapp.azure.com/",
-      "topics": [],
+      "topics": [
+        "azure",
+        "express",
+        "mongodb",
+        "nginx",
+        "nodejs"
+      ],
       "stars": 0,
       "pushedAt": "2026-11-05T16:25:21Z",
       "createdAt": "2026-10-01T19:19:42Z",
       "commits": 15,
-      "thumbnail": "/repos/Web-adminProject.webp",
+      "thumbnail": "/repos/linklocker.webp",
       "score": 12.3
     },
     {
@@ -76,7 +123,13 @@
       "description": "Full-stack educational marketplace with JWT-based RBAC, GitHub Actions/Jira CI/CD, and automated Vercel deployments. Built in a 4-week Agile sprint.",
       "language": "TypeScript",
       "homepage": "https://skillmatch-web.vercel.app/",
-      "topics": [],
+      "topics": [
+        "express",
+        "mongodb",
+        "nodejs",
+        "react",
+        "typescript"
+      ],
       "stars": 0,
       "pushedAt": "2026-11-10T03:46:29Z",
       "createdAt": "2026-05-22T18:23:25Z",
@@ -85,31 +138,22 @@
       "score": 12.1
     },
     {
-      "name": "mkdoc-UserDoc",
-      "url": "https://github.com/ShervinBabaei2007/mkdoc-UserDoc",
-      "description": "A beginner-friendly how-to guide for Adobe Photoshop, built with MkDocs Material and hosted on GitHub Pages. Written as a group project for COMM 2116 (Business Communications) at BCIT, Term 2, 2026.",
-      "language": null,
-      "homepage": null,
-      "topics": [],
-      "stars": 0,
-      "pushedAt": "2026-03-25T19:32:09Z",
-      "createdAt": "2026-03-04T20:45:10Z",
-      "commits": 64,
-      "thumbnail": "/repos/mkdoc-UserDoc.webp",
-      "score": 9.1
-    },
-    {
-      "name": "Mini-RPG-Battle",
+      "name": "warriors-path",
       "url": "https://github.com/ShervinBabaei2007/warriors-path",
-      "description": "A turn-based RPG combat simulator featuring leveling, loot drops, boss fights, inventory management, and a test-driven core architecture built using Python OOP principles.",
+      "description": "A turn-based fighting game in the terminal: bosses, loot, leveling and a save you can pick back up. The core logic is test-driven.",
       "language": "Python",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "game",
+        "oop",
+        "pytest",
+        "python"
+      ],
       "stars": 0,
       "pushedAt": "2026-06-19T02:05:34Z",
       "createdAt": "2026-06-10T01:38:42Z",
       "commits": 26,
-      "thumbnail": "/repos/Mini-RPG-Battle.webp",
+      "thumbnail": "/repos/warriors-path.webp",
       "score": 6.5
     },
     {
@@ -118,7 +162,12 @@
       "description": "This project is a Flask-based blog application built while learning backend web development. It includes user authentication, database integration using SQLAlchemy, form handling with WTForms, and basic CRUD functiona...",
       "language": "HTML",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "flask",
+        "learning",
+        "python",
+        "sqlalchemy"
+      ],
       "stars": 0,
       "pushedAt": "2026-06-20T18:14:03Z",
       "createdAt": "2026-06-19T16:18:59Z",
@@ -132,7 +181,12 @@
       "description": "Exploring how local AI works under the hood, from grocery list categorization with prompt engineering to PDF question-answering with RAG.",
       "language": "Python",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "chromadb",
+        "ollama",
+        "python",
+        "rag"
+      ],
       "stars": 0,
       "pushedAt": "2026-06-05T18:20:14Z",
       "createdAt": "2026-06-03T15:04:46Z",
@@ -146,7 +200,12 @@
       "description": "A Reddit-style web app featuring nested comment logic, voting systems, and moderator tools.",
       "language": "JavaScript",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "express",
+        "javascript",
+        "mongodb",
+        "nodejs"
+      ],
       "stars": 0,
       "pushedAt": "2026-04-04T02:46:50Z",
       "createdAt": "2026-04-03T02:47:23Z",
@@ -160,7 +219,11 @@
       "description": "A C++ console application that simulates CPU scheduling algorithms and displays real Windows processes using the Windows ToolHelp API.",
       "language": "C++",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "cpp",
+        "operating-systems",
+        "windows-api"
+      ],
       "stars": 0,
       "pushedAt": "2026-08-01T17:40:57Z",
       "createdAt": "2026-07-31T16:33:48Z",
@@ -174,7 +237,12 @@
       "description": "Tic-Tac-Toe AI that never loses - built with Minimax in Python",
       "language": "Python",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "algorithms",
+        "minimax",
+        "python",
+        "recursion"
+      ],
       "stars": 0,
       "pushedAt": "2026-06-22T17:17:48Z",
       "createdAt": "2026-06-21T17:20:55Z",
@@ -188,7 +256,11 @@
       "description": "Python CLI application for tracking job applications using SQLite, with full CRUD functionality, filtering, and status management.",
       "language": "Python",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "cli",
+        "python",
+        "sqlite"
+      ],
       "stars": 0,
       "pushedAt": "2026-06-01T18:18:56Z",
       "createdAt": "2026-05-31T17:19:13Z",
@@ -197,12 +269,34 @@
       "score": 4.8
     },
     {
+      "name": "MoodJorts",
+      "url": "https://github.com/ShervinBabaei2007/MoodJorts",
+      "description": "A single-page app with its own small Node server, built while practising rendering and state without a framework.",
+      "language": "JavaScript",
+      "homepage": null,
+      "topics": [
+        "css",
+        "javascript",
+        "nodejs"
+      ],
+      "stars": 0,
+      "pushedAt": "2026-04-03T18:44:28Z",
+      "createdAt": "2026-04-03T02:59:37Z",
+      "commits": 9,
+      "thumbnail": "/repos/MoodJorts.webp",
+      "score": 4.7
+    },
+    {
       "name": "Discord-ai-bridge",
       "url": "https://github.com/ShervinBabaei2007/Discord-ai-bridge",
       "description": "Python Discord bot running a local Qwen 3.5 9B model via LM Studio — async inference, layered error handling, real-time AI chat.",
       "language": "Python",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "discord-bot",
+        "llm",
+        "python"
+      ],
       "stars": 0,
       "pushedAt": "2026-05-20T21:14:29Z",
       "createdAt": "2026-04-02T02:17:45Z",
@@ -216,7 +310,12 @@
       "description": "Lightweight Wikipedia-style engine with auto-linkification and data storage.",
       "language": "JavaScript",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "ejs",
+        "express",
+        "javascript",
+        "nodejs"
+      ],
       "stars": 0,
       "pushedAt": "2026-04-04T02:19:46Z",
       "createdAt": "2026-04-03T03:06:30Z",
@@ -225,12 +324,34 @@
       "score": 4.3
     },
     {
+      "name": "News-Magazine",
+      "url": "https://github.com/ShervinBabaei2007/News-Magazine",
+      "description": "Soccer Weekly: a multi-page news site built with plain HTML, CSS and JavaScript, with articles, a contact page and a responsive layout.",
+      "language": "HTML",
+      "homepage": null,
+      "topics": [
+        "css",
+        "html",
+        "javascript"
+      ],
+      "stars": 0,
+      "pushedAt": "2026-04-03T15:02:47Z",
+      "createdAt": "2026-04-03T15:02:44Z",
+      "commits": 2,
+      "thumbnail": "/repos/News-Magazine.webp",
+      "score": 3.5
+    },
+    {
       "name": "Jinterest",
       "url": "https://github.com/ShervinBabaei2007/Jinterest",
       "description": "A responsive single-page mood board application built with vanilla HTML, CSS, and JavaScript.",
       "language": "JavaScript",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "css",
+        "html",
+        "javascript"
+      ],
       "stars": 0,
       "pushedAt": "2026-05-22T21:59:55Z",
       "createdAt": "2026-05-22T21:55:00Z",
@@ -244,7 +365,11 @@
       "description": "Jicnic is a real-time event scheduling app that lets a group of people vote on which days they're available - like planning a picnic with friends. I built this to practice full-stack AJAX architecture, live WebSocket...",
       "language": "JavaScript",
       "homepage": null,
-      "topics": [],
+      "topics": [
+        "javascript",
+        "nodejs",
+        "websockets"
+      ],
       "stars": 0,
       "pushedAt": "2026-05-20T20:57:56Z",
       "createdAt": "2026-05-20T20:50:47Z",

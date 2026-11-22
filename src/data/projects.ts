@@ -899,8 +899,8 @@ except requests.exceptions.HTTPError as e:
     },
   },
   {
-    slug: 'mini-rpg-battle',
-    name: 'Mini RPG Battle',
+    slug: 'warriors-path',
+    name: 'Warrior’s Path',
     category: 'Systems',
     flagship: false,
     date: '2026',
@@ -976,7 +976,7 @@ except requests.exceptions.HTTPError as e:
       { label: 'JSON file', detail: 'Save and load' },
     ],
     illustration: {
-      src: '/projects/mini-rpg-battle-illustration.svg',
+      src: '/projects/warriors-path-illustration.svg',
       alt: 'A terminal window showing a fight with a White Tiger: health bars for the player and the boss, the boss becoming enraged, a pity reward, and the menu of actions.',
       caption: 'A drawing of a fight in the terminal: health bars, an enraged boss, a pity reward and the menu.',
     },
@@ -1760,7 +1760,7 @@ export const flagshipProjects = projects.filter((project) => project.flagship)
 export const moreProjects = projects.filter((project) => !project.flagship)
 
 /** The two game projects, shown right after the flagships on the Work page and linked from the home page. */
-export const spotlightProjects = ['mini-rpg-battle', 'tic-tac-toe-minimax'].flatMap((slug) =>
+export const spotlightProjects = ['warriors-path', 'tic-tac-toe-minimax'].flatMap((slug) =>
   projects.filter((project) => project.slug === slug),
 )
 

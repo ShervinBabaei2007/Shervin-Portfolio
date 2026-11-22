@@ -18,7 +18,7 @@ const pages = [
   '/',
   '/work/network-growth-assistant',
   '/work/skillmatch',
-  '/work/mini-rpg-battle',
+  '/work/warriors-path',
   '/work/signaldesk',
   '/work/thinkboard',
   '/work/discord-ai-bridge',

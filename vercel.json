@@ -9,7 +9,8 @@
       "permanent": true
     },
     { "source": "/notes", "destination": "/writeups", "permanent": true },
-    { "source": "/notes/:slug", "destination": "/writeups/:slug", "permanent": true }
+    { "source": "/notes/:slug", "destination": "/writeups/:slug", "permanent": true },
+    { "source": "/work/mini-rpg-battle", "destination": "/work/warriors-path", "permanent": true }
   ],
   "headers": [
     {
